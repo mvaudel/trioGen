@@ -21,3 +21,12 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+!/bin/triogen-0.0.1/lib/ngs-java-2.9.0.jar
+!/bin/triogen-0.0.1/lib/commons-compress-1.4.1.jar
+!/bin/triogen-0.0.1/lib/snappy-java-1.1.4.jar
+!/bin/triogen-0.0.1/triogen-0.0.1.jar
+!/bin/triogen-0.0.1/lib/commons-logging-1.1.1.jar
+!/bin/triogen-0.0.1/lib/htsjdk-2.16.0.jar
+!/bin/triogen-0.0.1/lib/commons-jexl-2.1.1.jar
+!/bin/triogen-0.0.1/lib/commons-cli-1.4.jar
+!/bin/triogen-0.0.1/lib/xz-1.5.jar
