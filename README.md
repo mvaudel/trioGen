@@ -1,2 +1,2 @@
 # trioGen
-Resources and code for trio analyses.
+Code and resources for the genetic analysis of trios.
