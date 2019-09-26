@@ -130,6 +130,10 @@ public class Extractor {
 
         } finally {
 
+            h1Writer.close();
+            h2Writer.close();
+            h3Writer.close();
+            h4Writer.close();
             iterator.close();
 
         }
