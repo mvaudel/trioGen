@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
 import static no.uib.triogen.io.Utils.lineSeparator;
+import no.uib.triogen.io.flat.readers.SimpleGzReader;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.transmission.extraction.Extractor;
 import org.apache.commons.cli.CommandLine;
@@ -114,9 +115,12 @@ public class ExtractTransmission {
         String childId = childToParentMap.children.first();
         String motherId = childToParentMap.getMother(childId);
         String fatherId = childToParentMap.getFather(childId);
+        
+        SimpleGzReader reader = new SimpleGzReader(bean.vcfFile);
 
         VCFFileReader vcfFileReader = new VCFFileReader(bean.vcfFile);
         CloseableIterator<VariantContext> iterator = vcfFileReader.iterator();
+        
         VariantContext variantContext;
 
         while ((variantContext = iterator.next()) != null) {
@@ -178,13 +182,14 @@ public class ExtractTransmission {
 
         int nVariants = 0;
 
-        while ((variantContext = iterator.next()) != null && ++nVariants < 1000) {
+        String line = reader.readLine();
+        while ((line = reader.readLine()) != null && ++nVariants < 1000) {
         }
 
         long end = Instant.now().getEpochSecond();
         long duration = end - start;
 
-        System.out.println("Read " + nVariants + " in " + duration + " seconds.");
+        System.out.println("Read " + nVariants + " lines in " + duration + " seconds.");
 
         start = Instant.now().getEpochSecond();
 
@@ -207,7 +212,30 @@ public class ExtractTransmission {
         end = Instant.now().getEpochSecond();
         duration = end - start;
 
-        System.out.println("Processed " + nVariants + " in " + duration + " seconds.");
+        System.out.println("Read " + nVariants + " variants in " + duration + " seconds.");
+
+        start = Instant.now().getEpochSecond();
+
+        nVariants = 0;
+
+        while ((variantContext = iterator.next()) != null && ++nVariants < 1000) {
+
+            for (String tempChildId : childToParentMap.children) {
+
+                String tempMotherId = childToParentMap.getMother(tempChildId);
+                String tempFatherId = childToParentMap.getFather(tempChildId);
+
+                variantContext.getGenotype(tempChildId);
+                variantContext.getGenotype(tempMotherId);
+                variantContext.getGenotype(tempFatherId);
+
+            }
+        }
+
+        end = Instant.now().getEpochSecond();
+        duration = end - start;
+
+        System.out.println("Processed " + nVariants + " variants in " + duration + " seconds.");
 
     }
 
