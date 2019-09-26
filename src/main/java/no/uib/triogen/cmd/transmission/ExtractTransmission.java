@@ -196,17 +196,6 @@ public class ExtractTransmission {
         nVariants = 0;
 
         while ((variantContext = iterator.next()) != null && ++nVariants < 1000) {
-
-            for (String tempChildId : childToParentMap.children) {
-
-                String tempMotherId = childToParentMap.getMother(tempChildId);
-                String tempFatherId = childToParentMap.getFather(tempChildId);
-
-                variantContext.getGenotype(tempChildId);
-                variantContext.getGenotype(tempMotherId);
-                variantContext.getGenotype(tempFatherId);
-
-            }
         }
 
         end = Instant.now().getEpochSecond();
