@@ -6,6 +6,7 @@ import htsjdk.variant.variantcontext.Genotype;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.vcf.VCFFileReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
@@ -108,48 +109,69 @@ public class ExtractTransmission {
     private static void runTest(ExtractTransmissionOptionsBean bean) {
 
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
-        
+
         String childId = childToParentMap.children.first();
         String motherId = childToParentMap.getMother(childId);
         String fatherId = childToParentMap.getFather(childId);
-        
+
         VCFFileReader vcfFileReader = new VCFFileReader(bean.vcfFile);
         CloseableIterator<VariantContext> iterator = vcfFileReader.iterator();
-        VariantContext variantContext = iterator.next();
-        
-        Genotype childGenotype = variantContext.getGenotype(childId);
-        List<Allele> childAlleles = childGenotype.getAlleles();
-        String childAllelesString = childAlleles.stream()
-                .map(
-                        allele -> allele.getBaseString()
-                )
-                .collect(
-                        Collectors.joining(",")
-                );
-        System.out.println("Child genotype: " + childAllelesString);
+        VariantContext variantContext;
 
-        Genotype motherGenotype = variantContext.getGenotype(motherId);
-        List<Allele> motherAlleles = motherGenotype.getAlleles();
-        String motherAllelesString = motherAlleles.stream()
-                .map(
-                        allele -> allele.getBaseString()
-                )
-                .collect(
-                        Collectors.joining(",")
-                );
-        System.out.println("Mother genotype: " + motherAllelesString);
+        while ((variantContext = iterator.next()) != null) {
 
-        Genotype fatherGenotype = variantContext.getGenotype(fatherId);
-        List<Allele> fatherAlleles = fatherGenotype.getAlleles();
-        String fatherAllelesString = fatherAlleles.stream()
-                .map(
-                        allele -> allele.getBaseString()
-                )
-                .collect(
-                        Collectors.joining(",")
-                );
-        System.out.println("Father genotype: " + fatherAllelesString);
+            ArrayList<String> alleles = variantContext.getAlleles().stream()
+                    .map(
+                            allele -> allele.getBaseString()
+                    )
+                    .collect(
+                            Collectors.toCollection(ArrayList::new)
+                    );
 
+            if (!alleles.get(0).equals(alleles.get(1))) {
+
+                Genotype childGenotype = variantContext.getGenotype(childId);
+                List<Allele> childAlleles = childGenotype.getAlleles();
+                String childAllelesString = childAlleles.stream()
+                        .map(
+                                allele -> allele.getBaseString()
+                        )
+                        .collect(
+                                Collectors.joining(",")
+                        );
+
+                Genotype motherGenotype = variantContext.getGenotype(motherId);
+                List<Allele> motherAlleles = motherGenotype.getAlleles();
+                String motherAllelesString = motherAlleles.stream()
+                        .map(
+                                allele -> allele.getBaseString()
+                        )
+                        .collect(
+                                Collectors.joining(",")
+                        );
+
+                Genotype fatherGenotype = variantContext.getGenotype(fatherId);
+                List<Allele> fatherAlleles = fatherGenotype.getAlleles();
+                String fatherAllelesString = fatherAlleles.stream()
+                        .map(
+                                allele -> allele.getBaseString()
+                        )
+                        .collect(
+                                Collectors.joining(",")
+                        );
+
+                if (!motherAllelesString.equals(childAllelesString)) {
+
+                    System.out.println("Id: " + variantContext.getID());
+                    System.out.println("Ref: " + alleles.get(0) + " Alt: " + alleles.get(1));
+                    System.out.println("Mother genotype: " + motherAllelesString);
+                    System.out.println("Child genotype: " + childAllelesString);
+                    System.out.println("Father genotype: " + fatherAllelesString);
+
+                    break;
+                }
+            }
+        }
     }
 
     /**
