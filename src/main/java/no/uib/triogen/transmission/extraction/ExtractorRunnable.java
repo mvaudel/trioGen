@@ -1,7 +1,5 @@
 package no.uib.triogen.transmission.extraction;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.vcf.VcfIterator;
@@ -39,16 +37,20 @@ public class ExtractorRunnable implements Runnable {
      * The map of trios.
      */
     private final ChildToParentMap childToParentMap;
+    /**
+     * Boolean indicating whether the runnable has been canceled.
+     */
+    private static boolean canceled = false;
 
     /**
      * Constructor.
-     * 
+     *
      * @param iterator the vcf file iterator
      * @param childToParentMap the child to parent map
      * @param h1Writer the h1 writer
      * @param h2Writer the h2 writer
      * @param h3Writer the h3 writer
-     * @param h4Writer the h4 writer 
+     * @param h4Writer the h4 writer
      */
     public ExtractorRunnable(
             VcfIterator iterator,
@@ -71,50 +73,58 @@ public class ExtractorRunnable implements Runnable {
     @Override
     public void run() {
 
-        VcfLine vcfLine;
-        while ((vcfLine = iterator.next()) != null) {
+        try {
 
-            vcfLine.parse();
+            VcfLine vcfLine;
+            while ((vcfLine = iterator.next()) != null && !canceled) {
 
-            String[] genotypes = processVcfLine(vcfLine);
+                vcfLine.parse();
 
-            h1Writer.writeLine(
-                    String.join(
-                            "\t",
-                            vcfLine.getVariantDescription(),
-                            genotypes[0]
-                    )
-            );
-            h2Writer.writeLine(
-                    String.join(
-                            "\t",
-                            vcfLine.getVariantDescription(),
-                            genotypes[1]
-                    )
-            );
-            h3Writer.writeLine(
-                    String.join(
-                            "\t",
-                            vcfLine.getVariantDescription(),
-                            genotypes[2]
-                    )
-            );
-            h4Writer.writeLine(
-                    String.join(
-                            "\t",
-                            vcfLine.getVariantDescription(),
-                            genotypes[3]
-                    )
-            );
+                String[] genotypes = processVcfLine(vcfLine);
+
+                h1Writer.writeLine(
+                        String.join(
+                                "\t",
+                                vcfLine.getVariantDescription(),
+                                genotypes[0]
+                        )
+                );
+                h2Writer.writeLine(
+                        String.join(
+                                "\t",
+                                vcfLine.getVariantDescription(),
+                                genotypes[1]
+                        )
+                );
+                h3Writer.writeLine(
+                        String.join(
+                                "\t",
+                                vcfLine.getVariantDescription(),
+                                genotypes[2]
+                        )
+                );
+                h4Writer.writeLine(
+                        String.join(
+                                "\t",
+                                vcfLine.getVariantDescription(),
+                                genotypes[3]
+                        )
+                );
+
+            }
+        } catch (Throwable t) {
+
+            canceled = true;
+            t.printStackTrace();
 
         }
     }
 
     /**
      * Processes a vcf line and returns an array of the different hs to export.
-     * 
+     *
      * @param vcfLine the vcf line
-     * 
+     *
      * @return an array of the different hs to export
      */
     private String[] processVcfLine(VcfLine vcfLine) {
@@ -144,10 +154,10 @@ public class ExtractorRunnable implements Runnable {
 
     /**
      * Aggregates an array of h in a string.
-     * 
+     *
      * @param hs the h matrix
      * @param i the index of h to aggregate
-     * 
+     *
      * @return a tab separated string of the hs of all kids
      */
     private String aggregateH(int[][] hs, int i) {
