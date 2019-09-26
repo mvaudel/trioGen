@@ -49,7 +49,9 @@ public class VcfIterator implements AutoCloseable {
      *
      * @param file the file.
      */
-    public VcfIterator(File file) {
+    public VcfIterator(
+            File file
+    ) {
 
         // Set up reader
         reader = SimpleFileReader.getFileReader(file);
@@ -131,7 +133,9 @@ public class VcfIterator implements AutoCloseable {
      *
      * @return the column index for a sample
      */
-    public int getSampleIndex(String sampleId) {
+    public int getSampleIndex(
+            String sampleId
+    ) {
 
         return sampleMap.get(sampleId);
 

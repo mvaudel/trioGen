@@ -37,7 +37,9 @@ public class ExtractTransmissionOptionsBean {
      *
      * @param aLine a command line
      */
-    public ExtractTransmissionOptionsBean(CommandLine aLine) {
+    public ExtractTransmissionOptionsBean(
+            CommandLine aLine
+    ) {
 
         // Check that mandatory options are provided
         for (ExtractTransmissionOptions option : ExtractTransmissionOptions.values()) {

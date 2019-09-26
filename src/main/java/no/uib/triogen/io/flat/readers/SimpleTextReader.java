@@ -23,7 +23,9 @@ public class SimpleTextReader implements SimpleFileReader {
      *
      * @param file the file to read
      */
-    public SimpleTextReader(File file) {
+    public SimpleTextReader(
+            File file
+    ) {
 
         try {
 

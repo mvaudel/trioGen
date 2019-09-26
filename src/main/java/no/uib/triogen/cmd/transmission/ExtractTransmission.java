@@ -71,7 +71,9 @@ public class ExtractTransmission {
      *
      * @param bean the bean of command line parameters
      */
-    private static void run(ExtractTransmissionOptionsBean bean) {
+    private static void run(
+            ExtractTransmissionOptionsBean bean
+    ) {
 
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
 

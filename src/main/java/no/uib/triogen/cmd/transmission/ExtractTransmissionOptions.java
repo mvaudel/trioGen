@@ -48,7 +48,13 @@ public enum ExtractTransmissionOptions {
      * @param mandatory is the option mandatory
      * @param hasArg has the option an argument
      */
-    private ExtractTransmissionOptions(String opt, String longOpt, String description, boolean mandatory, boolean hasArg) {
+    private ExtractTransmissionOptions(
+            String opt, 
+            String longOpt, 
+            String description, 
+            boolean mandatory, 
+            boolean hasArg
+    ) {
         this.opt = opt;
         this.longOpt = longOpt;
         this.description = description;
@@ -62,7 +68,9 @@ public enum ExtractTransmissionOptions {
      *
      * @param options the apache options object
      */
-    public static void createOptionsCLI(Options options) {
+    public static void createOptionsCLI(
+            Options options
+    ) {
 
         for (ExtractTransmissionOptions option : values()) {
 

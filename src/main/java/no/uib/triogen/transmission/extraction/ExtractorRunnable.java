@@ -127,7 +127,9 @@ public class ExtractorRunnable implements Runnable {
      *
      * @return an array of the different hs to export
      */
-    private String[] processVcfLine(VcfLine vcfLine) {
+    private String[] processVcfLine(
+            VcfLine vcfLine
+    ) {
 
         int[][] h = childToParentMap.children.stream()
                 .parallel()
@@ -160,7 +162,10 @@ public class ExtractorRunnable implements Runnable {
      *
      * @return a tab separated string of the hs of all kids
      */
-    private String aggregateH(int[][] hs, int i) {
+    private String aggregateH(
+            int[][] hs, 
+            int i
+    ) {
 
         StringBuilder sb = new StringBuilder(2 * hs.length - 1);
 
@@ -186,7 +191,10 @@ public class ExtractorRunnable implements Runnable {
      *
      * @return an array containing h1, h2, h3, and h4
      */
-    private int[] getH(VcfLine vcfLine, String childId) {
+    private int[] getH(
+            VcfLine vcfLine, 
+            String childId
+    ) {
 
         String motherId = childToParentMap.getMother(childId);
         String fatherId = childToParentMap.getFather(childId);

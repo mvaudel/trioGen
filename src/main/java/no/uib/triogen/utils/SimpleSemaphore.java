@@ -20,7 +20,10 @@ public class SimpleSemaphore {
      * @param nPermits the number of permits
      * @param fair boolean indicating whether threads should be processed in a fair way
      */
-    public SimpleSemaphore(int nPermits, boolean fair) {
+    public SimpleSemaphore(
+            int nPermits, 
+            boolean fair
+    ) {
         
         this.mutex = new Semaphore(nPermits, fair);
         
@@ -31,7 +34,9 @@ public class SimpleSemaphore {
      * 
      * @param nPermits the number of permits
      */
-    public SimpleSemaphore(int nPermits) {
+    public SimpleSemaphore(
+            int nPermits
+    ) {
         
         this.mutex = new Semaphore(nPermits);
         

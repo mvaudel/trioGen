@@ -88,7 +88,9 @@ public class VcfLine {
      *
      * @return the genotype
      */
-    public int getGenotype(String sampleId) {
+    public int getGenotype(
+            String sampleId
+    ) {
 
         int sampleIndex = vcfIterator.getSampleIndex(sampleId);
         int index1 = indexes[sampleIndex] + 1;

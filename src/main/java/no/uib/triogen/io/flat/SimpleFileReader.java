@@ -18,7 +18,9 @@ public interface SimpleFileReader extends AutoCloseable {
      * 
      * @return a file reader
      */
-    public static SimpleFileReader getFileReader(File file) {
+    public static SimpleFileReader getFileReader(
+            File file
+    ) {
         
         if (file.getName().endsWith(".gz")) {
             

@@ -32,7 +32,11 @@ public class ChildToParentMap {
      * @param childToMotherMap a child to mother map
      * @param childToFatherMap a child to father map
      */
-    public ChildToParentMap(TreeSet<String> children, HashMap<String, String> childToMotherMap, HashMap<String, String> childToFatherMap) {
+    public ChildToParentMap(
+            TreeSet<String> children, 
+            HashMap<String, String> childToMotherMap, 
+            HashMap<String, String> childToFatherMap
+    ) {
 
         this.children = children;
         this.childToFatherMap = childToFatherMap;
@@ -50,7 +54,9 @@ public class ChildToParentMap {
      * 
      * @return a new instance of a map
      */
-    public static ChildToParentMap fromFile(File trioFile) {
+    public static ChildToParentMap fromFile(
+            File trioFile
+    ) {
 
         TreeSet<String> childIds = new TreeSet<>();
         HashMap<String, String> childToMotherMap = new HashMap<>();
@@ -117,7 +123,9 @@ public class ChildToParentMap {
      *
      * @return the father id
      */
-    public String getFather(String child) {
+    public String getFather(
+            String child
+    ) {
 
         return childToFatherMap.get(child);
 
@@ -130,7 +138,9 @@ public class ChildToParentMap {
      *
      * @return the mother id
      */
-    public String getMother(String child) {
+    public String getMother(
+            String child
+    ) {
 
         return childToMotherMap.get(child);
 

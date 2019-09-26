@@ -37,7 +37,10 @@ public class SimpleFileWriter implements AutoCloseable {
      * @param file the file to write to
      * @param gz boolean indicating whether the output should be gzipped
      */
-    public SimpleFileWriter(File file, boolean gz) {
+    public SimpleFileWriter(
+            File file, 
+            boolean gz
+    ) {
 
         try {
 
@@ -67,7 +70,9 @@ public class SimpleFileWriter implements AutoCloseable {
      *
      * @param elements line elements
      */
-    public void writeLine(String... elements) {
+    public void writeLine(
+            String... elements
+    ) {
 
         String line = String.join(separator, elements);
         writeLine(line);
@@ -79,7 +84,9 @@ public class SimpleFileWriter implements AutoCloseable {
      *
      * @param line the line to write
      */
-    public void writeLine(String line) {
+    public void writeLine(
+            String line
+    ) {
 
         write(line, true);
 
@@ -105,7 +112,10 @@ public class SimpleFileWriter implements AutoCloseable {
      * @param newLine boolean indicating whether an end of line should be
      * appended
      */
-    public void write(String text, boolean newLine) {
+    public void write(
+            String text, 
+            boolean newLine
+    ) {
 
         try {
 

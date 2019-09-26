@@ -28,7 +28,9 @@ public class SimpleGzReader implements SimpleFileReader {
      *
      * @param file the file to read
      */
-    public SimpleGzReader(File file) {
+    public SimpleGzReader(
+            File file
+    ) {
 
         try {
 
