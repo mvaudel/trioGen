@@ -6,6 +6,7 @@ import htsjdk.variant.variantcontext.Genotype;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.vcf.VCFFileReader;
 import java.io.PrintWriter;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -172,6 +173,30 @@ public class ExtractTransmission {
                 }
             }
         }
+
+        long start = Instant.now().getEpochSecond();
+
+        int nVariants = 0;
+
+        while ((variantContext = iterator.next()) != null && ++nVariants < 1000) {
+
+            for (String tempChildId : childToParentMap.children) {
+
+                String tempMotherId = childToParentMap.getMother(tempChildId);
+                String tempFatherId = childToParentMap.getFather(tempChildId);
+
+                variantContext.getGenotype(tempChildId);
+                variantContext.getGenotype(tempMotherId);
+                variantContext.getGenotype(tempFatherId);
+
+            }
+        }
+
+        long end = Instant.now().getEpochSecond();
+        long duration = end - start;
+
+        System.out.println("Iterated " + nVariants + " in " + duration + " seconds.");
+
     }
 
     /**
