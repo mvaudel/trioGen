@@ -179,6 +179,18 @@ public class ExtractTransmission {
         int nVariants = 0;
 
         while ((variantContext = iterator.next()) != null && ++nVariants < 1000) {
+        }
+
+        long end = Instant.now().getEpochSecond();
+        long duration = end - start;
+
+        System.out.println("Read " + nVariants + " in " + duration + " seconds.");
+
+        start = Instant.now().getEpochSecond();
+
+        nVariants = 0;
+
+        while ((variantContext = iterator.next()) != null && ++nVariants < 1000) {
 
             for (String tempChildId : childToParentMap.children) {
 
@@ -192,10 +204,10 @@ public class ExtractTransmission {
             }
         }
 
-        long end = Instant.now().getEpochSecond();
-        long duration = end - start;
+        end = Instant.now().getEpochSecond();
+        duration = end - start;
 
-        System.out.println("Iterated " + nVariants + " in " + duration + " seconds.");
+        System.out.println("Processed " + nVariants + " in " + duration + " seconds.");
 
     }
 
