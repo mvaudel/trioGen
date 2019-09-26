@@ -1,21 +1,9 @@
 package no.uib.triogen.cmd.transmission;
 
-import htsjdk.samtools.util.CloseableIterator;
-import htsjdk.variant.variantcontext.Allele;
-import htsjdk.variant.variantcontext.Genotype;
-import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFFileReader;
 import java.io.PrintWriter;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
 import static no.uib.triogen.io.Utils.lineSeparator;
-import no.uib.triogen.io.flat.SimpleFileWriter;
-import no.uib.triogen.io.flat.readers.SimpleGzReader;
 import no.uib.triogen.io.vcf.VcfIterator;
-import no.uib.triogen.io.vcf.VcfLine;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.transmission.extraction.Extractor;
 import org.apache.commons.cli.CommandLine;
@@ -63,6 +51,12 @@ public class ExtractTransmission {
             CommandLine commandLine = parser.parse(lOptions, args);
 
             ExtractTransmissionOptionsBean bean = new ExtractTransmissionOptionsBean(commandLine);
+            
+            if (bean.test) {
+                
+                VcfIterator.nLimit = 1000;
+                
+            }
 
             run(bean);
 

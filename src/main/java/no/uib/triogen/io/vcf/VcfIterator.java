@@ -90,7 +90,7 @@ public class VcfIterator implements AutoCloseable {
         mutex.acquire();
 
         String line = endOfFile ? null : reader.readLine();
-        endOfFile = line == null || ++nVariants > nLimit;
+        endOfFile = line == null || nLimit != -1 && ++nVariants > nLimit;
 
         mutex.release();
 
