@@ -3,17 +3,17 @@
 This command line extracts transmitted alleles from hard calls in trio data.
 
 
-** Requirements **
+### Requirements
 
 This software requires **java 8** or newer. A 64 bits system is recommended. 
 
 
-**Installation**
+### Installation
 
-The latest release is the folder named `triogen-X.Y.Z` in the [bin folder](), where _X_, _Y_, and _Z_ represent the version number. You can get it by cloning this repository or downloading the folder content. The executable is named accordingly `triogen-X.Y.Z.jar`.
+The latest release is the folder named `triogen-X.Y.Z` in the [bin folder](https://github.com/mvaudel/trioGen/tree/master/bin), where _X_, _Y_, and _Z_ represent the version number. You can get it by cloning this repository or downloading the folder content. The executable is named accordingly `triogen-X.Y.Z.jar`.
 
 
-**Command line**
+### Command line
 
 ```
 java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.transmission.ExtractTransmission [parameters]
@@ -22,7 +22,7 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 > Note: you need to replace `your/folder` by the folder where the release is installed, and `Z.Y.Z` by the version number.
 
 
-** Standard parameters **
+### Standard parameters
 
 ```
 -h/--help          Display help text
@@ -30,7 +30,7 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 ```
 
 
-** Mandatory Parameters **
+### Mandatory Parameters
 
 ```
 -g/--geno          The vcf file.
@@ -39,14 +39,14 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 ```
 
 
-** Additional Parameters **
+### Additional Parameters
 
 ```
 -z/--timeOut       The number of days before timeout, default is 365..
 -t/--test          If present, runs only othe first 1000 variants.
 ```
 
-**Command line example**
+### Command line example
 
 This example runs from the folder of the cloned repo.
 
@@ -54,8 +54,9 @@ This example runs from the folder of the cloned repo.
 java -Xmx16G -cp bin/triogen-0.0.1/triogen-0.0.1.jar no.uib.triogen.cmd.transmission.ExtractTransmission -g /vcfFolder/vcf/22.vcf.gz -f /triadFolder/fulltriads -o /outputFolder/22
 ```
 
+An example to run a test on the Hunt clound can be found [here](https://github.com/mvaudel/trioGen/blob/master/scripts/test.sh).
 
-** Format requirements **
+### Format requirements
 
 Input files can be gzipped or not. Output files are gzipped. 
 
@@ -68,12 +69,12 @@ Input files can be gzipped or not. Output files are gzipped.
 > Note: only minimal sanity check is conducted.
 
 
-** Paths **
+### Paths
 
-We recommend using absolute paths.
+It is recommended to use absolute paths. The output folder must exist.
 
 
-** Memory Settings **
+### Memory Settings
 
 The processing might require more than the default memory provided to the Java virtual machine. If you encounter memoyr issues please increase the maximum memory setting using the `Xmx` option. 
 
@@ -83,7 +84,7 @@ java -Xmx64G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 ```
 
 
-** Errors, questions, and bug report **
+### Errors, questions, and bug report
 
 Errors are reported as stacktrace. Please use the [Issue Tracker]() for questions and bug reports. Please include the stacktrace with any information helping the debugging.
 
