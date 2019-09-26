@@ -13,9 +13,9 @@ public enum ExtractTransmissionOptions {
 
     vcf("g", "geno", "The vcf file. Can be gzipped or not.", true, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not.", true, true),
-    out("o", "out", "stem of the files where to write the scores.", true, true),
-    timeOut("z", "timeOut", "Number of days before timeout, default is 365.", false, true),
-    test("t", "test", "If present, runs only one variant in one trio.", false, false);
+    out("o", "out", "The stem of the files where to write the scores.", true, true),
+    timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true),
+    test("t", "test", "If present, runs only othe first 1000 variants.", false, false);
 
     /**
      * The short option.
