@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 public class VcfParsingTest extends TestCase {
 
     public void testParsing() {
-
+        
         File vcfFile = new File("src/test/resources/vcf/example/test.vcf");
 
         VcfIterator iterator = new VcfIterator(vcfFile);

@@ -78,7 +78,7 @@ public class ExtractTransmission {
         Extractor extractor = new Extractor(
                 bean.vcfFile, 
                 childToParentMap, 
-                bean.destinationFile
+                bean.destinationStem
         );
 
         try {

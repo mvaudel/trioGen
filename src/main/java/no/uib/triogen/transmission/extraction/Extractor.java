@@ -23,9 +23,9 @@ public class Extractor {
      */
     private final File vcfFile;
     /**
-     * The file to export the result to.
+     * The stem of the files to export the result to.
      */
-    private final File destinationFile;
+    private final String destinationStem;
     /**
      * The map of trios.
      */
@@ -33,24 +33,24 @@ public class Extractor {
     /**
      * The number of variants to process at the same time.
      */
-    private final int nThreads = 4;
+    private final int nThreads = 8;
 
     /**
      * Constructors.
      *
      * @param vcfFile the vcf file to use
      * @param childToParentMap the map of trios
-     * @param destinationFile the file to export the result to
+     * @param destinationStem the stem of the files to export the result to
      */
     public Extractor(
             File vcfFile,
             ChildToParentMap childToParentMap,
-            File destinationFile
+            String destinationStem
     ) {
 
         this.vcfFile = vcfFile;
         this.childToParentMap = childToParentMap;
-        this.destinationFile = destinationFile;
+        this.destinationStem = destinationStem;
 
     }
 
@@ -78,8 +78,20 @@ public class Extractor {
         VcfIterator iterator = new VcfIterator(
                 vcfFile
         );
-        SimpleFileWriter writer = new SimpleFileWriter(
-                destinationFile,
+        SimpleFileWriter h1Writer = new SimpleFileWriter(
+                new File(destinationStem + "_h1.gz"),
+                test
+        );
+        SimpleFileWriter h2Writer = new SimpleFileWriter(
+                new File(destinationStem + "_h2.gz"),
+                test
+        );
+        SimpleFileWriter h3Writer = new SimpleFileWriter(
+                new File(destinationStem + "_h3.gz"),
+                test
+        );
+        SimpleFileWriter h4Writer = new SimpleFileWriter(
+                new File(destinationStem + "_h4.gz"),
                 test
         );
 
@@ -92,7 +104,10 @@ public class Extractor {
                             i -> new ExtractorRunnable(
                                     iterator,
                                     childToParentMap,
-                                    writer
+                                    h1Writer,
+                                    h2Writer,
+                                    h3Writer,
+                                    h4Writer
                             )
                     )
                     .forEach(

@@ -19,9 +19,9 @@ public class ExtractTransmissionOptionsBean {
      */
     public final File trioFile;
     /**
-     * The file where to write the output.
+     * Stem of the file where to write the output.
      */
-    public final File destinationFile;
+    public final String destinationStem;
     /**
      * The number of days before timeout.
      */
@@ -74,11 +74,13 @@ public class ExtractTransmissionOptionsBean {
         // Output
         filePath = aLine.getOptionValue(ExtractTransmissionOptions.out.opt);
 
-        destinationFile = new File(filePath);
+        destinationStem = filePath;
+        
+        File destinationFolder = (new File(destinationStem)).getParentFile();
 
-        if (!destinationFile.getParentFile().exists()) {
+        if (!destinationFolder.exists()) {
 
-            throw new IllegalArgumentException("Output file (" + destinationFile.getParent() + ") not found.");
+            throw new IllegalArgumentException("Output folder (" + destinationFolder + ") not found.");
 
         }
 
