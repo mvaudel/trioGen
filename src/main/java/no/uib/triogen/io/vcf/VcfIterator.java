@@ -1,6 +1,7 @@
 package no.uib.triogen.io.vcf;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.HashMap;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.utils.SimpleSemaphore;
@@ -11,6 +12,10 @@ import no.uib.triogen.utils.SimpleSemaphore;
  */
 public class VcfIterator implements AutoCloseable {
 
+    /**
+     * The name of the file being iterated.
+     */
+    private final String fileName;
     /**
      * The file reader.
      */
@@ -40,6 +45,10 @@ public class VcfIterator implements AutoCloseable {
      */
     private int nVariants = 0;
     /**
+     * The last progress.
+     */
+    private int progress = 0;
+    /**
      * The maximum number of variants to process, ignored if negative.
      */
     public static int nLimit = -1;
@@ -54,6 +63,7 @@ public class VcfIterator implements AutoCloseable {
     ) {
 
         // Set up reader
+        fileName = file.getName();
         reader = SimpleFileReader.getFileReader(file);
 
         // Move to header
@@ -93,6 +103,16 @@ public class VcfIterator implements AutoCloseable {
 
         String line = endOfFile ? null : reader.readLine();
         endOfFile = line == null || nLimit != -1 && ++nVariants > nLimit;
+
+        if (nVariants >= progress + 100000) {
+
+            progress = nVariants;
+
+            System.out.println(
+                    Instant.now() + " - " + fileName + " " + nVariants + " variants processed"
+            );
+
+        }
 
         mutex.release();
 
@@ -143,14 +163,12 @@ public class VcfIterator implements AutoCloseable {
 
     /**
      * Returns the number of variants read from the file.
-     * 
+     *
      * @return the number of variants read from the file
      */
     public int getnVariants() {
         return nVariants;
     }
-    
-    
 
     @Override
     public void close() {
