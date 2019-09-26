@@ -14,7 +14,6 @@ public enum ExtractTransmissionOptions {
     vcf("v", "vcf", "The vcf file.", true, true),
     trio("f", "fam", "The trio identifiers file.", true, true),
     out("o", "out", "File where to write the scores.", true, true),
-    threads("n", "threads", "Number of threads to run, default is 1.", false, true),
     timeOut("z", "timeOut", "Number of days before timeout, default is 365.", false, true),
     test("t", "test", "If present, runs only one variant in one trio.", false, false);
 

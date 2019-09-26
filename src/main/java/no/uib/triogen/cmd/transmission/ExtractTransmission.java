@@ -64,15 +64,7 @@ public class ExtractTransmission {
 
             ExtractTransmissionOptionsBean bean = new ExtractTransmissionOptionsBean(commandLine);
 
-            if (!bean.test) {
-
-                run(bean);
-
-            } else {
-
-                runTest(bean);
-
-            }
+            run(bean);
 
         } catch (Throwable e) {
 
@@ -89,13 +81,17 @@ public class ExtractTransmission {
 
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
 
-        Extractor extractor = new Extractor(bean.vcfFile, childToParentMap);
+        Extractor extractor = new Extractor(
+                bean.vcfFile, 
+                childToParentMap, 
+                bean.destinationFile
+        );
 
         try {
 
             extractor.run(
-                    bean.nThreads,
-                    bean.timeOut
+                    bean.timeOut,
+                    bean.test
             );
 
         } catch (Throwable e) {
@@ -103,58 +99,6 @@ public class ExtractTransmission {
             e.printStackTrace();
 
         }
-    }
-
-    /**
-     * Runs a test.
-     *
-     * @param bean the bean of command line parameters
-     */
-    private static void runTest(ExtractTransmissionOptionsBean bean) {
-
-        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
-
-        SimpleFileWriter writer = new SimpleFileWriter(bean.destinationFile, true);
-
-        VcfIterator vcfIterator = new VcfIterator(bean.vcfFile);
-
-        long start = Instant.now().getEpochSecond();
-
-        for (int i = 0; i < 1000; i++) {
-
-            VcfLine vcfLine = vcfIterator.next();
-            vcfLine.parse();
-
-            StringBuilder sb = new StringBuilder();
-            sb.append(vcfLine.getVariantDescription());
-
-            for (String childId : childToParentMap.children) {
-
-                String motherId = childToParentMap.getMother(childId);
-                String fatherId = childToParentMap.getFather(childId);
-
-                int genotypeChild = vcfLine.getGenotype(childId);
-                int genotypeMother = vcfLine.getGenotype(motherId);
-                int genotypeFather = vcfLine.getGenotype(fatherId);
-
-                int total = genotypeChild + genotypeMother + genotypeFather;
-
-                sb.append(Integer.toString(total));
-
-            }
-            
-            writer.writeLine(sb.toString());
-            
-        }
-        
-        long end = Instant.now().getEpochSecond();
-        long duration = end - start;
-
-        System.out.println("Read and wrote 1000 lines in " + duration + " seconds.");
-
-        vcfIterator.close();
-        writer.close();
-
     }
 
     /**

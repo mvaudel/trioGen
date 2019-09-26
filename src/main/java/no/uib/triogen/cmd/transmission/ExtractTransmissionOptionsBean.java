@@ -23,10 +23,6 @@ public class ExtractTransmissionOptionsBean {
      */
     public final File destinationFile;
     /**
-     * The number of threads to use.
-     */
-    public int nThreads = 1;
-    /**
      * The number of days before timeout.
      */
     public int timeOut = 365;
@@ -84,34 +80,6 @@ public class ExtractTransmissionOptionsBean {
 
             throw new IllegalArgumentException("Output file (" + destinationFile.getParent() + ") not found.");
 
-        }
-
-        // Number of threads
-        if (aLine.hasOption(ExtractTransmissionOptions.threads.opt)) {
-
-            String argString = aLine.getOptionValue(ExtractTransmissionOptions.threads.opt);
-
-            try {
-
-                nThreads = Integer.parseInt(argString);
-
-                if (nThreads <= 0) {
-
-                    throw new IllegalArgumentException(
-                            "Input for number of threads must be a positive number."
-                    );
-
-                }
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-
-                throw new IllegalArgumentException(
-                        "Input for number of threads could not be parsed as a number: " + argString + "."
-                );
-
-            }
         }
 
         // Timeout

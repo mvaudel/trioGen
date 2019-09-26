@@ -35,6 +35,14 @@ public class VcfIterator implements AutoCloseable {
      * Mutex for the access to the file.
      */
     private final SimpleSemaphore mutex = new SimpleSemaphore(1);
+    /**
+     * The number of variants processed.
+     */
+    private int nVariants = 0;
+    /**
+     * The maximum number of variants to process, ignored if negative.
+     */
+    public static int nLimit = -1;
 
     /**
      * Constructor.
@@ -82,7 +90,7 @@ public class VcfIterator implements AutoCloseable {
         mutex.acquire();
 
         String line = endOfFile ? null : reader.readLine();
-        endOfFile = line == null;
+        endOfFile = line == null || ++nVariants > nLimit;
 
         mutex.release();
 
@@ -128,6 +136,17 @@ public class VcfIterator implements AutoCloseable {
         return sampleMap.get(sampleId);
 
     }
+
+    /**
+     * Returns the number of variants read from the file.
+     * 
+     * @return the number of variants read from the file
+     */
+    public int getnVariants() {
+        return nVariants;
+    }
+    
+    
 
     @Override
     public void close() {
