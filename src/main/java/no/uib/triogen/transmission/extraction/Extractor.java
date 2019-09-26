@@ -1,8 +1,7 @@
 package no.uib.triogen.transmission.extraction;
 
 import htsjdk.variant.vcf.VCFFileReader;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -19,9 +18,9 @@ import no.uib.triogen.model.family.ChildToParentMap;
 public class Extractor {
 
     /**
-     * The vcf file reader to use for iteration.
+     * The vcf file to use.
      */
-    private final VCFFileReader vcfFileReader;
+    private final File vcfFile;
     /**
      * The map of trios.
      */
@@ -30,15 +29,15 @@ public class Extractor {
     /**
      * Constructors.
      *
-     * @param vcfFileReader the vcf file reader to use for iteration
+     * @param vcfFile the vcf file to use
      * @param childToParentMap the map of trios
      */
     public Extractor(
-            VCFFileReader vcfFileReader,
+            File vcfFile,
             ChildToParentMap childToParentMap
     ) {
 
-        this.vcfFileReader = vcfFileReader;
+        this.vcfFile = vcfFile;
         this.childToParentMap = childToParentMap;
 
     }
@@ -55,7 +54,7 @@ public class Extractor {
      */
     public void run(int nThreads, int timeOutDays) throws InterruptedException, TimeoutException {
 
-        VcfIterator iterator = new VcfIterator(vcfFileReader);
+        VcfIterator iterator = new VcfIterator(vcfFile);
 
         try {
 

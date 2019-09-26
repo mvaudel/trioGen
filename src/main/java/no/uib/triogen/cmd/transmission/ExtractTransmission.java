@@ -14,6 +14,8 @@ import no.uib.triogen.TrioGen;
 import static no.uib.triogen.io.Utils.lineSeparator;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.flat.readers.SimpleGzReader;
+import no.uib.triogen.io.vcf.VcfIterator;
+import no.uib.triogen.io.vcf.VcfLine;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.transmission.extraction.Extractor;
 import org.apache.commons.cli.CommandLine;
@@ -85,10 +87,9 @@ public class ExtractTransmission {
      */
     private static void run(ExtractTransmissionOptionsBean bean) {
 
-        VCFFileReader vcfFileReader = new VCFFileReader(bean.vcfFile);
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
 
-        Extractor extractor = new Extractor(vcfFileReader, childToParentMap);
+        Extractor extractor = new Extractor(bean.vcfFile, childToParentMap);
 
         try {
 
@@ -113,143 +114,45 @@ public class ExtractTransmission {
 
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
 
-        String childId = childToParentMap.children.first();
-        String motherId = childToParentMap.getMother(childId);
-        String fatherId = childToParentMap.getFather(childId);
-
-        SimpleGzReader reader = new SimpleGzReader(bean.vcfFile);
-
         SimpleFileWriter writer = new SimpleFileWriter(bean.destinationFile, true);
 
-        VCFFileReader vcfFileReader = new VCFFileReader(bean.vcfFile);
-        CloseableIterator<VariantContext> iterator = vcfFileReader.iterator();
-
-        VariantContext variantContext;
-
-        while ((variantContext = iterator.next()) != null) {
-
-            ArrayList<String> alleles = variantContext.getAlleles().stream()
-                    .map(
-                            allele -> allele.getBaseString()
-                    )
-                    .collect(
-                            Collectors.toCollection(ArrayList::new)
-                    );
-
-            if (!alleles.get(0).equals(alleles.get(1))) {
-
-                Genotype childGenotype = variantContext.getGenotype(childId);
-                List<Allele> childAlleles = childGenotype.getAlleles();
-                String childAllelesString = childAlleles.stream()
-                        .map(
-                                allele -> allele.getBaseString()
-                        )
-                        .collect(
-                                Collectors.joining(",")
-                        );
-
-                Genotype motherGenotype = variantContext.getGenotype(motherId);
-                List<Allele> motherAlleles = motherGenotype.getAlleles();
-                String motherAllelesString = motherAlleles.stream()
-                        .map(
-                                allele -> allele.getBaseString()
-                        )
-                        .collect(
-                                Collectors.joining(",")
-                        );
-
-                Genotype fatherGenotype = variantContext.getGenotype(fatherId);
-                List<Allele> fatherAlleles = fatherGenotype.getAlleles();
-                String fatherAllelesString = fatherAlleles.stream()
-                        .map(
-                                allele -> allele.getBaseString()
-                        )
-                        .collect(
-                                Collectors.joining(",")
-                        );
-
-                if (!motherAllelesString.equals(childAllelesString)) {
-
-                    System.out.println("Id: " + variantContext.getID());
-                    System.out.println("Ref: " + alleles.get(0) + " Alt: " + alleles.get(1));
-                    System.out.println("Mother genotype: " + motherAllelesString);
-                    System.out.println("Child genotype: " + childAllelesString);
-                    System.out.println("Father genotype: " + fatherAllelesString);
-
-                    break;
-                }
-            }
-        }
-
-        String line = reader.readLine();
-        writer.writeLine(line);
+        VcfIterator vcfIterator = new VcfIterator(bean.vcfFile);
 
         long start = Instant.now().getEpochSecond();
 
-        int nVariants = 0;
+        for (int i = 0; i < 1000; i++) {
 
-        while ((line = reader.readLine()) != null && ++nVariants < 1000) {
+            VcfLine vcfLine = vcfIterator.next();
+            vcfLine.parse();
 
-            writer.writeLine(line);
+            StringBuilder sb = new StringBuilder();
+            sb.append(vcfLine.getVariantDescription());
 
+            for (String childId : childToParentMap.children) {
+
+                String motherId = childToParentMap.getMother(childId);
+                String fatherId = childToParentMap.getFather(childId);
+
+                int genotypeChild = vcfLine.getGenotype(childId);
+                int genotypeMother = vcfLine.getGenotype(motherId);
+                int genotypeFather = vcfLine.getGenotype(fatherId);
+
+                int total = genotypeChild + genotypeMother + genotypeFather;
+
+                sb.append(Integer.toString(total));
+
+            }
+            
+            writer.writeLine(sb.toString());
+            
         }
-
+        
         long end = Instant.now().getEpochSecond();
         long duration = end - start;
 
-        System.out.println("Read and wrote " + nVariants + " lines in " + duration + " seconds.");
+        System.out.println("Read and wrote 1000 lines in " + duration + " seconds.");
 
-        start = Instant.now().getEpochSecond();
-
-        nVariants = 0;
-
-        line = reader.readLine();
-        while ((line = reader.readLine()) != null && ++nVariants < 1000) {
-
-        }
-
-        end = Instant.now().getEpochSecond();
-        duration = end - start;
-
-        System.out.println("Read " + nVariants + " lines in " + duration + " seconds.");
-
-        start = Instant.now().getEpochSecond();
-
-        nVariants = 0;
-
-        while ((variantContext = iterator.next()) != null && ++nVariants < 1000) {
-        }
-
-        end = Instant.now().getEpochSecond();
-        duration = end - start;
-
-        System.out.println("Read " + nVariants + " variants in " + duration + " seconds.");
-
-        start = Instant.now().getEpochSecond();
-
-        nVariants = 0;
-
-        while ((variantContext = iterator.next()) != null && ++nVariants < 1000) {
-
-            for (String tempChildId : childToParentMap.children) {
-
-                String tempMotherId = childToParentMap.getMother(tempChildId);
-                String tempFatherId = childToParentMap.getFather(tempChildId);
-
-                variantContext.getGenotype(tempChildId);
-                variantContext.getGenotype(tempMotherId);
-                variantContext.getGenotype(tempFatherId);
-
-            }
-        }
-
-        end = Instant.now().getEpochSecond();
-        duration = end - start;
-
-        System.out.println("Processed " + nVariants + " variants in " + duration + " seconds.");
-        
-        iterator.close();
-        reader.close();
+        vcfIterator.close();
         writer.close();
 
     }

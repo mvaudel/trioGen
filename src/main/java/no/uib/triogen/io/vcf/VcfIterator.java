@@ -1,64 +1,138 @@
 package no.uib.triogen.io.vcf;
 
-import htsjdk.samtools.util.CloseableIterator;
-import htsjdk.variant.variantcontext.VariantContext;
-import htsjdk.variant.vcf.VCFFileReader;
+import java.io.File;
+import java.util.HashMap;
+import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
- * This class iterates all the variants of a vcf file.
  *
  * @author Marc Vaudel
  */
-public class VcfIterator {
-    
+public class VcfIterator implements AutoCloseable {
+
     /**
-     * The vcf file reader to use for iteration.
+     * The file reader.
      */
-    private final VCFFileReader vcfFileReader;
-    
-    private final CloseableIterator<VariantContext> iterator;
+    private final SimpleFileReader reader;
     /**
-     * Mutex to query the reader.
+     * Sample to column index map.
+     */
+    private final HashMap<String, Integer> sampleMap;
+    /**
+     * Number of variant columns.
+     */
+    private int nVariantColumns;
+    /**
+     * Number of samples.
+     */
+    private int nSamples;
+    /**
+     * Boolean indicating whether the end of file was reached.
+     */
+    private boolean endOfFile = false;
+    /**
+     * Mutex for the access to the file.
      */
     private final SimpleSemaphore mutex = new SimpleSemaphore(1);
 
     /**
      * Constructor.
-     * 
-     * @param vcfFileReader the vcf file reader to use for iteration
+     *
+     * @param file the file.
      */
-    public VcfIterator(VCFFileReader vcfFileReader) {
-        
-        this.vcfFileReader = vcfFileReader;
-        iterator = vcfFileReader.iterator();
-        
+    public VcfIterator(File file) {
+
+        // Set up reader
+        reader = SimpleFileReader.getFileReader(file);
+
+        // Move to header
+        String line;
+        while ((line = reader.readLine()) != null && line.charAt(1) == '#') {
+
+        }
+        if (line == null) {
+
+            throw new IllegalArgumentException("Reached end of file when looking for the header.");
+
+        }
+
+        // Parse header
+        String[] lineSplit = line.split("\t");
+
+        nVariantColumns = lineSplit[8].equals("FORMAT") ? 9 : 8;
+        nSamples = lineSplit.length - nVariantColumns;
+        sampleMap = new HashMap<>(nSamples);
+
+        for (int i = nVariantColumns; i < lineSplit.length; i++) {
+
+            sampleMap.put(lineSplit[i], i - nVariantColumns);
+
+        }
     }
-    
+
     /**
-     * Returns the next variant context.
-     * 
-     * @return the next variant context
+     * Reads the next line as unparsed VCF line. Returns null if reading the
+     * file is finished.
+     *
+     * @return the next line
      */
-    public VariantContext next() {
-        
+    public VcfLine next() {
+
         mutex.acquire();
-        
-        VariantContext variantContext = iterator.next();
-        
+
+        String line = endOfFile ? null : reader.readLine();
+        endOfFile = line == null;
+
         mutex.release();
-        
-        return variantContext;
-        
+
+        return line == null ? null
+                : new VcfLine(
+                        this,
+                        line
+                );
+
     }
-    
+
     /**
-     * Closes the iterator
+     * Returns the number of variant columns.
+     *
+     * @return the number of variant columns
      */
-    public void close() {
-        
-        iterator.close();
-        
+    public int getnVariantColumns() {
+
+        return nVariantColumns;
+
     }
-    
+
+    /**
+     * Returns the number of samples.
+     *
+     * @return the number of samples
+     */
+    public int getnSamples() {
+
+        return nSamples;
+
+    }
+
+    /**
+     * Returns the column index for a sample.
+     *
+     * @param sampleId the id of the sample
+     *
+     * @return the column index for a sample
+     */
+    public int getSampleIndex(String sampleId) {
+
+        return sampleMap.get(sampleId);
+
+    }
+
+    @Override
+    public void close() {
+
+        reader.close();
+
+    }
 }

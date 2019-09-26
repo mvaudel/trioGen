@@ -23,12 +23,6 @@ public class ExtractorRunnable implements Runnable {
     @Override
     public void run() {
         
-        VariantContext variantContext;
         
-        while ((variantContext = iterator.next()) != null) {
-            
-            
-            
-        }
     }
 }
