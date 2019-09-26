@@ -60,12 +60,11 @@ public class VcfLine {
                 if (nSeparators >= vcfIterator.getnVariantColumns()) {
 
                     indexes[nSeparators - vcfIterator.getnVariantColumns()] = index;
+                }
+                if (nSeparators == 8) {
 
-                    if (nSeparators == vcfIterator.getnVariantColumns()) {
+                    variantDescriptionLength = index;
 
-                        variantDescriptionLength = index;
-
-                    }
                 }
             }
         }

@@ -24,7 +24,7 @@ public class VcfParsingTest extends TestCase {
             vcfLine.parse();
 
             String variantDescription = vcfLine.getVariantDescription();
-            Assert.assertTrue(variantDescription.equals("1	123	rs123	A	B	12	bla	bla	bla"));
+            Assert.assertTrue(variantDescription.equals("1	123	rs123	A	B	12	bla	bla"));
             
             int genotype = vcfLine.getGenotype("SAMPLE1");
             Assert.assertTrue(genotype == 0);
