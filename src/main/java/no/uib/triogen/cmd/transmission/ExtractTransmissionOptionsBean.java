@@ -60,7 +60,7 @@ public class ExtractTransmissionOptionsBean {
 
         if (!vcfFile.exists()) {
 
-            throw new IllegalArgumentException("Vcf file (" + vcfFile.getParent() + ") not found.");
+            throw new IllegalArgumentException("Vcf file (" + vcfFile + ") not found.");
 
         }
 
@@ -71,7 +71,7 @@ public class ExtractTransmissionOptionsBean {
 
         if (!trioFile.exists()) {
 
-            throw new IllegalArgumentException("Trio file (" + trioFile.getParent() + ") not found.");
+            throw new IllegalArgumentException("Trio file (" + trioFile + ") not found.");
 
         }
 
@@ -80,7 +80,7 @@ public class ExtractTransmissionOptionsBean {
 
         destinationFile = new File(filePath);
 
-        if (!destinationFile.exists()) {
+        if (!destinationFile.getParentFile().exists()) {
 
             throw new IllegalArgumentException("Output file (" + destinationFile.getParent() + ") not found.");
 
