@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
 import static no.uib.triogen.io.Utils.lineSeparator;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.flat.readers.SimpleGzReader;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.transmission.extraction.Extractor;
@@ -115,12 +116,14 @@ public class ExtractTransmission {
         String childId = childToParentMap.children.first();
         String motherId = childToParentMap.getMother(childId);
         String fatherId = childToParentMap.getFather(childId);
-        
+
         SimpleGzReader reader = new SimpleGzReader(bean.vcfFile);
+
+        SimpleFileWriter writer = new SimpleFileWriter(bean.destinationFile, true);
 
         VCFFileReader vcfFileReader = new VCFFileReader(bean.vcfFile);
         CloseableIterator<VariantContext> iterator = vcfFileReader.iterator();
-        
+
         VariantContext variantContext;
 
         while ((variantContext = iterator.next()) != null) {
@@ -178,16 +181,35 @@ public class ExtractTransmission {
             }
         }
 
+        String line = reader.readLine();
+        writer.writeLine(line);
+
         long start = Instant.now().getEpochSecond();
 
         int nVariants = 0;
 
-        String line = reader.readLine();
         while ((line = reader.readLine()) != null && ++nVariants < 1000) {
+
+            writer.writeLine(line);
+
         }
 
         long end = Instant.now().getEpochSecond();
         long duration = end - start;
+
+        System.out.println("Read and wrote " + nVariants + " lines in " + duration + " seconds.");
+
+        start = Instant.now().getEpochSecond();
+
+        nVariants = 0;
+
+        line = reader.readLine();
+        while ((line = reader.readLine()) != null && ++nVariants < 1000) {
+
+        }
+
+        end = Instant.now().getEpochSecond();
+        duration = end - start;
 
         System.out.println("Read " + nVariants + " lines in " + duration + " seconds.");
 
@@ -225,6 +247,10 @@ public class ExtractTransmission {
         duration = end - start;
 
         System.out.println("Processed " + nVariants + " variants in " + duration + " seconds.");
+        
+        iterator.close();
+        reader.close();
+        writer.close();
 
     }
 
