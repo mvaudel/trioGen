@@ -69,6 +69,12 @@ public class Extractor {
             boolean test
     ) throws InterruptedException, TimeoutException {
 
+        if (test) {
+
+            System.out.println("*** TEST MODE ***");
+
+        }
+        
         System.out.println(
                 Instant.now() + " - Starting processing of " + vcfFile.getAbsolutePath()
         );
