@@ -164,12 +164,12 @@ public class ExtractorRunnable implements Runnable {
 
         StringBuilder sb = new StringBuilder(2 * hs.length - 1);
 
-        sb.append(hs[i][0]);
+        sb.append(hs[0][i]);
 
         for (int j = 1; j < hs.length; j++) {
 
             sb.append('\t')
-                    .append(hs[i][j]);
+                    .append(hs[j][i]);
 
         }
 
