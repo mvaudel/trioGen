@@ -87,19 +87,19 @@ public class Extractor {
         );
         SimpleFileWriter h1Writer = new SimpleFileWriter(
                 new File(destinationStem + "_h1.gz"),
-                test
+                true
         );
         SimpleFileWriter h2Writer = new SimpleFileWriter(
                 new File(destinationStem + "_h2.gz"),
-                test
+                true
         );
         SimpleFileWriter h3Writer = new SimpleFileWriter(
                 new File(destinationStem + "_h3.gz"),
-                test
+                true
         );
         SimpleFileWriter h4Writer = new SimpleFileWriter(
                 new File(destinationStem + "_h4.gz"),
-                test
+                true
         );
 
         String header = String.join(
