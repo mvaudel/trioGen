@@ -102,16 +102,21 @@ public class VcfIterator implements AutoCloseable {
         mutex.acquire();
 
         String line = endOfFile ? null : reader.readLine();
-        endOfFile = line == null || nLimit != -1 && ++nVariants > nLimit;
+        endOfFile = line == null || nLimit != -1 && nVariants > nLimit;
 
-        if (nVariants >= progress + 100000) {
+        if (!endOfFile) {
 
-            progress = nVariants;
+            nVariants++;
 
-            System.out.println(
-                    Instant.now() + " - " + fileName + " " + nVariants + " variants processed"
-            );
+            if (nVariants >= progress + 100000) {
 
+                progress = nVariants;
+
+                System.out.println(
+                        Instant.now() + " - " + fileName + " " + nVariants + " variants processed"
+                );
+
+            }
         }
 
         mutex.release();
