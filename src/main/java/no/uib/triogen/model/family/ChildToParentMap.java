@@ -71,7 +71,8 @@ public class ChildToParentMap {
 
             if (lineSplit.length != 3) {
 
-                throw new IllegalArgumentException("3 elements expected, " + lineSplit.length + " found in line " + lineNumber + " of file " + trioFile + ".\n" + line);
+                throw new IllegalArgumentException("3 elements expected, " + lineSplit.length + " found in line " + lineNumber + " of file " + trioFile + ".\n"
+                        + "Plase make sure that the file contains the identifiers of the children, father, and mother, in that order. Columns should be space-separated.\n" + line);
 
             }
 
