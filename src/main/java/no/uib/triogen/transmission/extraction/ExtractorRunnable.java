@@ -1,5 +1,8 @@
 package no.uib.triogen.transmission.extraction;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.vcf.VcfIterator;
@@ -131,22 +134,24 @@ public class ExtractorRunnable implements Runnable {
             VcfLine vcfLine
     ) {
 
-        int[][] h = childToParentMap.children.stream()
+        HashMap<String, int[]> hMap = childToParentMap.children.stream()
                 .parallel()
-                .map(
-                        childId -> getH(
-                                vcfLine,
-                                childId
+                .collect(
+                        Collectors.toMap(
+                                childId -> childId,
+                                childId -> getH(
+                                        vcfLine,
+                                        childId
+                                ),
+                                (a, b) -> a,
+                                HashMap::new
                         )
-                )
-                .toArray(
-                        int[][]::new
                 );
 
         return IntStream.range(0, 4)
                 .parallel()
                 .mapToObj(
-                        i -> aggregateH(h, i)
+                        i -> aggregateH(hMap, i)
                 )
                 .toArray(
                         String[]::new
@@ -163,18 +168,20 @@ public class ExtractorRunnable implements Runnable {
      * @return a tab separated string of the hs of all kids
      */
     private String aggregateH(
-            int[][] hs, 
+            HashMap<String, int[]> hMap,
             int i
     ) {
 
-        StringBuilder sb = new StringBuilder(2 * hs.length - 1);
+        StringBuilder sb = new StringBuilder(2 * hMap.size() - 1);
 
-        sb.append(hs[0][i]);
+        Iterator<String> childIt = childToParentMap.children.iterator();
 
-        for (int j = 1; j < hs.length; j++) {
+        sb.append(hMap.get(childIt.next())[i]);
+
+        while (childIt.hasNext()) {
 
             sb.append('\t')
-                    .append(hs[j][i]);
+                    .append(hMap.get(childIt.next())[i]);
 
         }
 
@@ -192,7 +199,7 @@ public class ExtractorRunnable implements Runnable {
      * @return an array containing h1, h2, h3, and h4
      */
     private int[] getH(
-            VcfLine vcfLine, 
+            VcfLine vcfLine,
             String childId
     ) {
 

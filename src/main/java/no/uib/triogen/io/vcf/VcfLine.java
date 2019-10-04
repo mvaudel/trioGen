@@ -22,9 +22,9 @@ public class VcfLine {
      */
     private int[] indexes;
     /**
-     * The length of the variant description.
+     * The variant description.
      */
-    private int variantDescriptionLength = -1;
+    private String variantDescription;
 
     /**
      * Constructor.
@@ -63,7 +63,7 @@ public class VcfLine {
                 }
                 if (nSeparators == 8) {
 
-                    variantDescriptionLength = index;
+                    variantDescription = line.substring(0, index);
 
                 }
             }
@@ -77,7 +77,7 @@ public class VcfLine {
      */
     public String getVariantDescription() {
 
-        return line.substring(0, variantDescriptionLength);
+        return variantDescription;
 
     }
 

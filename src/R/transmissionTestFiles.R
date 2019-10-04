@@ -89,7 +89,7 @@ print("Iterating allele combinations")
 
 trioDFs <- list()
 
-for (variantI in 1:1000) {
+for (variantI in 1:100) {
     
     variantId <- paste0("rs", variantI)
     
@@ -112,7 +112,7 @@ for (variantI in 1:1000) {
     
     triadI <- 1
     
-    for (rep in 1:300) {
+    for (rep in 1:10) {
         
         for (childGenotype in childGenotypes) {
             

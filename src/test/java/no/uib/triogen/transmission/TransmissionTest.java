@@ -60,7 +60,7 @@ public class TransmissionTest extends TestCase {
 
             throw new IllegalArgumentException("Output for h3 not found.");
 
-        }
+    }
 
         HashMap<String, HashMap<String, Integer>> h3Map = getH(h3File);
 
@@ -223,22 +223,22 @@ public class TransmissionTest extends TestCase {
         String line = reader.readLine();
 
         String[] lineSplit = line.split(" ");
-        Assert.assertTrue(lineSplit[0].equals("variant"));
-        Assert.assertTrue(lineSplit[1].equals("childId"));
-        Assert.assertTrue(lineSplit[10].equals("h1"));
-        Assert.assertTrue(lineSplit[11].equals("h2"));
-        Assert.assertTrue(lineSplit[12].equals("h3"));
-        Assert.assertTrue(lineSplit[13].equals("h4"));
+        Assert.assertTrue(lineSplit[2].equals("variant"));
+        Assert.assertTrue(lineSplit[3].equals("childId"));
+        Assert.assertTrue(lineSplit[12].equals("h1"));
+        Assert.assertTrue(lineSplit[13].equals("h2"));
+        Assert.assertTrue(lineSplit[14].equals("h3"));
+        Assert.assertTrue(lineSplit[15].equals("h4"));
 
         while ((line = reader.readLine()) != null) {
 
             lineSplit = line.split(" ");
-            String variantId = lineSplit[0];
-            String childid = lineSplit[1];
-            int h1 = Integer.parseInt(lineSplit[10]);
-            int h2 = Integer.parseInt(lineSplit[11]);
-            int h3 = Integer.parseInt(lineSplit[12]);
-            int h4 = Integer.parseInt(lineSplit[13]);
+            String variantId = lineSplit[2];
+            String childid = lineSplit[3];
+            int h1 = Integer.parseInt(lineSplit[12]);
+            int h2 = Integer.parseInt(lineSplit[13]);
+            int h3 = Integer.parseInt(lineSplit[14]);
+            int h4 = Integer.parseInt(lineSplit[15]);
 
             HashMap<String, int[]> variantMap = result.get(variantId);
 
