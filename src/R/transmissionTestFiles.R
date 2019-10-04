@@ -85,18 +85,11 @@ getAlleleCode <- function(genotype) {
 
 # Make a data frame with all alleles combinations and expected results
 
-trioDF <- data.frame(
-    variant = character(),
-    childId = character(),
-    motherId = character(),
-    fatherId = character(),
-    childGenotype = character(),
-    motherGenotype = character(),
-    fatherGenotype = character(),
-    stringsAsFactors = F
-)
+print("Iterating allele combinations")
 
-for (variantI in 1:20) {
+trioDFs <- list()
+
+for (variantI in 1:1000) {
     
     variantId <- paste0("rs", variantI)
     
@@ -119,36 +112,58 @@ for (variantI in 1:20) {
     
     triadI <- 1
     
-    for (childGenotype in childGenotypes) {
+    for (rep in 1:300) {
         
-        for (motherGenotype in motherGenotypes) {
+        for (childGenotype in childGenotypes) {
             
-            for (fatherGenotype in fatherGenotypes) {
+            for (motherGenotype in motherGenotypes) {
                 
-                newLine <- data.frame(
-                    variant = variantId,
-                    childId = paste0("CHILD", triadI),
-                    motherId = paste0("MOTHER", triadI),
-                    fatherId = paste0("FATHER", triadI),
-                    childGenotype = childGenotype,
-                    motherGenotype = motherGenotype,
-                    fatherGenotype = fatherGenotype,
-                    stringsAsFactors = F
-                )
-                
-                trioDF <- rbind(trioDF, newLine)
-                
-                triadI <- triadI + 1
-                
+                for (fatherGenotype in fatherGenotypes) {
+                    
+                    newLine <- data.frame(
+                        variantI = variantI,
+                        triadI = triadI,
+                        variant = variantId,
+                        childId = paste0("CHILD", triadI),
+                        motherId = paste0("MOTHER", triadI),
+                        fatherId = paste0("FATHER", triadI),
+                        childGenotype = childGenotype,
+                        motherGenotype = motherGenotype,
+                        fatherGenotype = fatherGenotype,
+                        stringsAsFactors = F
+                    )
+                    
+                    trioDFs[[length(trioDFs) + 1]] <- newLine
+                    
+                    triadI <- triadI + 1
+                    
+                }
             }
         }
+    }
+    
+    if (variantI %% 10 == 0) {
+        
+        print(paste(variantI, "/ 100"))
+        
     }
 }
 
 
+print("Merging")
+
+trioDF <- do.call("rbind", trioDFs)
+
+
 # Ground truth results
 
+print("Computing h")
+
 trioDF %>%
+    arrange(
+        variantI,
+        triadI
+    ) %>%
     mutate(
         motherGenotypeCode = getGenotypeCode(motherGenotype),
         fatherGenotypeCode = getGenotypeCode(fatherGenotype),
@@ -170,6 +185,8 @@ write.table(
 
 # Export test files
 
+print("Exporting")
+
 trioLines <- c(
     "child father mother",
     unique(
@@ -180,59 +197,72 @@ trioLines <- c(
     )
 )
 writeLines(trioLines, "src/main/resources/transmission/test_trio")
-
+    
 snpIds <- unique(trioDF$variant)
 motherIds <- unique(trioDF$motherId)
 fatherIds <- unique(trioDF$fatherId)
 childIds <- unique(trioDF$childId)
 
-lines <- character(length(snpIds) + 3)
-lines[1] <- "## Transmission test file"
-lines[2] <- "## "
-lines[3] <- paste(c("#CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", childIds, motherIds, fatherIds), collapse = "\t")
+write(
+    "## Transmission test file",
+    file = "src/main/resources/transmission/test_transmission.vcf",
+    append = F
+)
+write(
+    paste0("## ", Sys.time()),
+    file = "src/main/resources/transmission/test_transmission.vcf",
+    append = T
+)
+write(
+    "## ",
+    file = "src/main/resources/transmission/test_transmission.vcf",
+    append = T
+)
+write(
+    paste(c("#CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", childIds, motherIds, fatherIds), collapse = "\t"),
+    file = "src/main/resources/transmission/test_transmission.vcf",
+    append = T
+)
 
 for (i in 1:length(snpIds)) {
     
-    pass = ifelse(i %% 2 == 0, "PASS", "")
+    pass <- ifelse(i %% 2 == 0, "PASS", "")
     
-    newLine <- c("1", i, snpIds[i], "A", "B", "OK", pass, "bla")
+    header <- c(
+        "1", i, snpIds[i], "A", "B", "OK", pass, "bla"
+    )
     
-    for (id in childIds) {
-        
-        newLine <- c(newLine, 
-                     paste0(
-                         trioDF$childGenotype[trioDF$variant == snpIds[i] & trioDF$childId == id],
-                         ":0.05,0.05:0.1:0.9025,0.095,0.0025"
-                     )
+    variantDF <- trioDF %>% 
+        filter(
+            variant == snpIds[i]
         )
+    
+    childGenotype <- paste0(
+        variantDF$childGenotype,
+        ":0.05,0.05:0.1:0.9025,0.095,0.0025"
+    )
+    
+    motherGenotype <- paste0(
+        variantDF$motherGenotype,
+        ":0.123,0.123:0.12:0.5,0.0956,0.002"
+    )
+    
+    fatherGenotype <- paste0(
+        variantDF$fatherGenotype,
+        ":0.1,0.12:0.145:0.1234,0.8,0.1234"
+    )
+    
+    write(
+        paste(c(header, childGenotype, motherGenotype, fatherGenotype), collapse = "\t"),
+        file = "src/main/resources/transmission/test_transmission.vcf",
+        append = T
+    )
+    
+    if (i %% 10 == 0) {
+        
+        print(paste(i, "/ 100"))
         
     }
-    
-    for (id in motherIds) {
-        
-        newLine <- c(newLine, 
-                     paste0(
-                         trioDF$motherGenotype[trioDF$variant == snpIds[i] & trioDF$motherId == id],
-                         ":0.123,0.123:0.12:0.5,0.0956,0.002"
-                     )
-        )
-        
-    }
-    
-    for (id in fatherIds) {
-        
-        newLine <- c(newLine, 
-                     paste0(
-                         trioDF$fatherGenotype[trioDF$variant == snpIds[i] & trioDF$fatherId == id],
-                         ":0.1,0.12:0.145:0.1234,0.8,0.1234"
-                     )
-        )
-        
-    }
-    
-    lines[3 + i] <- paste(newLine, collapse = "\t")
     
 }
-
-writeLines(lines, "src/main/resources/transmission/test_transmission.vcf")
 
