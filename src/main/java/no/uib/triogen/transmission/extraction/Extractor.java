@@ -34,7 +34,7 @@ public class Extractor {
     /**
      * The number of variants to process at the same time.
      */
-    private final int nThreads = 1;
+    private final int nThreads = 8;
 
     /**
      * Constructors.
