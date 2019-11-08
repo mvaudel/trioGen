@@ -9,6 +9,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.triogen.io.genotypes.GenotypesFileType;
+import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 
@@ -20,9 +22,13 @@ import no.uib.triogen.model.family.ChildToParentMap;
 public class Extractor {
 
     /**
-     * The vcf file to use.
+     * The file containing the genotypes.
      */
-    private final File vcfFile;
+    private final File genotypesFile;
+    /**
+     * The type of genotype file.
+     */
+    private final GenotypesFileType genotypesFileType;
     /**
      * The stem of the files to export the result to.
      */
@@ -39,17 +45,20 @@ public class Extractor {
     /**
      * Constructors.
      *
-     * @param vcfFile the vcf file to use
+     * @param genotypesFile the vcf file to use
+     * @param genotypesFileType the type of genotypes file
      * @param childToParentMap the map of trios
      * @param destinationStem the stem of the files to export the result to
      */
     public Extractor(
-            File vcfFile,
+            File genotypesFile,
+            GenotypesFileType genotypesFileType,
             ChildToParentMap childToParentMap,
             String destinationStem
     ) {
 
-        this.vcfFile = vcfFile;
+        this.genotypesFile = genotypesFile;
+        this.genotypesFileType = genotypesFileType;
         this.childToParentMap = childToParentMap;
         this.destinationStem = destinationStem;
 
@@ -76,15 +85,11 @@ public class Extractor {
 
         }
 
-        System.out.println(
-                Instant.now() + " - Starting processing of " + vcfFile.getAbsolutePath()
-        );
+        System.out.println(Instant.now() + " - Extraction of H from " + genotypesFile.getAbsolutePath());
 
         long start = Instant.now().getEpochSecond();
 
-        CustomVcfIterator iterator = new CustomVcfIterator(
-                vcfFile
-        );
+        VariantIterator iterator = GenotypesFileType.getVariantIterator(genotypesFile, genotypesFileType);
         SimpleFileWriter h1Writer = new SimpleFileWriter(
                 new File(destinationStem + "_h1.gz"),
                 true

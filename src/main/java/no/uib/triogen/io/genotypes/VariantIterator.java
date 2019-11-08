@@ -5,7 +5,7 @@ package no.uib.triogen.io.genotypes;
  *
  * @author Marc Vaudel
  */
-public interface VariantIterator extends AutoCloseable {
+public interface VariantIterator {
     
     /**
      * Read the next variant. Returns null if there is no next variant.
@@ -13,5 +13,17 @@ public interface VariantIterator extends AutoCloseable {
      * @return a GenotypesProvider for the next variant
      */
     public GenotypesProvider next();
+
+    /**
+     * Returns the number of variants read from the file.
+     *
+     * @return the number of variants read from the file
+     */
+    public int getnVariants();
+
+    /**
+     * Closes the iterator.
+     */
+    public void close();
 
 }

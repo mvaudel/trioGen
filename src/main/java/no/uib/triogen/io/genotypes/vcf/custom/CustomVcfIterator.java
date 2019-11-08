@@ -99,11 +99,11 @@ public class CustomVcfIterator implements VariantIterator {
         mutex.acquire();
 
         String line = endOfFile ? null : reader.readLine();
-        endOfFile = line == null || nLimit != -1 && nVariants > nLimit;
+        endOfFile = line == null || nLimit != -1 && ++nVariants >= nLimit;
+
+        mutex.release();
 
         if (!endOfFile) {
-
-            nVariants++;
 
             if (nVariants >= progress + 100000) {
 
@@ -115,8 +115,6 @@ public class CustomVcfIterator implements VariantIterator {
 
             }
         }
-
-        mutex.release();
 
         return line == null ? null
                 : new VcfLine(
@@ -163,11 +161,7 @@ public class CustomVcfIterator implements VariantIterator {
 
     }
 
-    /**
-     * Returns the number of variants read from the file.
-     *
-     * @return the number of variants read from the file
-     */
+    @Override
     public int getnVariants() {
         return nVariants;
     }

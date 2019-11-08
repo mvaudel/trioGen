@@ -186,11 +186,11 @@ public class TransmissionTest extends TestCase {
 
             String[] lineSplit = line.split("\t");
 
-            String snpId = lineSplit[2];
+            String snpId = lineSplit[0];
 
-            HashMap<String, Integer> snpMap = new HashMap<>(header.length - 9);
+            HashMap<String, Integer> snpMap = new HashMap<>(header.length - 1);
 
-            for (int i = 8; i < lineSplit.length; i++) {
+            for (int i = 1; i < lineSplit.length; i++) {
 
                 String id = header[i];
                 int h = Integer.parseInt(lineSplit[i]);

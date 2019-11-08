@@ -88,28 +88,28 @@ public class ExtractorRunnable implements Runnable {
                 h1Writer.writeLine(
                         String.join(
                                 "\t",
-                                genotypesProvider.getVariantDescription(),
+                                genotypesProvider.getVariantID(),
                                 genotypes[0]
                         )
                 );
                 h2Writer.writeLine(
                         String.join(
                                 "\t",
-                                genotypesProvider.getVariantDescription(),
+                                genotypesProvider.getVariantID(),
                                 genotypes[1]
                         )
                 );
                 h3Writer.writeLine(
                         String.join(
                                 "\t",
-                                genotypesProvider.getVariantDescription(),
+                                genotypesProvider.getVariantID(),
                                 genotypes[2]
                         )
                 );
                 h4Writer.writeLine(
                         String.join(
                                 "\t",
-                                genotypesProvider.getVariantDescription(),
+                                genotypesProvider.getVariantID(),
                                 genotypes[3]
                         )
                 );

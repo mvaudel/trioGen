@@ -24,9 +24,9 @@ public class VcfLine implements GenotypesProvider {
      */
     private int[] indexes;
     /**
-     * The variant description.
+     * The variant id.
      */
-    private String variantDescription;
+    private String variantId;
 
     /**
      * Constructor.
@@ -50,6 +50,7 @@ public class VcfLine implements GenotypesProvider {
         indexes = new int[vcfIterator.getnSamples()];
 
         int nSeparators = 0;
+        int index1 = 0;
 
         for (int index = 0; index < line.length(); index++) {
 
@@ -61,19 +62,23 @@ public class VcfLine implements GenotypesProvider {
 
                     indexes[nSeparators - vcfIterator.getnVariantColumns()] = index;
                 }
-                if (nSeparators == 8) {
+                if (nSeparators == 2) {
 
-                    variantDescription = line.substring(0, index);
+                    index1 = index;
 
+                } else if (nSeparators == 3) {
+                    
+                    variantId = line.substring(index1 + 1, index);
+                
                 }
             }
         }
     }
 
     @Override
-    public String getVariantDescription() {
+    public String getVariantID() {
 
-        return variantDescription;
+        return variantId;
 
     }
 
@@ -93,21 +98,21 @@ public class VcfLine implements GenotypesProvider {
         if (separator != '|' && separator != '/') {
 
             throw new IllegalArgumentException(
-                    "Unexpected separator in genotype " + line.substring(index1, index2 + 1) + " for variant " + getVariantDescription() + " in sample " + sampleId + "."
+                    "Unexpected separator in genotype " + line.substring(index1, index2 + 1) + " for variant " + getVariantID()+ " in sample " + sampleId + "."
             );
 
         }
         if (allele1 != '0' && allele1 != '1') {
 
             throw new IllegalArgumentException(
-                    "Unexpected allele1 in genotype " + line.substring(index1, index2 + 1) + " for variant " + getVariantDescription() + " in sample " + sampleId + "."
+                    "Unexpected allele1 in genotype " + line.substring(index1, index2 + 1) + " for variant " + getVariantID() + " in sample " + sampleId + "."
             );
 
         }
         if (allele2 != '0' && allele2 != '1') {
 
             throw new IllegalArgumentException(
-                    "Unexpected allel2 in genotype " + line.substring(index1, index2 + 1) + " for variant " + getVariantDescription() + " in sample " + sampleId + "."
+                    "Unexpected allel2 in genotype " + line.substring(index1, index2 + 1) + " for variant " + getVariantID() + " in sample " + sampleId + "."
             );
 
         }

@@ -1,6 +1,7 @@
 package no.uib.triogen.cmd.transmission;
 
 import java.io.File;
+import no.uib.triogen.io.genotypes.GenotypesFileType;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -11,9 +12,13 @@ import org.apache.commons.cli.CommandLine;
 public class ExtractTransmissionOptionsBean {
 
     /**
-     * the vcf file.
+     * The genotypes file.
      */
-    public final File vcfFile;
+    public final File genotypesFile;
+    /**
+     * The genotypes file type.
+     */
+    public GenotypesFileType genotypesFileType = GenotypesFileType.sangerVCF;
     /**
      * the trio file.
      */
@@ -51,18 +56,39 @@ public class ExtractTransmissionOptionsBean {
             }
         }
 
-        // Vcf
-        String filePath = aLine.getOptionValue(ExtractTransmissionOptions.vcf.opt);
+        // The genotypes file
+        String filePath = aLine.getOptionValue(ExtractTransmissionOptions.geno.opt);
 
-        vcfFile = new File(filePath);
+        genotypesFile = new File(filePath);
 
-        if (!vcfFile.exists()) {
+        if (!genotypesFile.exists()) {
 
-            throw new IllegalArgumentException("Vcf file (" + vcfFile + ") not found.");
+            throw new IllegalArgumentException("Vcf file (" + genotypesFile + ") not found.");
 
         }
 
-        // trio
+        // The genotypes file type
+        if (aLine.hasOption(ExtractTransmissionOptions.genoFormat.opt)) {
+
+            String option = aLine.getOptionValue(ExtractTransmissionOptions.genoFormat.opt);
+            int genoFormat;
+
+            try {
+
+                genoFormat = Integer.valueOf(option);
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                throw new IllegalArgumentException("Genotype file formant could not be parsed. Found: " + option + ". Expected input: " + GenotypesFileType.getCommandLineOptions() + ".");
+
+            }
+
+            genotypesFileType = GenotypesFileType.getGenotypesFileType(genoFormat);
+
+        }
+
+        // the trio file
         filePath = aLine.getOptionValue(ExtractTransmissionOptions.trio.opt);
 
         trioFile = new File(filePath);
@@ -73,11 +99,11 @@ public class ExtractTransmissionOptionsBean {
 
         }
 
-        // Output
+        // The output file
         filePath = aLine.getOptionValue(ExtractTransmissionOptions.out.opt);
 
         destinationStem = filePath;
-        
+
         File destinationFolder = (new File(destinationStem)).getParentFile();
 
         if (!destinationFolder.exists()) {

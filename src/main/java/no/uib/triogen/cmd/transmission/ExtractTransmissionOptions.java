@@ -3,6 +3,7 @@ package no.uib.triogen.cmd.transmission;
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.Utils.lineSeparator;
+import no.uib.triogen.io.genotypes.GenotypesFileType;
 
 /**
  * Enum of the different options
@@ -11,7 +12,8 @@ import static no.uib.triogen.io.Utils.lineSeparator;
  */
 public enum ExtractTransmissionOptions {
 
-    vcf("g", "geno", "The vcf file. Can be gzipped or not.", true, true),
+    geno("g", "geno", "The genotypes file.", true, true),
+    genoFormat("gf", "genoFormat", "The genotypes file format. " + GenotypesFileType.getCommandLineOptions(), true, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not.", true, true),
     out("o", "out", "The stem of the files where to write the scores.", true, true),
     timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true),

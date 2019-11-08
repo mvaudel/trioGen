@@ -78,7 +78,8 @@ public class ExtractTransmission {
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
 
         Extractor extractor = new Extractor(
-                bean.vcfFile, 
+                bean.genotypesFile, 
+                bean.genotypesFileType,
                 childToParentMap, 
                 bean.destinationStem
         );

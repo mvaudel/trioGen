@@ -24,10 +24,10 @@ public interface GenotypesProvider {
     );
 
     /**
-     * Returns the description of the variant.
-     *
-     * @return the description of the variant
+     * Returns the id of the variant.
+     
+     * @return the id of the variant
      */
-    public String getVariantDescription();
+    public String getVariantID();
 
 }
