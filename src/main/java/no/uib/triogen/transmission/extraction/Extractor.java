@@ -9,7 +9,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import no.uib.triogen.io.flat.SimpleFileWriter;
-import no.uib.triogen.io.vcf.VcfIterator;
+import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 
 /**
@@ -82,7 +82,7 @@ public class Extractor {
 
         long start = Instant.now().getEpochSecond();
 
-        VcfIterator iterator = new VcfIterator(
+        CustomVcfIterator iterator = new CustomVcfIterator(
                 vcfFile
         );
         SimpleFileWriter h1Writer = new SimpleFileWriter(

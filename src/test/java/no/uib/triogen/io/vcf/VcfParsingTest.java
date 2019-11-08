@@ -1,5 +1,7 @@
 package no.uib.triogen.io.vcf;
 
+import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
+import no.uib.triogen.io.genotypes.vcf.custom.VcfLine;
 import java.io.File;
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -14,7 +16,7 @@ public class VcfParsingTest extends TestCase {
         
         File vcfFile = new File("src/test/resources/vcf/example/test.vcf");
 
-        VcfIterator iterator = new VcfIterator(vcfFile);
+        CustomVcfIterator iterator = new CustomVcfIterator(vcfFile);
 
         int nLines = 0;
 

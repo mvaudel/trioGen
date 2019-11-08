@@ -3,7 +3,7 @@ package no.uib.triogen.cmd.transmission;
 import java.io.PrintWriter;
 import no.uib.triogen.TrioGen;
 import static no.uib.triogen.io.Utils.lineSeparator;
-import no.uib.triogen.io.vcf.VcfIterator;
+import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.transmission.extraction.Extractor;
 import org.apache.commons.cli.CommandLine;
@@ -54,7 +54,7 @@ public class ExtractTransmission {
             
             if (bean.test) {
                 
-                VcfIterator.nLimit = 1000;
+                CustomVcfIterator.nLimit = 1000;
                 
             }
 

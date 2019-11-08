@@ -1,16 +1,18 @@
-package no.uib.triogen.io.vcf;
+package no.uib.triogen.io.genotypes.vcf.custom;
 
 import java.io.File;
 import java.time.Instant;
 import java.util.HashMap;
 import no.uib.triogen.io.flat.SimpleFileReader;
+import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
+ * This iterator iterates through a vcf file formatted according to the output of the Sanger imputation server.
  *
  * @author Marc Vaudel
  */
-public class VcfIterator implements AutoCloseable {
+public class CustomVcfIterator implements VariantIterator {
 
     /**
      * The name of the file being iterated.
@@ -58,7 +60,7 @@ public class VcfIterator implements AutoCloseable {
      *
      * @param file the file.
      */
-    public VcfIterator(
+    public CustomVcfIterator(
             File file
     ) {
 
@@ -91,12 +93,7 @@ public class VcfIterator implements AutoCloseable {
         }
     }
 
-    /**
-     * Reads the next line as unparsed VCF line. Returns null if reading the
-     * file is finished.
-     *
-     * @return the next line
-     */
+    @Override
     public VcfLine next() {
 
         mutex.acquire();

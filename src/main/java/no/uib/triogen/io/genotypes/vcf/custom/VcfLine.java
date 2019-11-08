@@ -1,16 +1,18 @@
-package no.uib.triogen.io.vcf;
+package no.uib.triogen.io.genotypes.vcf.custom;
+
+import no.uib.triogen.io.genotypes.GenotypesProvider;
 
 /**
  * This class contains and parses a line in the vcf file.
  *
  * @author Marc Vaudel
  */
-public class VcfLine {
+public class VcfLine implements GenotypesProvider {
 
     /**
      * The iterator used to parse the file.
      */
-    private final VcfIterator vcfIterator;
+    private final CustomVcfIterator vcfIterator;
 
     /**
      * The line as read from the file.
@@ -33,7 +35,7 @@ public class VcfLine {
      * @param line the line as read from the file
      */
     public VcfLine(
-            VcfIterator vcfIterator,
+            CustomVcfIterator vcfIterator,
             String line
     ) {
 
@@ -42,9 +44,7 @@ public class VcfLine {
 
     }
 
-    /**
-     * Parses the line.
-     */
+    @Override
     public void parse() {
 
         indexes = new int[vcfIterator.getnSamples()];
@@ -70,24 +70,14 @@ public class VcfLine {
         }
     }
 
-    /**
-     * Returns the description of the variant.
-     *
-     * @return the description of the variant
-     */
+    @Override
     public String getVariantDescription() {
 
         return variantDescription;
 
     }
 
-    /**
-     * Returns the genotype for a given sample. 0: 0|0 1: 1|0 2: 0|1 3: 1|1
-     *
-     * @param sampleId the id of the sample
-     *
-     * @return the genotype
-     */
+    @Override
     public int getGenotype(
             String sampleId
     ) {

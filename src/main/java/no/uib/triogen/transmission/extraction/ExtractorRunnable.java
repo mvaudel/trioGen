@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import no.uib.triogen.io.flat.SimpleFileWriter;
-import no.uib.triogen.io.vcf.VcfIterator;
-import no.uib.triogen.io.vcf.VcfLine;
+import no.uib.triogen.io.genotypes.GenotypesProvider;
+import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 
 /**
@@ -17,9 +17,9 @@ import no.uib.triogen.model.family.ChildToParentMap;
 public class ExtractorRunnable implements Runnable {
 
     /**
-     * The vcf file iterator.
+     * The variants iterator.
      */
-    private final VcfIterator iterator;
+    private final VariantIterator iterator;
     /**
      * The h1 writer.
      */
@@ -48,7 +48,7 @@ public class ExtractorRunnable implements Runnable {
     /**
      * Constructor.
      *
-     * @param iterator the vcf file iterator
+     * @param iterator the variants iterator
      * @param childToParentMap the child to parent map
      * @param h1Writer the h1 writer
      * @param h2Writer the h2 writer
@@ -56,7 +56,7 @@ public class ExtractorRunnable implements Runnable {
      * @param h4Writer the h4 writer
      */
     public ExtractorRunnable(
-            VcfIterator iterator,
+            VariantIterator iterator,
             ChildToParentMap childToParentMap,
             SimpleFileWriter h1Writer,
             SimpleFileWriter h2Writer,
@@ -78,38 +78,38 @@ public class ExtractorRunnable implements Runnable {
 
         try {
 
-            VcfLine vcfLine;
-            while ((vcfLine = iterator.next()) != null && !canceled) {
+            GenotypesProvider genotypesProvider;
+            while ((genotypesProvider = iterator.next()) != null && !canceled) {
 
-                vcfLine.parse();
+                genotypesProvider.parse();
 
-                String[] genotypes = processVcfLine(vcfLine);
+                String[] genotypes = extractHs(genotypesProvider);
 
                 h1Writer.writeLine(
                         String.join(
                                 "\t",
-                                vcfLine.getVariantDescription(),
+                                genotypesProvider.getVariantDescription(),
                                 genotypes[0]
                         )
                 );
                 h2Writer.writeLine(
                         String.join(
                                 "\t",
-                                vcfLine.getVariantDescription(),
+                                genotypesProvider.getVariantDescription(),
                                 genotypes[1]
                         )
                 );
                 h3Writer.writeLine(
                         String.join(
                                 "\t",
-                                vcfLine.getVariantDescription(),
+                                genotypesProvider.getVariantDescription(),
                                 genotypes[2]
                         )
                 );
                 h4Writer.writeLine(
                         String.join(
                                 "\t",
-                                vcfLine.getVariantDescription(),
+                                genotypesProvider.getVariantDescription(),
                                 genotypes[3]
                         )
                 );
@@ -124,14 +124,14 @@ public class ExtractorRunnable implements Runnable {
     }
 
     /**
-     * Processes a vcf line and returns an array of the different hs to export.
+     * Extracts the Hs from the given genotypes.
      *
-     * @param vcfLine the vcf line
+     * @param genotypesProvider a genotypes provider
      *
      * @return an array of the different hs to export
      */
-    private String[] processVcfLine(
-            VcfLine vcfLine
+    private String[] extractHs(
+            GenotypesProvider genotypesProvider
     ) {
 
         HashMap<String, int[]> hMap = childToParentMap.children.stream()
@@ -140,7 +140,7 @@ public class ExtractorRunnable implements Runnable {
                         Collectors.toMap(
                                 childId -> childId,
                                 childId -> getH(
-                                        vcfLine,
+                                        genotypesProvider,
                                         childId
                                 ),
                                 (a, b) -> a,
@@ -190,8 +190,7 @@ public class ExtractorRunnable implements Runnable {
     }
 
     /**
-     * Returns an array containing h1, h2, h3, and h4 for a given child for a
-     * given line in the vcf.
+     * Returns an array containing h1, h2, h3, and h4 for a given child using the given genotypes provider.
      *
      * @param vcfLine the vcf line
      * @param childId the child id
@@ -199,16 +198,16 @@ public class ExtractorRunnable implements Runnable {
      * @return an array containing h1, h2, h3, and h4
      */
     private int[] getH(
-            VcfLine vcfLine,
+            GenotypesProvider genotypesProvider,
             String childId
     ) {
 
         String motherId = childToParentMap.getMother(childId);
         String fatherId = childToParentMap.getFather(childId);
 
-        int genotypeKid = vcfLine.getGenotype(childId);
-        int genotypeMother = vcfLine.getGenotype(motherId);
-        int genotypeFather = vcfLine.getGenotype(fatherId);
+        int genotypeKid = genotypesProvider.getGenotype(childId);
+        int genotypeMother = genotypesProvider.getGenotype(motherId);
+        int genotypeFather = genotypesProvider.getGenotype(fatherId);
 
         int nAltMother = genotypeMother >= 2 ? genotypeMother - 1 : genotypeMother;
         int nAltFather = genotypeFather >= 2 ? genotypeFather - 1 : genotypeFather;
