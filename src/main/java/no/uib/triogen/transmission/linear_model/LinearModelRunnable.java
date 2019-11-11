@@ -1,11 +1,13 @@
 package no.uib.triogen.transmission.linear_model;
 
+import java.util.Arrays;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.geno.TransmissionModel;
 import no.uib.triogen.model.pheno.PhenotypesHandler;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 /**
  * Runnable for the linear model association.
@@ -65,10 +67,13 @@ public class LinearModelRunnable implements Runnable {
             GenotypesProvider genotypesProvider;
             while ((genotypesProvider = iterator.next()) != null && !canceled) {
 
-                
-
+                Arrays.stream(TransmissionModel.values())
+                        .parallel()
+                        .forEach(
+                                transmissionModel -> runLinearModel(transmissionModel)
+                        );
             }
-            
+
         } catch (Throwable t) {
 
             canceled = true;
@@ -76,12 +81,15 @@ public class LinearModelRunnable implements Runnable {
 
         }
     }
-    
+
     public void runLinearModel(
             TransmissionModel transmissionModel
     ) {
+
+        SimpleRegression simpleRegression = new SimpleRegression();
         
         
+
     }
 
 }

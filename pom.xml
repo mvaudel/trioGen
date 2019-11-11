@@ -202,6 +202,7 @@
 
     <!-- Repositories -->
     <repositories>
+ 
     </repositories>
 
 
@@ -222,9 +223,8 @@
         
         <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math</artifactId>
+            <artifactId>commons-math3</artifactId>
             <version>3.6.1</version>
-            <type>jar</type>
         </dependency>
         
         <dependency>
