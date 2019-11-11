@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
+import no.uib.triogen.io.Utils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.VariantIterator;
@@ -125,7 +126,7 @@ public class LinearModelComputer {
         );
 
         String header = String.join(
-                "\t",
+                Utils.separator,
                 "phenotype",
                 "variantID",
                 "association",

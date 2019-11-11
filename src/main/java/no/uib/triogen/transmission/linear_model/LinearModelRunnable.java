@@ -1,6 +1,8 @@
 package no.uib.triogen.transmission.linear_model;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import no.uib.triogen.io.Utils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.genotypes.VariantIterator;
@@ -64,13 +66,17 @@ public class LinearModelRunnable implements Runnable {
 
         try {
 
-            GenotypesProvider genotypesProvider;
-            while ((genotypesProvider = iterator.next()) != null && !canceled) {
+            GenotypesProvider tempGenotypesProvider;
+            while ((tempGenotypesProvider = iterator.next()) != null && !canceled) {
 
+                GenotypesProvider genotypesProvider = tempGenotypesProvider;
                 Arrays.stream(TransmissionModel.values())
                         .parallel()
                         .forEach(
-                                transmissionModel -> runLinearModel(transmissionModel)
+                                transmissionModel -> runLinearModel(
+                                        transmissionModel,
+                                        genotypesProvider
+                                )
                         );
             }
 
@@ -82,14 +88,77 @@ public class LinearModelRunnable implements Runnable {
         }
     }
 
+    /**
+     * Runs the linear model for the given transmission model.
+     * 
+     * @param transmissionModel the model to use for transmission
+     * @param genotypesProvider the genotypes provider
+     */
     public void runLinearModel(
-            TransmissionModel transmissionModel
+            TransmissionModel transmissionModel,
+            GenotypesProvider genotypesProvider
+    ) {
+
+        phenotypesHandler.phenoMap.entrySet()
+                .parallelStream()
+                .forEach(
+                        entry -> runLinearModel(
+                                transmissionModel,
+                                genotypesProvider,
+                                entry.getKey(),
+                                entry.getValue()
+                        )
+                );
+    }
+
+    /**
+     * Runs the linear model for a transmission model and a phenotype name.
+     * 
+     * @param transmissionModel the model to use for transmission
+     * @param genotypesProvider the genotypes provider
+     * @param phenoName the phenotype name
+     * @param phenotypes the phenotype values
+     */
+    public void runLinearModel(
+            TransmissionModel transmissionModel,
+            GenotypesProvider genotypesProvider,
+            String phenoName,
+            HashMap<String, Double> phenotypes
     ) {
 
         SimpleRegression simpleRegression = new SimpleRegression();
-        
-        
+
+        for (String childId : childToParentMap.children) {
+
+            double[] hs = genotypesProvider.getH(childToParentMap, childId);
+            double x = transmissionModel.getRegressionValue(hs);
+
+            if (!Double.isNaN(x) && !Double.isInfinite(x)) {
+
+                double y = phenotypes.get(childId);
+
+                if (!Double.isNaN(y) && !Double.isInfinite(y)) {
+
+                    simpleRegression.addData(x, y);
+
+                }
+            }
+        }
+
+        String line = String.join(
+                Utils.separator,
+                phenoName,
+                genotypesProvider.getVariantID(),
+                transmissionModel.name(),
+                transmissionModel.h,
+                Double.toString(simpleRegression.getSlope()),
+                Double.toString(simpleRegression.getSlopeStdErr()),
+                Double.toString(simpleRegression.getSlopeConfidenceInterval()),
+                Double.toString(simpleRegression.getRSquare()),
+                Double.toString(simpleRegression.getSignificance()),
+                Long.toString(simpleRegression.getN())
+        );
+        outputWriter.writeLine(line);
 
     }
-
 }
