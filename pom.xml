@@ -221,12 +221,19 @@
         </dependency>
         
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math</artifactId>
+            <version>3.6.1</version>
+            <type>jar</type>
+        </dependency>
+        
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.10</version>
             <scope>test</scope>
             <type>jar</type>
         </dependency>
-    
+        
     </dependencies>
 </project>

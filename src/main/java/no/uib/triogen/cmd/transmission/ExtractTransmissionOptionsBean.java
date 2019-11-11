@@ -28,6 +28,10 @@ public class ExtractTransmissionOptionsBean {
      */
     public final String destinationStem;
     /**
+     * The number of variants to process simultaneously.
+     */
+    public int nVariants = 8;
+    /**
      * The number of days before timeout.
      */
     public int timeOut = 365;
@@ -110,6 +114,34 @@ public class ExtractTransmissionOptionsBean {
 
             throw new IllegalArgumentException("Output folder (" + destinationFolder + ") not found.");
 
+        }
+
+        // Number of variants to chew in parallel
+        if (aLine.hasOption(ExtractTransmissionOptions.nVariants.opt)) {
+
+            String argString = aLine.getOptionValue(ExtractTransmissionOptions.nVariants.opt);
+
+            try {
+
+                nVariants = Integer.parseInt(argString);
+
+                if (timeOut <= 0) {
+
+                    throw new IllegalArgumentException(
+                            "Input for number of variants must be a strictly positive number."
+                    );
+
+                }
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                throw new IllegalArgumentException(
+                        "Input for number of variants could not be parsed as a number: " + argString + "."
+                );
+
+            }
         }
 
         // Timeout

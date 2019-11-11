@@ -11,7 +11,6 @@ import java.util.stream.IntStream;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.VariantIterator;
-import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 
 /**
@@ -38,29 +37,32 @@ public class Extractor {
      */
     private final ChildToParentMap childToParentMap;
     /**
-     * The number of variants to process at the same time.
+     * The number of variants to process in parallel.
      */
-    private final int nThreads = 8;
+    private final int nVariants;
 
     /**
-     * Constructors.
+     * Constructor.
      *
-     * @param genotypesFile the vcf file to use
+     * @param genotypesFile the file containing the genotypes
      * @param genotypesFileType the type of genotypes file
      * @param childToParentMap the map of trios
      * @param destinationStem the stem of the files to export the result to
+     * @param nVariants the number of variants to process in parallel
      */
     public Extractor(
             File genotypesFile,
             GenotypesFileType genotypesFileType,
             ChildToParentMap childToParentMap,
-            String destinationStem
+            String destinationStem,
+            int nVariants
     ) {
 
         this.genotypesFile = genotypesFile;
         this.genotypesFileType = genotypesFileType;
         this.childToParentMap = childToParentMap;
         this.destinationStem = destinationStem;
+        this.nVariants = nVariants;
 
     }
 
@@ -122,9 +124,9 @@ public class Extractor {
 
         try {
 
-            ExecutorService pool = Executors.newFixedThreadPool(nThreads);
+            ExecutorService pool = Executors.newFixedThreadPool(nVariants);
 
-            IntStream.range(0, nThreads)
+            IntStream.range(0, nVariants)
                     .mapToObj(
                             i -> new ExtractorRunnable(
                                     iterator,

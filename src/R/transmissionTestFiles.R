@@ -10,6 +10,9 @@
 
 library(tidyr)
 library(dplyr)
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 11))
 
 # Parameters
 
@@ -155,7 +158,7 @@ print("Merging")
 trioDF <- do.call("rbind", trioDFs)
 
 
-# Ground truth results
+# Ground truth results for extraction
 
 print("Computing h")
 
@@ -176,14 +179,15 @@ trioDF %>%
 
 write.table(
     x = trioDF,
-    file = "src/main/resources/transmission/ground_truth.txt",
+    file = "src/main/resources/transmission/ground_truth_extraction.txt",
     row.names = F,
     col.names = T,
-    quote = F
+    quote = F,
+    sep = "\t"
 )
 
 
-# Export test files
+# Export extraction test files
 
 print("Exporting")
 
@@ -197,7 +201,7 @@ trioLines <- c(
     )
 )
 writeLines(trioLines, "src/main/resources/transmission/test_trio")
-    
+
 snpIds <- unique(trioDF$variant)
 motherIds <- unique(trioDF$motherId)
 fatherIds <- unique(trioDF$fatherId)
@@ -263,6 +267,127 @@ for (i in 1:length(snpIds)) {
         print(paste(i, "/ 100"))
         
     }
+}
+
+
+# Ground truth results for linear model
+
+print("Computing phenos")
+
+phenoDF <- trioDF %>%
+    filter(
+        variantI == 1
+    ) %>%
+    select(
+        childId, h1, h2, h3, h4
+    )
+
+lmDF <- data.frame(
+    h = character(4*4),
+    pheno = character(4*4),
+    beta = numeric(4*4),
+    se = numeric(4*4),
+    stringsAsFactors = F
+)
+
+for (i in 1:4) {
+    
+    hColumn <- paste0("h", i)
+    
+    noise = rnorm(
+        n = nrow(phenoDF),
+        mean = 0,
+        sd = 0.1
+    )
+    
+    phenoColumn <- paste0("pheno", i)
+    
+    phenoDF[[phenoColumn]] <- phenoDF[[hColumn]] + noise
     
 }
+
+for (i in 1:4) {
+    for (j in 1:4) {
+        
+        hColumn <- paste0("h", i)
+        phenoColumn <- paste0("pheno", j)
+        
+        lmResults <- lm(
+            formula = as.formula(paste(phenoColumn, "~", hColumn)),
+            data = phenoDF
+        )
+        
+        lmSummary <- summary(lmResults)
+        
+        plot <- ggplot(
+            data = phenoDF
+        ) +
+            geom_point(
+                mapping = aes(
+                    x = !!sym(hColumn),
+                    y = !!sym(phenoColumn)
+                ),
+                alpha = 0.2
+            ) +
+            geom_smooth(
+                mapping = aes(
+                    x = !!sym(hColumn),
+                    y = !!sym(phenoColumn)
+                ),
+                method = "lm",
+                col = "blue3",
+                fill = "blue3",
+                linetype = "dotted"
+            ) +
+            geom_abline(
+                intercept = lmSummary$coefficients[1, 1],
+                slope = lmSummary$coefficients[2, 1],
+                col = "red",
+                linetype = "dashed"
+            )
+        
+        png(
+            filename = paste0("src/main/resources/transmission/", hColumn, "_", phenoColumn, ".png"),
+            width = 800,
+            height = 600
+        )
+        plot(plot)
+        dummy <- dev.off()
+        
+        k <- (i-1)*4 + j
+        lmDF$h[k] <- hColumn
+        lmDF$pheno[k] <- phenoColumn
+        lmDF$beta[k] <- lmSummary$coefficients[2, 1]
+        lmDF$se[k] <- lmSummary$coefficients[2, 2]
+        
+    }
+}
+
+phenoDF <- phenoDF %>%
+    select(
+        childId, starts_with("pheno")
+    )
+
+write.table(
+    x = phenoDF,
+    file = "src/main/resources/transmission/phenos_linear_model.txt",
+    row.names = F,
+    col.names = T,
+    quote = F,
+    sep = "\t"
+)
+
+write.table(
+    x = lmDF,
+    file = "src/main/resources/transmission/ground_truth_linear_model.txt",
+    row.names = F,
+    col.names = T,
+    quote = F,
+    sep = "\t"
+)
+
+
+
+
+
 

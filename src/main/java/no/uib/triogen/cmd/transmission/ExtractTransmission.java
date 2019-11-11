@@ -12,7 +12,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
 /**
- * This class writes the summary for a given score on a set of vcf files.
+ * Extracts h matrices from the vcf files.
  *
  * @author Marc Vaudel
  */
@@ -81,7 +81,8 @@ public class ExtractTransmission {
                 bean.genotypesFile, 
                 bean.genotypesFileType,
                 childToParentMap, 
-                bean.destinationStem
+                bean.destinationStem,
+                bean.nVariants
         );
 
         try {
