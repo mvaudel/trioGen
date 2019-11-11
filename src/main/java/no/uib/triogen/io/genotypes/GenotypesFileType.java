@@ -3,7 +3,6 @@ package no.uib.triogen.io.genotypes;
 import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.io.genotypes.vcf.generic.VcfIterator;
 

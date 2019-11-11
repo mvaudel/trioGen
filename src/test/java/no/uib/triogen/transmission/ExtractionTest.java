@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import no.uib.triogen.cmd.transmission.ExtractTransmission;
 import no.uib.triogen.io.Utils;
 import no.uib.triogen.io.flat.SimpleFileReader;
+import no.uib.triogen.io.genotypes.GenotypesFileType;
 
 /**
  * This file runs the transmission command on test files and compares the
@@ -27,14 +28,15 @@ public class ExtractionTest extends TestCase {
 
         String[] args = new String[]{
             "-g", "src/test/resources/transmission/test_transmission.vcf",
+            "-gf", Integer.toString(GenotypesFileType.sangerVCF.index),
             "-f", "src/test/resources/transmission/test_trio",
-            "-o", "src/test/resources/transmission/result.gz"
+            "-o", "src/test/resources/transmission/result"
         };
         ExtractTransmission.main(
                 args
         );
 
-        File h1File = new File("src/test/resources/transmission/result.gz_h1.gz");
+        File h1File = new File("src/test/resources/transmission/result_h1.gz");
 
         if (!h1File.exists()) {
 
@@ -44,7 +46,7 @@ public class ExtractionTest extends TestCase {
 
         HashMap<String, HashMap<String, Integer>> h1Map = getH(h1File);
 
-        File h2File = new File("src/test/resources/transmission/result.gz_h2.gz");
+        File h2File = new File("src/test/resources/transmission/result_h2.gz");
 
         if (!h2File.exists()) {
 
@@ -54,17 +56,17 @@ public class ExtractionTest extends TestCase {
 
         HashMap<String, HashMap<String, Integer>> h2Map = getH(h2File);
 
-        File h3File = new File("src/test/resources/transmission/result.gz_h3.gz");
+        File h3File = new File("src/test/resources/transmission/result_h3.gz");
 
         if (!h3File.exists()) {
 
             throw new IllegalArgumentException("Output for h3 not found.");
 
-    }
+        }
 
         HashMap<String, HashMap<String, Integer>> h3Map = getH(h3File);
 
-        File h4File = new File("src/test/resources/transmission/result.gz_h4.gz");
+        File h4File = new File("src/test/resources/transmission/result_h4.gz");
 
         if (!h4File.exists()) {
 
@@ -256,5 +258,4 @@ public class ExtractionTest extends TestCase {
         return result;
 
     }
-
 }

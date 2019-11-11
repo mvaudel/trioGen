@@ -1,6 +1,7 @@
 package no.uib.triogen.io.genotypes.vcf.custom;
 
 import no.uib.triogen.io.genotypes.GenotypesProvider;
+import no.uib.triogen.model.family.ChildToParentMap;
 
 /**
  * This class contains and parses a line in the vcf file.
@@ -137,5 +138,30 @@ public class VcfLine implements GenotypesProvider {
             return 3;
 
         }
+    }
+    
+    @Override
+    public double[] getH(
+            ChildToParentMap childToParentMap,
+            String childId
+    ) {
+
+        String motherId = childToParentMap.getMother(childId);
+        String fatherId = childToParentMap.getFather(childId);
+
+        int genotypeKid = getGenotype(childId);
+        int genotypeMother = getGenotype(motherId);
+        int genotypeFather = getGenotype(fatherId);
+
+        int nAltMother = genotypeMother >= 2 ? genotypeMother - 1 : genotypeMother;
+        int nAltFather = genotypeFather >= 2 ? genotypeFather - 1 : genotypeFather;
+
+        double h3 = genotypeKid == 0 || genotypeKid == 2 ? 0.0 : 1.0;
+        double h1 = genotypeKid == 0 || genotypeKid == 1 ? 0.0 : 1.0;
+        double h2 = nAltMother - h1;
+        double h4 = nAltFather - h3;
+
+        return new double[]{h1, h2, h3, h4};
+
     }
 }

@@ -6,6 +6,7 @@ import htsjdk.variant.variantcontext.GenotypesContext;
 import htsjdk.variant.variantcontext.VariantContext;
 import java.util.List;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
+import no.uib.triogen.model.family.ChildToParentMap;
 
 /**
  * The VcfVariant provides genotypes for a variant from a vcf file.
@@ -89,6 +90,31 @@ public class VcfVariant implements GenotypesProvider {
         
         return variantContext.getID();
         
+    }
+    
+    @Override
+    public double[] getH(
+            ChildToParentMap childToParentMap,
+            String childId
+    ) {
+
+        String motherId = childToParentMap.getMother(childId);
+        String fatherId = childToParentMap.getFather(childId);
+
+        int genotypeKid = getGenotype(childId);
+        int genotypeMother = getGenotype(motherId);
+        int genotypeFather = getGenotype(fatherId);
+
+        int nAltMother = genotypeMother >= 2 ? genotypeMother - 1 : genotypeMother;
+        int nAltFather = genotypeFather >= 2 ? genotypeFather - 1 : genotypeFather;
+
+        double h3 = genotypeKid == 0 || genotypeKid == 2 ? 0.0 : 1.0;
+        double h1 = genotypeKid == 0 || genotypeKid == 1 ? 0.0 : 1.0;
+        double h2 = nAltMother - h1;
+        double h4 = nAltFather - h3;
+
+        return new double[]{h1, h2, h3, h4};
+
     }
 
 }

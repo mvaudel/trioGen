@@ -108,10 +108,10 @@ public class Extractor {
                 new File(destinationStem + "_h4.gz"),
                 true
         );
-
+        
         String header = String.join(
                 "\t",
-                "#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO",
+                "childId",
                 childToParentMap.children.stream()
                         .collect(
                                 Collectors.joining("\t")

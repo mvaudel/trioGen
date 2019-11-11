@@ -1,5 +1,7 @@
 package no.uib.triogen.io.genotypes;
 
+import no.uib.triogen.model.family.ChildToParentMap;
+
 /**
  * The GenotypesProvider provides the genotypes for a given variant.
  *
@@ -20,6 +22,19 @@ public interface GenotypesProvider {
      * @return the genotype
      */
     public int getGenotype(
+            String sampleId
+    );
+    
+    /**
+     * Returns the hs according to the nomenclature of Chen et al. (https://doi.org/10.1101/737106).
+     *
+     * @param sampleId the id of the sample
+     * @param childToParentMap the child to parent map
+     *
+     * @return the genotype
+     */
+    public double[] getH(
+            ChildToParentMap childToParentMap,
             String sampleId
     );
 

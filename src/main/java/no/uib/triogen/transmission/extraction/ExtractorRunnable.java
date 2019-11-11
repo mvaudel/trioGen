@@ -134,13 +134,13 @@ public class ExtractorRunnable implements Runnable {
             GenotypesProvider genotypesProvider
     ) {
 
-        HashMap<String, int[]> hMap = childToParentMap.children.stream()
+        HashMap<String, double[]> hMap = childToParentMap.children.stream()
                 .parallel()
                 .collect(
                         Collectors.toMap(
                                 childId -> childId,
-                                childId -> getH(
-                                        genotypesProvider,
+                                childId -> genotypesProvider.getH(
+                                        childToParentMap,
                                         childId
                                 ),
                                 (a, b) -> a,
@@ -168,56 +168,21 @@ public class ExtractorRunnable implements Runnable {
      * @return a tab separated string of the hs of all kids
      */
     private String aggregateH(
-            HashMap<String, int[]> hMap,
+            HashMap<String, double[]> hMap,
             int i
     ) {
-
-        StringBuilder sb = new StringBuilder(2 * hMap.size() - 1);
-
-        Iterator<String> childIt = childToParentMap.children.iterator();
-
-        sb.append(hMap.get(childIt.next())[i]);
-
-        while (childIt.hasNext()) {
-
-            sb.append('\t')
-                    .append(hMap.get(childIt.next())[i]);
-
-        }
-
-        return sb.toString();
-
-    }
-
-    /**
-     * Returns an array containing h1, h2, h3, and h4 for a given child using the given genotypes provider.
-     *
-     * @param vcfLine the vcf line
-     * @param childId the child id
-     *
-     * @return an array containing h1, h2, h3, and h4
-     */
-    private int[] getH(
-            GenotypesProvider genotypesProvider,
-            String childId
-    ) {
-
-        String motherId = childToParentMap.getMother(childId);
-        String fatherId = childToParentMap.getFather(childId);
-
-        int genotypeKid = genotypesProvider.getGenotype(childId);
-        int genotypeMother = genotypesProvider.getGenotype(motherId);
-        int genotypeFather = genotypesProvider.getGenotype(fatherId);
-
-        int nAltMother = genotypeMother >= 2 ? genotypeMother - 1 : genotypeMother;
-        int nAltFather = genotypeFather >= 2 ? genotypeFather - 1 : genotypeFather;
-
-        int h3 = genotypeKid == 0 || genotypeKid == 2 ? 0 : 1;
-        int h1 = genotypeKid == 0 || genotypeKid == 1 ? 0 : 1;
-        int h2 = nAltMother - h1;
-        int h4 = nAltFather - h3;
-
-        return new int[]{h1, h2, h3, h4};
+        
+        return childToParentMap.children.stream()
+                .map(
+                        childId -> String.valueOf(
+                                Math.round(
+                                        hMap.get(childId)[i]
+                                )
+                        )
+                )
+                .collect(
+                        Collectors.joining("\t")
+                );
 
     }
 }
