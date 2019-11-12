@@ -10,6 +10,7 @@ import no.uib.triogen.cmd.transmission.ExtractTransmission;
 import no.uib.triogen.io.Utils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
+import org.apache.commons.math3.util.FastMath;
 
 /**
  * This file runs the transmission command on test files and compares the
@@ -19,6 +20,8 @@ import no.uib.triogen.io.genotypes.GenotypesFileType;
  * @author Marc Vaudel
  */
 public class LinearModelTest extends TestCase {
+    
+    public static final double tolerance = 1e-9;
 
     /**
      * Runs the command line and checks the output.
@@ -48,6 +51,48 @@ public class LinearModelTest extends TestCase {
                 "rs1"
         );
 
+        for (Entry<String, HashMap<String, double[]>> entry1 : groundTruthMap.entrySet()) {
+
+            String pheno = entry1.getKey();
+            HashMap<String, double[]> hMapGroundTruth = entry1.getValue();
+            HashMap<String, double[]> hMapData = resultsMap.get(pheno);
+
+            if (hMapData == null) {
+
+                throw new IllegalArgumentException(
+                        "Phenotype " + pheno + " not found in the results."
+                );
+            }
+
+            for (Entry<String, double[]> entry2 : hMapGroundTruth.entrySet()) {
+
+                String h = entry2.getKey();
+                double[] statsGroundTruth = entry2.getValue();
+                double[] statsData = hMapData.get(h);
+
+                if (statsData == null) {
+
+                    throw new IllegalArgumentException(
+                            "h " + h + " for phenotype " + pheno + " not found in the results."
+                    );
+                }
+
+                for (int i = 0; i < statsGroundTruth.length; i++) {
+
+                    if (statsGroundTruth[i] == 0.0) {
+
+                        Assert.assertTrue(Math.abs(statsData[i]) < tolerance);
+
+                    } else {
+
+                        double error = (statsData[i] - statsGroundTruth[i]) / statsGroundTruth[i];
+
+                        Assert.assertTrue(Math.abs(error) < tolerance);
+
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -83,7 +128,7 @@ public class LinearModelTest extends TestCase {
 
             String variantId = lineSplit[1];
 
-            if (variantId.equals("rsId")) {
+            if (variantId.equals(rsId)) {
 
                 String pheno = lineSplit[0];
                 String h = lineSplit[3];
