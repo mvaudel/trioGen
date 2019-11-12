@@ -98,13 +98,26 @@ public class LinearModelRunnable implements Runnable {
             TransmissionModel transmissionModel,
             GenotypesProvider genotypesProvider
     ) {
+        
+        double[] xValues = new double[childToParentMap.children.size()];
+        int i = 0;
+        
+        for (String childId : childToParentMap.children) {
+
+            double[] hs = genotypesProvider.getH(childToParentMap, childId);
+            double x = transmissionModel.getRegressionValue(hs);
+            xValues[i] = x;
+            i++;
+            
+        }
 
         phenotypesHandler.phenoMap.entrySet()
                 .parallelStream()
                 .forEach(
                         entry -> runLinearModel(
-                                transmissionModel,
+                                transmissionModel, 
                                 genotypesProvider,
+                                xValues,
                                 entry.getKey(),
                                 entry.getValue()
                         )
@@ -116,26 +129,27 @@ public class LinearModelRunnable implements Runnable {
      * 
      * @param transmissionModel the model to use for transmission
      * @param genotypesProvider the genotypes provider
+     * @param xValues the x values to use for regression
      * @param phenoName the phenotype name
      * @param phenotypes the phenotype values
      */
     public void runLinearModel(
             TransmissionModel transmissionModel,
             GenotypesProvider genotypesProvider,
+            double[] xValues,
             String phenoName,
-            HashMap<String, Double> phenotypes
+            double[] phenotypes
     ) {
 
         SimpleRegression simpleRegression = new SimpleRegression();
 
-        for (String childId : childToParentMap.children) {
-
-            double[] hs = genotypesProvider.getH(childToParentMap, childId);
-            double x = transmissionModel.getRegressionValue(hs);
+        for (int i = 0 ; i < xValues.length ; i++) {
+            
+            double x = xValues[i];
 
             if (!Double.isNaN(x) && !Double.isInfinite(x)) {
 
-                double y = phenotypes.get(childId);
+                double y = phenotypes[i];
 
                 if (!Double.isNaN(y) && !Double.isInfinite(y)) {
 

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.Utils;
 import no.uib.triogen.io.flat.SimpleFileReader;
@@ -24,8 +25,8 @@ public class PhenotypesHandler {
     /**
      * Phenotype name to child id to phenotype value map.
      */
-    public final HashMap<String, HashMap<String, Double>> phenoMap = new HashMap<>();
-    
+    public final HashMap<String, double[]> phenoMap = new HashMap<>();
+
     /**
      * The number of children for which a phenotype was found.
      */
@@ -33,19 +34,30 @@ public class PhenotypesHandler {
 
     /**
      * Constructor from a phenotypes file.
-     * 
+     *
      * @param phenoFile a file containing the phenotypes
+     * @param childrenIds childrenIds
      * @param phenoNames the names of the phenotypes to parse
      */
     public PhenotypesHandler(
             File phenoFile,
+            TreeSet<String> childrenIds,
             String[] phenoNames
     ) {
-        
+
         for (String phenoName : phenoNames) {
-            
-            phenoMap.put(phenoName, new HashMap<>(1000));
-            
+
+            phenoMap.put(phenoName, new double[childrenIds.size()]);
+
+        }
+
+        HashMap<String, Integer> childIndexMap = new HashMap<>(childrenIds.size());
+        int childIndex = 0;
+
+        for (String childId : childrenIds) {
+
+            childIndexMap.put(childId, childIndex++);
+
         }
 
         try (SimpleFileReader phenoReader = SimpleFileReader.getFileReader(phenoFile)) {
@@ -61,7 +73,7 @@ public class PhenotypesHandler {
             }
 
             String[] lineContent = line.split(Utils.separator);
-            
+
             int nColumns = lineContent.length;
 
             if (nColumns < 2) {
@@ -74,12 +86,12 @@ public class PhenotypesHandler {
 
             HashSet<String> phenoNamesSet = Arrays.stream(phenoNames)
                     .collect(Collectors.toCollection(HashSet::new));
-            
+
             int idColumnIndex = -1;
             HashMap<String, Integer> phenoColumnIndexMap = new HashMap<>(phenoNames.length);
 
             for (int i = 0; i < lineContent.length; i++) {
-                
+
                 String cellContent = lineContent[i];
 
                 if (cellContent.equals(PhenotypesHandler.childIdColumn)) {
@@ -87,9 +99,9 @@ public class PhenotypesHandler {
                     idColumnIndex = i;
 
                 } else if (phenoNamesSet.contains(cellContent)) {
-                    
+
                     phenoColumnIndexMap.put(cellContent, i);
-                    
+
                 }
             }
 
@@ -114,47 +126,51 @@ public class PhenotypesHandler {
                 );
 
             }
-            
+
             int lineNumber = 1;
-            
+
             while ((line = phenoReader.readLine()) != null) {
-                
+
                 lineNumber++;
-                
+
                 lineContent = line.split(Utils.separator);
-                
+
                 if (lineContent.length != nColumns) {
-                    
+
                     throw new IllegalArgumentException(
-                        "Unexpected number of columns at line " + lineNumber + " (Expected: " + nColumns + ", Found: " + lineContent.length + ")."
-                );
-                    
+                            "Unexpected number of columns at line " + lineNumber + " (Expected: " + nColumns + ", Found: " + lineContent.length + ")."
+                    );
+
                 }
-                
+
                 String childId = lineContent[idColumnIndex];
-                
+                childIndex = childIndexMap.get(childId);
+
                 for (Entry<String, Integer> phenoColumn : phenoColumnIndexMap.entrySet()) {
-                    
+
+                    double[] phenoValues = phenoMap.get(phenoColumn.getKey());
+
                     String valueString = lineContent[phenoColumn.getValue()];
-                    
+
+                    double newValue;
                     try {
-                        
-                        double value = Double.parseDouble(valueString);
-                        
-                        phenoMap.get(phenoColumn.getKey()).put(childId, value);
-                        
+
+                        newValue = Double.parseDouble(valueString);
+
                     } catch (Exception e) {
-                        
+
                         throw new IllegalArgumentException(
-                        "The value for phenotype " + phenoColumn.getKey() + " at line " + lineNumber + " (" + valueString + ") could not be parsed as a number."
-                );
-                        
+                                "The value for phenotype " + phenoColumn.getKey() + " at line " + lineNumber + " (" + valueString + ") could not be parsed as a number."
+                        );
                     }
+
+                    phenoValues[childIndex] = newValue;
+
                 }
             }
-            
+
             nChildren = lineNumber - 1;
-            
+
         }
     }
 }

@@ -106,7 +106,7 @@ public class LinearModelComputer {
 
         long start = Instant.now().getEpochSecond();
 
-        PhenotypesHandler phenotypesHandler = new PhenotypesHandler(phenotypesFile, phenoNames);
+        PhenotypesHandler phenotypesHandler = new PhenotypesHandler(phenotypesFile, childToParentMap.children, phenoNames);
 
         long end = Instant.now().getEpochSecond();
         long duration = end - start;

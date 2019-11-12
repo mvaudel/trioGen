@@ -134,8 +134,7 @@ public class ExtractorRunnable implements Runnable {
             GenotypesProvider genotypesProvider
     ) {
 
-        HashMap<String, double[]> hMap = childToParentMap.children.stream()
-                .parallel()
+        HashMap<String, double[]> hMap = childToParentMap.children.parallelStream()
                 .collect(
                         Collectors.toMap(
                                 childId -> childId,
