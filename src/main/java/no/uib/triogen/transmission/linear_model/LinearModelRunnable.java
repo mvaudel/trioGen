@@ -9,7 +9,9 @@ import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.pheno.PhenotypesHandler;
 import org.apache.commons.math3.distribution.TDistribution;
+import org.apache.commons.math3.special.Beta;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
+import org.apache.commons.math3.util.ContinuedFraction;
 import org.apache.commons.math3.util.FastMath;
 
 /**
@@ -19,6 +21,10 @@ import org.apache.commons.math3.util.FastMath;
  */
 public class LinearModelRunnable implements Runnable {
 
+    /**
+     * Epsilon to use for the estimation of the p-value.
+     */
+    private final static double[] epsilons = new double[]{1e-14, 1e-20, 1e-50, 1e-100, 1e-200};
     /**
      * Names of the hs.
      */
@@ -187,35 +193,28 @@ public class LinearModelRunnable implements Runnable {
         double slope = simpleRegression.getSlope();
         double slopeSE = simpleRegression.getSlopeStdErr();
 
-        int i = 2;
-        double p = 0.0;
-        double inverseAbsoluteAccuracy = 1.0;
+        long degreesOfFreedom = n - 2;
 
-        if (n >= 3) {
+        double p = Double.NaN;
 
-            while (p < inverseAbsoluteAccuracy) {
+        if (degreesOfFreedom > 1 && slopeSE > 0.0) {
 
-                long k = 1 << ++i;
-                inverseAbsoluteAccuracy = FastMath.pow(10, -k);
-                
-                if (inverseAbsoluteAccuracy <= 0.0) {
-                    
+            double x = slope / slopeSE;
+
+            for (double epsilon : epsilons) {
+
+                p = x != 0.0 ?
+                        Beta.regularizedBeta(
+                                degreesOfFreedom / (degreesOfFreedom + (x * x)),
+                                0.5 * degreesOfFreedom,
+                                0.5,
+                                epsilon)
+                        : 0.5;
+
+                if (p > epsilon * 16) {
                     break;
-                    
                 }
-                
-                TDistribution tDistribution = new TDistribution(n - 2, inverseAbsoluteAccuracy);
-
-                p = 2d * (1.0 - tDistribution.cumulativeProbability(
-                        FastMath.abs(slope) / slopeSE
-                ));
-                
             }
-
-        } else {
-
-            p = Double.NaN;
-
         }
 
         // Export
