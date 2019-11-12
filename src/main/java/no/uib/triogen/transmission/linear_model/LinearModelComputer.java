@@ -129,7 +129,6 @@ public class LinearModelComputer {
                 Utils.separator,
                 "phenotype",
                 "variantID",
-                "association",
                 "h",
                 "beta",
                 "betaSE",

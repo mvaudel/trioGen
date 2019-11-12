@@ -118,9 +118,9 @@ public class LinearModelTest extends TestCase {
         String[] lineSplit = line.split(Utils.separator);
         Assert.assertTrue(lineSplit[0].equals("phenotype"));
         Assert.assertTrue(lineSplit[1].equals("variantID"));
-        Assert.assertTrue(lineSplit[3].equals("h"));
-        Assert.assertTrue(lineSplit[4].equals("beta"));
-        Assert.assertTrue(lineSplit[5].equals("betaSE"));
+        Assert.assertTrue(lineSplit[2].equals("h"));
+        Assert.assertTrue(lineSplit[3].equals("beta"));
+        Assert.assertTrue(lineSplit[4].equals("betaSE"));
 
         while ((line = reader.readLine()) != null) {
 
@@ -131,9 +131,9 @@ public class LinearModelTest extends TestCase {
             if (variantId.equals(rsId)) {
 
                 String pheno = lineSplit[0];
-                String h = lineSplit[3];
-                double beta = Double.parseDouble(lineSplit[4]);
-                double se = Double.parseDouble(lineSplit[5]);
+                String h = lineSplit[2];
+                double beta = Double.parseDouble(lineSplit[3]);
+                double se = Double.parseDouble(lineSplit[4]);
 
                 HashMap<String, double[]> phenoMap = result.get(pheno);
 
