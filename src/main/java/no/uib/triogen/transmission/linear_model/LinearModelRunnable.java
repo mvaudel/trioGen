@@ -70,6 +70,8 @@ public class LinearModelRunnable implements Runnable {
             while ((tempGenotypesProvider = iterator.next()) != null && !canceled) {
 
                 GenotypesProvider genotypesProvider = tempGenotypesProvider;
+                genotypesProvider.parse();
+                
                 Arrays.stream(TransmissionModel.values())
                         .parallel()
                         .forEach(
@@ -167,12 +169,11 @@ public class LinearModelRunnable implements Runnable {
                 transmissionModel.h,
                 Double.toString(simpleRegression.getSlope()),
                 Double.toString(simpleRegression.getSlopeStdErr()),
-                Double.toString(simpleRegression.getSlopeConfidenceInterval()),
                 Double.toString(simpleRegression.getRSquare()),
                 Double.toString(simpleRegression.getSignificance()),
                 Long.toString(simpleRegression.getN())
         );
         outputWriter.writeLine(line);
-
+        
     }
 }

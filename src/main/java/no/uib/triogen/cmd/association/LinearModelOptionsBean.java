@@ -1,14 +1,7 @@
 package no.uib.triogen.cmd.association;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-import no.uib.triogen.io.Utils;
-import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
-import no.uib.triogen.model.pheno.PhenotypesHandler;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -39,9 +32,9 @@ public class LinearModelOptionsBean {
      */
     public final String[] phenoNames;
     /**
-     * Stem of the file where to write the output.
+     * The file where to write the output.
      */
-    public final String destinationStem;
+    public final File destinationFile;
     /**
      * The number of variants to process simultaneously.
      */
@@ -143,13 +136,11 @@ public class LinearModelOptionsBean {
         // The output file
         filePath = aLine.getOptionValue(LinearModelOptions.out.opt);
 
-        destinationStem = filePath;
+        destinationFile = new File(filePath);
 
-        File destinationFolder = (new File(destinationStem)).getParentFile();
+        if (!destinationFile.getParentFile().exists()) {
 
-        if (!destinationFolder.exists()) {
-
-            throw new IllegalArgumentException("Output folder (" + destinationFolder + ") not found.");
+            throw new IllegalArgumentException("Output folder (" + destinationFile.getParentFile() + ") not found.");
 
         }
 

@@ -25,7 +25,7 @@ public class PhenotypesHandler {
     /**
      * Phenotype name to child id to phenotype value map.
      */
-    public final HashMap<String, double[]> phenoMap = new HashMap<>();
+    public final HashMap<String, double[]> phenoMap;
 
     /**
      * The number of children for which a phenotype was found.
@@ -44,10 +44,14 @@ public class PhenotypesHandler {
             TreeSet<String> childrenIds,
             String[] phenoNames
     ) {
+        
+        phenoMap = new HashMap<>(phenoNames.length);
 
         for (String phenoName : phenoNames) {
 
-            phenoMap.put(phenoName, new double[childrenIds.size()]);
+            double[] phenoValues = new double[childrenIds.size()];
+            Arrays.fill(phenoValues, Double.NaN);
+            phenoMap.put(phenoName, phenoValues);
 
         }
 

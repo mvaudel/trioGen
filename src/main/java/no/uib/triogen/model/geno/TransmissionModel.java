@@ -90,10 +90,10 @@ public enum TransmissionModel {
                 return hs[0] - hs[1];
 
             case child_2:
-                return hs[3] - hs[4];
+                return hs[2] - hs[3];
 
             case average_child:
-                return (hs[0] - hs[1] + hs[3] - hs[4]) / 2;
+                return (hs[0] - hs[1] + hs[2] - hs[3]) / 2;
 
             default:
                 throw new UnsupportedOperationException("Regression value for transmission model " + this + " not implemented.");

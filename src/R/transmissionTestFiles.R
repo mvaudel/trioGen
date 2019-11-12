@@ -287,6 +287,8 @@ lmDF <- data.frame(
     pheno = character(4*4),
     beta = numeric(4*4),
     se = numeric(4*4),
+    t = numeric(4*4),
+    p = numeric(4*4),
     stringsAsFactors = F
 )
 
@@ -359,6 +361,8 @@ for (i in 1:4) {
         lmDF$pheno[k] <- phenoColumn
         lmDF$beta[k] <- lmSummary$coefficients[2, 1]
         lmDF$se[k] <- lmSummary$coefficients[2, 2]
+        lmDF$t[k] <- lmSummary$coefficients[2, 3]
+        lmDF$p[k] <- lmSummary$coefficients[2, 4]
         
     }
 }

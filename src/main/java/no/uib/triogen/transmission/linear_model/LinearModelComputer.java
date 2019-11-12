@@ -133,7 +133,6 @@ public class LinearModelComputer {
                 "h",
                 "beta",
                 "betaSE",
-                "beta95CI",
                 "rSquare",
                 "p",
                 "n"
