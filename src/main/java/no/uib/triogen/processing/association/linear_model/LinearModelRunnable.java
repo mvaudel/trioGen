@@ -1,6 +1,10 @@
 package no.uib.triogen.processing.association.linear_model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import no.uib.triogen.io.Utils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
@@ -96,7 +100,9 @@ public class LinearModelRunnable implements Runnable {
 
                     for (int j = 0; j < 4; j++) {
 
-                        xValuesList.get(j)[i] = hs[j];
+                        double xValue = hs[j];
+
+                        xValuesList.get(j)[i] = xValue;
 
                     }
 
@@ -136,6 +142,8 @@ public class LinearModelRunnable implements Runnable {
             GenotypesProvider genotypesProvider
     ) {
 
+        String hHistString = getHHist(xValues);
+
         phenotypesHandler.phenoMap.entrySet()
                 .parallelStream()
                 .forEach(
@@ -143,9 +151,51 @@ public class LinearModelRunnable implements Runnable {
                                 hI,
                                 genotypesProvider,
                                 xValues,
+                                hHistString,
                                 entry.getKey(),
                                 entry.getValue()
                         )
+                );
+    }
+    
+    /**
+     * Returns the histogram of h as string. h is here estimated by rounding x. The result of 123 h=0 and 32 h=1 is in the form 0:123,1:32.
+     * 
+     * @param xValues the values of h
+     * 
+     * @return 
+     */
+    public String getHHist(double[] xValues) {
+        
+        TreeMap<Integer, Integer> hHist = new TreeMap<>();
+
+        for (double xValue : xValues) {
+
+            int h = (int) Math.round(xValue);
+
+            Integer frequency = hHist.get(h);
+
+            if (frequency != null) {
+
+                hHist.put(h, frequency + 1);
+
+            } else {
+
+                hHist.put(h, 1);
+
+            }
+        }
+
+        return hHist.entrySet().stream()
+                .map(
+                        entry -> String.join(
+                                ":",
+                                Integer.toString(entry.getKey()),
+                                Integer.toString(entry.getValue())
+                        )
+                )
+                .collect(
+                        Collectors.joining(",")
                 );
     }
 
@@ -155,6 +205,7 @@ public class LinearModelRunnable implements Runnable {
      * @param hI the index of the h
      * @param genotypesProvider the genotypes provider
      * @param xValues the x values to use for regression
+     * @param hHistString the frequencies of the h as string
      * @param phenoName the phenotype name
      * @param phenotypes the phenotype values
      */
@@ -162,6 +213,7 @@ public class LinearModelRunnable implements Runnable {
             int hI,
             GenotypesProvider genotypesProvider,
             double[] xValues,
+            String hHistString,
             String phenoName,
             double[] phenotypes
     ) {
@@ -200,8 +252,8 @@ public class LinearModelRunnable implements Runnable {
 
             for (double epsilon : epsilons) {
 
-                p = x != 0.0 ?
-                        Beta.regularizedBeta(
+                p = x != 0.0
+                        ? Beta.regularizedBeta(
                                 degreesOfFreedom / (degreesOfFreedom + (x * x)),
                                 0.5 * degreesOfFreedom,
                                 0.5,
@@ -224,6 +276,7 @@ public class LinearModelRunnable implements Runnable {
                 Double.toString(slopeSE),
                 Double.toString(simpleRegression.getRSquare()),
                 Double.toString(p),
+                hHistString,
                 Long.toString(simpleRegression.getN())
         );
         outputWriter.writeLine(line);

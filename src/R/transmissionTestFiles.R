@@ -306,6 +306,13 @@ for (i in 1:4) {
     
     phenoDF[[phenoColumn]] <- phenoDF[[hColumn]] + noise
     
+    naIs <- sample(
+        x = 1:nrow(phenoDF),
+        size = 10
+    )
+    
+    phenoDF[naIs, phenoColumn] <- NA
+    
 }
 
 for (i in 1:4) {
@@ -314,15 +321,23 @@ for (i in 1:4) {
         hColumn <- paste0("h", i)
         phenoColumn <- paste0("pheno", j)
         
+        phenoNoNaDF <- phenoDF %>%
+            filter(
+                !is.na(!!sym(hColumn)) & !is.na(!!sym(phenoColumn))
+            )
+        
         lmResults <- lm(
             formula = as.formula(paste(phenoColumn, "~", hColumn)),
-            data = phenoDF
+            data = phenoNoNaDF
         )
         
         lmSummary <- summary(lmResults)
         
         plot <- ggplot(
-            data = phenoDF
+            data = phenoNoNaDF %>%
+                filter(
+                    
+                )
         ) +
             geom_point(
                 mapping = aes(
@@ -368,8 +383,11 @@ for (i in 1:4) {
 }
 
 phenoDF <- phenoDF %>%
+    rename(
+        child_SentrixID = childId
+    ) %>%
     select(
-        childId, starts_with("pheno")
+        child_SentrixID, starts_with("pheno")
     )
 
 write.table(

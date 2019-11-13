@@ -30,6 +30,13 @@ public class LinearModelTest extends TestCase {
     public void testTransmission() {
 
         String resultsFilePath = "src/test/resources/transmission/test_lm.gz";
+        File resultsFile = new File(resultsFilePath);
+        
+        if (resultsFile.exists()) {
+            
+            resultsFile.delete();
+            
+        }
 
         HashMap<String, HashMap<String, double[]>> groundTruthMap = getGroundTruth(
                 new File("src/test/resources/transmission/ground_truth_linear_model.txt")
@@ -48,7 +55,7 @@ public class LinearModelTest extends TestCase {
         );
 
         HashMap<String, HashMap<String, double[]>> resultsMap = getResults(
-                new File(resultsFilePath),
+                resultsFile,
                 "rs1"
         );
 
@@ -86,7 +93,7 @@ public class LinearModelTest extends TestCase {
 
                     } else {
 
-                        double error = (statsData[i] - statsGroundTruth[i]) / statsGroundTruth[i];
+                        double error = statsData[i] - statsGroundTruth[i];
 
                         Assert.assertTrue(Math.abs(error) < tolerance);
 

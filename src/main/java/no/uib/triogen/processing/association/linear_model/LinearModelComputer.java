@@ -134,6 +134,7 @@ public class LinearModelComputer {
                 "betaSE",
                 "rSquare",
                 "p",
+                "nH",
                 "n"
         );
         outputWriter.writeLine(header);
