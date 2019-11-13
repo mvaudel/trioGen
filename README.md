@@ -95,5 +95,40 @@ java -Xmx64G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 
 ## Errors, questions, and bug report
 
-Errors are reported as stacktrace. Please use the [Issue Tracker](https://github.com/mvaudel/trioGen/issues) for questions and bug reports. Please include the stacktrace with the information necessary to reproduce the problem.
+### Code of Conduct
+
+As part of our efforts toward delivering open and inclusive science, we follow the [Contributor Convenant](https://www.contributor-covenant.org/) [Code of Conduct for Open Source Projects](docs/CODE_OF_CONDUCT.md).
+
+Despite our efforts at enforcing good practices in our work, like every software, TrioGen will crash at one time or another, will fail to cover specific use cases, will not perform as well as expected in specific cases. We apologize for any inconvenience and will try to fix things to the best of our capabilities. However, we would like to remind the user that we are scientists and not professional programmers, that we maintain code and provide support on our free time. We welcome bug reports, suggestions of improvements, and contributions. 
+
+
+### Bug report
+
+> Tip: All our commands come with examples that are tested for every release. Please make sure that these work on your setup before trying on your own data.
+
+When the tool crashes, an error message with a stacktrace should appear with guidance on how to fix the problem.
+
+Example:
+```
+java.lang.IllegalArgumentException: The phenotypes file does not contain a "child_id" column.
+        at no.uib.triogen.model.pheno.PhenotypesHandler.<init>(PhenotypesHandler.java:114)
+        at no.uib.triogen.processing.association.linear_model.LinearModelComputer.run(LinearModelComputer.java:109)
+        at no.uib.triogen.cmd.association.LinearModel.run(LinearModel.java:92)
+        at no.uib.triogen.cmd.association.LinearModel.main(LinearModel.java:61)
+
+```
+
+If the error messages do not allow you to solve the problem, please use the [Issue Tracker](https://github.com/mvaudel/trioGen/issues) for questions and bug reports. Please include the stacktrace with the information necessary to reproduce the problem.
+
+
+### Common Issues
+
+**Problem:**
+```
+Error: Could not find or load main class no.uib.triogen.cmd.*
+```
+
+**Troubleshooting:**
+Please check that the path to the jar file is correct.
+
 

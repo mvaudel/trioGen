@@ -56,7 +56,7 @@ java -Xmx16G -cp bin/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.associat
 
 ### Phenotypes
 
-Phenotypes must be provided as a tab-separated text file with phenotypes in column and samples in line, with the first column containing children identifiers, one line per child. Phenotypes should be numeric, missing values set to NaN. Please note that no normalization or standardization is conducted prior to running the linear regression.
+Phenotypes must be provided as a tab-separated text file with phenotypes in column and samples in line, with one column named `child_id` containing children identifiers, one line per child. Phenotypes should be numeric, missing values set to NaN. Please note that no normalization or standardization is conducted prior to running the linear regression.
 An example of phenotype file can be found in `src/main/resources/transmission/phenos_linear_model.txt`.
 
 The names of the columns to use for the regressions must be provided as comma-separated list, example: `pheno1,pheno2,pheno3,pheno4`. Spaces and quotes are not supported, please refrain from using spaces in column names. When multiple phenotypes are provided the regressions are conducted in parallel.

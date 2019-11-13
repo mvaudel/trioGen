@@ -20,7 +20,7 @@ public class PhenotypesHandler {
     /**
      * Name of the column containing the child ids.
      */
-    public final static String childIdColumn = "childId";
+    public final static String childIdColumn = "child_id";
 
     /**
      * Phenotype name to child id to phenotype value map.
