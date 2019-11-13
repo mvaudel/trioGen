@@ -1,3 +1,7 @@
+
+[![DOI](https://zenodo.org/badge/210819589.svg)](https://zenodo.org/badge/latestdoi/210819589)
+
+
 # TrioGen
 
 TrioGen is a lightweight open-source bioinformatic tool to conduct genetic analyses in trios. TrioGen is written in java and freely available under the permissive [GNU General Public License v3.0](https://github.com/mvaudel/trioGen/blob/master/LICENSE).
@@ -91,6 +95,11 @@ Example, for a maximum of 64 GB of memory:
 ```
 java -Xmx64G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.Command [parameters]
 ```
+
+
+## Citation
+
+TrioGen is not published yet. To cite the software please use the URL of the repository and our DOI as available [here](https://zenodo.org/badge/latestdoi/210819589). To cite the association models using the transmitted alleles please cite [Chen _et al._](https://doi.org/10.1101/737106).
 
 
 ## Errors, questions, and bug report
