@@ -77,10 +77,7 @@ The output file contains the results of the linear regression, one line per regr
 | nH | The frequency of the h for samples with phenotype available. _E.g._ `0:23,1:2` means 23 h=0 and 2 h=1. |
 | n | the number of observations that have been used for the regression. |
 
-As detained in the [Commons Math library](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/regression/SimpleRegression.html#getSignificance()):
-> The significance level of the slope (equiv) correlation. Specifically, the returned value is the smallest alpha such that the slope confidence interval with significance level equal to alpha does not include 0. On regression output, this is often denoted Prob(|t| > 0).
-
-Note that to avoid rounding of the very low p-values, the [getSignificance](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/regression/SimpleRegression.html#getSignificance()) function is not used and instead the [regularized beta](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/special/Beta.html#regularizedBeta(double,%20double,%20double,%20double)) function is used directly.
+As detained in the [Commons Math library](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/regression/SimpleRegression.html#getSignificance()), the significance p corresponds to the significance level of the slope (equiv) correlation. Specifically, the returned value is the smallest alpha such that the slope confidence interval with significance level equal to alpha does not include 0. On regression output, this is often denoted Prob(|t| > 0). Note that to avoid rounding of the very low p-values, the [getSignificance](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/regression/SimpleRegression.html#getSignificance()) function is not used and instead the [regularized beta](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/special/Beta.html#regularizedBeta(double,%20double,%20double,%20double)) function is used directly.
 
 
 
