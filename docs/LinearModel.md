@@ -64,7 +64,18 @@ The names of the columns to use for the regressions must be provided as comma-se
 
 ### Output
 
-The output file contains the results of the linear regression, one line per regression, i.e. one per _{phenotype, variantID, h}_. The summary statistics provided are (1) `beta`: the slope estimate; (2) `betaSE`: the [standard error of the slope estimate[(http://www.xycoon.com/standerrorb(1).htm) _s(b1)_; (3) `rSquare`: the [coefficient of determination](http://www.xycoon.com/coefficient1.htm) _r2_; (4) `p`: the significance; and (5) `n`: the number of observations that have been used for the regression. The regression is conducted using the [Commons Math library](http://commons.apache.org/proper/commons-math/) and the documentation borrows information from the library documentation. For version details, please check the [pom file](https://github.com/mvaudel/trioGen/blob/master/pom.xml). 
+The output file contains the results of the linear regression, one line per regression, _i.e._ one per _{phenotype, variantID, h}_. The regression is conducted using the [Commons Math library](http://commons.apache.org/proper/commons-math/) and the documentation borrows information from the library documentation. For version details, please check the [pom file](https://github.com/mvaudel/trioGen/blob/master/pom.xml). 
+
+| Column | Description |
+| ------ | ----------- |
+| phenotype | The name of the phenotype |
+| variantID | The id of the variant |
+| h | The h used for the regression |
+| beta | The slope estimate |
+| betaSE | Rhe [standard error of the slope estimate[(http://www.xycoon.com/standerrorb(1).htm) _s(b1)_. |
+| p | The significance. |
+| nH | The frequency of the h for samples with phenotype available. _E.g._ 0:23,1:2 is 23 h=0 and 2 h=1. |
+| n | the number of observations that have been used for the regression. |
 
 As detained in the [Commons Math library]](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/regression/SimpleRegression.html#getSignificance()):
 > The significance level of the slope (equiv) correlation. Specifically, the returned value is the smallest alpha such that the slope confidence interval with significance level equal to alpha does not include 0. On regression output, this is often denoted Prob(|t| > 0).

@@ -14,6 +14,7 @@ import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.pheno.PhenotypesHandler;
 import org.apache.commons.math3.special.Beta;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
+import org.apache.commons.math3.util.FastMath;
 
 /**
  * Runnable for the linear model association.
@@ -142,8 +143,6 @@ public class LinearModelRunnable implements Runnable {
             GenotypesProvider genotypesProvider
     ) {
 
-        String hHistString = getHHist(xValues);
-
         phenotypesHandler.phenoMap.entrySet()
                 .parallelStream()
                 .forEach(
@@ -151,51 +150,9 @@ public class LinearModelRunnable implements Runnable {
                                 hI,
                                 genotypesProvider,
                                 xValues,
-                                hHistString,
                                 entry.getKey(),
                                 entry.getValue()
                         )
-                );
-    }
-    
-    /**
-     * Returns the histogram of h as string. h is here estimated by rounding x. The result of 123 h=0 and 32 h=1 is in the form 0:123,1:32.
-     * 
-     * @param xValues the values of h
-     * 
-     * @return 
-     */
-    public String getHHist(double[] xValues) {
-        
-        TreeMap<Integer, Integer> hHist = new TreeMap<>();
-
-        for (double xValue : xValues) {
-
-            int h = (int) Math.round(xValue);
-
-            Integer frequency = hHist.get(h);
-
-            if (frequency != null) {
-
-                hHist.put(h, frequency + 1);
-
-            } else {
-
-                hHist.put(h, 1);
-
-            }
-        }
-
-        return hHist.entrySet().stream()
-                .map(
-                        entry -> String.join(
-                                ":",
-                                Integer.toString(entry.getKey()),
-                                Integer.toString(entry.getValue())
-                        )
-                )
-                .collect(
-                        Collectors.joining(",")
                 );
     }
 
@@ -205,7 +162,6 @@ public class LinearModelRunnable implements Runnable {
      * @param hI the index of the h
      * @param genotypesProvider the genotypes provider
      * @param xValues the x values to use for regression
-     * @param hHistString the frequencies of the h as string
      * @param phenoName the phenotype name
      * @param phenotypes the phenotype values
      */
@@ -213,12 +169,14 @@ public class LinearModelRunnable implements Runnable {
             int hI,
             GenotypesProvider genotypesProvider,
             double[] xValues,
-            String hHistString,
             String phenoName,
             double[] phenotypes
     ) {
 
-        // Run regression
+        // Histogram
+        TreeMap<Integer, Integer> hHist = new TreeMap<>();
+
+        // Select non-missing data points
         SimpleRegression simpleRegression = new SimpleRegression();
 
         for (int i = 0; i < xValues.length; i++) {
@@ -231,11 +189,39 @@ public class LinearModelRunnable implements Runnable {
 
                 if (!Double.isNaN(y) && !Double.isInfinite(y)) {
 
+                    // Regression
                     simpleRegression.addData(x, y);
 
+                    // Histogram
+                    int h = (int) FastMath.round(x);
+
+                    Integer frequency = hHist.get(h);
+
+                    if (frequency != null) {
+
+                        hHist.put(h, frequency + 1);
+
+                    } else {
+
+                        hHist.put(h, 1);
+
+                    }
                 }
             }
         }
+
+        // Get histogram as string
+        String hHistString = hHist.entrySet().stream()
+                .map(
+                        entry -> String.join(
+                                ":",
+                                Integer.toString(entry.getKey()),
+                                Integer.toString(entry.getValue())
+                        )
+                )
+                .collect(
+                        Collectors.joining(",")
+                );
 
         // Estimate significance
         long n = simpleRegression.getN();
