@@ -19,7 +19,7 @@ For a given variant, TrioGen uses phased genotypes to extract the alleles transm
 
 1. ExtractTransmission: This command line extracts _h_ matrices. [[Documentation]](docs/ExtractTransmission.md)
 
-2. LineaModel: This command line runs simple linear regression on phenotypes against _h_. [[Documentation]](docs/ExtractTransmission.md)
+2. LineaModel: This command line runs simple linear regression on phenotypes against _h_. [[Documentation]](docs/LinearModel.md)
 
 
 ## Getting Started
