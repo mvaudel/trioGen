@@ -4,7 +4,7 @@ TrioGen is a lightweight open-source bioinformatic tool to conduct genetic analy
 
 TrioGen uses genotypes from trios defined as {child, father, mother} to identify transmitted and non-transmitted alleles and run association with phenotypes. Throughout the code and documentation, the nomenclature introduced by [Chen _et al._](https://doi.org/10.1101/737106) is used as illustrated below. 
 
-![h](illustrations/h.png?raw=true "Nomenclature by Chen et al.")
+![h](docs/illustrations/h.png?raw=true "Nomenclature by Chen et al.")
 
 For a given variant, TrioGen uses phased genotypes to extract the alleles transmitted by the mother to the child (Am1) or non-transmitted (Am2), and the alleles transmitted by the father to the child (Af1) or non-transmitted (Af2). The number of alternative alleles transmitted or not by each parent is noted _h_ in the model by [Chen _et al._](https://doi.org/10.1101/737106), as detailed in the table below.
 
