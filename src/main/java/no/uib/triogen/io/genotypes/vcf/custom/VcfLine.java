@@ -149,15 +149,15 @@ public class VcfLine implements GenotypesProvider {
         String motherId = childToParentMap.getMother(childId);
         String fatherId = childToParentMap.getFather(childId);
 
-        int genotypeKid = getGenotype(childId);
+        int genotypeChild = getGenotype(childId);
         int genotypeMother = getGenotype(motherId);
         int genotypeFather = getGenotype(fatherId);
 
         int nAltMother = genotypeMother >= 2 ? genotypeMother - 1 : genotypeMother;
         int nAltFather = genotypeFather >= 2 ? genotypeFather - 1 : genotypeFather;
 
-        double h3 = genotypeKid == 0 || genotypeKid == 2 ? 0.0 : 1.0;
-        double h1 = genotypeKid == 0 || genotypeKid == 1 ? 0.0 : 1.0;
+        double h3 = genotypeChild == 0 || genotypeChild == 2 ? 0.0 : 1.0;
+        double h1 = genotypeChild == 0 || genotypeChild == 1 ? 0.0 : 1.0;
         double h2 = nAltMother - h1;
         double h4 = nAltFather - h3;
 

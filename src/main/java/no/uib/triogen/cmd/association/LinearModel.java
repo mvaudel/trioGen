@@ -5,7 +5,7 @@ import no.uib.triogen.TrioGen;
 import static no.uib.triogen.io.Utils.lineSeparator;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
-import no.uib.triogen.transmission.linear_model.LinearModelComputer;
+import no.uib.triogen.processing.association.linear_model.LinearModelComputer;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;

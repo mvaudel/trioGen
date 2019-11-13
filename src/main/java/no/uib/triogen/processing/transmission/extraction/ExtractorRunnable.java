@@ -1,4 +1,4 @@
-package no.uib.triogen.transmission.extraction;
+package no.uib.triogen.processing.transmission.extraction;
 
 import java.util.HashMap;
 import java.util.Iterator;

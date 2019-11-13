@@ -1,4 +1,4 @@
-package no.uib.triogen.transmission.linear_model;
+package no.uib.triogen.processing.association.linear_model;
 
 import java.io.File;
 import java.time.Instant;

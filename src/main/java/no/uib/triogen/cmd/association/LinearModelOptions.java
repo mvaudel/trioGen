@@ -17,7 +17,7 @@ public enum LinearModelOptions {
     phenoFile("p", "phenoFile", "The phenotypes file.", true, true),
     phenoName("pn", "phenoName", "List of the names of the phenotypes in the phenotype file (Example: pheno1,pheno2).", true, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not.", true, true),
-    out("o", "out", "The stem of the files where to write the scores.", true, true),
+    out("o", "out", "The file where to write the results.", true, true),
     nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is 8.", false, true),
     timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true),
     test("t", "test", "If present, runs only othe first 1000 variants.", false, false);

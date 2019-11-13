@@ -1,4 +1,4 @@
-package no.uib.triogen.transmission.linear_model;
+package no.uib.triogen.processing.association.linear_model;
 
 import java.util.ArrayList;
 import java.util.stream.IntStream;

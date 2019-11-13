@@ -6,11 +6,9 @@ import java.util.Map.Entry;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import no.uib.triogen.cmd.association.LinearModel;
-import no.uib.triogen.cmd.transmission.ExtractTransmission;
 import no.uib.triogen.io.Utils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
-import org.apache.commons.math3.util.FastMath;
 
 /**
  * This file runs the transmission command on test files and compares the
@@ -21,6 +19,9 @@ import org.apache.commons.math3.util.FastMath;
  */
 public class LinearModelTest extends TestCase {
     
+    /**
+     * Tolerance used to compare summary statistics.
+     */
     public static final double tolerance = 1e-9;
 
     /**
