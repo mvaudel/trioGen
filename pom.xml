@@ -5,7 +5,7 @@
     <artifactId>triogen</artifactId>
     <name>trioGen</name>
     <packaging>jar</packaging>
-    <version>0.0.1</version>
+    <version>0.1.0</version>
     <description>Code and resources for the genetic analysis of trios.</description>
     <url>https://github.com/mvaudel/trioGen</url>
 

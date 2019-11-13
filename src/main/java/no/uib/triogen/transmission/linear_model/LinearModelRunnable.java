@@ -8,11 +8,8 @@ import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.pheno.PhenotypesHandler;
-import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.special.Beta;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
-import org.apache.commons.math3.util.ContinuedFraction;
-import org.apache.commons.math3.util.FastMath;
 
 /**
  * Runnable for the linear model association.
