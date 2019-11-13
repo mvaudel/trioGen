@@ -44,7 +44,7 @@ public class PhenotypesHandler {
             TreeSet<String> childrenIds,
             String[] phenoNames
     ) {
-        
+
         phenoMap = new HashMap<>(phenoNames.length);
 
         for (String phenoName : phenoNames) {
@@ -148,28 +148,32 @@ public class PhenotypesHandler {
                 }
 
                 String childId = lineContent[idColumnIndex];
-                childIndex = childIndexMap.get(childId);
 
-                for (Entry<String, Integer> phenoColumn : phenoColumnIndexMap.entrySet()) {
+                if (childIndexMap.containsKey(childId)) {
 
-                    double[] phenoValues = phenoMap.get(phenoColumn.getKey());
+                    childIndex = childIndexMap.get(childId);
 
-                    String valueString = lineContent[phenoColumn.getValue()];
+                    for (Entry<String, Integer> phenoColumn : phenoColumnIndexMap.entrySet()) {
 
-                    double newValue;
-                    try {
+                        double[] phenoValues = phenoMap.get(phenoColumn.getKey());
 
-                        newValue = Double.parseDouble(valueString);
+                        String valueString = lineContent[phenoColumn.getValue()];
 
-                    } catch (Exception e) {
+                        double newValue;
+                        try {
 
-                        throw new IllegalArgumentException(
-                                "The value for phenotype " + phenoColumn.getKey() + " at line " + lineNumber + " (" + valueString + ") could not be parsed as a number."
-                        );
+                            newValue = Double.parseDouble(valueString);
+
+                        } catch (Exception e) {
+
+                            throw new IllegalArgumentException(
+                                    "The value for phenotype " + phenoColumn.getKey() + " at line " + lineNumber + " (" + valueString + ") could not be parsed as a number."
+                            );
+                        }
+
+                        phenoValues[childIndex] = newValue;
+
                     }
-
-                    phenoValues[childIndex] = newValue;
-
                 }
             }
 
