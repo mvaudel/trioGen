@@ -99,7 +99,8 @@ public class CustomVcfIterator implements VariantIterator {
         mutex.acquire();
 
         String line = endOfFile ? null : reader.readLine();
-        endOfFile = line == null || nLimit != -1 && ++nVariants >= nLimit;
+        nVariants++;
+        endOfFile = line == null || nLimit != -1 && nVariants >= nLimit;
 
         mutex.release();
 
