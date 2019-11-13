@@ -41,7 +41,7 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 
 ### Command line example
 
-The example below runs test files provided with the tool. Please note that the command needs to be run from the folder of the repository. Note that you need to replace `Z.Y.Z` by the version number.
+The example below runs simulated test files. Please note that the command needs to be run from the folder of the repository and that you need to replace `Z.Y.Z` by the version number.
 
 ```
 java -Xmx16G -cp bin/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.transmission.ExtractTransmission -g src/main/resources/transmission/test_transmission.vcf -gf 1 -f src/main/resources/transmission/test_trio -o src/test/resources/transmission/result
