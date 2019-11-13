@@ -162,20 +162,23 @@ public class PhenotypesHandler {
 
                         String valueString = lineContent[phenoColumn.getValue()];
 
-                        double newValue;
-                        try {
+                        if (!valueString.equals("NA")) {
 
-                            newValue = Double.parseDouble(valueString);
+                            double newValue;
+                            try {
 
-                        } catch (Exception e) {
+                                newValue = Double.parseDouble(valueString);
 
-                            throw new IllegalArgumentException(
-                                    "The value for phenotype " + phenoColumn.getKey() + " at for child id " + childId + " (" + valueString + ") could not be parsed as a number."
-                            );
+                            } catch (Exception e) {
+
+                                throw new IllegalArgumentException(
+                                        "The value for phenotype " + phenoColumn.getKey() + " at for child id " + childId + " (" + valueString + ") could not be parsed as a number."
+                                );
+                            }
+
+                            phenoValues[childIndex] = newValue;
+
                         }
-
-                        phenoValues[childIndex] = newValue;
-
                     }
                 }
             }
