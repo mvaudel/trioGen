@@ -112,7 +112,7 @@ public class LinearModelComputer {
         long duration = end - start;
 
         System.out.println(
-                Instant.now() + " - Done (" + phenoNames.length + " phenotypes for " + phenotypesHandler.nChildren + " imported in " + duration + " seconds)"
+                Instant.now() + " - Done (" + phenoNames.length + " phenotypes for " + phenotypesHandler.nChildren + " children imported in " + duration + " seconds)"
         );
 
         System.out.println(Instant.now() + " - Linear association (geno: " + genotypesFile.getAbsolutePath() + ", pheno: " + phenotypesFile.getAbsolutePath() + ")");

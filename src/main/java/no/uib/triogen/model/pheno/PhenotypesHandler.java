@@ -64,6 +64,9 @@ public class PhenotypesHandler {
 
         }
 
+        boolean found = false;
+        int lineNumber = 1;
+
         try (SimpleFileReader phenoReader = SimpleFileReader.getFileReader(phenoFile)) {
 
             String line = phenoReader.readLine();
@@ -131,8 +134,6 @@ public class PhenotypesHandler {
 
             }
 
-            int lineNumber = 1;
-
             while ((line = phenoReader.readLine()) != null) {
 
                 lineNumber++;
@@ -151,6 +152,8 @@ public class PhenotypesHandler {
 
                 if (childIndexMap.containsKey(childId)) {
 
+                    found = true;
+
                     childIndex = childIndexMap.get(childId);
 
                     for (Entry<String, Integer> phenoColumn : phenoColumnIndexMap.entrySet()) {
@@ -167,7 +170,7 @@ public class PhenotypesHandler {
                         } catch (Exception e) {
 
                             throw new IllegalArgumentException(
-                                    "The value for phenotype " + phenoColumn.getKey() + " at line " + lineNumber + " (" + valueString + ") could not be parsed as a number."
+                                    "The value for phenotype " + phenoColumn.getKey() + " at for child id " + childId + " (" + valueString + ") could not be parsed as a number."
                             );
                         }
 
@@ -176,8 +179,15 @@ public class PhenotypesHandler {
                     }
                 }
             }
+        }
 
-            nChildren = lineNumber - 1;
+        nChildren = lineNumber - 1;
+
+        if (!found) {
+
+            throw new IllegalArgumentException(
+                    "No child identifier in the pheno file matched a child identifier in the trio file. As a result, no phenotype is available for the analysis. Please check that the identifiers are correct."
+            );
 
         }
     }
