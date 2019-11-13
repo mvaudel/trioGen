@@ -228,11 +228,11 @@ public class LinearModelRunnable implements Runnable {
         double slope = simpleRegression.getSlope();
         double slopeSE = simpleRegression.getSlopeStdErr();
 
-        long degreesOfFreedom = n - 2;
-
         double p = Double.NaN;
 
-        if (degreesOfFreedom > 1 && slopeSE > 0.0) {
+        long degreesOfFreedom = n - 2;
+
+        if (degreesOfFreedom > 1 && !Double.isNaN(slope) && slopeSE > 0.0) {
 
             double x = slope / slopeSE;
 
