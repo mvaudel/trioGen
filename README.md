@@ -12,8 +12,8 @@ For a given variant, TrioGen uses phased genotypes to extract the alleles transm
 | ---- | ----------- |
 | h1 | Number of alternative allele transmitted to the child from the mother |
 | h2 | Number of alternative allele of the mother not transmitted to the child |
-| h3 | Number of alternative allele of the father not transmitted to the child |
-| h4 | Number of alternative allele non-transmitted from the father |
+| h3 | Number of alternative allele transmitted to the child from the father |
+| h4 | Number of alternative allele of the father not transmitted to the child |
 
 ## Command Lines
 
