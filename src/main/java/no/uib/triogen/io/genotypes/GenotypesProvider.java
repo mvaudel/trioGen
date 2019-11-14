@@ -26,6 +26,17 @@ public interface GenotypesProvider {
     );
     
     /**
+     * Returns the dosages for a given sample. Dosages are returned in an array indexed by genotypes 0: 0|0 1: 1|0 2: 0|1 3: 1|1
+     *
+     * @param sampleId the id of the sample
+     *
+     * @return the dosages
+     */
+    public double[] getDosages(
+            String sampleId
+    );
+    
+    /**
      * Returns the hs according to the nomenclature of Chen et al. (https://doi.org/10.1101/737106).
      *
      * @param sampleId the id of the sample

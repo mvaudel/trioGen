@@ -117,4 +117,15 @@ public class VcfVariant implements GenotypesProvider {
 
     }
 
+    @Override
+    public double[] getDosages(String sampleId) {
+        
+        double[] dosages = new double[4];
+        
+        
+        
+        return dosages;
+        
+    }
+
 }

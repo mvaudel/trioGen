@@ -164,4 +164,14 @@ public class VcfLine implements GenotypesProvider {
         return new double[]{h1, h2, h3, h4};
 
     }
+
+    @Override
+    public double[] getDosages(String sampleId) {
+        
+        double[] dosages = new double[4];
+        
+        
+        return dosages;
+        
+    }
 }
