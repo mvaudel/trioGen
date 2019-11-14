@@ -134,19 +134,19 @@ If the error messages do not allow you to solve the problem, please use the [Iss
 
 #### Could not find or load main class
 
-. Error Message:
+* Error Message:
 ```
 Error: Could not find or load main class no.uib.triogen.cmd.*
 ```
 
-. Troubleshooting:
-- Check that the path to the jar file is correct.
-- Check that the version number of the jar file is correct.
+* Troubleshooting:
+  * Check that the path to the jar file is correct.
+  * Check that the version number of the jar file is correct.
 
 
 #### Insufficient Memory
 
-. Error Message:
+* Error Message:
 ```
 OpenJDK 64-Bit Server VM warning: INFO: os::commit_memory(0x00007f292a200000, 3997171712, 0) failed; error='Cannot allocate memory' (errno=12)
 #
@@ -156,11 +156,10 @@ OpenJDK 64-Bit Server VM warning: INFO: os::commit_memory(0x00007f292a200000, 39
 # folder/hs_err_pid5115.log
 
 ```
-
-. Troubleshooting:
-- Check that Java **64-Bit** is installed, **not** 32-Bit
-- Check that the memory given to the tool is available on the machine. If multiple processes are running in parallel, please make sure that the sum of memory allocated to each does not exceed the memory available on the machine. 
-- Java might need more memory than what is set via `-Xmx`, see [here](https://stackoverflow.com/questions/15282178/java-using-up-far-more-memory-than-allocated-with-xmx) for details. Try to reduce the amount of memory allocated via `-Xmx` to leave more memory for Java.
-- Try to increase the amount of memory available for the tool.
+* Troubleshooting:
+  * Check that Java **64-Bit** is installed, **not** 32-Bit
+  * Check that the memory given to the tool is available on the machine. If multiple processes are running in parallel, please make sure that the sum of memory allocated to each does not exceed the memory available on the machine. 
+  * Java might need more memory than what is set via `-Xmx`, see [here](https://stackoverflow.com/questions/15282178/java-using-up-far-more-memory-than-allocated-with-xmx) for details. Try to reduce the amount of memory allocated via `-Xmx` to leave more memory for Java.
+  * Try to increase the amount of memory available for the tool.
 
 
