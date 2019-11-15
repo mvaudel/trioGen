@@ -93,7 +93,7 @@ public class VcfVariant implements GenotypesProvider {
     }
     
     @Override
-    public double[] getH(
+    public int[] getH(
             ChildToParentMap childToParentMap,
             String childId
     ) {
@@ -108,24 +108,13 @@ public class VcfVariant implements GenotypesProvider {
         int nAltMother = genotypeMother >= 2 ? genotypeMother - 1 : genotypeMother;
         int nAltFather = genotypeFather >= 2 ? genotypeFather - 1 : genotypeFather;
 
-        double h3 = genotypeKid == 0 || genotypeKid == 2 ? 0.0 : 1.0;
-        double h1 = genotypeKid == 0 || genotypeKid == 1 ? 0.0 : 1.0;
-        double h2 = nAltMother - h1;
-        double h4 = nAltFather - h3;
+        int h3 = genotypeKid == 0 || genotypeKid == 2 ? 0 : 1;
+        int h1 = genotypeKid == 0 || genotypeKid == 1 ? 0 : 1;
+        int h2 = nAltMother - h1;
+        int h4 = nAltFather - h3;
 
-        return new double[]{h1, h2, h3, h4};
+        return new int[]{h1, h2, h3, h4};
 
-    }
-
-    @Override
-    public double[] getDosages(String sampleId) {
-        
-        double[] dosages = new double[4];
-        
-        
-        
-        return dosages;
-        
     }
 
 }

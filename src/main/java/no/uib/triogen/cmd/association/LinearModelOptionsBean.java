@@ -2,6 +2,8 @@ package no.uib.triogen.cmd.association;
 
 import java.io.File;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
+import no.uib.triogen.model.pheno.PhenotypesHandler;
+import no.uib.triogen.processing.association.linear_model.LinearModelRunnable;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -111,7 +113,7 @@ public class LinearModelOptionsBean {
 
         }
 
-        // the pheno file
+        // The pheno file
         filePath = aLine.getOptionValue(LinearModelOptions.phenoFile.opt);
 
         phenotypesFile = new File(filePath);
@@ -122,7 +124,7 @@ public class LinearModelOptionsBean {
 
         }
 
-        // the pheno columns
+        // The pheno columns
         String option = aLine.getOptionValue(LinearModelOptions.phenoName.opt);
 
         phenoNames = option.split(",");
@@ -131,6 +133,28 @@ public class LinearModelOptionsBean {
 
             throw new IllegalArgumentException("No phenotype name found.");
 
+        }
+        
+        // The child id column in the pheno file
+        if (aLine.hasOption(LinearModelOptions.childId.opt)) {
+        
+            option = aLine.getOptionValue(LinearModelOptions.childId.opt);
+            
+            if (option.length() == 0) {
+                
+                throw new IllegalArgumentException("Empty column name found for the child id.");
+                
+            }
+            
+            PhenotypesHandler.childIdColumn = option;
+        
+        }
+        
+        // Inclusion of cases where no regression can be done
+        if (aLine.hasOption(LinearModelOptions.x0.opt)) {
+            
+            LinearModelRunnable.x0 = true;
+            
         }
 
         // The output file

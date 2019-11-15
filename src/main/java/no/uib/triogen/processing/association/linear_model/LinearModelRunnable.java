@@ -12,7 +12,6 @@ import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.pheno.PhenotypesHandler;
 import org.apache.commons.math3.special.Beta;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
-import org.apache.commons.math3.util.FastMath;
 
 /**
  * Runnable for the linear model association.
@@ -21,6 +20,11 @@ import org.apache.commons.math3.util.FastMath;
  */
 public class LinearModelRunnable implements Runnable {
 
+    /**
+     * Boolean indicating whether regression results should only be reported
+     * when more than one value of x is available.
+     */
+    public static boolean x0 = false;
     /**
      * Epsilon to use for the estimation of the p-value.
      */
@@ -83,11 +87,11 @@ public class LinearModelRunnable implements Runnable {
                 GenotypesProvider genotypesProvider = tempGenotypesProvider;
                 genotypesProvider.parse();
 
-                ArrayList<double[]> xValuesList = new ArrayList<>(4);
+                ArrayList<int[]> xValuesList = new ArrayList<>(4);
 
                 for (int i = 0; i < 4; i++) {
 
-                    xValuesList.add(new double[childToParentMap.children.size()]);
+                    xValuesList.add(new int[childToParentMap.children.size()]);
 
                 }
 
@@ -95,13 +99,11 @@ public class LinearModelRunnable implements Runnable {
 
                 for (String childId : childToParentMap.children) {
 
-                    double[] hs = genotypesProvider.getH(childToParentMap, childId);
+                    int[] hs = genotypesProvider.getH(childToParentMap, childId);
 
                     for (int j = 0; j < 4; j++) {
 
-                        double xValue = hs[j];
-
-                        xValuesList.get(j)[i] = xValue;
+                        xValuesList.get(j)[i] = hs[j];
 
                     }
 
@@ -137,7 +139,7 @@ public class LinearModelRunnable implements Runnable {
      */
     public void runLinearModel(
             int hI,
-            double[] xValues,
+            int[] xValues,
             GenotypesProvider genotypesProvider
     ) {
 
@@ -166,7 +168,7 @@ public class LinearModelRunnable implements Runnable {
     public void runLinearModel(
             int hI,
             GenotypesProvider genotypesProvider,
-            double[] xValues,
+            int[] xValues,
             String phenoName,
             double[] phenotypes
     ) {
@@ -176,37 +178,47 @@ public class LinearModelRunnable implements Runnable {
 
         // Select non-missing data points
         SimpleRegression simpleRegression = new SimpleRegression();
+        int xMin = xValues[0];
+        int xMax = xValues[0];
 
         for (int i = 0; i < xValues.length; i++) {
 
-            double x = xValues[i];
+            int x = xValues[i];
 
-            if (!Double.isNaN(x) && !Double.isInfinite(x)) {
+            if (x > xMax) {
 
-                double y = phenotypes[i];
+                xMax = x;
 
-                if (!Double.isNaN(y) && !Double.isInfinite(y)) {
+            }
+            if (x < xMin) {
 
-                    // Regression
-                    simpleRegression.addData(x, y);
+                xMin = x;
 
-                    // Histogram
-                    int h = (int) FastMath.round(x);
+            }
 
-                    Integer frequency = hHist.get(h);
+            double y = phenotypes[i];
 
-                    if (frequency != null) {
+            if (!Double.isNaN(y) && !Double.isInfinite(y)) {
 
-                        hHist.put(h, frequency + 1);
+                // Regression
+                simpleRegression.addData(x, y);
 
-                    } else {
+                // Histogram
+                Integer frequency = hHist.get(x);
 
-                        hHist.put(h, 1);
+                if (frequency != null) {
 
-                    }
+                    hHist.put(x, frequency + 1);
+
+                } else {
+
+                    hHist.put(x, 1);
+
                 }
             }
         }
+
+        int dx = xMax - xMin;
 
         // Get histogram as string
         String hHistString = hHist.entrySet().stream()
@@ -221,49 +233,57 @@ public class LinearModelRunnable implements Runnable {
                         Collectors.joining(",")
                 );
 
-        // Estimate significance
+        // Regression results
         long n = simpleRegression.getN();
-        double slope = simpleRegression.getSlope();
-        double slopeSE = simpleRegression.getSlopeStdErr();
-
+        double slope = Double.NaN;
+        double slopeSE = Double.NaN;
         double p = Double.NaN;
 
-        long degreesOfFreedom = n - 2;
+        if (dx > 0) {
 
-        if (degreesOfFreedom > 1 && !Double.isNaN(slope) && slopeSE > 0.0) {
+            slope = simpleRegression.getSlope();
+            slopeSE = simpleRegression.getSlopeStdErr();
 
-            double x = slope / slopeSE;
+            long degreesOfFreedom = n - 2;
 
-            for (double epsilon : epsilons) {
+            if (degreesOfFreedom > 1 && !Double.isNaN(slope) && slopeSE > 0.0) {
 
-                p = x != 0.0
-                        ? Beta.regularizedBeta(
-                                degreesOfFreedom / (degreesOfFreedom + (x * x)),
-                                0.5 * degreesOfFreedom,
-                                0.5,
-                                epsilon)
-                        : 0.5;
+                double x = slope / slopeSE;
 
-                if (p > epsilon * 16) {
-                    break;
+                for (double epsilon : epsilons) {
+
+                    p = x != 0.0
+                            ? Beta.regularizedBeta(
+                                    degreesOfFreedom / (degreesOfFreedom + (x * x)),
+                                    0.5 * degreesOfFreedom,
+                                    0.5,
+                                    epsilon)
+                            : 0.5;
+
+                    if (p > epsilon * 16) {
+                        break;
+                    }
                 }
             }
         }
 
-        // Export
-        String line = String.join(
-                Utils.separator,
-                phenoName,
-                genotypesProvider.getVariantID(),
-                hNames[hI],
-                Double.toString(slope),
-                Double.toString(slopeSE),
-                Double.toString(simpleRegression.getRSquare()),
-                Double.toString(p),
-                hHistString,
-                Long.toString(simpleRegression.getN())
-        );
-        outputWriter.writeLine(line);
+        if (dx > 0 || !x0) {
 
+            // Export
+            String line = String.join(
+                    Utils.separator,
+                    phenoName,
+                    genotypesProvider.getVariantID(),
+                    hNames[hI],
+                    Double.toString(slope),
+                    Double.toString(slopeSE),
+                    Double.toString(simpleRegression.getRSquare()),
+                    Double.toString(p),
+                    hHistString,
+                    Long.toString(simpleRegression.getN())
+            );
+            outputWriter.writeLine(line);
+
+        }
     }
 }

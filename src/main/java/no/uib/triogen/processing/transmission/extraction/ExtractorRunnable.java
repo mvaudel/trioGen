@@ -134,7 +134,7 @@ public class ExtractorRunnable implements Runnable {
             GenotypesProvider genotypesProvider
     ) {
 
-        HashMap<String, double[]> hMap = childToParentMap.children.parallelStream()
+        HashMap<String, int[]> hMap = childToParentMap.children.parallelStream()
                 .collect(
                         Collectors.toMap(
                                 childId -> childId,
@@ -167,16 +167,14 @@ public class ExtractorRunnable implements Runnable {
      * @return a tab separated string of the hs of all kids
      */
     private String aggregateH(
-            HashMap<String, double[]> hMap,
+            HashMap<String, int[]> hMap,
             int i
     ) {
-        
+
         return childToParentMap.children.stream()
                 .map(
                         childId -> String.valueOf(
-                                Math.round(
-                                        hMap.get(childId)[i]
-                                )
+                                hMap.get(childId)[i]
                         )
                 )
                 .collect(
