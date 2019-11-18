@@ -344,6 +344,10 @@ public class LinearModelRunnable implements Runnable {
             );
 
             // Run the regressions
+            double[] betas = na4;
+            double[] betaStandardErrors = na4;
+            double[] betaResiduals = na4;
+            
             // Hs
             OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
 
@@ -353,6 +357,9 @@ public class LinearModelRunnable implements Runnable {
                 try {
 
                     regression.newSampleData(phenoY, hX);
+                    betas = regression.estimateRegressionParameters();
+                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                    betaResiduals = regression.estimateResiduals();
                     regressionSuccess = true;
 
                 } catch (SingularMatrixException singularMatrixException) {
@@ -365,9 +372,9 @@ public class LinearModelRunnable implements Runnable {
             double hRSS;
             if (regressionSuccess) {
 
-                hBetas = regression.estimateRegressionParameters();
-                hBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                double[] hBetaResiduals = regression.estimateResiduals();
+                hBetas = betas;
+                hBetaStandardErrors = betaStandardErrors;
+                double[] hBetaResiduals = betaResiduals;
                 hRSS = getRSS(hBetaResiduals);
 
             } else {
@@ -385,6 +392,9 @@ public class LinearModelRunnable implements Runnable {
                 try {
 
                     regression.newSampleData(phenoY, cmfX);
+                    betas = regression.estimateRegressionParameters();
+                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                    betaResiduals = regression.estimateResiduals();
                     regressionSuccess = true;
 
                 } catch (SingularMatrixException singularMatrixException) {
@@ -397,9 +407,9 @@ public class LinearModelRunnable implements Runnable {
             double cmfRSS;
             if (regressionSuccess) {
 
-                cmfBetas = regression.estimateRegressionParameters();
-                cmfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                double[] cmfBetaResiduals = regression.estimateResiduals();
+                cmfBetas = betas;
+                cmfBetaStandardErrors = betaStandardErrors;
+                double[] cmfBetaResiduals = betaResiduals;
                 cmfRSS = getRSS(cmfBetaResiduals);
 
             } else {
@@ -417,6 +427,9 @@ public class LinearModelRunnable implements Runnable {
                 try {
 
                     regression.newSampleData(phenoY, cmX);
+                    betas = regression.estimateRegressionParameters();
+                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                    betaResiduals = regression.estimateResiduals();
                     regressionSuccess = true;
 
                 } catch (SingularMatrixException singularMatrixException) {
@@ -429,9 +442,9 @@ public class LinearModelRunnable implements Runnable {
             double cmRSS;
             if (regressionSuccess) {
 
-                cmBetas = regression.estimateRegressionParameters();
-                cmBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                double[] cmBetaResiduals = regression.estimateResiduals();
+                cmBetas = betas;
+                cmBetaStandardErrors = betaStandardErrors;
+                double[] cmBetaResiduals = betaResiduals;
                 cmRSS = getRSS(cmBetaResiduals);
 
             } else {
@@ -449,6 +462,9 @@ public class LinearModelRunnable implements Runnable {
                 try {
 
                     regression.newSampleData(phenoY, cfX);
+                    betas = regression.estimateRegressionParameters();
+                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                    betaResiduals = regression.estimateResiduals();
                     regressionSuccess = true;
 
                 } catch (SingularMatrixException singularMatrixException) {
@@ -461,9 +477,9 @@ public class LinearModelRunnable implements Runnable {
             double cfRSS;
             if (regressionSuccess) {
 
-                cfBetas = regression.estimateRegressionParameters();
-                cfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                double[] cfBetaResiduals = regression.estimateResiduals();
+                cfBetas = betas;
+                cfBetaStandardErrors = betaStandardErrors;
+                double[] cfBetaResiduals = betaResiduals;
                 cfRSS = getRSS(cfBetaResiduals);
 
             } else {
@@ -481,6 +497,9 @@ public class LinearModelRunnable implements Runnable {
                 try {
 
                     regression.newSampleData(phenoY, mfX);
+                    betas = regression.estimateRegressionParameters();
+                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                    betaResiduals = regression.estimateResiduals();
                     regressionSuccess = true;
 
                 } catch (SingularMatrixException singularMatrixException) {
@@ -493,9 +512,9 @@ public class LinearModelRunnable implements Runnable {
             double mfRSS;
             if (regressionSuccess) {
 
-                mfBetas = regression.estimateRegressionParameters();
-                mfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                double[] mfBetaResiduals = regression.estimateResiduals();
+                mfBetas = betas;
+                mfBetaStandardErrors = betaStandardErrors;
+                double[] mfBetaResiduals = betaResiduals;
                 mfRSS = getRSS(mfBetaResiduals);
 
             } else {
@@ -513,6 +532,9 @@ public class LinearModelRunnable implements Runnable {
                 try {
 
                     regression.newSampleData(phenoY, cX);
+                    betas = regression.estimateRegressionParameters();
+                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                    betaResiduals = regression.estimateResiduals();
                     regressionSuccess = true;
 
                 } catch (SingularMatrixException singularMatrixException) {
@@ -525,9 +547,9 @@ public class LinearModelRunnable implements Runnable {
             double cRSS;
             if (regressionSuccess) {
 
-                cBetas = regression.estimateRegressionParameters();
-                cBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                double[] cBetaResiduals = regression.estimateResiduals();
+                cBetas = betas;
+                cBetaStandardErrors = betaStandardErrors;
+                double[] cBetaResiduals = betaResiduals;
                 cRSS = getRSS(cBetaResiduals);
 
             } else {
@@ -545,6 +567,9 @@ public class LinearModelRunnable implements Runnable {
                 try {
 
                     regression.newSampleData(phenoY, mX);
+                    betas = regression.estimateRegressionParameters();
+                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                    betaResiduals = regression.estimateResiduals();
                     regressionSuccess = true;
 
                 } catch (SingularMatrixException singularMatrixException) {
@@ -557,9 +582,9 @@ public class LinearModelRunnable implements Runnable {
             double mRSS;
             if (regressionSuccess) {
 
-                mBetas = regression.estimateRegressionParameters();
-                mBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                double[] mBetaResiduals = regression.estimateResiduals();
+                mBetas = betas;
+                mBetaStandardErrors = betaStandardErrors;
+                double[] mBetaResiduals = betaResiduals;
                 mRSS = getRSS(mBetaResiduals);
 
             } else {
@@ -577,6 +602,9 @@ public class LinearModelRunnable implements Runnable {
                 try {
 
                     regression.newSampleData(phenoY, fX);
+                    betas = regression.estimateRegressionParameters();
+                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                    betaResiduals = regression.estimateResiduals();
                     regressionSuccess = true;
 
                 } catch (SingularMatrixException singularMatrixException) {
@@ -589,9 +617,9 @@ public class LinearModelRunnable implements Runnable {
             double fRSS;
             if (regressionSuccess) {
 
-                fBetas = regression.estimateRegressionParameters();
-                fBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                double[] fBetaResiduals = regression.estimateResiduals();
+                fBetas = betas;
+                fBetaStandardErrors = betaStandardErrors;
+                double[] fBetaResiduals = betaResiduals;
                 fRSS = getRSS(fBetaResiduals);
 
             } else {
