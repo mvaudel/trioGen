@@ -140,16 +140,23 @@ public class LinearModelRunnable implements Runnable {
         double[][] mX = new double[nValidValues][1];
         double[][] fX = new double[nValidValues][1];
         int[] hMin = new int[4];
-        Arrays.fill(hMin, Integer.MAX_VALUE);
         int[] hMax = new int[4];
-        Arrays.fill(hMax, Integer.MIN_VALUE);
         TreeMap<Integer, Integer>[] hHist = new TreeMap[4];
+        
+        for (int j = 0 ; j < 4 ; j++) {
+            
+            hMin[j] = Integer.MAX_VALUE;
+            hMax[j] = Integer.MIN_VALUE;
+            hHist[j] = new TreeMap<>();
+            
+        }
 
-        int i = 0;
+        int phenoI = 0;
+        int iterationI = 0;
 
         for (String childId : childToParentMap.children) {
 
-            double y = phenotypes[i];
+            double y = phenotypes[phenoI++];
 
             if (!Double.isNaN(y) && !Double.isInfinite(y)) {
 
@@ -184,32 +191,38 @@ public class LinearModelRunnable implements Runnable {
                     }
                 }
 
-                hX[i][0] = h[0];
-                hX[i][1] = h[2];
-                hX[i][2] = h[3];
-                hX[i][3] = h[4];
+                hX[iterationI][0] = h[0];
+                hX[iterationI][1] = h[1];
+                hX[iterationI][2] = h[2];
+                hX[iterationI][3] = h[3];
+                
+                int hChild = h[0] + h[2];
+                int hMother = h[0] + h[1];
+                int hFather = h[2] + h[3];
 
-                cmfX[i][0] = h[1] + h[2];
-                cmfX[i][1] = h[0] + h[1];
-                cmfX[i][2] = h[2] + h[3];
+                cmfX[iterationI][0] = hChild;
+                cmfX[iterationI][1] = hMother;
+                cmfX[iterationI][2] = hFather;
 
-                cfX[i][0] = h[1] + h[2];
-                cfX[i][1] = h[2] + h[3];
+                cmX[iterationI][0] = hChild;
+                cmX[iterationI][1] = hMother;
 
-                cmX[i][0] = h[1] + h[2];
-                cmX[i][1] = h[0] + h[1];
+                cfX[iterationI][0] = hChild;
+                cfX[iterationI][1] = hFather;
 
-                mfX[i][0] = h[0] + h[1];
-                mfX[i][1] = h[2] + h[3];
+                mfX[iterationI][0] = hMother;
+                mfX[iterationI][1] = hFather;
 
-                cX[i][0] = h[1] + h[2];
+                cX[iterationI][0] = hChild;
 
-                mX[i][0] = h[0] + h[1];
+                mX[iterationI][0] = hMother;
 
-                fX[i][0] = h[2] + h[3];
+                fX[iterationI][0] = hFather;
+                
+                phenoY[iterationI] = y;
 
-                i++;
-
+                iterationI++;
+                
             }
         }
 
@@ -227,7 +240,7 @@ public class LinearModelRunnable implements Runnable {
                     getHistogramAsString(hHist[3]),
                     ")"
             );
-
+            
             // Run the regressions
             OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
 
@@ -280,59 +293,59 @@ public class LinearModelRunnable implements Runnable {
             double fRSS = getRSS(fBetaResiduals);
 
             // Estimate model significance
-            double cmf_hP = getModelSignificance(cmfRSS, 3, hRSS, 4, nValidValues);
-            double cm_cmfP = getModelSignificance(cmRSS, 2, cmfRSS, 3, nValidValues);
-            double cf_cmfP = getModelSignificance(cfRSS, 2, cmfRSS, 3, nValidValues);
-            double mf_cmfP = getModelSignificance(mfRSS, 2, cmfRSS, 3, nValidValues);
-            double c_cmfP = getModelSignificance(cRSS, 1, cmfRSS, 3, nValidValues);
-            double c_cmP = getModelSignificance(cRSS, 1, cmRSS, 2, nValidValues);
-            double c_cfP = getModelSignificance(cRSS, 1, cfRSS, 2, nValidValues);
-            double m_cmfP = getModelSignificance(mRSS, 1, cmfRSS, 3, nValidValues);
-            double m_cmP = getModelSignificance(mRSS, 1, cmRSS, 2, nValidValues);
-            double m_mfP = getModelSignificance(mRSS, 1, mfRSS, 2, nValidValues);
-            double f_cmfP = getModelSignificance(fRSS, 1, cmfRSS, 3, nValidValues);
-            double f_cfP = getModelSignificance(fRSS, 1, cfRSS, 2, nValidValues);
-            double f_mfP = getModelSignificance(fRSS, 1, mfRSS, 2, nValidValues);
+            double cmf_hP = getModelSignificance(cmfRSS, 4, hRSS, 5, nValidValues);
+            double cm_cmfP = getModelSignificance(cmRSS, 3, cmfRSS, 4, nValidValues);
+            double cf_cmfP = getModelSignificance(cfRSS, 3, cmfRSS, 4, nValidValues);
+            double mf_cmfP = getModelSignificance(mfRSS, 3, cmfRSS, 4, nValidValues);
+            double c_cmfP = getModelSignificance(cRSS, 2, cmfRSS, 4, nValidValues);
+            double c_cmP = getModelSignificance(cRSS, 2, cmRSS, 3, nValidValues);
+            double c_cfP = getModelSignificance(cRSS, 2, cfRSS, 3, nValidValues);
+            double m_cmfP = getModelSignificance(mRSS, 2, cmfRSS, 4, nValidValues);
+            double m_cmP = getModelSignificance(mRSS, 2, cmRSS, 3, nValidValues);
+            double m_mfP = getModelSignificance(mRSS, 2, mfRSS, 3, nValidValues);
+            double f_cmfP = getModelSignificance(fRSS, 2, cmfRSS, 4, nValidValues);
+            double f_cfP = getModelSignificance(fRSS, 2, cfRSS, 3, nValidValues);
+            double f_mfP = getModelSignificance(fRSS, 2, mfRSS, 3, nValidValues);
 
             // Estimate slope significance
-            double[] hBetaP = IntStream.range(0, 4)
+            double[] hBetaP = IntStream.range(0, hBetas.length)
                     .mapToDouble(
-                            j -> getBetaSignificance(hBetas[j], hBetaStandardErrors[j], nValidValues - 4)
+                            j -> getBetaSignificance(hBetas[j], hBetaStandardErrors[j], nValidValues - hBetas.length)
                     )
                     .toArray();
-            double[] cmfBetaP = IntStream.range(0, 3)
+            double[] cmfBetaP = IntStream.range(0, cmfBetas.length)
                     .mapToDouble(
-                            j -> getBetaSignificance(cmfBetas[j], cmfBetaStandardErrors[j], nValidValues - 3)
+                            j -> getBetaSignificance(cmfBetas[j], cmfBetaStandardErrors[j], nValidValues - cmfBetas.length)
                     )
                     .toArray();
-            double[] cmBetaP = IntStream.range(0, 2)
+            double[] cmBetaP = IntStream.range(0, cmBetas.length)
                     .mapToDouble(
-                            j -> getBetaSignificance(cmBetas[j], cmBetaStandardErrors[j], nValidValues - 2)
+                            j -> getBetaSignificance(cmBetas[j], cmBetaStandardErrors[j], nValidValues - cmBetas.length)
                     )
                     .toArray();
-            double[] cfBetaP = IntStream.range(0, 2)
+            double[] cfBetaP = IntStream.range(0, cfBetas.length)
                     .mapToDouble(
-                            j -> getBetaSignificance(cfBetas[j], cfBetaStandardErrors[j], nValidValues - 2)
+                            j -> getBetaSignificance(cfBetas[j], cfBetaStandardErrors[j], nValidValues - cfBetas.length)
                     )
                     .toArray();
-            double[] mfBetaP = IntStream.range(0, 2)
+            double[] mfBetaP = IntStream.range(0, mfBetas.length)
                     .mapToDouble(
-                            j -> getBetaSignificance(mfBetas[j], mfBetaStandardErrors[j], nValidValues - 2)
+                            j -> getBetaSignificance(mfBetas[j], mfBetaStandardErrors[j], nValidValues - mfBetas.length)
                     )
                     .toArray();
-            double[] cBetaP = IntStream.range(0, 1)
+            double[] cBetaP = IntStream.range(0, cBetas.length)
                     .mapToDouble(
-                            j -> getBetaSignificance(cBetas[j], cBetaStandardErrors[j], nValidValues - 1)
+                            j -> getBetaSignificance(cBetas[j], cBetaStandardErrors[j], nValidValues - cBetas.length)
                     )
                     .toArray();
-            double[] mBetaP = IntStream.range(0, 1)
+            double[] mBetaP = IntStream.range(0, mBetas.length)
                     .mapToDouble(
-                            j -> getBetaSignificance(mBetas[j], cBetaStandardErrors[j], nValidValues - 1)
+                            j -> getBetaSignificance(mBetas[j], mBetaStandardErrors[j], nValidValues - mBetas.length)
                     )
                     .toArray();
-            double[] fBetaP = IntStream.range(0, 1)
+            double[] fBetaP = IntStream.range(0, fBetas.length)
                     .mapToDouble(
-                            j -> getBetaSignificance(fBetas[j], cBetaStandardErrors[j], nValidValues - 1)
+                            j -> getBetaSignificance(fBetas[j], fBetaStandardErrors[j], nValidValues - fBetas.length)
                     )
                     .toArray();
 
@@ -433,6 +446,14 @@ public class LinearModelRunnable implements Runnable {
         }
     }
 
+    /**
+     * Appends the betas with se and significance to the stringBuilder with preceeding separators.
+     * 
+     * @param stringBuilder the string builder
+     * @param betas estimation of the betas
+     * @param betaStandardErrors standard errors of the beta estimation
+     * @param betaP significance of the beta estimations
+     */
     private void appendBetasAsString(
             StringBuilder stringBuilder,
             double[] betas,
@@ -440,14 +461,14 @@ public class LinearModelRunnable implements Runnable {
             double[] betaP
     ) {
 
-        for (int i = 0; i < betas.length; i++) {
+        for (int i = 0; i < betas.length-1; i++) {
 
             stringBuilder.append(Utils.separator);
-            stringBuilder.append(betas[i]);
+            stringBuilder.append(betas[i+1]);
             stringBuilder.append(Utils.separator);
-            stringBuilder.append(betaStandardErrors[i]);
+            stringBuilder.append(betaStandardErrors[i+1]);
             stringBuilder.append(Utils.separator);
-            stringBuilder.append(betaP[i]);
+            stringBuilder.append(betaP[i+1]);
 
         }
     }

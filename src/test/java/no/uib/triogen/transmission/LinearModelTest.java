@@ -53,11 +53,11 @@ public class LinearModelTest extends TestCase {
         LinearModel.main(
                 args
         );
-
-        HashMap<String, HashMap<String, double[]>> resultsMap = getResults(
-                resultsFile,
-                "rs1"
-        );
+//
+//        HashMap<String, HashMap<String, double[]>> resultsMap = getResults(
+//                resultsFile,
+//                "rs1"
+//        );
 //
 //        for (Entry<String, HashMap<String, double[]>> entry1 : groundTruthMap.entrySet()) {
 //

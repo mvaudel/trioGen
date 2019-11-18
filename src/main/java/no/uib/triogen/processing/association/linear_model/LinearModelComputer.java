@@ -125,7 +125,7 @@ public class LinearModelComputer {
                 true
         );
 
-            String line = String.join(
+            String header = String.join(
                     Utils.separator,
                     "phenotype",
                     "variantId",
@@ -193,18 +193,6 @@ public class LinearModelComputer {
                     "f_beta_se",
                     "f_beta_p"
             );
-        String header = String.join(
-                Utils.separator,
-                "phenotype",
-                "variantID",
-                "h",
-                "beta",
-                "betaSE",
-                "rSquare",
-                "p",
-                "nH",
-                "n"
-        );
         outputWriter.writeLine(header);
 
         try {
