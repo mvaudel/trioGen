@@ -132,9 +132,13 @@ public class LinearModelRunnable implements Runnable {
         // Gather the input to use for the models
         double[] phenoY = new double[nValidValues];
         double[][] hX = new double[nValidValues][4];
-        double[][] motherX = new double[nValidValues][2];
-        double[][] fatherX = new double[nValidValues][2];
-        double[][] childX = new double[nValidValues][2];
+        double[][] cmfX = new double[nValidValues][3];
+        double[][] cfX = new double[nValidValues][2];
+        double[][] cmX = new double[nValidValues][2];
+        double[][] mfX = new double[nValidValues][2];
+        double[][] cX = new double[nValidValues][1];
+        double[][] mX = new double[nValidValues][1];
+        double[][] fX = new double[nValidValues][1];
         int[] hMin = new int[4];
         Arrays.fill(hMin, Integer.MAX_VALUE);
         int[] hMax = new int[4];
@@ -185,14 +189,24 @@ public class LinearModelRunnable implements Runnable {
                 hX[i][2] = h[3];
                 hX[i][3] = h[4];
 
-                motherX[i][0] = h[1] + h[2];
-                motherX[i][1] = h[2] + h[3];
+                cmfX[i][0] = h[1] + h[2];
+                cmfX[i][1] = h[0] + h[1];
+                cmfX[i][2] = h[2] + h[3];
 
-                fatherX[i][0] = h[1] + h[2];
-                fatherX[i][1] = h[0] + h[1];
+                cfX[i][0] = h[1] + h[2];
+                cfX[i][1] = h[2] + h[3];
 
-                childX[i][0] = h[0] + h[1];
-                childX[i][1] = h[2] + h[3];
+                cmX[i][0] = h[1] + h[2];
+                cmX[i][1] = h[0] + h[1];
+
+                mfX[i][0] = h[0] + h[1];
+                mfX[i][1] = h[2] + h[3];
+
+                cX[i][0] = h[1] + h[2];
+
+                mX[i][0] = h[0] + h[1];
+
+                fX[i][0] = h[2] + h[3];
 
                 i++;
 
@@ -218,99 +232,222 @@ public class LinearModelRunnable implements Runnable {
             OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
 
             regression.newSampleData(phenoY, hX);
-            double[] hBeta = regression.estimateRegressionParameters();
+            double[] hBetas = regression.estimateRegressionParameters();
             double[] hBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
             double[] hBetaResiduals = regression.estimateResiduals();
             double hRSS = getRSS(hBetaResiduals);
 
-            regression.newSampleData(phenoY, motherX);
-            double[] motherBeta = regression.estimateRegressionParameters();
-            double[] motherBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-            double[] motherBetaResiduals = regression.estimateResiduals();
-            double motherRSS = getRSS(motherBetaResiduals);
+            regression.newSampleData(phenoY, cmfX);
+            double[] cmfBetas = regression.estimateRegressionParameters();
+            double[] cmfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+            double[] cmfBetaResiduals = regression.estimateResiduals();
+            double cmfRSS = getRSS(cmfBetaResiduals);
 
-            regression.newSampleData(phenoY, fatherX);
-            double[] fatherBeta = regression.estimateRegressionParameters();
-            double[] fatherBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-            double[] fatherBetaResiduals = regression.estimateResiduals();
-            double fatherRSS = getRSS(fatherBetaResiduals);
+            regression.newSampleData(phenoY, cmX);
+            double[] cmBetas = regression.estimateRegressionParameters();
+            double[] cmBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+            double[] cmBetaResiduals = regression.estimateResiduals();
+            double cmRSS = getRSS(cmBetaResiduals);
 
-            regression.newSampleData(phenoY, childX);
-            double[] childBeta = regression.estimateRegressionParameters();
-            double[] childBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-            double[] childBetaResiduals = regression.estimateResiduals();
-            double childRSS = getRSS(childBetaResiduals);
-            
+            regression.newSampleData(phenoY, cfX);
+            double[] cfBetas = regression.estimateRegressionParameters();
+            double[] cfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+            double[] cfBetaResiduals = regression.estimateResiduals();
+            double cfRSS = getRSS(cfBetaResiduals);
+
+            regression.newSampleData(phenoY, mfX);
+            double[] mfBetas = regression.estimateRegressionParameters();
+            double[] mfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+            double[] mfBetaResiduals = regression.estimateResiduals();
+            double mfRSS = getRSS(mfBetaResiduals);
+
+            regression.newSampleData(phenoY, cX);
+            double[] cBetas = regression.estimateRegressionParameters();
+            double[] cBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+            double[] cBetaResiduals = regression.estimateResiduals();
+            double cRSS = getRSS(cBetaResiduals);
+
+            regression.newSampleData(phenoY, mX);
+            double[] mBetas = regression.estimateRegressionParameters();
+            double[] mBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+            double[] mBetaResiduals = regression.estimateResiduals();
+            double mRSS = getRSS(mBetaResiduals);
+
+            regression.newSampleData(phenoY, fX);
+            double[] fBetas = regression.estimateRegressionParameters();
+            double[] fBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+            double[] fBetaResiduals = regression.estimateResiduals();
+            double fRSS = getRSS(fBetaResiduals);
+
             // Estimate model significance
-            double significanceMother = getModelSignificance(motherRSS, 2, hRSS, 4, nValidValues);
-            double significanceFather = getModelSignificance(fatherRSS, 2, hRSS, 4, nValidValues);
-            double significanceChild = getModelSignificance(childRSS, 2, hRSS, 4, nValidValues);
+            double cmf_hP = getModelSignificance(cmfRSS, 3, hRSS, 4, nValidValues);
+            double cm_cmfP = getModelSignificance(cmRSS, 2, cmfRSS, 3, nValidValues);
+            double cf_cmfP = getModelSignificance(cfRSS, 2, cmfRSS, 3, nValidValues);
+            double mf_cmfP = getModelSignificance(mfRSS, 2, cmfRSS, 3, nValidValues);
+            double c_cmfP = getModelSignificance(cRSS, 1, cmfRSS, 3, nValidValues);
+            double c_cmP = getModelSignificance(cRSS, 1, cmRSS, 2, nValidValues);
+            double c_cfP = getModelSignificance(cRSS, 1, cfRSS, 2, nValidValues);
+            double m_cmfP = getModelSignificance(mRSS, 1, cmfRSS, 3, nValidValues);
+            double m_cmP = getModelSignificance(mRSS, 1, cmRSS, 2, nValidValues);
+            double m_mfP = getModelSignificance(mRSS, 1, mfRSS, 2, nValidValues);
+            double f_cmfP = getModelSignificance(fRSS, 1, cmfRSS, 3, nValidValues);
+            double f_cfP = getModelSignificance(fRSS, 1, cfRSS, 2, nValidValues);
+            double f_mfP = getModelSignificance(fRSS, 1, mfRSS, 2, nValidValues);
 
-            
             // Estimate slope significance
-            double[] pHBeta = IntStream.range(0, 4)
+            double[] hBetaP = IntStream.range(0, 4)
                     .mapToDouble(
-                            j -> getBetaSignificance(hBeta[j], hBetaStandardErrors[j], nValidValues - 4)
+                            j -> getBetaSignificance(hBetas[j], hBetaStandardErrors[j], nValidValues - 4)
                     )
                     .toArray();
-            double[] pMotherBeta = IntStream.range(0, 2)
+            double[] cmfBetaP = IntStream.range(0, 3)
                     .mapToDouble(
-                            j -> getBetaSignificance(motherBeta[j], motherBetaStandardErrors[j], nValidValues - 2)
+                            j -> getBetaSignificance(cmfBetas[j], cmfBetaStandardErrors[j], nValidValues - 3)
                     )
                     .toArray();
-            double[] pFatherBeta = IntStream.range(0, 2)
+            double[] cmBetaP = IntStream.range(0, 2)
                     .mapToDouble(
-                            j -> getBetaSignificance(fatherBeta[j], fatherBetaStandardErrors[j], nValidValues - 2)
+                            j -> getBetaSignificance(cmBetas[j], cmBetaStandardErrors[j], nValidValues - 2)
                     )
                     .toArray();
-            double[] pChildBeta = IntStream.range(0, 2)
+            double[] cfBetaP = IntStream.range(0, 2)
                     .mapToDouble(
-                            j -> getBetaSignificance(childBeta[j], childBetaResiduals[j], nValidValues - 2)
+                            j -> getBetaSignificance(cfBetas[j], cfBetaStandardErrors[j], nValidValues - 2)
+                    )
+                    .toArray();
+            double[] mfBetaP = IntStream.range(0, 2)
+                    .mapToDouble(
+                            j -> getBetaSignificance(mfBetas[j], mfBetaStandardErrors[j], nValidValues - 2)
+                    )
+                    .toArray();
+            double[] cBetaP = IntStream.range(0, 1)
+                    .mapToDouble(
+                            j -> getBetaSignificance(cBetas[j], cBetaStandardErrors[j], nValidValues - 1)
+                    )
+                    .toArray();
+            double[] mBetaP = IntStream.range(0, 1)
+                    .mapToDouble(
+                            j -> getBetaSignificance(mBetas[j], cBetaStandardErrors[j], nValidValues - 1)
+                    )
+                    .toArray();
+            double[] fBetaP = IntStream.range(0, 1)
+                    .mapToDouble(
+                            j -> getBetaSignificance(fBetas[j], cBetaStandardErrors[j], nValidValues - 1)
                     )
                     .toArray();
 
             // Export
-            String line = String.join(
-                    Utils.separator,
-                    phenoName,
-                    genotypesProvider.getVariantID(),
-                    hHistograms,
-                    Integer.toString(nValidValues),
-                    Double.toString(significanceMother),
-                    Double.toString(significanceFather),
-                    Double.toString(significanceChild),
-                    Double.toString(hBeta[0]),
-                    Double.toString(hBetaStandardErrors[0]),
-                    Double.toString(pHBeta[0]),
-                    Double.toString(hBeta[1]),
-                    Double.toString(hBetaStandardErrors[1]),
-                    Double.toString(pHBeta[1]),
-                    Double.toString(hBeta[2]),
-                    Double.toString(hBetaStandardErrors[2]),
-                    Double.toString(pHBeta[2]),
-                    Double.toString(hBeta[3]),
-                    Double.toString(hBetaStandardErrors[3]),
-                    Double.toString(pHBeta[3]),
-                    Double.toString(motherBeta[0]),
-                    Double.toString(motherBetaStandardErrors[0]),
-                    Double.toString(pMotherBeta[0]),
-                    Double.toString(motherBeta[1]),
-                    Double.toString(motherBetaStandardErrors[1]),
-                    Double.toString(pMotherBeta[1]),
-                    Double.toString(fatherBeta[0]),
-                    Double.toString(fatherBetaStandardErrors[0]),
-                    Double.toString(pFatherBeta[0]),
-                    Double.toString(fatherBeta[1]),
-                    Double.toString(fatherBetaStandardErrors[1]),
-                    Double.toString(pFatherBeta[1]),
-                    Double.toString(childBeta[0]),
-                    Double.toString(childBetaStandardErrors[0]),
-                    Double.toString(pChildBeta[0]),
-                    Double.toString(childBeta[1]),
-                    Double.toString(childBetaStandardErrors[1]),
-                    Double.toString(pChildBeta[1])
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder
+                    .append(phenoName)
+                    .append(Utils.separator)
+                    .append(genotypesProvider.getVariantID())
+                    .append(Utils.separator)
+                    .append(hHistograms)
+                    .append(Utils.separator)
+                    .append(nValidValues);
+            appendBetasAsString(
+                    stringBuilder, 
+                    hBetas, 
+                    hBetaStandardErrors, 
+                    hBetaP
             );
+            stringBuilder
+                    .append(Utils.separator)
+                    .append(cmf_hP);
+            appendBetasAsString(
+                    stringBuilder, 
+                    cmfBetas, 
+                    cmfBetaStandardErrors, 
+                    cmfBetaP
+            );
+            stringBuilder
+                    .append(Utils.separator)
+                    .append(cm_cmfP);
+            appendBetasAsString(
+                    stringBuilder, 
+                    cmBetas, 
+                    cmBetaStandardErrors, 
+                    cmBetaP
+            );
+            stringBuilder
+                    .append(Utils.separator)
+                    .append(cf_cmfP);
+            appendBetasAsString(
+                    stringBuilder, 
+                    cfBetas, 
+                    cfBetaStandardErrors, 
+                    cfBetaP
+            );
+            stringBuilder
+                    .append(Utils.separator)
+                    .append(mf_cmfP);
+            appendBetasAsString(
+                    stringBuilder, 
+                    mfBetas, 
+                    mfBetaStandardErrors, 
+                    mfBetaP
+            );
+            stringBuilder
+                    .append(Utils.separator)
+                    .append(c_cmfP)
+                    .append(Utils.separator)
+                    .append(c_cmP)
+                    .append(Utils.separator)
+                    .append(c_cfP);
+            appendBetasAsString(
+                    stringBuilder, 
+                    cBetas, 
+                    cBetaStandardErrors, 
+                    cBetaP
+            );
+            stringBuilder
+                    .append(Utils.separator)
+                    .append(m_cmfP)
+                    .append(Utils.separator)
+                    .append(m_cmP)
+                    .append(Utils.separator)
+                    .append(m_mfP);
+            appendBetasAsString(
+                    stringBuilder, 
+                    mBetas, 
+                    mBetaStandardErrors, 
+                    mBetaP
+            );
+            stringBuilder
+                    .append(Utils.separator)
+                    .append(f_cmfP)
+                    .append(Utils.separator)
+                    .append(f_cfP)
+                    .append(Utils.separator)
+                    .append(f_mfP);
+            appendBetasAsString(
+                    stringBuilder, 
+                    fBetas, 
+                    fBetaStandardErrors, 
+                    fBetaP
+            );
+            String line = stringBuilder.toString();
             outputWriter.writeLine(line);
+
+        }
+    }
+
+    private void appendBetasAsString(
+            StringBuilder stringBuilder,
+            double[] betas,
+            double[] betaStandardErrors,
+            double[] betaP
+    ) {
+
+        for (int i = 0; i < betas.length; i++) {
+
+            stringBuilder.append(Utils.separator);
+            stringBuilder.append(betas[i]);
+            stringBuilder.append(Utils.separator);
+            stringBuilder.append(betaStandardErrors[i]);
+            stringBuilder.append(Utils.separator);
+            stringBuilder.append(betaP[i]);
 
         }
     }
@@ -318,7 +455,7 @@ public class LinearModelRunnable implements Runnable {
     /**
      * Returns the significance of increasing the complexity of a simple model,
      * model1, with p1 parameters to a more complex model, model2, with p2
-     * parameters.
+     * parameters. p1 < p2.
      *
      * @param model1RSS the residual sum of squares for model 1
      * @param p1 the number of parameters of model 1
