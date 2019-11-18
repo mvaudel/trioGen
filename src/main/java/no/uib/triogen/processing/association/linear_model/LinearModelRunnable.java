@@ -12,6 +12,7 @@ import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.pheno.PhenotypesHandler;
 import org.apache.commons.math3.distribution.FDistribution;
+import org.apache.commons.math3.linear.SingularMatrixException;
 import org.apache.commons.math3.special.Beta;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
@@ -206,78 +207,78 @@ public class LinearModelRunnable implements Runnable {
                     }
                 }
 
-                int hChild = h[0] + h[2];
+                int nAltChild = h[0] + h[2];
 
-                if (hChild < childMin) {
+                if (nAltChild < childMin) {
 
-                    childMin = hChild;
-
-                }
-                if (hChild > childMax) {
-
-                    childMax = hChild;
+                    childMin = nAltChild;
 
                 }
+                if (nAltChild > childMax) {
 
-                Integer frequency = childHist.get(hChild);
+                    childMax = nAltChild;
+
+                }
+
+                Integer frequency = childHist.get(nAltChild);
 
                 if (frequency != null) {
 
-                    childHist.put(hChild, frequency + 1);
+                    childHist.put(nAltChild, frequency + 1);
 
                 } else {
 
-                    childHist.put(hChild, 1);
+                    childHist.put(nAltChild, 1);
 
                 }
 
-                int hMother = h[0] + h[1];
+                int nAltMother = h[0] + h[1];
 
-                if (hMother < motherMin) {
+                if (nAltMother < motherMin) {
 
-                    motherMin = hMother;
-
-                }
-                if (hMother > motherMax) {
-
-                    motherMax = hMother;
+                    motherMin = nAltMother;
 
                 }
+                if (nAltMother > motherMax) {
 
-                frequency = motherHist.get(hMother);
+                    motherMax = nAltMother;
+
+                }
+
+                frequency = motherHist.get(nAltMother);
 
                 if (frequency != null) {
 
-                    motherHist.put(hMother, frequency + 1);
+                    motherHist.put(nAltMother, frequency + 1);
 
                 } else {
 
-                    motherHist.put(hMother, 1);
+                    motherHist.put(nAltMother, 1);
 
                 }
 
-                int hFather = h[2] + h[3];
+                int nAltFather = h[2] + h[3];
 
-                if (hFather < fatherMin) {
+                if (nAltFather < fatherMin) {
 
-                    fatherMin = hFather;
-
-                }
-                if (hFather > fatherMax) {
-
-                    fatherMax = hFather;
+                    fatherMin = nAltFather;
 
                 }
+                if (nAltFather > fatherMax) {
 
-                frequency = fatherHist.get(hFather);
+                    fatherMax = nAltFather;
+
+                }
+
+                frequency = fatherHist.get(nAltFather);
 
                 if (frequency != null) {
 
-                    fatherHist.put(hFather, frequency + 1);
+                    fatherHist.put(nAltFather, frequency + 1);
 
                 } else {
 
-                    fatherHist.put(hFather, 1);
+                    fatherHist.put(nAltFather, 1);
 
                 }
 
@@ -286,24 +287,24 @@ public class LinearModelRunnable implements Runnable {
                 hX[iterationI][2] = h[2];
                 hX[iterationI][3] = h[3];
 
-                cmfX[iterationI][0] = hChild;
-                cmfX[iterationI][1] = hMother;
-                cmfX[iterationI][2] = hFather;
+                cmfX[iterationI][0] = nAltChild;
+                cmfX[iterationI][1] = nAltMother;
+                cmfX[iterationI][2] = nAltFather;
 
-                cmX[iterationI][0] = hChild;
-                cmX[iterationI][1] = hMother;
+                cmX[iterationI][0] = nAltChild;
+                cmX[iterationI][1] = nAltMother;
 
-                cfX[iterationI][0] = hChild;
-                cfX[iterationI][1] = hFather;
+                cfX[iterationI][0] = nAltChild;
+                cfX[iterationI][1] = nAltFather;
 
-                mfX[iterationI][0] = hMother;
-                mfX[iterationI][1] = hFather;
+                mfX[iterationI][0] = nAltMother;
+                mfX[iterationI][1] = nAltFather;
 
-                cX[iterationI][0] = hChild;
+                cX[iterationI][0] = nAltChild;
 
-                mX[iterationI][0] = hMother;
+                mX[iterationI][0] = nAltMother;
 
-                fX[iterationI][0] = hFather;
+                fX[iterationI][0] = nAltFather;
 
                 phenoY[iterationI] = y;
 
@@ -312,10 +313,11 @@ public class LinearModelRunnable implements Runnable {
             }
         }
 
+        // Try to anticipate singularities
         boolean hNotSingluar = hMax[0] - hMin[0] > 0 && hMax[1] - hMin[1] > 0 && hMax[2] - hMin[2] > 0 && hMax[3] - hMin[3] > 0;
+        boolean childNotSingular = childMax - childMin > 0;
         boolean motherNotSingular = motherMax - motherMin > 0;
         boolean fatherNotSingular = fatherMax - fatherMin > 0;
-        boolean childNotSingular = childMax - childMin > 0;
 
         if (!x0 || hNotSingluar) {
 
@@ -342,14 +344,27 @@ public class LinearModelRunnable implements Runnable {
             );
 
             // Run the regressions
+            // Hs
             OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
+
+            boolean regressionSuccess = false;
+            if (hNotSingluar) {
+
+                try {
+
+                    regression.newSampleData(phenoY, hX);
+                    regressionSuccess = true;
+
+                } catch (SingularMatrixException singularMatrixException) {
+
+                }
+            }
 
             double[] hBetas;
             double[] hBetaStandardErrors;
             double hRSS;
-            if (hNotSingluar) {
+            if (regressionSuccess) {
 
-                regression.newSampleData(phenoY, hX);
                 hBetas = regression.estimateRegressionParameters();
                 hBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
                 double[] hBetaResiduals = regression.estimateResiduals();
@@ -363,12 +378,25 @@ public class LinearModelRunnable implements Runnable {
 
             }
 
+            // Child Mother Father
+            regressionSuccess = false;
+            if (childNotSingular && motherNotSingular && fatherNotSingular) {
+
+                try {
+
+                    regression.newSampleData(phenoY, cmfX);
+                    regressionSuccess = true;
+
+                } catch (SingularMatrixException singularMatrixException) {
+
+                }
+            }
+
             double[] cmfBetas;
             double[] cmfBetaStandardErrors;
             double cmfRSS;
-            if (childNotSingular && motherNotSingular && fatherNotSingular) {
+            if (regressionSuccess) {
 
-                regression.newSampleData(phenoY, cmfX);
                 cmfBetas = regression.estimateRegressionParameters();
                 cmfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
                 double[] cmfBetaResiduals = regression.estimateResiduals();
@@ -382,12 +410,25 @@ public class LinearModelRunnable implements Runnable {
 
             }
 
+            // Child Mother
+            regressionSuccess = false;
+            if (childNotSingular && motherNotSingular) {
+
+                try {
+
+                    regression.newSampleData(phenoY, cmX);
+                    regressionSuccess = true;
+
+                } catch (SingularMatrixException singularMatrixException) {
+
+                }
+            }
+
             double[] cmBetas;
             double[] cmBetaStandardErrors;
             double cmRSS;
-            if (childNotSingular && motherNotSingular) {
+            if (regressionSuccess) {
 
-                regression.newSampleData(phenoY, cmX);
                 cmBetas = regression.estimateRegressionParameters();
                 cmBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
                 double[] cmBetaResiduals = regression.estimateResiduals();
@@ -401,12 +442,25 @@ public class LinearModelRunnable implements Runnable {
 
             }
 
+            // Child Father
+            regressionSuccess = false;
+            if (childNotSingular && fatherNotSingular) {
+
+                try {
+
+                    regression.newSampleData(phenoY, cfX);
+                    regressionSuccess = true;
+
+                } catch (SingularMatrixException singularMatrixException) {
+
+                }
+            }
+
             double[] cfBetas;
             double[] cfBetaStandardErrors;
             double cfRSS;
-            if (childNotSingular && fatherNotSingular) {
+            if (regressionSuccess) {
 
-                regression.newSampleData(phenoY, cfX);
                 cfBetas = regression.estimateRegressionParameters();
                 cfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
                 double[] cfBetaResiduals = regression.estimateResiduals();
@@ -420,12 +474,25 @@ public class LinearModelRunnable implements Runnable {
 
             }
 
+            // Mother Father
+            regressionSuccess = false;
+            if (motherNotSingular && fatherNotSingular) {
+
+                try {
+
+                    regression.newSampleData(phenoY, mfX);
+                    regressionSuccess = true;
+
+                } catch (SingularMatrixException singularMatrixException) {
+
+                }
+            }
+
             double[] mfBetas;
             double[] mfBetaStandardErrors;
             double mfRSS;
-            if (motherNotSingular && fatherNotSingular) {
+            if (regressionSuccess) {
 
-                regression.newSampleData(phenoY, mfX);
                 mfBetas = regression.estimateRegressionParameters();
                 mfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
                 double[] mfBetaResiduals = regression.estimateResiduals();
@@ -439,12 +506,25 @@ public class LinearModelRunnable implements Runnable {
 
             }
 
+            // Child
+            regressionSuccess = false;
+            if (childNotSingular) {
+
+                try {
+
+                    regression.newSampleData(phenoY, cX);
+                    regressionSuccess = true;
+
+                } catch (SingularMatrixException singularMatrixException) {
+
+                }
+            }
+
             double[] cBetas;
             double[] cBetaStandardErrors;
             double cRSS;
-            if (childNotSingular) {
+            if (regressionSuccess) {
 
-                regression.newSampleData(phenoY, cX);
                 cBetas = regression.estimateRegressionParameters();
                 cBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
                 double[] cBetaResiduals = regression.estimateResiduals();
@@ -458,12 +538,25 @@ public class LinearModelRunnable implements Runnable {
 
             }
 
+            // Mother
+            regressionSuccess = false;
+            if (motherNotSingular) {
+
+                try {
+
+                    regression.newSampleData(phenoY, mX);
+                    regressionSuccess = true;
+
+                } catch (SingularMatrixException singularMatrixException) {
+
+                }
+            }
+
             double[] mBetas;
             double[] mBetaStandardErrors;
             double mRSS;
-            if (motherNotSingular) {
+            if (regressionSuccess) {
 
-                regression.newSampleData(phenoY, mX);
                 mBetas = regression.estimateRegressionParameters();
                 mBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
                 double[] mBetaResiduals = regression.estimateResiduals();
@@ -477,12 +570,25 @@ public class LinearModelRunnable implements Runnable {
 
             }
 
+            // Father
+            regressionSuccess = false;
+            if (fatherNotSingular) {
+
+                try {
+
+                    regression.newSampleData(phenoY, fX);
+                    regressionSuccess = true;
+
+                } catch (SingularMatrixException singularMatrixException) {
+
+                }
+            }
+
             double[] fBetas;
             double[] fBetaStandardErrors;
             double fRSS;
-            if (fatherNotSingular) {
+            if (regressionSuccess) {
 
-                regression.newSampleData(phenoY, fX);
                 fBetas = regression.estimateRegressionParameters();
                 fBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
                 double[] fBetaResiduals = regression.estimateResiduals();
@@ -700,11 +806,11 @@ public class LinearModelRunnable implements Runnable {
             int p2,
             int n
     ) {
-        
+
         if (Double.isNaN(model1RSS) || Double.isNaN(model2RSS)) {
-            
+
             return Double.NaN;
-            
+
         }
 
         double numeratorDegreesOfFreedom = p2 - p1;
@@ -750,11 +856,11 @@ public class LinearModelRunnable implements Runnable {
             double betaSE,
             int degreesOfFreedom
     ) {
-        
+
         if (Double.isNaN(beta) || Double.isNaN(betaSE)) {
-            
+
             return Double.NaN;
-            
+
         }
 
         double p = Double.NaN;
