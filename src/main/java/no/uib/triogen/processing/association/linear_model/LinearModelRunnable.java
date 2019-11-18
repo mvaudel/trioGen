@@ -32,6 +32,10 @@ public class LinearModelRunnable implements Runnable {
      * Epsilon to use for the estimation of the p-value.
      */
     private final static double[] epsilons = new double[]{1e-14, 1e-20, 1e-50, 1e-100, 1e-200};
+    private final static double[] na2 = new double[]{Double.NaN, Double.NaN};
+    private final static double[] na3 = new double[]{Double.NaN, Double.NaN, Double.NaN};
+    private final static double[] na4 = new double[]{Double.NaN, Double.NaN, Double.NaN, Double.NaN};
+    private final static double[] na5 = new double[]{Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN};
     /**
      * Names of the hs.
      */
@@ -142,14 +146,25 @@ public class LinearModelRunnable implements Runnable {
         int[] hMin = new int[4];
         int[] hMax = new int[4];
         TreeMap<Integer, Integer>[] hHist = new TreeMap[4];
-        
-        for (int j = 0 ; j < 4 ; j++) {
-            
+
+        for (int j = 0; j < 4; j++) {
+
             hMin[j] = Integer.MAX_VALUE;
             hMax[j] = Integer.MIN_VALUE;
             hHist[j] = new TreeMap<>();
-            
+
         }
+
+        int childMin = Integer.MAX_VALUE;
+        int childMax = Integer.MIN_VALUE;
+        int motherMin = Integer.MAX_VALUE;
+        int motherMax = Integer.MIN_VALUE;
+        int fatherMin = Integer.MAX_VALUE;
+        int fatherMax = Integer.MIN_VALUE;
+
+        TreeMap<Integer, Integer> childHist = new TreeMap<>();
+        TreeMap<Integer, Integer> motherHist = new TreeMap<>();
+        TreeMap<Integer, Integer> fatherHist = new TreeMap<>();
 
         int phenoI = 0;
         int iterationI = 0;
@@ -191,14 +206,85 @@ public class LinearModelRunnable implements Runnable {
                     }
                 }
 
+                int hChild = h[0] + h[2];
+
+                if (hChild < childMin) {
+
+                    childMin = hChild;
+
+                }
+                if (hChild > childMax) {
+
+                    childMax = hChild;
+
+                }
+
+                Integer frequency = childHist.get(hChild);
+
+                if (frequency != null) {
+
+                    childHist.put(hChild, frequency + 1);
+
+                } else {
+
+                    childHist.put(hChild, 1);
+
+                }
+
+                int hMother = h[0] + h[1];
+
+                if (hMother < motherMin) {
+
+                    motherMin = hMother;
+
+                }
+                if (hMother > motherMax) {
+
+                    motherMax = hMother;
+
+                }
+
+                frequency = motherHist.get(hMother);
+
+                if (frequency != null) {
+
+                    motherHist.put(hMother, frequency + 1);
+
+                } else {
+
+                    motherHist.put(hMother, 1);
+
+                }
+
+                int hFather = h[2] + h[3];
+
+                if (hFather < fatherMin) {
+
+                    fatherMin = hFather;
+
+                }
+                if (hFather > fatherMax) {
+
+                    fatherMax = hFather;
+
+                }
+
+                frequency = fatherHist.get(hFather);
+
+                if (frequency != null) {
+
+                    fatherHist.put(hFather, frequency + 1);
+
+                } else {
+
+                    fatherHist.put(hFather, 1);
+
+                }
+
                 hX[iterationI][0] = h[0];
                 hX[iterationI][1] = h[1];
                 hX[iterationI][2] = h[2];
                 hX[iterationI][3] = h[3];
-                
-                int hChild = h[0] + h[2];
-                int hMother = h[0] + h[1];
-                int hFather = h[2] + h[3];
 
                 cmfX[iterationI][0] = hChild;
                 cmfX[iterationI][1] = hMother;
@@ -218,17 +304,31 @@ public class LinearModelRunnable implements Runnable {
                 mX[iterationI][0] = hMother;
 
                 fX[iterationI][0] = hFather;
-                
+
                 phenoY[iterationI] = y;
 
                 iterationI++;
-                
+
             }
         }
 
-        if (!x0 || hMax[0] - hMin[0] > 0 && hMax[1] - hMin[1] > 0 && hMax[2] - hMin[2] > 0 && hMax[3] - hMin[3] > 0) {
+        boolean hNotSingluar = hMax[0] - hMin[0] > 0 && hMax[1] - hMin[1] > 0 && hMax[2] - hMin[2] > 0 && hMax[3] - hMin[3] > 0;
+        boolean motherNotSingular = motherMax - motherMin > 0;
+        boolean fatherNotSingular = fatherMax - fatherMin > 0;
+        boolean childNotSingular = childMax - childMin > 0;
+
+        if (!x0 || hNotSingluar) {
 
             // Build histograms
+            String altHistograms = String.join("",
+                    "child(",
+                    getHistogramAsString(childHist),
+                    ");mother(",
+                    getHistogramAsString(motherHist),
+                    ");father(",
+                    getHistogramAsString(fatherHist),
+                    ")"
+            );
             String hHistograms = String.join("",
                     "h1(",
                     getHistogramAsString(hHist[0]),
@@ -240,57 +340,161 @@ public class LinearModelRunnable implements Runnable {
                     getHistogramAsString(hHist[3]),
                     ")"
             );
-            
+
             // Run the regressions
             OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
 
-            regression.newSampleData(phenoY, hX);
-            double[] hBetas = regression.estimateRegressionParameters();
-            double[] hBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-            double[] hBetaResiduals = regression.estimateResiduals();
-            double hRSS = getRSS(hBetaResiduals);
+            double[] hBetas;
+            double[] hBetaStandardErrors;
+            double hRSS;
+            if (hNotSingluar) {
 
-            regression.newSampleData(phenoY, cmfX);
-            double[] cmfBetas = regression.estimateRegressionParameters();
-            double[] cmfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-            double[] cmfBetaResiduals = regression.estimateResiduals();
-            double cmfRSS = getRSS(cmfBetaResiduals);
+                regression.newSampleData(phenoY, hX);
+                hBetas = regression.estimateRegressionParameters();
+                hBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                double[] hBetaResiduals = regression.estimateResiduals();
+                hRSS = getRSS(hBetaResiduals);
 
-            regression.newSampleData(phenoY, cmX);
-            double[] cmBetas = regression.estimateRegressionParameters();
-            double[] cmBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-            double[] cmBetaResiduals = regression.estimateResiduals();
-            double cmRSS = getRSS(cmBetaResiduals);
+            } else {
 
-            regression.newSampleData(phenoY, cfX);
-            double[] cfBetas = regression.estimateRegressionParameters();
-            double[] cfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-            double[] cfBetaResiduals = regression.estimateResiduals();
-            double cfRSS = getRSS(cfBetaResiduals);
+                hBetas = na5;
+                hBetaStandardErrors = na5;
+                hRSS = Double.NaN;
 
-            regression.newSampleData(phenoY, mfX);
-            double[] mfBetas = regression.estimateRegressionParameters();
-            double[] mfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-            double[] mfBetaResiduals = regression.estimateResiduals();
-            double mfRSS = getRSS(mfBetaResiduals);
+            }
 
-            regression.newSampleData(phenoY, cX);
-            double[] cBetas = regression.estimateRegressionParameters();
-            double[] cBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-            double[] cBetaResiduals = regression.estimateResiduals();
-            double cRSS = getRSS(cBetaResiduals);
+            double[] cmfBetas;
+            double[] cmfBetaStandardErrors;
+            double cmfRSS;
+            if (childNotSingular && motherNotSingular && fatherNotSingular) {
 
-            regression.newSampleData(phenoY, mX);
-            double[] mBetas = regression.estimateRegressionParameters();
-            double[] mBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-            double[] mBetaResiduals = regression.estimateResiduals();
-            double mRSS = getRSS(mBetaResiduals);
+                regression.newSampleData(phenoY, cmfX);
+                cmfBetas = regression.estimateRegressionParameters();
+                cmfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                double[] cmfBetaResiduals = regression.estimateResiduals();
+                cmfRSS = getRSS(cmfBetaResiduals);
 
-            regression.newSampleData(phenoY, fX);
-            double[] fBetas = regression.estimateRegressionParameters();
-            double[] fBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-            double[] fBetaResiduals = regression.estimateResiduals();
-            double fRSS = getRSS(fBetaResiduals);
+            } else {
+
+                cmfBetas = na4;
+                cmfBetaStandardErrors = na4;
+                cmfRSS = Double.NaN;
+
+            }
+
+            double[] cmBetas;
+            double[] cmBetaStandardErrors;
+            double cmRSS;
+            if (childNotSingular && motherNotSingular) {
+
+                regression.newSampleData(phenoY, cmX);
+                cmBetas = regression.estimateRegressionParameters();
+                cmBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                double[] cmBetaResiduals = regression.estimateResiduals();
+                cmRSS = getRSS(cmBetaResiduals);
+
+            } else {
+
+                cmBetas = na3;
+                cmBetaStandardErrors = na3;
+                cmRSS = Double.NaN;
+
+            }
+
+            double[] cfBetas;
+            double[] cfBetaStandardErrors;
+            double cfRSS;
+            if (childNotSingular && fatherNotSingular) {
+
+                regression.newSampleData(phenoY, cfX);
+                cfBetas = regression.estimateRegressionParameters();
+                cfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                double[] cfBetaResiduals = regression.estimateResiduals();
+                cfRSS = getRSS(cfBetaResiduals);
+
+            } else {
+
+                cfBetas = na3;
+                cfBetaStandardErrors = na3;
+                cfRSS = Double.NaN;
+
+            }
+
+            double[] mfBetas;
+            double[] mfBetaStandardErrors;
+            double mfRSS;
+            if (motherNotSingular && fatherNotSingular) {
+
+                regression.newSampleData(phenoY, mfX);
+                mfBetas = regression.estimateRegressionParameters();
+                mfBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                double[] mfBetaResiduals = regression.estimateResiduals();
+                mfRSS = getRSS(mfBetaResiduals);
+
+            } else {
+
+                mfBetas = na3;
+                mfBetaStandardErrors = na3;
+                mfRSS = Double.NaN;
+
+            }
+
+            double[] cBetas;
+            double[] cBetaStandardErrors;
+            double cRSS;
+            if (childNotSingular) {
+
+                regression.newSampleData(phenoY, cX);
+                cBetas = regression.estimateRegressionParameters();
+                cBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                double[] cBetaResiduals = regression.estimateResiduals();
+                cRSS = getRSS(cBetaResiduals);
+
+            } else {
+
+                cBetas = na2;
+                cBetaStandardErrors = na2;
+                cRSS = Double.NaN;
+
+            }
+
+            double[] mBetas;
+            double[] mBetaStandardErrors;
+            double mRSS;
+            if (motherNotSingular) {
+
+                regression.newSampleData(phenoY, mX);
+                mBetas = regression.estimateRegressionParameters();
+                mBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                double[] mBetaResiduals = regression.estimateResiduals();
+                mRSS = getRSS(mBetaResiduals);
+
+            } else {
+
+                mBetas = na2;
+                mBetaStandardErrors = na2;
+                mRSS = Double.NaN;
+
+            }
+
+            double[] fBetas;
+            double[] fBetaStandardErrors;
+            double fRSS;
+            if (fatherNotSingular) {
+
+                regression.newSampleData(phenoY, fX);
+                fBetas = regression.estimateRegressionParameters();
+                fBetaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                double[] fBetaResiduals = regression.estimateResiduals();
+                fRSS = getRSS(fBetaResiduals);
+
+            } else {
+
+                fBetas = na2;
+                fBetaStandardErrors = na2;
+                fRSS = Double.NaN;
+
+            }
 
             // Estimate model significance
             double cmf_hP = getModelSignificance(cmfRSS, 4, hRSS, 5, nValidValues);
@@ -356,49 +560,51 @@ public class LinearModelRunnable implements Runnable {
                     .append(Utils.separator)
                     .append(genotypesProvider.getVariantID())
                     .append(Utils.separator)
-                    .append(hHistograms)
+                    .append(nValidValues)
                     .append(Utils.separator)
-                    .append(nValidValues);
+                    .append(altHistograms)
+                    .append(Utils.separator)
+                    .append(hHistograms);
             appendBetasAsString(
-                    stringBuilder, 
-                    hBetas, 
-                    hBetaStandardErrors, 
+                    stringBuilder,
+                    hBetas,
+                    hBetaStandardErrors,
                     hBetaP
             );
             stringBuilder
                     .append(Utils.separator)
                     .append(cmf_hP);
             appendBetasAsString(
-                    stringBuilder, 
-                    cmfBetas, 
-                    cmfBetaStandardErrors, 
+                    stringBuilder,
+                    cmfBetas,
+                    cmfBetaStandardErrors,
                     cmfBetaP
             );
             stringBuilder
                     .append(Utils.separator)
                     .append(cm_cmfP);
             appendBetasAsString(
-                    stringBuilder, 
-                    cmBetas, 
-                    cmBetaStandardErrors, 
+                    stringBuilder,
+                    cmBetas,
+                    cmBetaStandardErrors,
                     cmBetaP
             );
             stringBuilder
                     .append(Utils.separator)
                     .append(cf_cmfP);
             appendBetasAsString(
-                    stringBuilder, 
-                    cfBetas, 
-                    cfBetaStandardErrors, 
+                    stringBuilder,
+                    cfBetas,
+                    cfBetaStandardErrors,
                     cfBetaP
             );
             stringBuilder
                     .append(Utils.separator)
                     .append(mf_cmfP);
             appendBetasAsString(
-                    stringBuilder, 
-                    mfBetas, 
-                    mfBetaStandardErrors, 
+                    stringBuilder,
+                    mfBetas,
+                    mfBetaStandardErrors,
                     mfBetaP
             );
             stringBuilder
@@ -409,9 +615,9 @@ public class LinearModelRunnable implements Runnable {
                     .append(Utils.separator)
                     .append(c_cfP);
             appendBetasAsString(
-                    stringBuilder, 
-                    cBetas, 
-                    cBetaStandardErrors, 
+                    stringBuilder,
+                    cBetas,
+                    cBetaStandardErrors,
                     cBetaP
             );
             stringBuilder
@@ -422,9 +628,9 @@ public class LinearModelRunnable implements Runnable {
                     .append(Utils.separator)
                     .append(m_mfP);
             appendBetasAsString(
-                    stringBuilder, 
-                    mBetas, 
-                    mBetaStandardErrors, 
+                    stringBuilder,
+                    mBetas,
+                    mBetaStandardErrors,
                     mBetaP
             );
             stringBuilder
@@ -435,9 +641,9 @@ public class LinearModelRunnable implements Runnable {
                     .append(Utils.separator)
                     .append(f_mfP);
             appendBetasAsString(
-                    stringBuilder, 
-                    fBetas, 
-                    fBetaStandardErrors, 
+                    stringBuilder,
+                    fBetas,
+                    fBetaStandardErrors,
                     fBetaP
             );
             String line = stringBuilder.toString();
@@ -447,8 +653,9 @@ public class LinearModelRunnable implements Runnable {
     }
 
     /**
-     * Appends the betas with se and significance to the stringBuilder with preceeding separators.
-     * 
+     * Appends the betas with se and significance to the stringBuilder with
+     * preceeding separators.
+     *
      * @param stringBuilder the string builder
      * @param betas estimation of the betas
      * @param betaStandardErrors standard errors of the beta estimation
@@ -461,14 +668,14 @@ public class LinearModelRunnable implements Runnable {
             double[] betaP
     ) {
 
-        for (int i = 0; i < betas.length-1; i++) {
+        for (int i = 0; i < betas.length - 1; i++) {
 
             stringBuilder.append(Utils.separator);
-            stringBuilder.append(betas[i+1]);
+            stringBuilder.append(betas[i + 1]);
             stringBuilder.append(Utils.separator);
-            stringBuilder.append(betaStandardErrors[i+1]);
+            stringBuilder.append(betaStandardErrors[i + 1]);
             stringBuilder.append(Utils.separator);
-            stringBuilder.append(betaP[i+1]);
+            stringBuilder.append(betaP[i + 1]);
 
         }
     }
@@ -493,6 +700,12 @@ public class LinearModelRunnable implements Runnable {
             int p2,
             int n
     ) {
+        
+        if (Double.isNaN(model1RSS) || Double.isNaN(model2RSS)) {
+            
+            return Double.NaN;
+            
+        }
 
         double numeratorDegreesOfFreedom = p2 - p1;
         double denominatorDegreesOfFreedom = n - p2;
@@ -537,6 +750,12 @@ public class LinearModelRunnable implements Runnable {
             double betaSE,
             int degreesOfFreedom
     ) {
+        
+        if (Double.isNaN(beta) || Double.isNaN(betaSE)) {
+            
+            return Double.NaN;
+            
+        }
 
         double p = Double.NaN;
 
