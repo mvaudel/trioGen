@@ -721,9 +721,9 @@ motherDF <- phenoDF %>%
     )
 
 motherModel <- gamlss(
-    formula = mother_delta_bmi ~ fp(z_mother_bmi),
-    sigma.formula = ~fp(z_mother_bmi),
-    family = LOGNO,
+    formula = mother_delta_bmi ~ cs(z_mother_bmi),
+    sigma.formula = ~cs(z_mother_bmi),
+    family = NO,
     data = motherDF
 )
 
@@ -738,6 +738,9 @@ motherDF$z_mother_delta_bmi = centiles.pred(
 motherDF %>% 
     select(
         child_SentrixID, z_mother_delta_bmi
+    ) %>%
+    mutate(
+        z_mother_delta_bmi = ifelse(is.infinite(z_mother_delta_bmi), NA, z_mother_delta_bmi)
     ) -> motherDF
 
 phenoDF %>%
@@ -766,17 +769,17 @@ fatherModel <- gamlss(
     data = fatherDF
 )
 
-fatherDF$z_bmi = centiles.pred(
+fatherDF$z_father_bmi = centiles.pred(
     obj = fatherModel, 
     xname = "father_age", 
     xvalues = fatherDF$father_age, 
-    yval = motherDF$father_bmi, 
+    yval = fatherDF$father_bmi, 
     type = "z-scores"
 )
 
 fatherDF %>% 
     select(
-        child_SentrixID, z_bmi
+        child_SentrixID, z_father_bmi
     ) -> fatherDF
 
 phenoDF %>%
