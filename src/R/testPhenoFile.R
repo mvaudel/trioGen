@@ -1,0 +1,507 @@
+##
+#
+# This script creates pheno files to test TrioGen.
+#
+##
+
+# Libraries
+
+library(scales, lib.loc = "~/R")
+library(backports, lib = "~/R")
+library(vctrs, lib = "~/R")
+library(crayon, lib = "~/R")
+library(dplyr, lib = "~/R")
+library(gamlss.data, lib = "~/R")
+library(gamlss.dist, lib = "~/R")
+library(gamlss, lib = "~/R")
+library(withr, lib.loc = "~/R")
+library(labeling, lib.loc = "~/R")
+library(digest, lib.loc = "~/R")
+library(reshape2, lib.loc = "~/R")
+library(ggplot2, lib.loc = "~/R")
+library(grid, lib.loc = "~/R")
+library(scico, lib.loc = "~/R")
+library(gtable, lib.loc = "~/R")
+library(conflicted, lib.loc = "~/R")
+
+conflict_prefer("filter", "dplyr")
+conflict_prefer("select", "dplyr")
+
+
+# Parameters
+
+timePoints <- c("Birth", "6 w", "3 m", "6 m", "8 m", "1 y", "1.5 y", "2 y", "3 y", "5 y", "7 y", "8 y")
+
+theme_set(theme_bw(base_size = 13))
+
+
+# Paths
+
+phenoFolder <- "/mnt/archive/moba/pheno/v10/V10_1.0.0-190506"
+adhdCasesFile <- "/mnt/archive/TED/ted-aux/connections/PDB1382_toDECODE_Iceland_adhd_cases.csv"
+adhdBridgeFile <- "/mnt/archive/TED/ted-aux/connections/321-FinalDelJan2017-5410PNs-Sample_Map.txt"
+pcaFile <- "/mnt/archive/MOBAGENETICS/genotypes-base/aux/pca/mobagen-total/mobagen-total-proj-pc"
+
+docsFolder <- "docs/pheno"
+
+
+# Load data
+
+print(paste0(Sys.time(), "    Loading data"))
+
+idDF <- read.table(
+    file = file.path(phenoFolder, "id.gz"),
+    header = T,
+    sep = "\t",
+    stringsAsFactors = F
+) %>%
+    filter(
+        !is.na(child_SentrixID)
+    ) %>%
+    mutate(
+        sex_number = as.numeric(factor(sex, levels = c("Boy", "Girl"))),
+        child_genotyping_batch = ifelse(!is.na(child_SentrixID) & !is.na(child_Harvest_SentrixID) & child_SentrixID == child_Harvest_SentrixID, "Harvest",
+                                        ifelse(!is.na(child_SentrixID) & !is.na(child_Rotterdam1_SentrixID) & child_SentrixID == child_Rotterdam1_SentrixID, "Rotterdam1",
+                                               ifelse(!is.na(child_SentrixID) & !is.na(child_Rotterdam2_SentrixID) & child_SentrixID == child_Rotterdam2_SentrixID, "Rotterdam2",
+                                                      ifelse(!is.na(child_SentrixID) & !is.na(child_NormentMay16_SentrixID) & child_SentrixID == child_NormentMay16_SentrixID, "NormentMay16",
+                                                             ifelse(!is.na(child_SentrixID) & !is.na(child_NormentFeb18_SentrixID) & child_SentrixID == child_NormentFeb18_SentrixID, "NormentFeb18",
+                                                                    ifelse(!is.na(child_SentrixID) & !is.na(child_Ted_SentrixID) & child_SentrixID == child_Ted_SentrixID, "Ted",
+                                                                           NA
+                                                                    )  
+                                                             )    
+                                                      )    
+                                               )   
+                                        )
+        ),
+        child_genotyping_batch_number = as.numeric(
+            factor(
+                child_genotyping_batch
+            )
+        )
+    )
+
+lwDF <- read.table(
+    file = file.path(phenoFolder, "length_weight_bmi.gz"),
+    header = T,
+    sep = "\t",
+    stringsAsFactors = F
+) %>%
+    filter(
+        !is.na(child_SentrixID)
+    ) %>%
+    select(
+        child_SentrixID,
+        starts_with("length"),
+        starts_with("weight")
+    )
+
+pregnancyDF <- read.table(
+    file = file.path(phenoFolder, "pregnancy.gz"),
+    header = T,
+    sep = "\t",
+    stringsAsFactors = F
+) %>%
+    select(
+        child_SentrixID,
+        pregnancy_duration
+    )
+
+deliveryDF <- read.table(
+    file = file.path(phenoFolder, "delivery.gz"),
+    header = T,
+    sep = "\t",
+    stringsAsFactors = F
+) %>%
+    select(
+        child_SentrixID,
+        placenta_weight,
+        umbilical_chord_length
+    )
+
+childNutritionDF <- read.table(
+    file = file.path(phenoFolder, "child_nutrition.gz"),
+    header = T,
+    sep = "\t",
+    stringsAsFactors = F
+) %>%
+    filter(
+        !is.na(child_SentrixID)
+    ) %>% 
+    select(
+        child_SentrixID,
+        breastmilk_first_week,
+        sugarwater_first_week,
+        formula_first_week,
+        breastmilk_0m,
+        breastmilk_1m,
+        breastmilk_2m,
+        breastmilk_3m,
+        breastmilk_4m,
+        breastmilk_5m,
+        breastmilk_6m,
+        breastmilk_6_8m,
+        breastmilk_9_11m,
+        breastmilk_12_14m,
+        breastmilk_15_18m,
+        formula_freq_6m,
+        breastmilk_freq_18m
+    ) %>%
+    mutate(
+        sugarwater_first_week = ifelse(!is.na(sugarwater_first_week), 1, 0),
+        formula_first_week = ifelse(!is.na(formula_first_week), 1, 0),
+        breastmilk_0m = ifelse(!is.na(breastmilk_first_week), ifelse(!is.na(breastmilk_0m), 1, 0), NA),
+        breastmilk_1m = ifelse(!is.na(breastmilk_first_week), ifelse(!is.na(breastmilk_1m), 1, 0), NA),
+        breastmilk_2m = ifelse(!is.na(breastmilk_first_week), ifelse(!is.na(breastmilk_2m), 1, 0), NA),
+        breastmilk_3m = ifelse(!is.na(breastmilk_first_week), ifelse(!is.na(breastmilk_3m), 1, 0), NA),
+        breastmilk_4m = ifelse(!is.na(breastmilk_first_week), ifelse(!is.na(breastmilk_4m), 1, 0), NA),
+        breastmilk_5m = ifelse(!is.na(breastmilk_first_week), ifelse(!is.na(breastmilk_5m), 1, 0), NA),
+        breastmilk_6m = ifelse(!is.na(breastmilk_first_week), ifelse(!is.na(breastmilk_6m), 1, 0), NA),
+        breastmilk_6_8m = ifelse(!is.na(breastmilk_first_week), ifelse(!is.na(breastmilk_6_8m), 1, 0), NA),
+        breastmilk_9_11m = ifelse(!is.na(breastmilk_first_week), ifelse(!is.na(breastmilk_9_11m), 1, 0), NA),
+        breastmilk_12_14m = ifelse(!is.na(breastmilk_first_week), ifelse(!is.na(breastmilk_12_14m), 1, 0), NA),
+        breastmilk_15_18m = ifelse(!is.na(breastmilk_first_week), ifelse(!is.na(breastmilk_15_18m), 1, 0), NA),
+        breastmilk_duration = ifelse(!is.na(breastmilk_first_week), ifelse(breastmilk_15_18m == 1, 16.5,
+                                                                           ifelse(breastmilk_12_14m == 1, 13,
+                                                                                  ifelse(breastmilk_9_11m == 1, 10,
+                                                                                         ifelse(breastmilk_6_8m == 1, 7,
+                                                                                                ifelse(breastmilk_5m == 1, 6, 
+                                                                                                       NA))))), NA),
+        formula_freq_6m = factor(formula_freq_6m, levels = c("Never / seldom", "1-3 times a week", "4-6 times a week", "At least once a day")),
+        breastmilk_freq_18m = factor(breastmilk_freq_18m, levels = c("Never / seldom", "1-3 times a week", "4-6 times a week", "At least once a day"))
+    ) %>% 
+    select(
+        child_SentrixID,
+        breastmilk_duration,
+        formula_freq_6m
+    )
+
+levels(childNutritionDF$formula_freq_6m) <- c(0, 2, 5, 7)
+levels(childNutritionDF$breastmilk_freq_18m) <- c(0, 2, 5, 7)
+
+childNutritionDF$formula_freq_6m <- as.numeric(childNutritionDF$formula_freq_6m)
+childNutritionDF$breastmilk_freq_18m <- as.numeric(childNutritionDF$breastmilk_freq_18m)
+
+
+# Filter out outliers
+
+print(paste0(Sys.time(), "    Excluding cases"))
+
+adhdStatusDF <- read.table(
+    file = adhdCasesFile, 
+    header = T, 
+    stringsAsFactors = F,
+    sep = ","
+)
+
+adhdSamplemap <- read.table(
+    file = adhdBridgeFile, 
+    header = T, 
+    stringsAsFactors = F, 
+    sep='\t'
+)
+
+adhdDF <- merge(
+    x = adhdSamplemap, 
+    y = adhdStatusDF, 
+    by.x="ID", 
+    by.y="RetrievalDetail_ID"
+)
+
+nStart <- nrow(idDF)
+
+idDF %>%
+    filter(
+        !child_Ted_SentrixID %in% adhdDF$SentrixPosition
+    ) -> idDF
+
+nEnd <- nrow(idDF)
+
+print(paste0("Number of ADHD cases excluded: ", nStart - nEnd))
+
+nStart <- nrow(idDF)
+
+idDF %>%
+    filter(
+        child_core == 1
+    ) -> idDF
+
+nEnd <- nrow(idDF)
+
+print(paste0("Number of ethnic outliers excluded: ", nStart - nEnd))
+print(paste0("Number of children in pheno file: ", nrow(idDF)))
+
+
+# Merge
+
+print(paste0(Sys.time(), "    Merging"))
+
+phenoDF <- idDF %>% 
+    select(
+        child_SentrixID, sex_number, child_genotyping_batch_number
+    ) %>% 
+    left_join(
+        y = childNutritionDF,
+        by = "child_SentrixID"
+    ) %>%
+    left_join(
+        y = lwDF,
+        by = "child_SentrixID"
+    ) %>%
+    left_join(
+        y = pregnancyDF,
+        by = "child_SentrixID"
+    ) %>%
+    left_join(
+        y = deliveryDF,
+        by = "child_SentrixID"
+    )
+
+
+# Compute BMI
+
+for (ageI in 0:11) {
+    
+    lengthColumn <- paste0("length", ageI)
+    weightColumn <- paste0("weight", ageI)
+    bmiColumn <- paste0("bmi", ageI)
+    
+    phenoDF[[bmiColumn]] <- ifelse(!is.na(phenoDF[[lengthColumn]]) & !is.na(phenoDF[[weightColumn]]), 10000 * phenoDF[[weightColumn]] / (phenoDF[[lengthColumn]] * phenoDF[[lengthColumn]]), NA)
+    
+}
+
+phenoDF %>%
+    select(
+        -starts_with("length"), -starts_with("weight")
+    ) -> phenoDF
+
+
+# Standardize umbilical chord length
+
+maleDF <- phenoDF %>%
+    filter(
+        sex_number == 1
+    ) %>%
+    select(
+        child_SentrixID, pregnancy_duration, umbilical_chord_length
+    ) %>%
+    filter(
+        !is.na(pregnancy_duration) & !is.na(umbilical_chord_length)
+    )
+femaleDF <- phenoDF %>%
+    filter(
+        sex_number == 2
+    ) %>%
+    select(
+        child_SentrixID, pregnancy_duration, umbilical_chord_length
+    ) %>%
+    filter(
+        !is.na(pregnancy_duration) & !is.na(umbilical_chord_length)
+    )
+
+maleModel <- gamlss(
+    formula = umbilical_chord_length ~ fp(pregnancy_duration),
+    sigma.formula = ~fp(pregnancy_duration),
+    family = BCT,
+    data = maleDF
+)
+femaleModel <- gamlss(
+    formula = umbilical_chord_length ~ fp(pregnancy_duration),
+    sigma.formula = ~fp(pregnancy_duration),
+    family = BCT,
+    data = femaleDF
+)
+
+maleDF$z_umbilical_chord_length = centiles.pred(
+    obj = maleModel, 
+    xname = "pregnancy_duration", 
+    xvalues = maleDF$pregnancy_duration, 
+    yval = maleDF$umbilical_chord_length, 
+    type = "z-scores"
+)
+
+femaleDF$z_umbilical_chord_length = centiles.pred(
+    obj = femaleModel, 
+    xname = "pregnancy_duration", 
+    xvalues = femaleDF$pregnancy_duration, 
+    yval = femaleDF$umbilical_chord_length, 
+    type = "z-scores"
+)
+
+maleDF %>% 
+    select(
+        child_SentrixID, z_umbilical_chord_length
+    ) -> maleDF
+femaleDF %>% 
+    select(
+        child_SentrixID, z_umbilical_chord_length
+    ) -> femaleDF
+zDF <- rbind(maleDF, femaleDF)
+
+phenoDF %>%
+    left_join(
+        zDF,
+        by = "child_SentrixID"
+    ) -> phenoDF
+
+
+# Standardize placental weight
+
+maleDF <- phenoDF %>%
+    filter(
+        sex_number == 1
+    ) %>%
+    select(
+        child_SentrixID, pregnancy_duration, placenta_weight
+    ) %>%
+    filter(
+        !is.na(pregnancy_duration) & !is.na(placenta_weight)
+    )
+femaleDF <- phenoDF %>%
+    filter(
+        sex_number == 2
+    ) %>%
+    select(
+        child_SentrixID, pregnancy_duration, placenta_weight
+    ) %>%
+    filter(
+        !is.na(pregnancy_duration) & !is.na(placenta_weight)
+    )
+
+maleModel <- gamlss(
+    formula = placenta_weight ~ fp(pregnancy_duration),
+    sigma.formula = ~fp(pregnancy_duration),
+    family = BCT,
+    data = maleDF
+)
+femaleModel <- gamlss(
+    formula = placenta_weight ~ fp(pregnancy_duration),
+    sigma.formula = ~fp(pregnancy_duration),
+    family = BCT,
+    data = femaleDF
+)
+
+maleDF$z_placenta_weight = centiles.pred(
+    obj = maleModel, 
+    xname = "pregnancy_duration", 
+    xvalues = maleDF$pregnancy_duration, 
+    yval = maleDF$placenta_weight, 
+    type = "z-scores"
+)
+
+femaleDF$z_placenta_weight = centiles.pred(
+    obj = femaleModel, 
+    xname = "pregnancy_duration", 
+    xvalues = femaleDF$pregnancy_duration, 
+    yval = femaleDF$placenta_weight, 
+    type = "z-scores"
+)
+
+maleDF %>% 
+    select(
+        child_SentrixID, z_placenta_weight
+    ) -> maleDF
+femaleDF %>% 
+    select(
+        child_SentrixID, z_placenta_weight
+    ) -> femaleDF
+zDF <- rbind(maleDF, femaleDF)
+
+phenoDF %>%
+    left_join(
+        zDF,
+        by = "child_SentrixID"
+    ) -> phenoDF
+
+
+# Standardize BMI
+
+for (ageI in 0:11) {
+    
+    bmiColumn <- paste0("bmi", ageI)
+    zBmiColumn <- paste0("z_bmi", ageI)
+    
+    maleDF <- phenoDF %>%
+        filter(
+            sex_number == 1
+        ) %>%
+        select(
+            child_SentrixID, pregnancy_duration, !!sym(bmiColumn)
+        ) %>%
+        filter(
+            !is.na(pregnancy_duration) & !is.na(!!sym(bmiColumn))
+        )
+    femaleDF <- phenoDF %>%
+        filter(
+            sex_number == 2
+        ) %>%
+        select(
+            child_SentrixID, pregnancy_duration, !!sym(bmiColumn)
+        ) %>%
+        filter(
+            !is.na(pregnancy_duration) & !is.na(!!sym(bmiColumn))
+        )
+    
+    maleModel <- gamlss(
+        formula = as.formula(paste0(bmiColumn, " ~ fp(pregnancy_duration)")),
+        sigma.formula = ~fp(pregnancy_duration),
+        family = BCT,
+        data = maleDF
+    )
+    femaleModel <- gamlss(
+        formula = as.formula(paste0(bmiColumn, " ~ fp(pregnancy_duration)")),
+        sigma.formula = ~fp(pregnancy_duration),
+        family = BCT,
+        data = femaleDF
+    )
+    
+    maleDF[[zBmiColumn]] = centiles.pred(
+        obj = maleModel, 
+        xname = "pregnancy_duration", 
+        xvalues = maleDF$pregnancy_duration, 
+        yval = maleDF[[bmiColumn]], 
+        type = "z-scores"
+    )
+    
+    femaleDF[[zBmiColumn]] = centiles.pred(
+        obj = femaleModel, 
+        xname = "pregnancy_duration", 
+        xvalues = femaleDF$pregnancy_duration, 
+        yval = femaleDF[[bmiColumn]], 
+        type = "z-scores"
+    )
+    
+    maleDF %>% 
+        select(
+            child_SentrixID, !!sym(zBmiColumn)
+        ) -> maleDF
+    femaleDF %>% 
+        select(
+            child_SentrixID, !!sym(zBmiColumn)
+        ) -> femaleDF
+    zDF <- rbind(maleDF, femaleDF)
+    
+    phenoDF %>%
+        left_join(
+            zDF,
+            by = "child_SentrixID"
+        ) -> phenoDF
+    
+}
+
+
+# Export plots
+
+
+
+# Export DF
+
+write.table(
+    x = phenoDF,
+    file = "tmp/phenos",
+    quote = F,
+    sep = "\t",
+    row.names = F
+)
+
+
+
