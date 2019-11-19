@@ -162,7 +162,7 @@ public class PhenotypesHandler {
 
                         String valueString = lineContent[phenoColumn.getValue()];
 
-                        if (!valueString.equals("NA")) {
+                        if (!valueString.equals("NA") && !valueString.equals("Inf") && !valueString.equals("-Inf")) {
 
                             double newValue;
                             try {

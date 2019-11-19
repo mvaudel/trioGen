@@ -804,6 +804,8 @@ write.table(
 
 # Export docs
 
+print(paste0(Sys.time(), "    Writing docs"))
+
 write(x = "# TrioGen test phenotypes\n", file = docsFile, append = F)
 write(x = paste0("Genotyped samples only, ADHD cases and ethnic outliers removed (N = ", nrow(phenoDF), ")\n\n"), file = docsFile, append = T)
 
