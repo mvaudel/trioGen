@@ -30,6 +30,139 @@ conflict_prefer("select", "dplyr")
 
 # Functions
 
+#' Builds a plot comparing two phenotypes.
+#' 
+#' @param valuesX the values in x, must be numeric
+#' @param valuesY the values in y, must be numeric
+#' @param labelX the label for the x axis
+#' @param labelY the label for the y axis
+#' @param categories a vector to use to highlight categories, must be numeric
+#' @param labelCat the label for the categories
+#' 
+#' @return returns the plot as grob
+writePlot <- function(
+    valuesX, 
+    valuesY, 
+    labelX, 
+    labelY
+) {
+    
+    plotDF <- data.frame(
+        x = valuesX,
+        y = valuesY,
+        stringsAsFactors = F
+    ) %>%
+        arrange(
+            rev(abs(y - x))
+        )
+    
+    # Build the scatter plot
+    
+    scatterPlot <- ggplot(
+        data = plotDF
+    ) +
+        geom_point(
+            mapping = aes(
+                x = mRNA_Spearman_correlation,
+                y = protein_Spearman_correlation
+            ),
+            col = "black",
+            alpha = 0.1
+        ) +
+        geom_density_2d(
+            mapping = aes(
+                x = mRNA_Spearman_correlation,
+                y = protein_Spearman_correlation
+            ),
+            col = "white",
+        ) +
+        scale_x_continuous(
+            name = labelX
+        ) +
+        scale_y_continuous(
+            name = labelY
+        ) +
+        theme(
+            legend.position = "none"
+        )
+    
+    
+    # Build the density plots
+    
+    xDensityPlot <- ggplot(
+        data = plotDF
+    ) + theme_minimal() + 
+        geom_density(
+            mapping = aes(
+                x = x
+            ),
+            fill = "black",
+            alpha = 0.1
+        ) +
+        scale_x_continuous(
+            expand = c(0, 0)
+        ) +
+        scale_y_continuous(
+            expand = c(0, 0)
+        ) +
+        theme(
+            axis.title = element_blank(),
+            axis.text = element_blank(),
+            panel.grid = element_blank()
+        )
+    
+    yDensityPlot <- ggplot(
+        data = plotDF
+    ) + theme_minimal() + 
+        geom_density(
+            mapping = aes(
+                x = y
+            ),
+            fill = "black",
+            alpha = 0.1
+        ) +
+        scale_x_continuous(
+            expand = c(0, 0)
+        ) +
+        scale_y_continuous(
+            expand = c(0, 0)
+        ) +
+        theme(
+            axis.title = element_blank(),
+            axis.text = element_blank(),
+            panel.grid = element_blank()
+        ) + 
+        coord_flip()
+    
+    
+    # Make grobs from plots
+    
+    scatterGrob <- ggplotGrob(scatterPlot)
+    xDensityGrob <- ggplotGrob(xDensityPlot)
+    proteinDensityGrob <- ggplotGrob(yDensityPlot)
+    
+    
+    # Insert the densities as new row and column in the scatter grob
+    
+    mergedGrob <- rbind(scatterGrob[1:6, ], xDensityGrob[7, ], scatterGrob[7:nrow(scatterGrob), ], size = "last")
+    mergedGrob$heights[7] <- unit(0.15, "null")
+    
+    proteinDensityGrob <- gtable_add_rows(
+        x = proteinDensityGrob, 
+        heights = unit(rep(0, nrow(mergedGrob) - nrow(proteinDensityGrob)), "null"), 
+        pos = 0
+    )
+    
+    mergedGrob <- cbind(mergedGrob[, 1:5], yDensityGrob[, 5], mergedGrob[, 6:ncol(mergedGrob)], size = "first")
+    mergedGrob$widths[6] <- unit(0.15, "null")
+    
+    
+    # Plot
+    
+    return(mergedGrob)
+    
+}
+
 
 # Parameters
 
@@ -169,8 +302,7 @@ childNutritionDF <- read.table(
                                                                                          ifelse(breastmilk_6_8m == 1, 7,
                                                                                                 ifelse(breastmilk_5m == 1, 6, 
                                                                                                        NA))))), NA),
-        formula_freq_6m = factor(formula_freq_6m, levels = c("Never / seldom", "1-3 times a week", "4-6 times a week", "At least once a day")),
-        breastmilk_freq_18m = factor(breastmilk_freq_18m, levels = c("Never / seldom", "1-3 times a week", "4-6 times a week", "At least once a day"))
+        formula_freq_6m = factor(formula_freq_6m, levels = c("Never / seldom", "1-3 times a week", "4-6 times a week", "At least once a day"))
     ) %>% 
     select(
         child_SentrixID,
@@ -179,9 +311,7 @@ childNutritionDF <- read.table(
     )
 
 levels(childNutritionDF$formula_freq_6m) <- c(0, 2, 5, 7)
-
 childNutritionDF$formula_freq_6m <- as.numeric(childNutritionDF$formula_freq_6m)
-childNutritionDF$breastmilk_freq_18m <- as.numeric(childNutritionDF$breastmilk_freq_18m)
 
 
 # Filter out outliers
