@@ -28,6 +28,9 @@ conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
 
 
+# Functions
+
+
 # Parameters
 
 timePoints <- c("Birth", "6 w", "3 m", "6 m", "8 m", "1 y", "1.5 y", "2 y", "3 y", "5 y", "7 y", "8 y")
@@ -176,7 +179,6 @@ childNutritionDF <- read.table(
     )
 
 levels(childNutritionDF$formula_freq_6m) <- c(0, 2, 5, 7)
-levels(childNutritionDF$breastmilk_freq_18m) <- c(0, 2, 5, 7)
 
 childNutritionDF$formula_freq_6m <- as.numeric(childNutritionDF$formula_freq_6m)
 childNutritionDF$breastmilk_freq_18m <- as.numeric(childNutritionDF$breastmilk_freq_18m)
@@ -259,6 +261,8 @@ phenoDF <- idDF %>%
 
 # Compute BMI
 
+print(paste0(Sys.time(), "    Computing BMI"))
+
 for (ageI in 0:11) {
     
     lengthColumn <- paste0("length", ageI)
@@ -276,6 +280,8 @@ phenoDF %>%
 
 
 # Standardize umbilical chord length
+
+print(paste0(Sys.time(), "    Standardizing umbilical chord length"))
 
 maleDF <- phenoDF %>%
     filter(
@@ -344,7 +350,9 @@ phenoDF %>%
     ) -> phenoDF
 
 
-# Standardize placental weight
+# Standardize placenta weight
+
+print(paste0(Sys.time(), "    Standardizing placenta weight"))
 
 maleDF <- phenoDF %>%
     filter(
@@ -420,6 +428,8 @@ for (ageI in 0:11) {
     bmiColumn <- paste0("bmi", ageI)
     zBmiColumn <- paste0("z_bmi", ageI)
     
+    print(paste0(Sys.time(), "    Standardizing ", bmiColumn))
+    
     maleDF <- phenoDF %>%
         filter(
             sex_number == 1
@@ -494,6 +504,8 @@ for (ageI in 0:11) {
 
 
 # Export DF
+
+print(paste0(Sys.time(), "    Exporting"))
 
 write.table(
     x = phenoDF,
