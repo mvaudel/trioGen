@@ -688,7 +688,7 @@ motherModel <- gamlss(
     data = motherDF
 )
 
-motherDF$z_bmi = centiles.pred(
+motherDF$z_mother_bmi = centiles.pred(
     obj = motherModel, 
     xname = "mother_age", 
     xvalues = motherDF$mother_age, 
@@ -698,7 +698,7 @@ motherDF$z_bmi = centiles.pred(
 
 motherDF %>% 
     select(
-        child_SentrixID, z_bmi
+        child_SentrixID, z_mother_bmi
     ) -> motherDF
 
 phenoDF %>%
