@@ -422,9 +422,9 @@ phenoDF <- idDF %>%
     )
 
 
-# Compute BMI
+# Compute child BMI
 
-print(paste0(Sys.time(), "    Computing BMI"))
+print(paste0(Sys.time(), "    Computing child BMI"))
 
 for (ageI in 0:11) {
     
@@ -714,30 +714,30 @@ print(paste0(Sys.time(), "    Standardizing mother delta BMI"))
 
 motherDF <- phenoDF %>%
     select(
-        child_SentrixID, mother_delta_bmi, z_bmi
+        child_SentrixID, mother_delta_bmi, z_mother_bmi
     ) %>%
     filter(
-        !is.na(z_bmi) & !is.na(mother_bmi)
+        !is.na(z_mother_bmi) & !is.na(mother_delta_bmi)
     )
 
 motherModel <- gamlss(
-    formula = mother_delta_bmi ~ fp(z_bmi),
-    sigma.formula = ~fp(z_bmi),
+    formula = mother_delta_bmi ~ fp(z_mother_bmi),
+    sigma.formula = ~fp(z_mother_bmi),
     family = LOGNO,
     data = motherDF
 )
 
-motherDF$z_delta_bmi = centiles.pred(
+motherDF$z_mother_delta_bmi = centiles.pred(
     obj = motherModel, 
-    xname = "z_bmi", 
-    xvalues = motherDF$z_bmi, 
+    xname = "z_mother_bmi", 
+    xvalues = motherDF$z_mother_bmi, 
     yval = motherDF$mother_delta_bmi, 
     type = "z-scores"
 )
 
 motherDF %>% 
     select(
-        child_SentrixID, z_delta_bmi
+        child_SentrixID, z_mother_delta_bmi
     ) -> motherDF
 
 phenoDF %>%
