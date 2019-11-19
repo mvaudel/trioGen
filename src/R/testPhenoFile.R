@@ -24,32 +24,32 @@ library(scico, lib.loc = "~/R")
 library(gtable, lib.loc = "~/R")
 library(conflicted, lib.loc = "~/R")
 
+theme_set(theme_bw(base_size = 13))
+
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
 
 
 # Functions
 
-#' Builds a plot comparing two phenotypes.
+#' Builds a plot comparing two phenotypes and plots in the docs folder.
 #' 
-#' @param valuesX the values in x, must be numeric
-#' @param valuesY the values in y, must be numeric
+#' @param df the data frame containing the phenos
+#' @param pheno1 the name of the column in df to plot on the x axis
+#' @param pheno2 the name of the column in df to plot on the y axis
 #' @param labelX the label for the x axis
 #' @param labelY the label for the y axis
-#' @param categories a vector to use to highlight categories, must be numeric
-#' @param labelCat the label for the categories
-#' 
-#' @return returns the plot as grob
-writePlot <- function(
-    valuesX, 
-    valuesY, 
+plotPhenos <- function(
+    df,
+    pheno1, 
+    pheno2, 
     labelX, 
     labelY
 ) {
     
     plotDF <- data.frame(
-        x = valuesX,
-        y = valuesY,
+        x = df[[pheno1]],
+        y = df[[pheno2]],
         stringsAsFactors = F
     ) %>%
         arrange(
@@ -63,16 +63,16 @@ writePlot <- function(
     ) +
         geom_point(
             mapping = aes(
-                x = mRNA_Spearman_correlation,
-                y = protein_Spearman_correlation
+                x = x,
+                y = y
             ),
             col = "black",
             alpha = 0.1
-        ) +
+        ) + 
         geom_density_2d(
             mapping = aes(
-                x = mRNA_Spearman_correlation,
-                y = protein_Spearman_correlation
+                x = x,
+                y = y
             ),
             col = "white",
         ) +
@@ -139,7 +139,7 @@ writePlot <- function(
     
     scatterGrob <- ggplotGrob(scatterPlot)
     xDensityGrob <- ggplotGrob(xDensityPlot)
-    proteinDensityGrob <- ggplotGrob(yDensityPlot)
+    yDensityGrob <- ggplotGrob(yDensityPlot)
     
     
     # Insert the densities as new row and column in the scatter grob
@@ -147,9 +147,9 @@ writePlot <- function(
     mergedGrob <- rbind(scatterGrob[1:6, ], xDensityGrob[7, ], scatterGrob[7:nrow(scatterGrob), ], size = "last")
     mergedGrob$heights[7] <- unit(0.15, "null")
     
-    proteinDensityGrob <- gtable_add_rows(
-        x = proteinDensityGrob, 
-        heights = unit(rep(0, nrow(mergedGrob) - nrow(proteinDensityGrob)), "null"), 
+    yDensityGrob <- gtable_add_rows(
+        x = yDensityGrob, 
+        heights = unit(rep(0, nrow(mergedGrob) - nrow(yDensityGrob)), "null"), 
         pos = 0
     )
     
@@ -159,7 +159,13 @@ writePlot <- function(
     
     # Plot
     
-    return(mergedGrob)
+    png(
+        filename = file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")),
+        width = 800,
+        height = 600
+    )
+    grid.draw(mergedGrob)
+    dummy <- dev.off()
     
 }
 
@@ -584,13 +590,13 @@ for (ageI in 0:11) {
     maleModel <- gamlss(
         formula = as.formula(paste0(bmiColumn, " ~ fp(pregnancy_duration)")),
         sigma.formula = ~fp(pregnancy_duration),
-        family = BCT,
+        family = LOGNO,
         data = maleDF
     )
     femaleModel <- gamlss(
         formula = as.formula(paste0(bmiColumn, " ~ fp(pregnancy_duration)")),
         sigma.formula = ~fp(pregnancy_duration),
-        family = BCT,
+        family = LOGNO,
         data = femaleDF
     )
     
@@ -629,8 +635,134 @@ for (ageI in 0:11) {
 }
 
 
-# Export plots
+# Export docs
 
+pheno1 <- "pregnancy_duration"
+pheno2 <- "umbilical_chord_length"
+
+plotPhenos(
+    valuesX = pheno1,
+    valuesY = pheno2,
+    labelX = "Pregnancy Duration [Days]",
+    labelY = "Umbilical Cord Length [cm]"
+)
+
+pheno1 <- "pregnancy_duration"
+pheno2 <- "placenta_weight"
+
+plotPhenos(
+    valuesX = pheno1,
+    valuesY = pheno2,
+    labelX = "Pregnancy Duration [Days]",
+    labelY = "Placenta Weight [kg]"
+)
+
+pheno1 <- "umbilical_chord_length"
+pheno2 <- "placenta_weight"
+
+plotPhenos(
+    valuesX = pheno1,
+    valuesY = pheno2,
+    labelX = "Umbilical Cord Length [cm]",
+    labelY = "Placenta Weight [kg]"
+)
+
+pheno1 <- "umbilical_chord_length"
+pheno2 <- "z_umbilical_chord_length"
+
+plotPhenos(
+    valuesX = pheno1,
+    valuesY = pheno2,
+    labelX = "Umbilical Cord Length [cm]",
+    labelY = "Umbilical Cord Length [Z-score]"
+)
+
+pheno1 <- "pregnancy_duration"
+pheno2 <- "z_umbilical_chord_length"
+
+plotPhenos(
+    valuesX = pheno1,
+    valuesY = pheno2,
+    labelX = "Pregnancy Duration [Days]",
+    labelY = "Umbilical Cord Length [Z-score]"
+)
+
+pheno1 <- "pregnancy_duration"
+pheno2 <- "z_placenta_weight"
+
+plotPhenos(
+    valuesX = pheno1,
+    valuesY = pheno2,
+    labelX = "Pregnancy Duration [Days]",
+    labelY = "Placenta Weight [Z-score]"
+)
+
+pheno1 <- "z_umbilical_chord_length"
+pheno2 <- "z_placenta_weight"
+
+plotPhenos(
+    valuesX = pheno1,
+    valuesY = pheno2,
+    labelX = "Umbilical Cord Length [Z-score]",
+    labelY = "Placenta Weight [Z-score]"
+)
+
+pheno1 <- "z_umbilical_chord_length"
+pheno2 <- "z_placenta_weight"
+
+plotPhenos(
+    valuesX = pheno1,
+    valuesY = pheno2,
+    labelX = "Umbilical Cord Length [Z-score]",
+    labelY = "Placenta Weight [Z-score]"
+)
+
+pheno1 <- "pregnancy_duration"
+pheno2 <- "z_pregnancy_duration"
+
+plotPhenos(
+    valuesX = pheno1,
+    valuesY = pheno2,
+    labelX = "Pregnancy Duration [Days]",
+    labelY = "Pregnancy Duration [Z-score]"
+)
+
+for (ageI in 0:11) {
+    
+    bmiColumn <- paste0("bmi", ageI)
+    zBmiColumn <- paste0("z_bmi", ageI)
+    
+    pheno1 <- "pregnancy_duration"
+    pheno2 <- bmiColumn
+    
+    plotPhenos(
+        valuesX = pheno1,
+        valuesY = pheno2,
+        labelX = "Pregnancy Duration [Days]",
+        labelY = paste0("BMI ", timePoints[ageI + 1], " [kg/m2]")
+    )
+    
+    pheno1 <- "pregnancy_duration"
+    pheno2 <- zBmiColumn
+    
+    plotPhenos(
+        valuesX = pheno1,
+        valuesY = pheno2,
+        labelX = "Pregnancy Duration [Days]",
+        labelY = paste0("BMI ", timePoints[ageI + 1], " [Z-score]")
+    )
+    
+    pheno1 <- bmiColumn
+    pheno2 <- zBmiColumn
+    
+    plotPhenos(
+        valuesX = pheno1,
+        valuesY = pheno2,
+        labelX = paste0("BMI ", timePoints[ageI + 1], " [kg/m2]"),
+        labelY = paste0("BMI ", timePoints[ageI + 1], " [Z-score]")
+    )
+    
+}
 
 
 # Export DF
