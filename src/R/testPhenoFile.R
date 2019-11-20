@@ -810,13 +810,13 @@ write(x = "# TrioGen test phenotypes\n", file = docsFile, append = F)
 write(x = paste0("Genotyped samples only, ADHD cases and ethnic outliers removed (N = ", nrow(phenoDF), ")\n\n"), file = docsFile, append = T)
 
 write(x = paste0("Phenotypes version V10_1.0.0-190506, standardization using [GAMLSS](https://www.gamlss.com/).\n\n"), file = docsFile, append = T)
-write(x = paste0("| Name | variable | Formula | Distribution | Normalization | n |"), file = docsFile, append = T)
-write(x = paste0("| --------- | ------- | ------------ | ------------- | - |"), file = docsFile, append = T)
-write(x = paste0("| Standardized Mother BMI | z_mother_bmi | `mother_bmi ~ fp(mother_age)` | `LOGNO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_mother_bmi)), " |"), file = docsFile, append = T)
-write(x = paste0("| Standardized Mother Delta BMI | z_mother_delta_bmi | `mother_delta_bmi ~ cs(z_mother_bmi)` | `NO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_mother_delta_bmi)), " |"), file = docsFile, append = T)
-write(x = paste0("| Standardized Father BMI | z_father_bmi | `father_bmi ~ fp(father_age)` | `LOGNO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_father_bmi)), " |"), file = docsFile, append = T)
-write(x = paste0("| Standardized Placenta Weight | z_placenta_weight | `placenta_weight ~ fp(pregnancy_duration)` per child sex | `BCT` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_placenta_weight)), " |"), file = docsFile, append = T)
-write(x = paste0("| Standardized Umbilical Cord Length | z_umbilical_chord_length | `umbilical_chord_length ~ fp(pregnancy_duration)` per child sex | `BCT` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_umbilical_chord_length)), " |"), file = docsFile, append = T)
+write(x = paste0("| Name | variable | Formula | Distribution | Normalization | n |\n"), file = docsFile, append = T)
+write(x = paste0("| --------- | ------- | ------------ | ------------- | - |\n"), file = docsFile, append = T)
+write(x = paste0("| Standardized Mother BMI | z_mother_bmi | `mother_bmi ~ fp(mother_age)` | `LOGNO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_mother_bmi)), " |\n"), file = docsFile, append = T)
+write(x = paste0("| Standardized Mother Delta BMI | z_mother_delta_bmi | `mother_delta_bmi ~ cs(z_mother_bmi)` | `NO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_mother_delta_bmi)), " |\n"), file = docsFile, append = T)
+write(x = paste0("| Standardized Father BMI | z_father_bmi | `father_bmi ~ fp(father_age)` | `LOGNO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_father_bmi)), " |\n"), file = docsFile, append = T)
+write(x = paste0("| Standardized Placenta Weight | z_placenta_weight | `placenta_weight ~ fp(pregnancy_duration)` per child sex | `BCT` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_placenta_weight)), " |\n"), file = docsFile, append = T)
+write(x = paste0("| Standardized Umbilical Cord Length | z_umbilical_chord_length | `umbilical_chord_length ~ fp(pregnancy_duration)` per child sex | `BCT` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_umbilical_chord_length)), " |\n"), file = docsFile, append = T)
 
 for (ageI in 0:11) {
     
@@ -830,7 +830,7 @@ for (ageI in 0:11) {
     }
     formula <- paste0(variable, sigmaFormula)
     
-    write(x = paste0("| ", phenoName, " | ", variable, " | `", formula, "` per child sex | `LOGNO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF[[variable]])), " |"), file = docsFile, append = T)
+    write(x = paste0("| ", phenoName, " | ", variable, " | `", formula, "` per child sex | `LOGNO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF[[variable]])), " |\n"), file = docsFile, append = T)
     
 }
 
@@ -847,7 +847,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Mother BMI vs. Mother Age\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "mother_age"
 pheno2 <- "z_mother_bmi"
@@ -861,7 +861,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Mother BMI vs. Mother Age\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "mother_bmi"
 pheno2 <- "z_mother_bmi"
@@ -875,7 +875,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Mother BMI vs. Mother BMI\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "z_mother_bmi"
 pheno2 <- "mother_delta_bmi"
@@ -889,7 +889,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Mother delta BMI vs. Standardized Mother BMI\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "z_mother_bmi"
 pheno2 <- "z_mother_delta_bmi"
@@ -903,7 +903,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Mother delta BMI vs. Standardized Mother BMI\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "mother_delta_bmi"
 pheno2 <- "z_mother_delta_bmi"
@@ -917,7 +917,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Mother delta BMI vs. Mother delta BMI\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "father_age"
 pheno2 <- "father_bmi"
@@ -931,7 +931,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Father BMI vs. Father Age\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "father_age"
 pheno2 <- "z_father_bmi"
@@ -945,7 +945,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Father BMI vs. Father Age\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "father_bmi"
 pheno2 <- "z_father_bmi"
@@ -959,7 +959,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Father BMI vs. Father BMI\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "pregnancy_duration"
 pheno2 <- "umbilical_chord_length"
@@ -973,7 +973,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Umbilical Cord Length vs. Pregnancy Duration\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "pregnancy_duration"
 pheno2 <- "placenta_weight"
@@ -987,7 +987,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Placenta Weight vs. Pregnancy Duration\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "umbilical_chord_length"
 pheno2 <- "placenta_weight"
@@ -1001,7 +1001,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Placenta Weight vs. Umbilical Cord Length\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "umbilical_chord_length"
 pheno2 <- "z_umbilical_chord_length"
@@ -1015,7 +1015,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Umbilical Cord Length vs. Umbilical Cord Length\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
 
 pheno1 <- "pregnancy_duration"
 pheno2 <- "z_umbilical_chord_length"
@@ -1029,7 +1029,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Umbilical Cord Length vs. Pregnancy Duration\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "pregnancy_duration"
 pheno2 <- "z_placenta_weight"
@@ -1043,7 +1043,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Placenta Weight vs. Pregnancy Duration\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "z_umbilical_chord_length"
 pheno2 <- "z_placenta_weight"
@@ -1057,7 +1057,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Placenta Weight vs. Standardized Umbilical Cord Length\n"), file = docsFile, append = T)
-write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 for (ageI in 0:11) {
     
@@ -1076,7 +1076,7 @@ for (ageI in 0:11) {
     )
     
     write(x = paste0("### BMI at ", timePoints[ageI + 1], " vs. Pregnancy Duration\n"), file = docsFile, append = T)
-    write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+    write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
     
     pheno1 <- "pregnancy_duration"
     pheno2 <- zBmiColumn
@@ -1090,7 +1090,7 @@ for (ageI in 0:11) {
     )
     
     write(x = paste0("### Standardized BMI at ", timePoints[ageI + 1], " vs. Pregnancy Duration\n"), file = docsFile, append = T)
-    write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+    write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
     
     pheno1 <- bmiColumn
     pheno2 <- zBmiColumn
@@ -1104,7 +1104,7 @@ for (ageI in 0:11) {
     )
     
     write(x = paste0("### Standardized BMI at ", timePoints[ageI + 1], " vs. BMI at ", timePoints[ageI + 1], "\n"), file = docsFile, append = T)
-    write(x = paste0("![](", file.path(docsFolder, paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+    write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
     
 }
 
