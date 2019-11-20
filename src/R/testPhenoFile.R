@@ -66,6 +66,14 @@ plotPhenos <- function(
             rev(abs(y - x))
         )
     
+    write.table(
+        plotDF,
+        filename = file.path(docsFolder, paste0(pheno1, "-", pheno2, ".df")),
+        row.names = F,
+        col.names = T,
+        quote = F
+    )
+    
     # Build the scatter plot
     
     scatterPlot <- ggplot(
