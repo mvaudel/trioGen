@@ -35,6 +35,30 @@ From the cmf model, we can derive the following models:
 | mother | `m` | `βc = 0` and `βf = 0` |
 | father | `f` | `βc = 0` and `βm = 0` |
 
+```
+y = βm (h1 + h2) + βc (h2 + h3) + ε				(cm)
+```
+
+```
+y = βc (h2 + h3) + βf (h3 + h4) + ε				(cf)
+```
+
+```
+y = βm (h1 + h2) + βf (h3 + h4) + ε				(mf)
+```
+
+```
+y = βc (h2 + h3) + ε				(c)
+```
+
+```
+y = βm (h1 + h2) + ε				(m)
+```
+
+```
+y = βf (h3 + h4) + ε				(f)
+```
+
 
 ### Command line
 
