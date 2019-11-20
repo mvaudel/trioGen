@@ -94,6 +94,8 @@ public class VcfIteratorTargets implements VariantIterator {
                     variantList.start[variantListIndex],
                     variantList.end[variantListIndex]
             );
+            variantListIndex++;
+
         }
 
         VariantContext variantContext = iterator.next();
@@ -104,7 +106,7 @@ public class VcfIteratorTargets implements VariantIterator {
             return next();
 
         }
-        
+
         System.out.println(
                 Instant.now() + " - " + variantList.variantId[variantListIndex] + " (" + (variantListIndex + 1) + " of " + variantList.variantId.length + ")"
         );
