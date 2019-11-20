@@ -777,6 +777,7 @@ write(x = paste0("| Name | variable | Formula | Distribution | Normalization | n
 write(x = paste0("| --------- | ------- | ------------ | ------------- | - |\n"), file = docsFile, append = T)
 write(x = paste0("| Standardized Mother height | mother_height | `mother_height ~ fp(mother_age)` | `NO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_mother_height)), " |\n"), file = docsFile, append = T)
 write(x = paste0("| Standardized Father BMI | z_father_bmi | `father_bmi ~ fp(father_age)` | `LOGNO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_father_bmi)), " |\n"), file = docsFile, append = T)
+write(x = paste0("| Pregnancy Duration | pregnancy_duration |  |  |  | ", sum(!is.na(phenoDF$pregnancy_duration)), " |\n"), file = docsFile, append = T)
 write(x = paste0("| Standardized Placenta Weight | z_placenta_weight | `placenta_weight ~ fp(pregnancy_duration)` per child sex | `BCT` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_placenta_weight)), " |\n"), file = docsFile, append = T)
 write(x = paste0("| Standardized Umbilical Cord Length | z_umbilical_chord_length | `umbilical_chord_length ~ fp(pregnancy_duration)` per child sex | `BCT` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_umbilical_chord_length)), " |\n"), file = docsFile, append = T)
 
@@ -795,7 +796,8 @@ for (ageI in 0:11) {
     write(x = paste0("| ", phenoName, " | ", variable, " | `", formula, "` per child sex | `LOGNO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF[[variable]])), " |\n"), file = docsFile, append = T)
     
 }
-write(x = "\n", file = docsFile, append = T)
+write(x = paste0("| Breastmilk Duration | breastmilk_duration |  |  |  | ", sum(!is.na(phenoDF$breastmilk_duration)), " |\n"), file = docsFile, append = T)
+write(x = paste0("| Formula Frequency at 6m | formula_freq_6m |  |  |  | ", sum(!is.na(phenoDF$formula_freq_6m)), " |\n\n"), file = docsFile, append = T)
 
 
 pheno1 <- "mother_age"
