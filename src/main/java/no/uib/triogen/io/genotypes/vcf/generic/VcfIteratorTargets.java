@@ -82,7 +82,7 @@ public class VcfIteratorTargets implements VariantIterator {
 
         if (iterator == null || !iterator.hasNext()) {
 
-            if (variantListIndex == variantList.variantId.length) {
+            if (variantListIndex >= variantList.variantId.length) {
 
                 mutex.release();
                 return null;
