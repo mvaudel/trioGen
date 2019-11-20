@@ -100,6 +100,14 @@ public class VcfIteratorTargets implements VariantIterator {
         }
 
         VariantContext variantContext = iterator.next();
+        
+        if (variantContext == null) {
+
+            mutex.release();
+            return next();
+            
+        }
+        
         String vcfVariantId = variantContext.getID();
 
         if (vcfVariantId == null || !vcfVariantId.equals(variantList.variantId[variantListIndex])) {
