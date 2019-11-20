@@ -20,6 +20,10 @@ public class ExtractTransmissionOptionsBean {
      */
     public GenotypesFileType genotypesFileType = GenotypesFileType.sangerVCF;
     /**
+     * The file listing the variants to process.
+     */
+    public File variantFile = null;
+    /**
      * the trio file.
      */
     public final File trioFile;
@@ -90,6 +94,20 @@ public class ExtractTransmissionOptionsBean {
 
             genotypesFileType = GenotypesFileType.getGenotypesFileType(genoFormat);
 
+        }
+
+        // The variant ids
+        if (aLine.hasOption(ExtractTransmissionOptions.variantId.opt)) {
+
+            filePath = aLine.getOptionValue(ExtractTransmissionOptions.variantId.opt);
+
+            variantFile = new File(filePath);
+
+            if (!variantFile.exists()) {
+
+                throw new IllegalArgumentException("Variant file (" + variantFile + ") not found.");
+
+            }
         }
 
         // the trio file

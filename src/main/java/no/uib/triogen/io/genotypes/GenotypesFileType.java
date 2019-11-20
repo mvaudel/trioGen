@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.io.genotypes.vcf.generic.VcfIterator;
+import no.uib.triogen.io.genotypes.vcf.generic.VcfIteratorTargets;
+import no.uib.triogen.model.geno.VariantList;
 
 /**
  * Enum of the implemented variant iterators.
@@ -67,19 +69,34 @@ public enum GenotypesFileType {
      *
      * @param genotypesFile the file containing the genotypes
      * @param genotypesFileType the genotypes file type
+     * @param variantList the variants to process
      *
      * @return a variant iterator
      */
     public static VariantIterator getVariantIterator(
             File genotypesFile,
-            GenotypesFileType genotypesFileType
+            GenotypesFileType genotypesFileType,
+            VariantList variantList
     ) {
+
+        if (variantList != null) {
+
+            return new VcfIteratorTargets(
+                    genotypesFile,
+                    variantList
+            );
+
+        }
 
         switch (genotypesFileType) {
             case sangerVCF:
-                return new CustomVcfIterator(genotypesFile);
+                return new CustomVcfIterator(
+                        genotypesFile
+                );
             case vcf:
-                return new VcfIterator(genotypesFile);
+                return new VcfIterator(
+                        genotypesFile
+                );
         }
 
         throw new IllegalArgumentException("No variant iterator implemented for " + genotypesFileType + " files.");
@@ -88,7 +105,7 @@ public enum GenotypesFileType {
 
     /**
      * Returns the different values as a string.
-     * 
+     *
      * @return the different values as a string
      */
     public static String getCommandLineOptions() {

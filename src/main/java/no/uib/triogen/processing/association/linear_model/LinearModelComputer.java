@@ -12,6 +12,7 @@ import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.geno.VariantList;
 import no.uib.triogen.model.pheno.PhenotypesHandler;
 
 /**
@@ -29,6 +30,10 @@ public class LinearModelComputer {
      * The type of genotype file.
      */
     private final GenotypesFileType genotypesFileType;
+    /**
+     * The variants to process.
+     */
+    private final VariantList variantList;
     /**
      * The file containing the phenotypes.
      */
@@ -55,6 +60,7 @@ public class LinearModelComputer {
      *
      * @param genotypesFile the file containing the genotypes
      * @param genotypesFileType the type of genotypes file
+     * @param variantList the variants to process
      * @param childToParentMap the map of trios
      * @param phenotypesFile the file containing the phenotypes
      * @param phenoNames the names of the phenotypes to use
@@ -64,6 +70,7 @@ public class LinearModelComputer {
     public LinearModelComputer(
             File genotypesFile,
             GenotypesFileType genotypesFileType,
+            VariantList variantList,
             ChildToParentMap childToParentMap,
             File phenotypesFile,
             String[] phenoNames,
@@ -73,6 +80,7 @@ public class LinearModelComputer {
 
         this.genotypesFile = genotypesFile;
         this.genotypesFileType = genotypesFileType;
+        this.variantList = variantList;
         this.childToParentMap = childToParentMap;
         this.phenotypesFile = phenotypesFile;
         this.phenoNames = phenoNames;
@@ -119,7 +127,11 @@ public class LinearModelComputer {
 
         start = Instant.now().getEpochSecond();
 
-        VariantIterator iterator = GenotypesFileType.getVariantIterator(genotypesFile, genotypesFileType);
+        VariantIterator iterator = GenotypesFileType.getVariantIterator(
+                genotypesFile,
+                genotypesFileType, 
+                variantList
+        );
         SimpleFileWriter outputWriter = new SimpleFileWriter(
                 destinationFile,
                 true

@@ -12,6 +12,7 @@ import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.geno.VariantList;
 
 /**
  * This class iterates a vcf file and extracts transmitted alleles.
@@ -28,6 +29,10 @@ public class Extractor {
      * The type of genotype file.
      */
     private final GenotypesFileType genotypesFileType;
+    /**
+     * The variants to process.
+     */
+    private final VariantList variantList;
     /**
      * The stem of the files to export the result to.
      */
@@ -46,6 +51,7 @@ public class Extractor {
      *
      * @param genotypesFile the file containing the genotypes
      * @param genotypesFileType the type of genotypes file
+     * @param variantList the variants to process
      * @param childToParentMap the map of trios
      * @param destinationStem the stem of the files to export the result to
      * @param nVariants the number of variants to process in parallel
@@ -53,6 +59,7 @@ public class Extractor {
     public Extractor(
             File genotypesFile,
             GenotypesFileType genotypesFileType,
+            VariantList variantList,
             ChildToParentMap childToParentMap,
             String destinationStem,
             int nVariants
@@ -60,6 +67,7 @@ public class Extractor {
 
         this.genotypesFile = genotypesFile;
         this.genotypesFileType = genotypesFileType;
+        this.variantList = variantList;
         this.childToParentMap = childToParentMap;
         this.destinationStem = destinationStem;
         this.nVariants = nVariants;
@@ -91,7 +99,11 @@ public class Extractor {
 
         long start = Instant.now().getEpochSecond();
 
-        VariantIterator iterator = GenotypesFileType.getVariantIterator(genotypesFile, genotypesFileType);
+        VariantIterator iterator = GenotypesFileType.getVariantIterator(
+                genotypesFile, 
+                genotypesFileType,
+                variantList
+        );
         SimpleFileWriter h1Writer = new SimpleFileWriter(
                 new File(destinationStem + "_h1.gz"),
                 true

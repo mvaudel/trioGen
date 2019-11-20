@@ -6,6 +6,7 @@ import htsjdk.variant.vcf.VCFFileReader;
 import java.io.File;
 import java.time.Instant;
 import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.model.geno.VariantList;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
@@ -13,20 +14,20 @@ import no.uib.triogen.utils.SimpleSemaphore;
  *
  * @author Marc Vaudel
  */
-public class VcfIterator implements VariantIterator {
+public class VcfIteratorTargets implements VariantIterator {
 
     /**
      * The name of the file being iterated.
      */
     private final String fileName;
     /**
+     * The variants to process.
+     */
+    private final VariantList variantList;
+    /**
      * The file reader.
      */
     private final VCFFileReader reader;
-    /**
-     * The variant iterator.
-     */
-    private final CloseableIterator<VariantContext> iterator;
     /**
      * Number of variant columns.
      */
@@ -39,6 +40,14 @@ public class VcfIterator implements VariantIterator {
      * Mutex for the access to the file.
      */
     private final SimpleSemaphore mutex = new SimpleSemaphore(1);
+    /**
+     * The index in the variant list.
+     */
+    private int variantListIndex = 0;
+    /**
+     * The variant iterator.
+     */
+    private CloseableIterator<VariantContext> iterator = null;
     /**
      * The number of variants processed.
      */
@@ -56,15 +65,17 @@ public class VcfIterator implements VariantIterator {
      * Constructor.
      *
      * @param vcfFile the vcf file
+     * @param variantList the variants to process
      */
-    public VcfIterator(
-            File vcfFile
+    public VcfIteratorTargets(
+            File vcfFile,
+            VariantList variantList
     ) {
 
         File indexFile = getVcfIndexFile(vcfFile);
         fileName = vcfFile.getName();
         reader = new VCFFileReader(vcfFile, indexFile);
-        iterator = reader.iterator();
+        this.variantList = variantList;
 
     }
 
@@ -73,14 +84,30 @@ public class VcfIterator implements VariantIterator {
 
         mutex.acquire();
 
-        if (!iterator.hasNext()) {
+        if (iterator == null || !iterator.hasNext()) {
 
-            mutex.release();
-            return null;
+            if (variantListIndex == variantList.variantId.length) {
 
+                mutex.release();
+                return null;
+
+            }
+
+            iterator = reader.query(
+                    variantList.chromosome[variantListIndex],
+                    variantList.start[variantListIndex],
+                    variantList.end[variantListIndex]
+            );
         }
 
         VariantContext variantContext = iterator.next();
+
+        if (!variantContext.getID().equals(variantList.variantId[variantListIndex])) {
+
+            mutex.release();
+            return next();
+
+        }
 
         nVariants++;
 

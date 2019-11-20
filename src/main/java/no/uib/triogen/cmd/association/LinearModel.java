@@ -5,6 +5,7 @@ import no.uib.triogen.TrioGen;
 import static no.uib.triogen.io.Utils.lineSeparator;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.geno.VariantList;
 import no.uib.triogen.processing.association.linear_model.LinearModelComputer;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -76,10 +77,12 @@ public class LinearModel {
     ) {
 
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
+        VariantList variantList = bean.variantFile == null ? null : VariantList.getVariantList(bean.variantFile);
 
         LinearModelComputer linearModelComputer = new LinearModelComputer(
                 bean.genotypesFile,
                 bean.genotypesFileType,
+                variantList,
                 childToParentMap,
                 bean.phenotypesFile,
                 bean.phenoNames,

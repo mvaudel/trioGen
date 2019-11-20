@@ -20,7 +20,7 @@ public class LinearModelOptionsBean {
     /**
      * The genotypes file type.
      */
-    public GenotypesFileType genotypesFileType = GenotypesFileType.sangerVCF;
+    public GenotypesFileType genotypesFileType = GenotypesFileType.vcf;
     /**
      * the trio file.
      */
@@ -33,6 +33,10 @@ public class LinearModelOptionsBean {
      * Names of the phenotypes to use for association.
      */
     public final String[] phenoNames;
+    /**
+     * The file listing the variants to process.
+     */
+    public File variantFile = null;
     /**
      * The file where to write the output.
      */
@@ -102,6 +106,20 @@ public class LinearModelOptionsBean {
 
         }
 
+        // The variant ids
+        if (aLine.hasOption(LinearModelOptions.variantId.opt)) {
+
+            filePath = aLine.getOptionValue(LinearModelOptions.variantId.opt);
+
+            variantFile = new File(filePath);
+
+            if (!variantFile.exists()) {
+
+                throw new IllegalArgumentException("Variant file (" + variantFile + ") not found.");
+
+            }
+        }
+
         // the trio file
         filePath = aLine.getOptionValue(LinearModelOptions.trio.opt);
 
@@ -134,27 +152,27 @@ public class LinearModelOptionsBean {
             throw new IllegalArgumentException("No phenotype name found.");
 
         }
-        
+
         // The child id column in the pheno file
         if (aLine.hasOption(LinearModelOptions.childId.opt)) {
-        
+
             option = aLine.getOptionValue(LinearModelOptions.childId.opt);
-            
+
             if (option.length() == 0) {
-                
+
                 throw new IllegalArgumentException("Empty column name found for the child id.");
-                
+
             }
-            
+
             PhenotypesHandler.childIdColumn = option;
-        
+
         }
-        
+
         // Inclusion of cases where no regression can be done
         if (aLine.hasOption(LinearModelOptions.x0.opt)) {
-            
-            LinearModelRunnable.x0 = true;
-            
+
+                LinearModelRunnable.x0 = true;
+
         }
 
         // The output file
@@ -226,7 +244,6 @@ public class LinearModelOptionsBean {
 
         // Test
         test = aLine.hasOption(LinearModelOptions.test.opt);
-
 
     }
 }
