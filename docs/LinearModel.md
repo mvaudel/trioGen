@@ -7,7 +7,7 @@ This command line runs linear regression between phenotypes and levels of transm
 In the `h` model, the regression is conducted against the number of transmitted and non-transmitted alternative alleles, h, as defined by [Chen _et al._](https://doi.org/10.1101/737106).
 
 ```
-y = β1 h1 + β2 h2 + β3 h3 + β4 h4 + ε				(h)
+y = β1 h1 + β2 h2 + β3 h3 + β4 h4 + ε							(h)
 ```
 
 Where y represents the phenotypes, h1 the number of maternal alternative alleles transmitted to the child, h2 the number of maternal alternative alleles non-transmitted to the child, h3 the number of paternal alternative alleles transmitted to the child, and h4 the number of paternal alternative alleles non-transmitted to the child.
@@ -36,27 +36,27 @@ From the cmf model, we can derive the following models:
 | father | `f` | `βc = 0` and `βm = 0` |
 
 ```
-y = βm (h1 + h2) + βc (h2 + h3) + ε				(cm)
+y = βm (h1 + h2) + βc (h2 + h3) + ε								(cm)
 ```
 
 ```
-y = βc (h2 + h3) + βf (h3 + h4) + ε				(cf)
+y = βc (h2 + h3) + βf (h3 + h4) + ε								(cf)
 ```
 
 ```
-y = βm (h1 + h2) + βf (h3 + h4) + ε				(mf)
+y = βm (h1 + h2) + βf (h3 + h4) + ε								(mf)
 ```
 
 ```
-y = βc (h2 + h3) + ε				(c)
+y = βc (h2 + h3) + ε											(c)
 ```
 
 ```
-y = βm (h1 + h2) + ε				(m)
+y = βm (h1 + h2) + ε											(m)
 ```
 
 ```
-y = βf (h3 + h4) + ε				(f)
+y = βf (h3 + h4) + ε											(f)
 ```
 
 
