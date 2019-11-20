@@ -53,10 +53,6 @@ public class VcfIteratorTargets implements VariantIterator {
      */
     private int nVariants = 0;
     /**
-     * The last progress.
-     */
-    private int progress = 0;
-    /**
      * The maximum number of variants to process, ignored if negative.
      */
     public static int nLimit = -1;
@@ -108,20 +104,14 @@ public class VcfIteratorTargets implements VariantIterator {
             return next();
 
         }
+        
+        System.out.println(
+                Instant.now() + " - " + variantList.variantId[variantListIndex] + " (" + (variantListIndex + 1) + " of " + variantList.variantId.length + ")"
+        );
 
         nVariants++;
 
         mutex.release();
-
-        if (nVariants >= progress + 100000) {
-
-            progress = nVariants;
-
-            System.out.println(
-                    Instant.now() + " - " + fileName + " " + nVariants + " variants processed"
-            );
-
-        }
 
         return new VcfVariant(variantContext);
 

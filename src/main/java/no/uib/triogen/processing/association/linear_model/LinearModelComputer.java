@@ -122,8 +122,10 @@ public class LinearModelComputer {
         System.out.println(
                 Instant.now() + " - Done (" + phenoNames.length + " phenotypes for " + phenotypesHandler.nChildren + " children imported in " + duration + " seconds)"
         );
+        
+        String nVariantsText = variantList == null ? "" : ", " + variantList.variantId.length + " variants";
 
-        System.out.println(Instant.now() + " - Linear association (geno: " + genotypesFile.getAbsolutePath() + ", pheno: " + phenotypesFile.getAbsolutePath() + ")");
+        System.out.println(Instant.now() + " - Linear association (geno: " + genotypesFile.getAbsolutePath() + nVariantsText + ", pheno: " + phenotypesFile.getAbsolutePath() + ")");
 
         start = Instant.now().getEpochSecond();
 
