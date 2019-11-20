@@ -135,8 +135,8 @@ The output file contains the results of the linear regression, one line per phen
 | ------------------ | ------- | ----------- |
 | model1_model2 | mf_cmf_p | Estimate of whether model2 provides significantly better fit to the data than model1 using an F-test. |
 | model_variable_beta | mf_mother_beta | Estimate of the slope of the variable in the model. |
-| model_variable_se | h_h2_se | [Standard error of the slope estimate](http://www.xycoon.com/standerrorb(1).htm). |
-| model_variable_p | cmf_child_p | Significance level of the slope (equiv) correlation Prob(|t| > 0). |
+| model_variable_beta_se | h_h2_se | [Standard error of the slope estimate](http://www.xycoon.com/standerrorb(1).htm). |
+| model_variable_beta_p | cmf_child_p | Significance level of the slope (equiv) correlation Prob(|t| > 0). |
 
 - F-test
 
