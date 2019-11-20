@@ -47,11 +47,11 @@ plotPhenos <- function(
     labelY
 ) {
     
-    if (!pheno1 %in% df) {
-        stop(paste0("Pheno ", pheno1, " not found in phenoDF."))
+    if (!pheno1 %in% names(df)) {
+        stop(paste0("Pheno ", pheno1, " not found in phenoDF: ", paste(names(df))))
     }
-    if (!pheno2 %in% df) {
-        stop(paste0("Pheno ", pheno2, " not found in phenoDF."))
+    if (!pheno2 %in% names(df)) {
+        stop(paste0("Pheno ", pheno2, " not found in phenoDF: ", paste(names(df))))
     }
     
     plotDF <- data.frame(
@@ -671,7 +671,7 @@ for (ageI in 0:11) {
 }
 
 
-# Standardize mother BMI
+# Standardize mother height
 
 print(paste0(Sys.time(), "    Standardizing mother height"))
 
