@@ -813,8 +813,9 @@ pheno1 <- "mother_age"
 pheno2 <- "mother_bmi"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Mother Age [Years]",
     labelY = "Mother BMI [kg/m2]"
 )
@@ -826,8 +827,9 @@ pheno1 <- "mother_age"
 pheno2 <- "z_mother_bmi"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Mother Age [Z-score]",
     labelY = "Mother BMI [kg/m2]"
 )
@@ -839,8 +841,9 @@ pheno1 <- "mother_bmi"
 pheno2 <- "z_mother_bmi"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Mother BMI [kg/m2]",
     labelY = "Mother BMI [Z-score]"
 )
@@ -852,8 +855,9 @@ pheno1 <- "z_mother_bmi"
 pheno2 <- "mother_delta_bmi"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Mother BMI [Z-score]",
     labelY = "Mother delta BMI [kg/m2]"
 )
@@ -865,8 +869,9 @@ pheno1 <- "z_mother_bmi"
 pheno2 <- "z_mother_delta_bmi"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Mother BMI [Z-score]",
     labelY = "Mother delta BMI [Z-score]"
 )
@@ -878,8 +883,9 @@ pheno1 <- "mother_delta_bmi"
 pheno2 <- "z_mother_delta_bmi"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Mother delta BMI [kg/m2]",
     labelY = "Mother delta BMI [Z-score]"
 )
@@ -891,8 +897,9 @@ pheno1 <- "father_age"
 pheno2 <- "father_bmi"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Father Age [Years]",
     labelY = "Father BMI [kg/m2]"
 )
@@ -904,8 +911,9 @@ pheno1 <- "father_age"
 pheno2 <- "z_father_bmi"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Father Age [Z-score]",
     labelY = "Father BMI [kg/m2]"
 )
@@ -917,8 +925,9 @@ pheno1 <- "father_bmi"
 pheno2 <- "z_father_bmi"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Father BMI [kg/m2]",
     labelY = "Father BMI [Z-score]"
 )
@@ -930,8 +939,9 @@ pheno1 <- "pregnancy_duration"
 pheno2 <- "umbilical_chord_length"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Pregnancy Duration [Days]",
     labelY = "Umbilical Cord Length [cm]"
 )
@@ -943,8 +953,9 @@ pheno1 <- "pregnancy_duration"
 pheno2 <- "placenta_weight"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Pregnancy Duration [Days]",
     labelY = "Placenta Weight [kg]"
 )
@@ -956,8 +967,9 @@ pheno1 <- "umbilical_chord_length"
 pheno2 <- "placenta_weight"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Umbilical Cord Length [cm]",
     labelY = "Placenta Weight [kg]"
 )
@@ -969,8 +981,9 @@ pheno1 <- "umbilical_chord_length"
 pheno2 <- "z_umbilical_chord_length"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Umbilical Cord Length [cm]",
     labelY = "Umbilical Cord Length [Z-score]"
 )
@@ -982,8 +995,9 @@ pheno1 <- "pregnancy_duration"
 pheno2 <- "z_umbilical_chord_length"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Pregnancy Duration [Days]",
     labelY = "Umbilical Cord Length [Z-score]"
 )
@@ -995,8 +1009,9 @@ pheno1 <- "pregnancy_duration"
 pheno2 <- "z_placenta_weight"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Pregnancy Duration [Days]",
     labelY = "Placenta Weight [Z-score]"
 )
@@ -1008,8 +1023,9 @@ pheno1 <- "z_umbilical_chord_length"
 pheno2 <- "z_placenta_weight"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Umbilical Cord Length [Z-score]",
     labelY = "Placenta Weight [Z-score]"
 )
@@ -1021,8 +1037,9 @@ pheno1 <- "pregnancy_duration"
 pheno2 <- "z_pregnancy_duration"
 
 plotPhenos(
-    valuesX = pheno1,
-    valuesY = pheno2,
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
     labelX = "Pregnancy Duration [Days]",
     labelY = "Pregnancy Duration [Z-score]"
 )
@@ -1039,8 +1056,9 @@ for (ageI in 0:11) {
     pheno2 <- bmiColumn
     
     plotPhenos(
-        valuesX = pheno1,
-        valuesY = pheno2,
+        df = phenoDF,
+        pheno1 = pheno1,
+        pheno2 = pheno2,
         labelX = "Pregnancy Duration [Days]",
         labelY = paste0("BMI ", timePoints[ageI + 1], " [kg/m2]")
     )
@@ -1052,8 +1070,9 @@ for (ageI in 0:11) {
     pheno2 <- zBmiColumn
     
     plotPhenos(
-        valuesX = pheno1,
-        valuesY = pheno2,
+        df = phenoDF,
+        pheno1 = pheno1,
+        pheno2 = pheno2,
         labelX = "Pregnancy Duration [Days]",
         labelY = paste0("BMI ", timePoints[ageI + 1], " [Z-score]")
     )
@@ -1065,8 +1084,9 @@ for (ageI in 0:11) {
     pheno2 <- zBmiColumn
     
     plotPhenos(
-        valuesX = pheno1,
-        valuesY = pheno2,
+        df = phenoDF,
+        pheno1 = pheno1,
+        pheno2 = pheno2,
         labelX = paste0("BMI ", timePoints[ageI + 1], " [kg/m2]"),
         labelY = paste0("BMI ", timePoints[ageI + 1], " [Z-score]")
     )
