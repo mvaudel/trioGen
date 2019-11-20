@@ -123,20 +123,20 @@ The output file contains the results of the linear regression, one line per phen
 
 | Column | Description |
 | ------ | ----------- |
-| phenotype | The name of the phenotype. |
-| variantID | The id of the variant. |
-| n | The number of samples included in the regression. |
-| nAlt | The distribution of alternative alleles among the trios included in the regression. |
-| nH | The distribution of alternative allele transmission, h, as defined by [Chen _et al._](https://doi.org/10.1101/737106) among the trios included in the regression. |
+| `phenotype` | The name of the phenotype. |
+| `variantID` | The id of the variant. |
+| `n` | The number of samples included in the regression. |
+| `nAlt` | The distribution of alternative alleles among the trios included in the regression. |
+| `nH` | The distribution of alternative allele transmission, h, as defined by [Chen _et al._](https://doi.org/10.1101/737106) among the trios included in the regression. |
 
 - Subsequently, for each model, estimates and summary statistics are listed.
 
 | Column Name Scheme | Example | Description |
 | ------------------ | ------- | ----------- |
-| model1_model2 | mf_cmf_p | Estimate of whether model2 provides significantly better fit to the data than model1 using an F-test. |
-| model_variable_beta | mf_mother_beta | Estimate of the slope of the variable in the model. |
-| model_variable_beta_se | h_h2_se | [Standard error of the slope estimate](http://www.xycoon.com/standerrorb(1).htm). |
-| model_variable_beta_p | cmf_child_p | Significance level of the slope (equiv) correlation Prob(|t| > 0). |
+| `model1_model2` | `mf_cmf_p` | Estimate of whether model2 provides significantly better fit to the data than model1 using an F-test. |
+| `model_variable_beta` | `mf_mother_beta` | Estimate of the slope of the variable in the model. |
+| `model_variable_beta_se` | `h_h2_se` | [Standard error of the slope estimate](http://www.xycoon.com/standerrorb(1).htm). |
+| `model_variable_beta_p` | `cmf_child_p` | Significance level of the slope (equiv) correlation Prob(|t| > 0). |
 
 - F-test
 
@@ -151,7 +151,7 @@ As detained in the [Commons Math library](http://commons.apache.org/proper/commo
 
 If you want to process variants specifically, please provide them as text file using the `-v/variantID` command line argument. The first lines of the text file starting with '#' will be ignored. The file must contain a single-line header that is not starting with '#'. The file must be tab-separated and containt in the four first columns: (1) the id of the variant as present in the vcf file; (2) the chromosome name; (3) the position on the chromosome where to start looking for the variant; and (4) the position on the chromosome where to stop looking for the variant.
 
-Example:
+#### Example:
 ```
 # Variant target example
 id	chromosome	start	end
