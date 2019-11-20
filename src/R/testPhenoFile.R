@@ -47,6 +47,13 @@ plotPhenos <- function(
     labelY
 ) {
     
+    if (!pheno1 %in% df) {
+        stop(paste0("Pheno ", pheno1, " not found in phenoDF."))
+    }
+    if (!pheno2 %in% df) {
+        stop(paste0("Pheno ", pheno2, " not found in phenoDF."))
+    }
+    
     plotDF <- data.frame(
         x = df[[pheno1]],
         y = df[[pheno2]],
@@ -235,13 +242,8 @@ parentDF <- read.table(
         father_age, 
         father_height,
         father_weight,
-        mother_height,
-        mother_weight_beginning,
-        mother_delta_weight
+        mother_height
     ) %>% mutate(
-        mother_bmi = ifelse(!is.na(mother_weight_beginning) & !is.na(mother_height) & mother_height > 0, 10000 * mother_weight_beginning / (mother_height)^2, NA),
-        mother_bmi_end = ifelse(!is.na(mother_delta_weight) & !is.na(mother_weight_beginning) & !is.na(mother_height) & mother_height > 0, 10000 * (mother_weight_beginning + mother_delta_weight) / (mother_height)^2, NA),
-        mother_delta_bmi = mother_bmi_end - mother_bmi,
         father_bmi = ifelse(!is.na(father_weight) & !is.na(father_height) & father_height > 0, 10000 * father_weight / (father_height)^2, NA)
     )
 
@@ -671,76 +673,34 @@ for (ageI in 0:11) {
 
 # Standardize mother BMI
 
-print(paste0(Sys.time(), "    Standardizing mother BMI"))
+print(paste0(Sys.time(), "    Standardizing mother height"))
 
 motherDF <- phenoDF %>%
     select(
-        child_SentrixID, mother_bmi, mother_age
+        child_SentrixID, mother_height, mother_age
     ) %>%
     filter(
-        !is.na(mother_age) & !is.na(mother_bmi)
+        !is.na(mother_age) & !is.na(mother_height)
     )
 
 motherModel <- gamlss(
-    formula = mother_bmi ~ fp(mother_age),
+    formula = mother_height ~ fp(mother_age),
     sigma.formula = ~fp(mother_age),
-    family = LOGNO,
-    data = motherDF
-)
-
-motherDF$z_mother_bmi = centiles.pred(
-    obj = motherModel, 
-    xname = "mother_age", 
-    xvalues = motherDF$mother_age, 
-    yval = motherDF$mother_bmi, 
-    type = "z-scores"
-)
-
-motherDF %>% 
-    select(
-        child_SentrixID, z_mother_bmi
-    ) -> motherDF
-
-phenoDF %>%
-    left_join(
-        motherDF,
-        by = "child_SentrixID"
-    ) -> phenoDF
-
-
-# Standardize mother delta BMI
-
-print(paste0(Sys.time(), "    Standardizing mother delta BMI"))
-
-motherDF <- phenoDF %>%
-    select(
-        child_SentrixID, mother_delta_bmi, z_mother_bmi
-    ) %>%
-    filter(
-        !is.na(z_mother_bmi) & !is.na(mother_delta_bmi)
-    )
-
-motherModel <- gamlss(
-    formula = mother_delta_bmi ~ cs(z_mother_bmi),
-    sigma.formula = ~cs(z_mother_bmi),
     family = NO,
     data = motherDF
 )
 
-motherDF$z_mother_delta_bmi = centiles.pred(
+motherDF$z_mother_height = centiles.pred(
     obj = motherModel, 
-    xname = "z_mother_bmi", 
-    xvalues = motherDF$z_mother_bmi, 
-    yval = motherDF$mother_delta_bmi, 
+    xname = "mother_age", 
+    xvalues = motherDF$mother_age, 
+    yval = motherDF$mother_height, 
     type = "z-scores"
 )
 
 motherDF %>% 
     select(
-        child_SentrixID, z_mother_delta_bmi
-    ) %>%
-    mutate(
-        z_mother_delta_bmi = ifelse(is.infinite(z_mother_delta_bmi), NA, z_mother_delta_bmi)
+        child_SentrixID, z_mother_height
     ) -> motherDF
 
 phenoDF %>%
@@ -812,8 +772,7 @@ write(x = paste0("Genotyped samples only, ADHD cases and ethnic outliers removed
 write(x = paste0("Phenotypes version V10_1.0.0-190506, standardization using [GAMLSS](https://www.gamlss.com/).\n\n"), file = docsFile, append = T)
 write(x = paste0("| Name | variable | Formula | Distribution | Normalization | n |"), file = docsFile, append = T)
 write(x = paste0("| --------- | ------- | ------------ | ------------- | - |"), file = docsFile, append = T)
-write(x = paste0("| Standardized Mother BMI | z_mother_bmi | `mother_bmi ~ fp(mother_age)` | `LOGNO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_mother_bmi)), " |"), file = docsFile, append = T)
-write(x = paste0("| Standardized Mother Delta BMI | z_mother_delta_bmi | `mother_delta_bmi ~ cs(z_mother_bmi)` | `NO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_mother_delta_bmi)), " |"), file = docsFile, append = T)
+write(x = paste0("| Standardized Mother height | mother_height | `mother_height ~ fp(mother_age)` | `NO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_mother_height)), " |"), file = docsFile, append = T)
 write(x = paste0("| Standardized Father BMI | z_father_bmi | `father_bmi ~ fp(father_age)` | `LOGNO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_father_bmi)), " |"), file = docsFile, append = T)
 write(x = paste0("| Standardized Placenta Weight | z_placenta_weight | `placenta_weight ~ fp(pregnancy_duration)` per child sex | `BCT` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_placenta_weight)), " |"), file = docsFile, append = T)
 write(x = paste0("| Standardized Umbilical Cord Length | z_umbilical_chord_length | `umbilical_chord_length ~ fp(pregnancy_duration)` per child sex | `BCT` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_umbilical_chord_length)), " |"), file = docsFile, append = T)
@@ -837,87 +796,45 @@ write(x = "<br>", file = docsFile, append = T)
 
 
 pheno1 <- "mother_age"
-pheno2 <- "mother_bmi"
+pheno2 <- "mother_height"
 
 plotPhenos(
     df = phenoDF,
     pheno1 = pheno1,
     pheno2 = pheno2,
     labelX = "Mother Age [Years]",
-    labelY = "Mother BMI [kg/m2]"
+    labelY = "Mother Height [cm]"
 )
 
-write(x = paste0("### Mother BMI vs. Mother Age\n"), file = docsFile, append = T)
+write(x = paste0("### Mother Height vs. Mother Age\n"), file = docsFile, append = T)
 write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "mother_age"
-pheno2 <- "z_mother_bmi"
+pheno2 <- "z_mother_height"
 
 plotPhenos(
     df = phenoDF,
     pheno1 = pheno1,
     pheno2 = pheno2,
-    labelX = "Mother Age [Z-score]",
-    labelY = "Mother BMI [kg/m2]"
+    labelX = "Mother Age [Years]",
+    labelY = "Mother Height [Z-score]"
 )
 
-write(x = paste0("### Standardized Mother BMI vs. Mother Age\n"), file = docsFile, append = T)
+write(x = paste0("### Standardized Mother height vs. Mother Age\n"), file = docsFile, append = T)
 write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
-pheno1 <- "mother_bmi"
-pheno2 <- "z_mother_bmi"
+pheno1 <- "mother_height"
+pheno2 <- "z_mother_height"
 
 plotPhenos(
     df = phenoDF,
     pheno1 = pheno1,
     pheno2 = pheno2,
-    labelX = "Mother BMI [kg/m2]",
-    labelY = "Mother BMI [Z-score]"
+    labelX = "Mother Height [cm]",
+    labelY = "Mother Height [Z-score]"
 )
 
-write(x = paste0("### Standardized Mother BMI vs. Mother BMI\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
-
-pheno1 <- "z_mother_bmi"
-pheno2 <- "mother_delta_bmi"
-
-plotPhenos(
-    df = phenoDF,
-    pheno1 = pheno1,
-    pheno2 = pheno2,
-    labelX = "Mother BMI [Z-score]",
-    labelY = "Mother delta BMI [kg/m2]"
-)
-
-write(x = paste0("### Mother delta BMI vs. Standardized Mother BMI\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
-
-pheno1 <- "z_mother_bmi"
-pheno2 <- "z_mother_delta_bmi"
-
-plotPhenos(
-    df = phenoDF,
-    pheno1 = pheno1,
-    pheno2 = pheno2,
-    labelX = "Mother BMI [Z-score]",
-    labelY = "Mother delta BMI [Z-score]"
-)
-
-write(x = paste0("### Standardized Mother delta BMI vs. Standardized Mother BMI\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
-
-pheno1 <- "mother_delta_bmi"
-pheno2 <- "z_mother_delta_bmi"
-
-plotPhenos(
-    df = phenoDF,
-    pheno1 = pheno1,
-    pheno2 = pheno2,
-    labelX = "Mother delta BMI [kg/m2]",
-    labelY = "Mother delta BMI [Z-score]"
-)
-
-write(x = paste0("### Standardized Mother delta BMI vs. Mother delta BMI\n"), file = docsFile, append = T)
+write(x = paste0("### Standardized Mother Height vs. Mother Height\n"), file = docsFile, append = T)
 write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "father_age"
@@ -1016,7 +933,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Umbilical Cord Length vs. Umbilical Cord Length\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n"), file = docsFile, append = T)
+write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
 
 pheno1 <- "pregnancy_duration"
 pheno2 <- "z_umbilical_chord_length"
