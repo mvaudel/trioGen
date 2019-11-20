@@ -13,8 +13,8 @@ import no.uib.triogen.io.genotypes.GenotypesFileType;
 public enum ExtractTransmissionOptions {
 
     geno("g", "geno", "The genotypes file.", true, true),
-    genoFormat("gf", "genoFormat", "The genotypes file format. " + GenotypesFileType.getCommandLineOptions() + ". Default: " + GenotypesFileType.vcf.index + ".", true, true),
-    variantId("v", "variantId", "List of the IDs of the variants to include in the analysis. Example: rs123,rs456. Default: iterate though all variants.", true, true),
+    genoFormat("gf", "genoFormat", "The genotypes file format. " + GenotypesFileType.getCommandLineOptions() + ". Default: " + GenotypesFileType.vcf.index + ".", false, true),
+    variantId("v", "variantId", "File listing the variants to include in the analysis. Example: rs123,rs456. Default: iterate though all variants.", false, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not.", true, true),
     out("o", "out", "The stem of the files where to write the scores.", true, true),
     nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is 8.", false, true),

@@ -16,18 +16,24 @@ Where y represents the phenotypes, h1 the number of maternal alternative alleles
 
 In the `h` model above: (1) `β1 - β2` and `β3 - β4` represent the _child genetic effect_, `βc`, of the alternative alleles transmitted by the mother and father, respectively. Under the assumption that there is no difference in the child genetic effect between the allele transmitted by the mother or the one transmitted by the father, we have `βc = β1 - β2 = β3 - β4`; (2) `β2` and `β1 - βc` represent the _mother genetic effect_, `βm`, of the alternative alleles non-transmitted and transmitted by the mother, respectively. Under the assumption that there is no difference in the mother genetic effect between the transmitted and non-transmitted allele, we have `βm = β2 = β1 - βc`; and (3) `β4` and `β3 - βc` represent the _father genetic effect_, `βc`, of the alternative alleles non-transmitted and transmitted by the father, respectively. Under the assumption that there is no difference in the father genetic effect between the transmitted and non-transmitted allele, we have `βf = β4 = β3 - βc`.
 
-Under these assumptions, the `h` model above can be written as follows:
-
-```
-y = βm h1 + (βm + βc) h2 + (βf + βc) h3 + βf h4 + ε				(cmf)
-```
-
-The child-mother-father, `cmf` model is 
+Under these assumptions, the `h` model above can be written as child-mother-father `cmf` as below:
 
 ```
 y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + ε				(cmf)
 ```
 
+### Regression against the number of alternative alleles for the child, mother, or father 
+
+From the cmf model, we can derive the following models:
+
+| Name | Variable | Hypothesis |
+| ---- | -------- | ---------- |
+| child-mother | `cm` | `βf = 0` |
+| child-father | `cf` | `βm = 0` |
+| mother-father | `mf` | `βc = 0` |
+| child | `c` | `βm = 0` and `βf = 0` |
+| mother | `m` | `βc = 0` and `βf = 0` |
+| father | `f` | `βc = 0` and `βm = 0` |
 
 
 ### Command line
@@ -51,7 +57,6 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 
 ```
 -g/--geno          The genotypes file.
--gf/--genoFormat   The genotypes file format. 0: VCF, 1: Sanger VCF.
 -p/--phenoFile     The phenotypes file.
 -pn/--phenoName    List of the names of the phenotypes in the phenotype file (Example: pheno1,pheno2).
 -f/--fam           The trio identifiers file.
@@ -62,6 +67,8 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 ### Additional Parameters
 
 ```
+-v/variantId       File listing the variants to include in the analysis. Example: rs123,rs456. Default: iterate though all variants.
+-gf/--genoFormat   The genotypes file format. 0: VCF, 1: Sanger VCF. Default is VCF.
 -nv/--nVariants    The number of variants to process in parallel. Default is 8.
 -z/--timeOut       The number of days before timeout, default is 365.
 -t/--test          If present, runs only othe first 1000 variants.
@@ -69,7 +76,7 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 
 ### Command line example
 
-The example below runs simulated test files. Please note that the command needs to be run from the folder of the repository and that you need to replace `Z.Y.Z` by the version number.
+The example below runs simulated test files. Please note that the command needs to be run from the folder of the repository and that you need to replace `X.Y.Z` by the version number.
 
 ```
 java -Xmx16G -cp bin/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.association.LinearModel -g src/main/resources/transmission/test_transmission.vcf -gf 1 -f src/main/resources/transmission/test_trio -p src/main/resources/transmission/phenos_linear_model.txt -pn pheno1,pheno2,pheno3,pheno4 -o src/test/resources/transmission/result.gz
@@ -100,6 +107,20 @@ The output file contains the results of the linear regression, one line per regr
 | n | the number of observations that have been used for the regression. |
 
 As detained in the [Commons Math library](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/regression/SimpleRegression.html#getSignificance()), the significance p corresponds to the significance level of the slope (equiv) correlation. Specifically, the returned value is the smallest alpha such that the slope confidence interval with significance level equal to alpha does not include 0. On regression output, this is often denoted Prob(|t| > 0). Note that to avoid rounding of the very low p-values, the [getSignificance](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/regression/SimpleRegression.html#getSignificance()) function is not used and instead the [regularized beta](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/special/Beta.html#regularizedBeta(double,%20double,%20double,%20double)) function is used directly.
+
+
+### Target variants
+
+If you want to process variants specifically, please provide them as text file using the `-v/variantID` command line argument. The first lines of the text file starting with '#' will be ignored. The file must contain a single-line header that is not starting with '#'. The file must be tab-separated and containt in the four first columns: (1) the id of the variant as present in the vcf file; (2) the chromosome name; (3) the position on the chromosome where to start looking for the variant; and (4) the position on the chromosome where to stop looking for the variant.
+
+Example:
+```
+# Variant target example
+id	chromosome	start	end
+rs123	1	123456	123456
+rs456	2	456789	456798
+rs789	3	789789	7897890
+```
 
 
 

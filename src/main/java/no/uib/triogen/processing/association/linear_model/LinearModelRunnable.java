@@ -633,20 +633,20 @@ public class LinearModelRunnable implements Runnable {
             // Estimate model significance
             double cmf_hP = getModelSignificance(cmfRSS, 4, hRSS, 5, nValidValues);
             double cm_hP = getModelSignificance(cmRSS, 3, hRSS, 5, nValidValues);
-            double cf_hP = getModelSignificance(cfRSS, 3, hRSS, 5, nValidValues);
-            double mf_hP = getModelSignificance(mfRSS, 3, hRSS, 5, nValidValues);
-            double c_hP = getModelSignificance(cmRSS, 2, hRSS, 5, nValidValues);
-            double m_hP = getModelSignificance(cfRSS, 2, hRSS, 5, nValidValues);
-            double f_hP = getModelSignificance(mfRSS, 2, hRSS, 5, nValidValues);
             double cm_cmfP = getModelSignificance(cmRSS, 3, cmfRSS, 4, nValidValues);
+            double cf_hP = getModelSignificance(cfRSS, 3, hRSS, 5, nValidValues);
             double cf_cmfP = getModelSignificance(cfRSS, 3, cmfRSS, 4, nValidValues);
+            double mf_hP = getModelSignificance(mfRSS, 3, hRSS, 5, nValidValues);
             double mf_cmfP = getModelSignificance(mfRSS, 3, cmfRSS, 4, nValidValues);
+            double c_hP = getModelSignificance(cmRSS, 2, hRSS, 5, nValidValues);
             double c_cmfP = getModelSignificance(cRSS, 2, cmfRSS, 4, nValidValues);
             double c_cmP = getModelSignificance(cRSS, 2, cmRSS, 3, nValidValues);
             double c_cfP = getModelSignificance(cRSS, 2, cfRSS, 3, nValidValues);
+            double m_hP = getModelSignificance(cfRSS, 2, hRSS, 5, nValidValues);
             double m_cmfP = getModelSignificance(mRSS, 2, cmfRSS, 4, nValidValues);
             double m_cmP = getModelSignificance(mRSS, 2, cmRSS, 3, nValidValues);
             double m_mfP = getModelSignificance(mRSS, 2, mfRSS, 3, nValidValues);
+            double f_hP = getModelSignificance(mfRSS, 2, hRSS, 5, nValidValues);
             double f_cmfP = getModelSignificance(fRSS, 2, cmfRSS, 4, nValidValues);
             double f_cfP = getModelSignificance(fRSS, 2, cfRSS, 3, nValidValues);
             double f_mfP = getModelSignificance(fRSS, 2, mfRSS, 3, nValidValues);
@@ -713,19 +713,7 @@ public class LinearModelRunnable implements Runnable {
             );
             stringBuilder
                     .append(Utils.separator)
-                    .append(cmf_hP)
-                    .append(Utils.separator)
-                    .append(cm_hP)
-                    .append(Utils.separator)
-                    .append(cf_hP)
-                    .append(Utils.separator)
-                    .append(mf_hP)
-                    .append(Utils.separator)
-                    .append(c_hP)
-                    .append(Utils.separator)
-                    .append(m_hP)
-                    .append(Utils.separator)
-                    .append(f_hP);
+                    .append(cmf_hP);
             appendBetasAsString(
                     stringBuilder,
                     cmfBetas,
@@ -733,6 +721,8 @@ public class LinearModelRunnable implements Runnable {
                     cmfBetaP
             );
             stringBuilder
+                    .append(Utils.separator)
+                    .append(cm_hP)
                     .append(Utils.separator)
                     .append(cm_cmfP);
             appendBetasAsString(
@@ -743,6 +733,8 @@ public class LinearModelRunnable implements Runnable {
             );
             stringBuilder
                     .append(Utils.separator)
+                    .append(cf_hP)
+                    .append(Utils.separator)
                     .append(cf_cmfP);
             appendBetasAsString(
                     stringBuilder,
@@ -752,6 +744,8 @@ public class LinearModelRunnable implements Runnable {
             );
             stringBuilder
                     .append(Utils.separator)
+                    .append(mf_hP)
+                    .append(Utils.separator)
                     .append(mf_cmfP);
             appendBetasAsString(
                     stringBuilder,
@@ -760,6 +754,8 @@ public class LinearModelRunnable implements Runnable {
                     mfBetaP
             );
             stringBuilder
+                    .append(Utils.separator)
+                    .append(c_hP)
                     .append(Utils.separator)
                     .append(c_cmfP)
                     .append(Utils.separator)
@@ -774,6 +770,8 @@ public class LinearModelRunnable implements Runnable {
             );
             stringBuilder
                     .append(Utils.separator)
+                    .append(m_hP)
+                    .append(Utils.separator)
                     .append(m_cmfP)
                     .append(Utils.separator)
                     .append(m_cmP)
@@ -786,6 +784,8 @@ public class LinearModelRunnable implements Runnable {
                     mBetaP
             );
             stringBuilder
+                    .append(Utils.separator)
+                    .append(f_hP)
                     .append(Utils.separator)
                     .append(f_cmfP)
                     .append(Utils.separator)
