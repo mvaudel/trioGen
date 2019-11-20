@@ -68,7 +68,7 @@ plotPhenos <- function(
     
     write.table(
         plotDF,
-        filename = file.path(docsFolder, paste0(pheno1, "-", pheno2, ".df")),
+        file = file.path(docsFolder, paste0(pheno1, "-", pheno2, ".df")),
         row.names = F,
         col.names = T,
         quote = F
