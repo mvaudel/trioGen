@@ -43,7 +43,7 @@ public class VcfIteratorTargets implements VariantIterator {
     /**
      * The index in the variant list.
      */
-    private int variantListIndex = 0;
+    private int variantListIndex = -1;
     /**
      * The variant iterator.
      */
@@ -81,6 +81,8 @@ public class VcfIteratorTargets implements VariantIterator {
         mutex.acquire();
 
         if (iterator == null || !iterator.hasNext()) {
+            
+            variantListIndex++;
 
             if (variantListIndex >= variantList.variantId.length) {
 
@@ -94,7 +96,6 @@ public class VcfIteratorTargets implements VariantIterator {
                     variantList.start[variantListIndex],
                     variantList.end[variantListIndex]
             );
-            variantListIndex++;
 
         }
 
