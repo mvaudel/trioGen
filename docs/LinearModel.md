@@ -93,18 +93,32 @@ The names of the columns to use for the regressions must be provided as comma-se
 
 ### Output
 
-The output file contains the results of the linear regression, one line per regression, _i.e._ one per _{phenotype, variantID, h}_. The regression is conducted using the [Commons Math library](http://commons.apache.org/proper/commons-math/) and the documentation borrows information from the library documentation. For version details, please check the [pom file](https://github.com/mvaudel/trioGen/blob/master/pom.xml). 
+The output file contains the results of the linear regression, one line per phenotype per variant. The regression is conducted using the [OLS implementation](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/regression/OLSMultipleLinearRegression.html) of the [Commons Math library](http://commons.apache.org/proper/commons-math/) and the documentation borrows information from the library documentation. For version details, please check the [pom file](https://github.com/mvaudel/trioGen/blob/master/pom.xml). 
+
+- Each line starts with information on the phenotype, variant, and allele distribution among the trios included in the regression.
 
 | Column | Description |
 | ------ | ----------- |
-| phenotype | The name of the phenotype |
-| variantID | The id of the variant |
-| h | The h used for the regression |
-| beta | The slope estimate |
-| betaSE | The [standard error of the slope estimate](http://www.xycoon.com/standerrorb(1).htm) _s(b1)_. |
-| p | The significance. |
-| nH | The frequency of the h for samples with phenotype available. _E.g._ `0:23,1:2` means 23 h=0 and 2 h=1. |
-| n | the number of observations that have been used for the regression. |
+| phenotype | The name of the phenotype. |
+| variantID | The id of the variant. |
+| n | The number of samples included in the regression. |
+| nAlt | The distribution of alternative alleles among the trios included in the regression. |
+| nH | The distribution of alternative allele transmission, h, as defined by [Chen _et al._](https://doi.org/10.1101/737106) among the trios included in the regression. |
+
+- Subsequently, for each model, estimates and summary statistics are listed.
+
+| Column Name Scheme | Example | Description |
+| ------------------ | ------- | ----------- |
+| model1_model2 | mf_cmf_p | Estimate of whether model2 provides significantly better fit to the data than model1 using an F-test. |
+| model_variable_beta | mf_mother_beta | Estimate of the slope of the variable in the model. |
+| model_variable_se | h_h2_se | [Standard error of the slope estimate](http://www.xycoon.com/standerrorb(1).htm). |
+| model_variable_p | cmf_child_p | Significance level of the slope (equiv) correlation Prob(|t| > 0). |
+
+- F-test
+
+F is estimated using the residual sum of squares of the models and their degrees of freedom (number of slopes + intercept). The cumulative distribution function (CDF) is obtained from the [F-distribution](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/distribution/FDistribution.html) implementation of the [Commons Math library](http://commons.apache.org/proper/commons-math/).
+
+- Significance level of the slope
 
 As detained in the [Commons Math library](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/regression/SimpleRegression.html#getSignificance()), the significance p corresponds to the significance level of the slope (equiv) correlation. Specifically, the returned value is the smallest alpha such that the slope confidence interval with significance level equal to alpha does not include 0. On regression output, this is often denoted Prob(|t| > 0). Note that to avoid rounding of the very low p-values, the [getSignificance](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/regression/SimpleRegression.html#getSignificance()) function is not used and instead the [regularized beta](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/special/Beta.html#regularizedBeta(double,%20double,%20double,%20double)) function is used directly.
 

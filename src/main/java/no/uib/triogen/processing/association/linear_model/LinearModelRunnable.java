@@ -865,7 +865,7 @@ public class LinearModelRunnable implements Runnable {
 
         FDistribution fDistribution = new FDistribution(numeratorDegreesOfFreedom, denominatorDegreesOfFreedom);
 
-        return fDistribution.cumulativeProbability(x);
+        return 1.0 - fDistribution.cumulativeProbability(x);
 
     }
 
