@@ -1,6 +1,6 @@
 # LinearModel
 
-This command line runs simple linear regression between phenotypes and levels of transmitted alternative alleles.
+This command line runs linear regression between phenotypes and levels of transmitted alternative alleles using different models.
 
 ```
 Y ~ h
