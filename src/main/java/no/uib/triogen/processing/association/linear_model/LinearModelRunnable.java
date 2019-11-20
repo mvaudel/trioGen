@@ -632,6 +632,12 @@ public class LinearModelRunnable implements Runnable {
 
             // Estimate model significance
             double cmf_hP = getModelSignificance(cmfRSS, 4, hRSS, 5, nValidValues);
+            double cm_hP = getModelSignificance(cmRSS, 3, hRSS, 5, nValidValues);
+            double cf_hP = getModelSignificance(cfRSS, 3, hRSS, 5, nValidValues);
+            double mf_hP = getModelSignificance(mfRSS, 3, hRSS, 5, nValidValues);
+            double c_hP = getModelSignificance(cmRSS, 2, hRSS, 5, nValidValues);
+            double m_hP = getModelSignificance(cfRSS, 2, hRSS, 5, nValidValues);
+            double f_hP = getModelSignificance(mfRSS, 2, hRSS, 5, nValidValues);
             double cm_cmfP = getModelSignificance(cmRSS, 3, cmfRSS, 4, nValidValues);
             double cf_cmfP = getModelSignificance(cfRSS, 3, cmfRSS, 4, nValidValues);
             double mf_cmfP = getModelSignificance(mfRSS, 3, cmfRSS, 4, nValidValues);
@@ -707,7 +713,19 @@ public class LinearModelRunnable implements Runnable {
             );
             stringBuilder
                     .append(Utils.separator)
-                    .append(cmf_hP);
+                    .append(cmf_hP)
+                    .append(Utils.separator)
+                    .append(cm_hP)
+                    .append(Utils.separator)
+                    .append(cf_hP)
+                    .append(Utils.separator)
+                    .append(mf_hP)
+                    .append(Utils.separator)
+                    .append(c_hP)
+                    .append(Utils.separator)
+                    .append(m_hP)
+                    .append(Utils.separator)
+                    .append(f_hP);
             appendBetasAsString(
                     stringBuilder,
                     cmfBetas,

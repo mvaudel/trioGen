@@ -1,12 +1,34 @@
 # LinearModel
 
-This command line runs linear regression between phenotypes and levels of transmitted alternative alleles using different models.
+This command line runs linear regression between phenotypes and levels of transmitted alternative alleles using different models. As detailed below, the models are based on hard-called genotypes, and need children genotypes to be phased. For each model, the estimated regression coefficients are returned, and models are compared to infer the relevance of including mother, father, and child in the regression.
+
+### Regression against the number of transmitted alternative alleles
+
+In the `h` model, the regression is conducted against the number of transmitted and non-transmitted alternative alleles, h, as defined by [Chen _et al._](https://doi.org/10.1101/737106).
 
 ```
-Y ~ h
+y = β1 h1 + β2 h2 + β3 h3 + β4 h4 + ε				(h)
 ```
 
-For children phenotypes `Y`, TrioGen runs a linear regression with `hi`, with _i_ in {1, 2, 3, 4}, as defined by [Chen _et al._](https://doi.org/10.1101/737106).
+Where y represents the phenotypes, h1 the number of maternal alternative alleles transmitted to the child, h2 the number of maternal alternative alleles non-transmitted to the child, h3 the number of paternal alternative alleles transmitted to the child, and h4 the number of paternal alternative alleles non-transmitted to the child.
+
+### Regression against the number of alternative alleles for the child, mother, and father 
+
+In the `h` model above: (1) `β1 - β2` and `β3 - β4` represent the _child genetic effect_, `βc`, of the alternative alleles transmitted by the mother and father, respectively. Under the assumption that there is no difference in the child genetic effect between the allele transmitted by the mother or the one transmitted by the father, we have `βc = β1 - β2 = β3 - β4`; (2) `β2` and `β1 - βc` represent the _mother genetic effect_, `βm`, of the alternative alleles non-transmitted and transmitted by the mother, respectively. Under the assumption that there is no difference in the mother genetic effect between the transmitted and non-transmitted allele, we have `βm = β2 = β1 - βc`; and (3) `β4` and `β3 - βc` represent the _father genetic effect_, `βc`, of the alternative alleles non-transmitted and transmitted by the father, respectively. Under the assumption that there is no difference in the father genetic effect between the transmitted and non-transmitted allele, we have `βf = β4 = β3 - βc`.
+
+Under these assumptions, the `h` model above can be written as follows:
+
+```
+y = βm h1 + (βm + βc) h2 + (βf + βc) h3 + βf h4 + ε				(cmf)
+```
+
+The child-mother-father, `cmf` model is 
+
+```
+y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + ε				(cmf)
+```
+
+
 
 ### Command line
 
