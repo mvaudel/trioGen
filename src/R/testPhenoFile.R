@@ -59,6 +59,9 @@ plotPhenos <- function(
         y = df[[pheno2]],
         stringsAsFactors = F
     ) %>%
+        filter(
+            !is.infinite(x) & !is.na(x) & !is.infinite(y) & !is.na(y)
+        ) %>%
         arrange(
             rev(abs(y - x))
         )
