@@ -968,6 +968,20 @@ plotPhenos(
 write(x = paste0("### Standardized Placenta Weight vs. Pregnancy Duration\n"), file = docsFile, append = T)
 write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
 
+pheno1 <- "placenta_weight"
+pheno2 <- "z_placenta_weight"
+
+plotPhenos(
+    df = phenoDF,
+    pheno1 = pheno1,
+    pheno2 = pheno2,
+    labelX = "Placenta Weight [kg]",
+    labelY = "Placenta Weight [Z-score]"
+)
+
+write(x = paste0("### Standardized Placenta Weight vs. Placenta Weight\n"), file = docsFile, append = T)
+write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
+
 pheno1 <- "z_umbilical_chord_length"
 pheno2 <- "z_placenta_weight"
 
