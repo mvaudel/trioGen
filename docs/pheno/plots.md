@@ -7,7 +7,7 @@ Phenotypes version V10_1.0.0-190506, standardization using [GAMLSS](https://www.
 
 
 | Name | variable | Formula | Distribution | Normalization | n |
-| --------- | ------- | ------------ | ------------- | - |
+| ---- | -------- |-------- | ------------ | ------------- | - |
 | Standardized Mother height | mother_height | `mother_height ~ fp(mother_age)` | `NO` | `centiles.pred` Z-scores | 26653 |
 | Standardized Father BMI | z_father_bmi | `father_bmi ~ fp(father_age)` | `LOGNO` | `centiles.pred` Z-scores | 24545 |
 | Pregnancy Duration | pregnancy_duration |  |  |  | 27354 |
