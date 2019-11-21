@@ -820,7 +820,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Mother Height vs. Mother Age\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
 
 pheno1 <- "mother_age"
 pheno2 <- "z_mother_height"
@@ -834,7 +834,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Mother height vs. Mother Age\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
 
 pheno1 <- "mother_height"
 pheno2 <- "z_mother_height"
@@ -848,7 +848,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Mother Height vs. Mother Height\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
 
 pheno1 <- "father_age"
 pheno2 <- "father_bmi"
@@ -862,7 +862,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Father BMI vs. Father Age\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
 
 pheno1 <- "father_age"
 pheno2 <- "z_father_bmi"
@@ -876,7 +876,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Father BMI vs. Father Age\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
 
 pheno1 <- "father_bmi"
 pheno2 <- "z_father_bmi"
@@ -890,7 +890,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Father BMI vs. Father BMI\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
 
 pheno1 <- "pregnancy_duration"
 pheno2 <- "umbilical_chord_length"
@@ -904,7 +904,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Umbilical Cord Length vs. Pregnancy Duration\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
 
 pheno1 <- "pregnancy_duration"
 pheno2 <- "placenta_weight"
@@ -918,7 +918,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Placenta Weight vs. Pregnancy Duration\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
 
 pheno1 <- "umbilical_chord_length"
 pheno2 <- "placenta_weight"
@@ -932,7 +932,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Placenta Weight vs. Umbilical Cord Length\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
 
 pheno1 <- "umbilical_chord_length"
 pheno2 <- "z_umbilical_chord_length"
@@ -946,7 +946,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Umbilical Cord Length vs. Umbilical Cord Length\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
 
 pheno1 <- "pregnancy_duration"
 pheno2 <- "z_umbilical_chord_length"
@@ -960,7 +960,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Umbilical Cord Length vs. Pregnancy Duration\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
 
 pheno1 <- "pregnancy_duration"
 pheno2 <- "z_placenta_weight"
@@ -974,7 +974,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Placenta Weight vs. Pregnancy Duration\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
 
 pheno1 <- "z_umbilical_chord_length"
 pheno2 <- "z_placenta_weight"
@@ -988,7 +988,7 @@ plotPhenos(
 )
 
 write(x = paste0("### Standardized Placenta Weight vs. Standardized Umbilical Cord Length\n"), file = docsFile, append = T)
-write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
 
 for (ageI in 0:11) {
     
@@ -1007,7 +1007,7 @@ for (ageI in 0:11) {
     )
     
     write(x = paste0("### BMI at ", timePoints[ageI + 1], " vs. Pregnancy Duration\n"), file = docsFile, append = T)
-    write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+    write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
     
     pheno1 <- "pregnancy_duration"
     pheno2 <- zBmiColumn
@@ -1021,7 +1021,7 @@ for (ageI in 0:11) {
     )
     
     write(x = paste0("### Standardized BMI at ", timePoints[ageI + 1], " vs. Pregnancy Duration\n"), file = docsFile, append = T)
-    write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+    write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
     
     pheno1 <- bmiColumn
     pheno2 <- zBmiColumn
@@ -1035,7 +1035,7 @@ for (ageI in 0:11) {
     )
     
     write(x = paste0("### Standardized BMI at ", timePoints[ageI + 1], " vs. BMI at ", timePoints[ageI + 1], "\n"), file = docsFile, append = T)
-    write(x = paste0("![](", paste0(pheno1, "-", pheno2, ".png")), ")\n\n", file = docsFile, append = T)
+    write(x = paste0("![](", pheno1, "-", pheno2, ".png", ")\n\n"), file = docsFile, append = T)
     
 }
 
