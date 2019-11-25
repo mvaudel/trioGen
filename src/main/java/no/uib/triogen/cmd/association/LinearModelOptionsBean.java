@@ -38,6 +38,10 @@ public class LinearModelOptionsBean {
      */
     public final String[] phenoNames;
     /**
+     * Names of the covariates to use for the phenotypes.
+     */
+    public final String[] covariates;
+    /**
      * The file listing the variants to process.
      */
     public File variantFile = null;
@@ -158,6 +162,19 @@ public class LinearModelOptionsBean {
         if (option.length() == 0 || phenoNames.length == 0) {
 
             throw new IllegalArgumentException("No phenotype name found.");
+
+        }
+
+        // The pheno columns
+        if (aLine.hasOption(LinearModelOptions.covariate.opt)) {
+
+            option = aLine.getOptionValue(LinearModelOptions.covariate.opt);
+
+            covariates = option.split(",");
+            
+        } else {
+
+            covariates = new String[0];
 
         }
 

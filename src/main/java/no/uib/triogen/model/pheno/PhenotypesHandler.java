@@ -5,10 +5,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
+import org.apache.commons.math3.linear.SingularMatrixException;
+import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 
 /**
  * This class parses phenotypes from a pheno file.
@@ -38,11 +42,13 @@ public class PhenotypesHandler {
      * @param phenoFile a file containing the phenotypes
      * @param childrenIds childrenIds
      * @param phenoNames the names of the phenotypes to parse
+     * @param covariates the names of the covariates to parse
      */
     public PhenotypesHandler(
             File phenoFile,
             TreeSet<String> childrenIds,
-            String[] phenoNames
+            String[] phenoNames,
+            String[] covariates
     ) {
 
         phenoMap = new HashMap<>(phenoNames.length);
@@ -53,6 +59,16 @@ public class PhenotypesHandler {
             Arrays.fill(phenoValues, Double.NaN);
             phenoMap.put(phenoName, phenoValues);
 
+        }
+
+        double[][] covariatesX = new double[childrenIds.size()][covariates.length];
+
+        for (int i = 0; i < childrenIds.size(); i++) {
+            for (int j = 0; j < covariates.length; j++) {
+
+                covariatesX[i][j] = Double.NaN;
+
+            }
         }
 
         HashMap<String, Integer> childIndexMap = new HashMap<>(childrenIds.size());
@@ -93,9 +109,12 @@ public class PhenotypesHandler {
 
             HashSet<String> phenoNamesSet = Arrays.stream(phenoNames)
                     .collect(Collectors.toCollection(HashSet::new));
+            HashSet<String> covariatesSet = Arrays.stream(covariates)
+                    .collect(Collectors.toCollection(HashSet::new));
 
             int idColumnIndex = -1;
             HashMap<String, Integer> phenoColumnIndexMap = new HashMap<>(phenoNames.length);
+            TreeMap<String, Integer> covariatesColumnIndexMap = new TreeMap<>();
 
             for (int i = 0; i < lineContent.length; i++) {
 
@@ -109,6 +128,10 @@ public class PhenotypesHandler {
 
                     phenoColumnIndexMap.put(cellContent, i);
 
+                } else if (covariatesSet.contains(cellContent)) {
+
+                    covariatesColumnIndexMap.put(cellContent, i);
+
                 }
             }
 
@@ -120,16 +143,34 @@ public class PhenotypesHandler {
 
             }
 
-            String[] missingPhenos = Arrays.stream(phenoNames)
+            String missingPhenos = Arrays.stream(phenoNames)
                     .filter(
                             phenoName -> !phenoColumnIndexMap.containsKey(phenoName)
                     )
-                    .toArray(String[]::new);
+                    .collect(
+                            Collectors.joining(", ")
+                    );
 
-            if (missingPhenos.length > 0) {
+            if (missingPhenos.length() > 0) {
 
                 throw new IllegalArgumentException(
-                        "The following phenotypes were not found in the phenotypes file: " + String.join(", ", missingPhenos) + "."
+                        "The following phenotypes were not found in the phenotypes file: " + missingPhenos + "."
+                );
+
+            }
+
+            String missingCovariates = Arrays.stream(covariates)
+                    .filter(
+                            phenoName -> !phenoColumnIndexMap.containsKey(phenoName)
+                    )
+                    .collect(
+                            Collectors.joining(", ")
+                    );
+
+            if (missingCovariates.length() > 0) {
+
+                throw new IllegalArgumentException(
+                        "The following covariates were not found in the phenotypes file: " + missingCovariates + "."
                 );
 
             }
@@ -180,6 +221,31 @@ public class PhenotypesHandler {
 
                         }
                     }
+
+                    int i = 0;
+                    for (Entry<String, Integer> covariateColumn : covariatesColumnIndexMap.entrySet()) {
+
+                        String valueString = lineContent[covariateColumn.getValue()];
+
+                        if (!valueString.equals("NA") && !valueString.equals("Inf") && !valueString.equals("-Inf")) {
+
+                            double newValue;
+                            try {
+
+                                newValue = Double.parseDouble(valueString);
+
+                            } catch (Exception e) {
+
+                                throw new IllegalArgumentException(
+                                        "The value for covariate " + covariateColumn.getKey() + " at for child id " + childId + " (" + valueString + ") could not be parsed as a number."
+                                );
+                            }
+
+                            covariatesX[childIndex][i] = newValue;
+                            i++;
+
+                        }
+                    }
                 }
             }
         }
@@ -192,6 +258,27 @@ public class PhenotypesHandler {
                     "No child identifier in the pheno file matched a child identifier in the trio file. As a result, no phenotype is available for the analysis. Please check that the identifiers are correct."
             );
 
+        }
+
+        // Adjust for covariates
+        OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
+
+        for (String phenoName : phenoNames) {
+
+            double[] phenos = phenoMap.get(phenoName);
+
+            regression.newSampleData(phenos, covariatesX);
+
+            try {
+
+                double[] residuals = regression.estimateResiduals();
+                phenoMap.put(phenoName, residuals);
+
+            } catch (SingularMatrixException singularMatrixException) {
+
+                throw new IllegalArgumentException("Singular matrix obtained when adjusting " + phenoName + " for the given covariates.", singularMatrixException);
+
+            }
         }
     }
 }

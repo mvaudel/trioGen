@@ -93,6 +93,7 @@ public class LinearModel {
                 childToParentMap,
                 bean.phenotypesFile,
                 bean.phenoNames,
+                bean.covariates,
                 models,
                 bean.destinationFile,
                 bean.nVariants

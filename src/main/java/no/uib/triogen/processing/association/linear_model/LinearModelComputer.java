@@ -44,6 +44,10 @@ public class LinearModelComputer {
      */
     private final String[] phenoNames;
     /**
+     * The covariates to use.
+     */
+    private final String[] covariates;
+    /**
      * The models to use.
      */
     private final Model[] models;
@@ -69,6 +73,7 @@ public class LinearModelComputer {
      * @param childToParentMap the map of trios
      * @param phenotypesFile the file containing the phenotypes
      * @param phenoNames the names of the phenotypes to use
+     * @param covariates the names of the covariates to use
      * @param models the models to use
      * @param destinationFile the file to export the result to
      * @param nVariants the number of variants to process in parallel
@@ -80,6 +85,7 @@ public class LinearModelComputer {
             ChildToParentMap childToParentMap,
             File phenotypesFile,
             String[] phenoNames,
+            String[] covariates,
             Model[] models,
             File destinationFile,
             int nVariants
@@ -91,6 +97,7 @@ public class LinearModelComputer {
         this.childToParentMap = childToParentMap;
         this.phenotypesFile = phenotypesFile;
         this.phenoNames = phenoNames;
+        this.covariates = covariates;
         this.models = models;
         this.destinationFile = destinationFile;
         this.nVariants = nVariants;
@@ -122,7 +129,12 @@ public class LinearModelComputer {
 
         long start = Instant.now().getEpochSecond();
 
-        PhenotypesHandler phenotypesHandler = new PhenotypesHandler(phenotypesFile, childToParentMap.children, phenoNames);
+        PhenotypesHandler phenotypesHandler = new PhenotypesHandler(
+                phenotypesFile,
+                childToParentMap.children,
+                phenoNames,
+                covariates
+        );
 
         long end = Instant.now().getEpochSecond();
         long duration = end - start;
@@ -158,11 +170,11 @@ public class LinearModelComputer {
                 )
         );
         for (Model model : models) {
-            
+
             model.getHeader(stringBuilder);
-            
+
         }
-        
+
         outputWriter.writeLine(stringBuilder.toString());
 
         try {

@@ -19,6 +19,7 @@ public enum LinearModelOptions {
     phenoFile("p", "phenoFile", "The phenotypes file.", true, true),
     childId("id", "childId", "The name of the column containing the child id. Default: child_SentrixID.", false, true),
     phenoName("pn", "phenoName", "List of the names of the phenotypes to include in the analysis. Example: pheno1,pheno2.", true, true),
+    covariate("cv", "covariate", "List of the names of the covariates columns in the phenotypes file. Example: pc1,pc2,pc3,pc4,pc5,pc6.", true, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not.", true, true),
     model("m", "model", "List of the names of the models to use. Default: h,cmf. Available: " + Model.getCommandLineOptions() + ".", false, true),
     x0("x0", "x0", "If present the association results will only be reported when multiple values of x are available for the regression.", false, false),

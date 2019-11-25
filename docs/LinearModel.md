@@ -91,6 +91,7 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 ### Additional Parameters
 
 ```
+-cv/--covariate    List of the names of the covariates columns in the phenotypes file. Example: pc1,pc2,pc3,pc4,pc5,pc6.
 -m/--model         List of the names of the models to use. Default: h,cmf.
 -v/variantId       File listing the variants to include in the analysis. Example: rs123,rs456. Default: iterate though all variants.
 -gf/--genoFormat   The genotypes file format. 0: VCF, 1: Sanger VCF. Default is VCF.

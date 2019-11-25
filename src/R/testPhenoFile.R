@@ -461,9 +461,9 @@ phenoDF %>%
     ) -> phenoDF
 
 
-# Standardize umbilical chord length
+# Standardize umbilical cord length
 
-print(paste0(Sys.time(), "    Standardizing umbilical chord length"))
+print(paste0(Sys.time(), "    Standardizing umbilical cord length"))
 
 maleDF <- phenoDF %>%
     filter(

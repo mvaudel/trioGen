@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
@@ -13,9 +12,7 @@ import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.geno.Model;
 import no.uib.triogen.model.pheno.PhenotypesHandler;
-import org.apache.commons.math3.distribution.FDistribution;
 import org.apache.commons.math3.linear.SingularMatrixException;
-import org.apache.commons.math3.special.Beta;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 
 /**
