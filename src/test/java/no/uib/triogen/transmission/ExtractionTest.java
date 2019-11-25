@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import no.uib.triogen.cmd.transmission.ExtractTransmission;
-import no.uib.triogen.io.Utils;
+import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 
@@ -182,11 +182,11 @@ public class ExtractionTest extends TestCase {
 
         SimpleFileReader reader = SimpleFileReader.getFileReader(hFile);
         String line = reader.readLine();
-        String[] header = line.split(Utils.separator);
+        String[] header = line.split(IoUtils.separator);
 
         while ((line = reader.readLine()) != null) {
 
-            String[] lineSplit = line.split(Utils.separator);
+            String[] lineSplit = line.split(IoUtils.separator);
 
             String snpId = lineSplit[0];
 
@@ -224,7 +224,7 @@ public class ExtractionTest extends TestCase {
 
         String line = reader.readLine();
 
-        String[] lineSplit = line.split(Utils.separator);
+        String[] lineSplit = line.split(IoUtils.separator);
         Assert.assertTrue(lineSplit[2].equals("variant"));
         Assert.assertTrue(lineSplit[3].equals("childId"));
         Assert.assertTrue(lineSplit[12].equals("h1"));
@@ -234,7 +234,7 @@ public class ExtractionTest extends TestCase {
 
         while ((line = reader.readLine()) != null) {
 
-            lineSplit = line.split(Utils.separator);
+            lineSplit = line.split(IoUtils.separator);
             String variantId = lineSplit[2];
             String childid = lineSplit[3];
             int h1 = Integer.parseInt(lineSplit[12]);

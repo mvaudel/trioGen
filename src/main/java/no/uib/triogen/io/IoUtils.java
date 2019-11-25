@@ -10,7 +10,7 @@ import no.uib.triogen.io.flat.readers.SimpleTextReader;
  *
  * @author Marc Vaudel
  */
-public class Utils {
+public class IoUtils {
 
     /**
      * Default encoding, cf the second rule.

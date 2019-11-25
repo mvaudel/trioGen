@@ -2,7 +2,7 @@ package no.uib.triogen.cmd.transmission;
 
 import java.io.PrintWriter;
 import no.uib.triogen.TrioGen;
-import static no.uib.triogen.io.Utils.lineSeparator;
+import static no.uib.triogen.io.IoUtils.lineSeparator;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.geno.VariantList;

@@ -2,7 +2,7 @@ package no.uib.triogen.cmd.transmission;
 
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
-import static no.uib.triogen.io.Utils.lineSeparator;
+import static no.uib.triogen.io.IoUtils.lineSeparator;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 
 /**

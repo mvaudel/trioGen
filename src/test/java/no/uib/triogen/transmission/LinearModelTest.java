@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import no.uib.triogen.cmd.association.LinearModel;
-import no.uib.triogen.io.Utils;
+import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 
@@ -123,7 +123,7 @@ public class LinearModelTest extends TestCase {
 
         String line = reader.readLine();
 
-        String[] lineSplit = line.split(Utils.separator);
+        String[] lineSplit = line.split(IoUtils.separator);
         Assert.assertTrue(lineSplit[0].equals("phenotype"));
         Assert.assertTrue(lineSplit[1].equals("variantID"));
         Assert.assertTrue(lineSplit[2].equals("h"));
@@ -132,7 +132,7 @@ public class LinearModelTest extends TestCase {
 
         while ((line = reader.readLine()) != null) {
 
-            lineSplit = line.split(Utils.separator);
+            lineSplit = line.split(IoUtils.separator);
 
             String variantId = lineSplit[1];
 
@@ -180,7 +180,7 @@ public class LinearModelTest extends TestCase {
 
         String line = reader.readLine();
 
-        String[] lineSplit = line.split(Utils.separator);
+        String[] lineSplit = line.split(IoUtils.separator);
         Assert.assertTrue(lineSplit[0].equals("h"));
         Assert.assertTrue(lineSplit[1].equals("pheno"));
         Assert.assertTrue(lineSplit[2].equals("beta"));
@@ -188,7 +188,7 @@ public class LinearModelTest extends TestCase {
 
         while ((line = reader.readLine()) != null) {
 
-            lineSplit = line.split(Utils.separator);
+            lineSplit = line.split(IoUtils.separator);
 
             String h = lineSplit[0];
             String pheno = lineSplit[1];

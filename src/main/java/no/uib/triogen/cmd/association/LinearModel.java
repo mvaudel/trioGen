@@ -1,10 +1,12 @@
 package no.uib.triogen.cmd.association;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
 import no.uib.triogen.TrioGen;
-import static no.uib.triogen.io.Utils.lineSeparator;
+import static no.uib.triogen.io.IoUtils.lineSeparator;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.geno.Model;
 import no.uib.triogen.model.geno.VariantList;
 import no.uib.triogen.processing.association.linear_model.LinearModelComputer;
 import org.apache.commons.cli.CommandLine;
@@ -78,6 +80,11 @@ public class LinearModel {
 
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
         VariantList variantList = bean.variantFile == null ? null : VariantList.getVariantList(bean.variantFile);
+        Model[] models = Arrays.stream(bean.modelNames)
+                .map(
+                        modelName -> Model.valueOf(modelName)
+                )
+                .toArray(Model[]::new);
 
         LinearModelComputer linearModelComputer = new LinearModelComputer(
                 bean.genotypesFile,
@@ -86,6 +93,7 @@ public class LinearModel {
                 childToParentMap,
                 bean.phenotypesFile,
                 bean.phenoNames,
+                models,
                 bean.destinationFile,
                 bean.nVariants
         );

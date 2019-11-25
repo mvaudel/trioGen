@@ -2,20 +2,21 @@ package no.uib.triogen.processing.association.linear_model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import no.uib.triogen.io.Utils;
+import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.geno.Model;
 import no.uib.triogen.model.pheno.PhenotypesHandler;
 import org.apache.commons.math3.distribution.FDistribution;
 import org.apache.commons.math3.linear.SingularMatrixException;
 import org.apache.commons.math3.special.Beta;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
-import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 /**
  * Runnable for the linear model association.
@@ -30,18 +31,6 @@ public class LinearModelRunnable implements Runnable {
      */
     public static boolean x0 = false;
     /**
-     * Epsilon to use for the estimation of the p-value.
-     */
-    private final static double[] epsilons = new double[]{1e-14, 1e-20, 1e-50, 1e-100, 1e-200};
-    private final static double[] na2 = new double[]{Double.NaN, Double.NaN};
-    private final static double[] na3 = new double[]{Double.NaN, Double.NaN, Double.NaN};
-    private final static double[] na4 = new double[]{Double.NaN, Double.NaN, Double.NaN, Double.NaN};
-    private final static double[] na5 = new double[]{Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN};
-    /**
-     * Names of the hs.
-     */
-    private final static String[] hNames = new String[]{"h1", "h2", "h3", "h4"};
-    /**
      * The variants iterator.
      */
     private final VariantIterator iterator;
@@ -49,6 +38,10 @@ public class LinearModelRunnable implements Runnable {
      * The map of trios.
      */
     private final ChildToParentMap childToParentMap;
+    /**
+     * List of models to use.
+     */
+    public Model[] models;
     /**
      * The handler for phenotypes.
      */
@@ -67,18 +60,21 @@ public class LinearModelRunnable implements Runnable {
      *
      * @param iterator the variants iterator
      * @param childToParentMap the child to parent map
+     * @param models the list of the names of the models to use
      * @param phenotypesHandler the phenotypes handler
      * @param outputWriter the output writer
      */
     public LinearModelRunnable(
             VariantIterator iterator,
             ChildToParentMap childToParentMap,
+            Model[] models,
             PhenotypesHandler phenotypesHandler,
             SimpleFileWriter outputWriter
     ) {
 
         this.iterator = iterator;
         this.childToParentMap = childToParentMap;
+        this.models = models;
         this.phenotypesHandler = phenotypesHandler;
         this.outputWriter = outputWriter;
 
@@ -136,14 +132,20 @@ public class LinearModelRunnable implements Runnable {
 
         // Gather the input to use for the models
         double[] phenoY = new double[nValidValues];
-        double[][] hX = new double[nValidValues][4];
-        double[][] cmfX = new double[nValidValues][3];
-        double[][] cfX = new double[nValidValues][2];
-        double[][] cmX = new double[nValidValues][2];
-        double[][] mfX = new double[nValidValues][2];
-        double[][] cX = new double[nValidValues][1];
-        double[][] mX = new double[nValidValues][1];
-        double[][] fX = new double[nValidValues][1];
+        ArrayList<double[][]> modelsX = new ArrayList<>(models.length);
+        ArrayList<RegressionResult> regressionResults = new ArrayList<>(models.length);
+
+        for (int i = 0; i < models.length; i++) {
+
+            Model model = models[i];
+
+            double[][] x = new double[nValidValues][model.betaNames.length];
+            modelsX.add(x);
+
+            regressionResults.add(new RegressionResult(model));
+
+        }
+
         int[] hMin = new int[4];
         int[] hMax = new int[4];
         TreeMap<Integer, Integer>[] hHist = new TreeMap[4];
@@ -282,29 +284,14 @@ public class LinearModelRunnable implements Runnable {
 
                 }
 
-                hX[iterationI][0] = h[0];
-                hX[iterationI][1] = h[1];
-                hX[iterationI][2] = h[2];
-                hX[iterationI][3] = h[3];
+                for (int i = 0; i < models.length; i++) {
 
-                cmfX[iterationI][0] = nAltChild;
-                cmfX[iterationI][1] = nAltMother;
-                cmfX[iterationI][2] = nAltFather;
+                    Model model = models[i];
+                    double[][] x = modelsX.get(i);
 
-                cmX[iterationI][0] = nAltChild;
-                cmX[iterationI][1] = nAltMother;
+                    Model.fillX(x, model, iterationI, h, nAltChild, nAltMother, nAltFather);
 
-                cfX[iterationI][0] = nAltChild;
-                cfX[iterationI][1] = nAltFather;
-
-                mfX[iterationI][0] = nAltMother;
-                mfX[iterationI][1] = nAltFather;
-
-                cX[iterationI][0] = nAltChild;
-
-                mX[iterationI][0] = nAltMother;
-
-                fX[iterationI][0] = nAltFather;
+                }
 
                 phenoY[iterationI] = y;
 
@@ -344,597 +331,76 @@ public class LinearModelRunnable implements Runnable {
             );
 
             // Run the regressions
-            double[] betas = na4;
-            double[] betaStandardErrors = na4;
-            double[] betaResiduals = na4;
-            
-            // Hs
             OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
+            HashMap<String, RegressionResult> regressionRestultsMap = new HashMap<>(regressionResults.size());
 
-            boolean regressionSuccess = false;
-            if (hNotSingluar) {
+            for (int i = 0; i < models.length; i++) {
 
-                try {
+                Model model = models[i];
 
-                    regression.newSampleData(phenoY, hX);
-                    betas = regression.estimateRegressionParameters();
-                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                    betaResiduals = regression.estimateResiduals();
-                    regressionSuccess = true;
+                if (!Model.likelyNotSingular(
+                        model,
+                        hNotSingluar,
+                        childNotSingular,
+                        motherNotSingular,
+                        fatherNotSingular
+                )) {
 
-                } catch (SingularMatrixException singularMatrixException) {
+                    double[][] x = modelsX.get(i);
+                    RegressionResult regressionResult = regressionResults.get(i);
 
+                    try {
+
+                        regression.newSampleData(phenoY, x);
+                        double[] betas = regression.estimateRegressionParameters();
+                        double[] betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                        double[] betaResiduals = regression.estimateResiduals();
+
+                        regressionResult.beta = Arrays.copyOfRange(betas, 1, betas.length - 1);
+                        regressionResult.betaStandardError = Arrays.copyOfRange(betaStandardErrors, 1, betaStandardErrors.length - 1);;
+                        regressionResult.betaResiduals = Arrays.copyOfRange(betaResiduals, 1, betaResiduals.length - 1);;
+
+                        regressionResult.computeRSS();
+                        regressionResult.computeBetaSignificance(nValidValues);
+
+                        regressionRestultsMap.put(model.name(), regressionResult);
+
+                    } catch (SingularMatrixException singularMatrixException) {
+
+                    }
                 }
-            }
-
-            double[] hBetas;
-            double[] hBetaStandardErrors;
-            double hRSS;
-            if (regressionSuccess) {
-
-                hBetas = betas;
-                hBetaStandardErrors = betaStandardErrors;
-                double[] hBetaResiduals = betaResiduals;
-                hRSS = getRSS(hBetaResiduals);
-
-            } else {
-
-                hBetas = na5;
-                hBetaStandardErrors = na5;
-                hRSS = Double.NaN;
-
-            }
-
-            // Child Mother Father
-            regressionSuccess = false;
-            if (childNotSingular && motherNotSingular && fatherNotSingular) {
-
-                try {
-
-                    regression.newSampleData(phenoY, cmfX);
-                    betas = regression.estimateRegressionParameters();
-                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                    betaResiduals = regression.estimateResiduals();
-                    regressionSuccess = true;
-
-                } catch (SingularMatrixException singularMatrixException) {
-
-                }
-            }
-
-            double[] cmfBetas;
-            double[] cmfBetaStandardErrors;
-            double cmfRSS;
-            if (regressionSuccess) {
-
-                cmfBetas = betas;
-                cmfBetaStandardErrors = betaStandardErrors;
-                double[] cmfBetaResiduals = betaResiduals;
-                cmfRSS = getRSS(cmfBetaResiduals);
-
-            } else {
-
-                cmfBetas = na4;
-                cmfBetaStandardErrors = na4;
-                cmfRSS = Double.NaN;
-
-            }
-
-            // Child Mother
-            regressionSuccess = false;
-            if (childNotSingular && motherNotSingular) {
-
-                try {
-
-                    regression.newSampleData(phenoY, cmX);
-                    betas = regression.estimateRegressionParameters();
-                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                    betaResiduals = regression.estimateResiduals();
-                    regressionSuccess = true;
-
-                } catch (SingularMatrixException singularMatrixException) {
-
-                }
-            }
-
-            double[] cmBetas;
-            double[] cmBetaStandardErrors;
-            double cmRSS;
-            if (regressionSuccess) {
-
-                cmBetas = betas;
-                cmBetaStandardErrors = betaStandardErrors;
-                double[] cmBetaResiduals = betaResiduals;
-                cmRSS = getRSS(cmBetaResiduals);
-
-            } else {
-
-                cmBetas = na3;
-                cmBetaStandardErrors = na3;
-                cmRSS = Double.NaN;
-
-            }
-
-            // Child Father
-            regressionSuccess = false;
-            if (childNotSingular && fatherNotSingular) {
-
-                try {
-
-                    regression.newSampleData(phenoY, cfX);
-                    betas = regression.estimateRegressionParameters();
-                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                    betaResiduals = regression.estimateResiduals();
-                    regressionSuccess = true;
-
-                } catch (SingularMatrixException singularMatrixException) {
-
-                }
-            }
-
-            double[] cfBetas;
-            double[] cfBetaStandardErrors;
-            double cfRSS;
-            if (regressionSuccess) {
-
-                cfBetas = betas;
-                cfBetaStandardErrors = betaStandardErrors;
-                double[] cfBetaResiduals = betaResiduals;
-                cfRSS = getRSS(cfBetaResiduals);
-
-            } else {
-
-                cfBetas = na3;
-                cfBetaStandardErrors = na3;
-                cfRSS = Double.NaN;
-
-            }
-
-            // Mother Father
-            regressionSuccess = false;
-            if (motherNotSingular && fatherNotSingular) {
-
-                try {
-
-                    regression.newSampleData(phenoY, mfX);
-                    betas = regression.estimateRegressionParameters();
-                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                    betaResiduals = regression.estimateResiduals();
-                    regressionSuccess = true;
-
-                } catch (SingularMatrixException singularMatrixException) {
-
-                }
-            }
-
-            double[] mfBetas;
-            double[] mfBetaStandardErrors;
-            double mfRSS;
-            if (regressionSuccess) {
-
-                mfBetas = betas;
-                mfBetaStandardErrors = betaStandardErrors;
-                double[] mfBetaResiduals = betaResiduals;
-                mfRSS = getRSS(mfBetaResiduals);
-
-            } else {
-
-                mfBetas = na3;
-                mfBetaStandardErrors = na3;
-                mfRSS = Double.NaN;
-
-            }
-
-            // Child
-            regressionSuccess = false;
-            if (childNotSingular) {
-
-                try {
-
-                    regression.newSampleData(phenoY, cX);
-                    betas = regression.estimateRegressionParameters();
-                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                    betaResiduals = regression.estimateResiduals();
-                    regressionSuccess = true;
-
-                } catch (SingularMatrixException singularMatrixException) {
-
-                }
-            }
-
-            double[] cBetas;
-            double[] cBetaStandardErrors;
-            double cRSS;
-            if (regressionSuccess) {
-
-                cBetas = betas;
-                cBetaStandardErrors = betaStandardErrors;
-                double[] cBetaResiduals = betaResiduals;
-                cRSS = getRSS(cBetaResiduals);
-
-            } else {
-
-                cBetas = na2;
-                cBetaStandardErrors = na2;
-                cRSS = Double.NaN;
-
-            }
-
-            // Mother
-            regressionSuccess = false;
-            if (motherNotSingular) {
-
-                try {
-
-                    regression.newSampleData(phenoY, mX);
-                    betas = regression.estimateRegressionParameters();
-                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                    betaResiduals = regression.estimateResiduals();
-                    regressionSuccess = true;
-
-                } catch (SingularMatrixException singularMatrixException) {
-
-                }
-            }
-
-            double[] mBetas;
-            double[] mBetaStandardErrors;
-            double mRSS;
-            if (regressionSuccess) {
-
-                mBetas = betas;
-                mBetaStandardErrors = betaStandardErrors;
-                double[] mBetaResiduals = betaResiduals;
-                mRSS = getRSS(mBetaResiduals);
-
-            } else {
-
-                mBetas = na2;
-                mBetaStandardErrors = na2;
-                mRSS = Double.NaN;
-
-            }
-
-            // Father
-            regressionSuccess = false;
-            if (fatherNotSingular) {
-
-                try {
-
-                    regression.newSampleData(phenoY, fX);
-                    betas = regression.estimateRegressionParameters();
-                    betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                    betaResiduals = regression.estimateResiduals();
-                    regressionSuccess = true;
-
-                } catch (SingularMatrixException singularMatrixException) {
-
-                }
-            }
-
-            double[] fBetas;
-            double[] fBetaStandardErrors;
-            double fRSS;
-            if (regressionSuccess) {
-
-                fBetas = betas;
-                fBetaStandardErrors = betaStandardErrors;
-                double[] fBetaResiduals = betaResiduals;
-                fRSS = getRSS(fBetaResiduals);
-
-            } else {
-
-                fBetas = na2;
-                fBetaStandardErrors = na2;
-                fRSS = Double.NaN;
-
             }
 
             // Estimate model significance
-            double cmf_hP = getModelSignificance(cmfRSS, 4, hRSS, 5, nValidValues);
-            double cm_hP = getModelSignificance(cmRSS, 3, hRSS, 5, nValidValues);
-            double cm_cmfP = getModelSignificance(cmRSS, 3, cmfRSS, 4, nValidValues);
-            double cf_hP = getModelSignificance(cfRSS, 3, hRSS, 5, nValidValues);
-            double cf_cmfP = getModelSignificance(cfRSS, 3, cmfRSS, 4, nValidValues);
-            double mf_hP = getModelSignificance(mfRSS, 3, hRSS, 5, nValidValues);
-            double mf_cmfP = getModelSignificance(mfRSS, 3, cmfRSS, 4, nValidValues);
-            double c_hP = getModelSignificance(cmRSS, 2, hRSS, 5, nValidValues);
-            double c_cmfP = getModelSignificance(cRSS, 2, cmfRSS, 4, nValidValues);
-            double c_cmP = getModelSignificance(cRSS, 2, cmRSS, 3, nValidValues);
-            double c_cfP = getModelSignificance(cRSS, 2, cfRSS, 3, nValidValues);
-            double m_hP = getModelSignificance(cfRSS, 2, hRSS, 5, nValidValues);
-            double m_cmfP = getModelSignificance(mRSS, 2, cmfRSS, 4, nValidValues);
-            double m_cmP = getModelSignificance(mRSS, 2, cmRSS, 3, nValidValues);
-            double m_mfP = getModelSignificance(mRSS, 2, mfRSS, 3, nValidValues);
-            double f_hP = getModelSignificance(mfRSS, 2, hRSS, 5, nValidValues);
-            double f_cmfP = getModelSignificance(fRSS, 2, cmfRSS, 4, nValidValues);
-            double f_cfP = getModelSignificance(fRSS, 2, cfRSS, 3, nValidValues);
-            double f_mfP = getModelSignificance(fRSS, 2, mfRSS, 3, nValidValues);
-
-            // Estimate slope significance
-            double[] hBetaP = IntStream.range(0, hBetas.length)
-                    .mapToDouble(
-                            j -> getBetaSignificance(hBetas[j], hBetaStandardErrors[j], nValidValues - hBetas.length)
-                    )
-                    .toArray();
-            double[] cmfBetaP = IntStream.range(0, cmfBetas.length)
-                    .mapToDouble(
-                            j -> getBetaSignificance(cmfBetas[j], cmfBetaStandardErrors[j], nValidValues - cmfBetas.length)
-                    )
-                    .toArray();
-            double[] cmBetaP = IntStream.range(0, cmBetas.length)
-                    .mapToDouble(
-                            j -> getBetaSignificance(cmBetas[j], cmBetaStandardErrors[j], nValidValues - cmBetas.length)
-                    )
-                    .toArray();
-            double[] cfBetaP = IntStream.range(0, cfBetas.length)
-                    .mapToDouble(
-                            j -> getBetaSignificance(cfBetas[j], cfBetaStandardErrors[j], nValidValues - cfBetas.length)
-                    )
-                    .toArray();
-            double[] mfBetaP = IntStream.range(0, mfBetas.length)
-                    .mapToDouble(
-                            j -> getBetaSignificance(mfBetas[j], mfBetaStandardErrors[j], nValidValues - mfBetas.length)
-                    )
-                    .toArray();
-            double[] cBetaP = IntStream.range(0, cBetas.length)
-                    .mapToDouble(
-                            j -> getBetaSignificance(cBetas[j], cBetaStandardErrors[j], nValidValues - cBetas.length)
-                    )
-                    .toArray();
-            double[] mBetaP = IntStream.range(0, mBetas.length)
-                    .mapToDouble(
-                            j -> getBetaSignificance(mBetas[j], mBetaStandardErrors[j], nValidValues - mBetas.length)
-                    )
-                    .toArray();
-            double[] fBetaP = IntStream.range(0, fBetas.length)
-                    .mapToDouble(
-                            j -> getBetaSignificance(fBetas[j], fBetaStandardErrors[j], nValidValues - fBetas.length)
-                    )
-                    .toArray();
+            regressionRestultsMap.values()
+                    .forEach(
+                            regressionResult -> regressionResult.computeModelSignificance(
+                                    regressionRestultsMap,
+                                    nValidValues
+                            )
+                    );
 
             // Export
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder
                     .append(phenoName)
-                    .append(Utils.separator)
+                    .append(IoUtils.separator)
                     .append(genotypesProvider.getVariantID())
-                    .append(Utils.separator)
+                    .append(IoUtils.separator)
                     .append(nValidValues)
-                    .append(Utils.separator)
+                    .append(IoUtils.separator)
                     .append(altHistograms)
-                    .append(Utils.separator)
+                    .append(IoUtils.separator)
                     .append(hHistograms);
-            appendBetasAsString(
-                    stringBuilder,
-                    hBetas,
-                    hBetaStandardErrors,
-                    hBetaP
-            );
-            stringBuilder
-                    .append(Utils.separator)
-                    .append(cmf_hP);
-            appendBetasAsString(
-                    stringBuilder,
-                    cmfBetas,
-                    cmfBetaStandardErrors,
-                    cmfBetaP
-            );
-            stringBuilder
-                    .append(Utils.separator)
-                    .append(cm_hP)
-                    .append(Utils.separator)
-                    .append(cm_cmfP);
-            appendBetasAsString(
-                    stringBuilder,
-                    cmBetas,
-                    cmBetaStandardErrors,
-                    cmBetaP
-            );
-            stringBuilder
-                    .append(Utils.separator)
-                    .append(cf_hP)
-                    .append(Utils.separator)
-                    .append(cf_cmfP);
-            appendBetasAsString(
-                    stringBuilder,
-                    cfBetas,
-                    cfBetaStandardErrors,
-                    cfBetaP
-            );
-            stringBuilder
-                    .append(Utils.separator)
-                    .append(mf_hP)
-                    .append(Utils.separator)
-                    .append(mf_cmfP);
-            appendBetasAsString(
-                    stringBuilder,
-                    mfBetas,
-                    mfBetaStandardErrors,
-                    mfBetaP
-            );
-            stringBuilder
-                    .append(Utils.separator)
-                    .append(c_hP)
-                    .append(Utils.separator)
-                    .append(c_cmfP)
-                    .append(Utils.separator)
-                    .append(c_cmP)
-                    .append(Utils.separator)
-                    .append(c_cfP);
-            appendBetasAsString(
-                    stringBuilder,
-                    cBetas,
-                    cBetaStandardErrors,
-                    cBetaP
-            );
-            stringBuilder
-                    .append(Utils.separator)
-                    .append(m_hP)
-                    .append(Utils.separator)
-                    .append(m_cmfP)
-                    .append(Utils.separator)
-                    .append(m_cmP)
-                    .append(Utils.separator)
-                    .append(m_mfP);
-            appendBetasAsString(
-                    stringBuilder,
-                    mBetas,
-                    mBetaStandardErrors,
-                    mBetaP
-            );
-            stringBuilder
-                    .append(Utils.separator)
-                    .append(f_hP)
-                    .append(Utils.separator)
-                    .append(f_cmfP)
-                    .append(Utils.separator)
-                    .append(f_cfP)
-                    .append(Utils.separator)
-                    .append(f_mfP);
-            appendBetasAsString(
-                    stringBuilder,
-                    fBetas,
-                    fBetaStandardErrors,
-                    fBetaP
-            );
+            
+            regressionResults
+                    .forEach(
+                            regressionResult -> regressionResult.appendResults(stringBuilder)
+                    );
             String line = stringBuilder.toString();
             outputWriter.writeLine(line);
 
         }
-    }
-
-    /**
-     * Appends the betas with se and significance to the stringBuilder with
-     * preceeding separators.
-     *
-     * @param stringBuilder the string builder
-     * @param betas estimation of the betas
-     * @param betaStandardErrors standard errors of the beta estimation
-     * @param betaP significance of the beta estimations
-     */
-    private void appendBetasAsString(
-            StringBuilder stringBuilder,
-            double[] betas,
-            double[] betaStandardErrors,
-            double[] betaP
-    ) {
-
-        for (int i = 0; i < betas.length - 1; i++) {
-
-            stringBuilder.append(Utils.separator);
-            stringBuilder.append(betas[i + 1]);
-            stringBuilder.append(Utils.separator);
-            stringBuilder.append(betaStandardErrors[i + 1]);
-            stringBuilder.append(Utils.separator);
-            stringBuilder.append(betaP[i + 1]);
-
-        }
-    }
-
-    /**
-     * Returns the significance of increasing the complexity of a simple model,
-     * model1, with p1 parameters to a more complex model, model2, with p2
-     * parameters. p1 < p2.
-     *
-     * @param model1RSS the residual sum of squares for model 1
-     * @param p1 the number of parameters of model 1
-     * @param model2RSS the residual sum of squares for model 2
-     * @param p2 the number of parameters of model 2
-     * @param n the number of values
-     *
-     * @return the significance
-     */
-    private double getModelSignificance(
-            double model1RSS,
-            int p1,
-            double model2RSS,
-            int p2,
-            int n
-    ) {
-
-        if (Double.isNaN(model1RSS) || Double.isNaN(model2RSS)) {
-
-            return Double.NaN;
-
-        }
-
-        double numeratorDegreesOfFreedom = p2 - p1;
-        double denominatorDegreesOfFreedom = n - p2;
-        double x = ((model1RSS - model2RSS) / numeratorDegreesOfFreedom) / (model2RSS / denominatorDegreesOfFreedom);
-
-        FDistribution fDistribution = new FDistribution(numeratorDegreesOfFreedom, denominatorDegreesOfFreedom);
-
-        return 1.0 - fDistribution.cumulativeProbability(x);
-
-    }
-
-    /**
-     * Returns the residual sum of squares for the given residuals.
-     *
-     * @param residuals the residuals
-     *
-     * @return the residual sum of squares
-     */
-    private double getRSS(
-            double[] residuals
-    ) {
-
-        return Arrays.stream(residuals)
-                .map(
-                        x -> x * x
-                )
-                .sum();
-
-    }
-
-    /**
-     * Returns the significance of a beta.
-     *
-     * @param beta the estimate of beta
-     * @param betaSE the standard error of the estimate
-     * @param degreesOfFreedom the number of degrees of freedom
-     *
-     * @return the significance of a beta
-     */
-    private double getBetaSignificance(
-            double beta,
-            double betaSE,
-            int degreesOfFreedom
-    ) {
-
-        if (Double.isNaN(beta) || Double.isNaN(betaSE)) {
-
-            return Double.NaN;
-
-        }
-
-        double p = Double.NaN;
-
-        if (degreesOfFreedom > 1 && !Double.isNaN(beta) && betaSE > 0.0) {
-
-            double x = beta / betaSE;
-
-            for (double epsilon : epsilons) {
-
-                p = x != 0.0
-                        ? Beta.regularizedBeta(
-                                degreesOfFreedom / (degreesOfFreedom + (x * x)),
-                                0.5 * degreesOfFreedom,
-                                0.5,
-                                epsilon)
-                        : 0.5;
-
-                if (p > epsilon * 16) {
-
-                    return p;
-
-                }
-            }
-        }
-
-        return p;
-
     }
 
     /**

@@ -7,11 +7,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
-import no.uib.triogen.io.Utils;
+import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.geno.Model;
 import no.uib.triogen.model.geno.VariantList;
 import no.uib.triogen.model.pheno.PhenotypesHandler;
 
@@ -43,6 +44,10 @@ public class LinearModelComputer {
      */
     private final String[] phenoNames;
     /**
+     * The models to use.
+     */
+    private final Model[] models;
+    /**
      * The file to export the result to.
      */
     private final File destinationFile;
@@ -64,6 +69,7 @@ public class LinearModelComputer {
      * @param childToParentMap the map of trios
      * @param phenotypesFile the file containing the phenotypes
      * @param phenoNames the names of the phenotypes to use
+     * @param models the models to use
      * @param destinationFile the file to export the result to
      * @param nVariants the number of variants to process in parallel
      */
@@ -74,6 +80,7 @@ public class LinearModelComputer {
             ChildToParentMap childToParentMap,
             File phenotypesFile,
             String[] phenoNames,
+            Model[] models,
             File destinationFile,
             int nVariants
     ) {
@@ -84,6 +91,7 @@ public class LinearModelComputer {
         this.childToParentMap = childToParentMap;
         this.phenotypesFile = phenotypesFile;
         this.phenoNames = phenoNames;
+        this.models = models;
         this.destinationFile = destinationFile;
         this.nVariants = nVariants;
 
@@ -122,7 +130,7 @@ public class LinearModelComputer {
         System.out.println(
                 Instant.now() + " - Done (" + phenoNames.length + " phenotypes for " + phenotypesHandler.nChildren + " children imported in " + duration + " seconds)"
         );
-        
+
         String nVariantsText = variantList == null ? "" : ", " + variantList.variantId.length + " variants";
 
         System.out.println(Instant.now() + " - Linear association (geno: " + genotypesFile.getAbsolutePath() + nVariantsText + ", pheno: " + phenotypesFile.getAbsolutePath() + ")");
@@ -131,7 +139,7 @@ public class LinearModelComputer {
 
         VariantIterator iterator = GenotypesFileType.getVariantIterator(
                 genotypesFile,
-                genotypesFileType, 
+                genotypesFileType,
                 variantList
         );
         SimpleFileWriter outputWriter = new SimpleFileWriter(
@@ -139,82 +147,23 @@ public class LinearModelComputer {
                 true
         );
 
-            String header = String.join(
-                    Utils.separator,
-                    "phenotype",
-                    "variantId",
-                    "n",
-                    "nAlt",
-                    "nH",
-                    "h1_beta",
-                    "h1_beta_se",
-                    "h1_beta_p",
-                    "h2_beta",
-                    "h2_beta_se",
-                    "h2_beta_p",
-                    "h3_beta",
-                    "h3_beta_se",
-                    "h3_beta_p",
-                    "h4_beta",
-                    "h4_beta_se",
-                    "h4_beta_p",
-                    "cmf_h_p",
-                    "cmf_child_beta",
-                    "cmf_child_beta_se",
-                    "cmf_child_beta_p",
-                    "cmf_mother_beta",
-                    "cmf_mother_beta_se",
-                    "cmf_mother_beta_p",
-                    "cmf_father_beta",
-                    "cmf_father_beta_se",
-                    "cmf_father_beta_p",
-                    "cm_h_p",
-                    "cm_cmf_p",
-                    "cm_child_beta",
-                    "cm_child_beta_se",
-                    "cm_child_beta_p",
-                    "cm_mother_beta",
-                    "cm_mother_beta_se",
-                    "cm_mother_beta_p",
-                    "cf_h_p",
-                    "cf_cmf_p",
-                    "cf_child_beta",
-                    "cf_child_beta_se",
-                    "cf_child_beta_p",
-                    "cf_father_beta",
-                    "cf_father_beta_se",
-                    "cf_father_beta_p",
-                    "mf_h_p",
-                    "mf_cmf_p",
-                    "mf_mother_beta",
-                    "mf_mother_beta_se",
-                    "mf_mother_beta_p",
-                    "mf_father_beta",
-                    "mf_father_beta_se",
-                    "mf_father_beta_p",
-                    "c_h_p",
-                    "c_cmf_p",
-                    "c_cm_p",
-                    "c_cf_p",
-                    "c_beta",
-                    "c_beta_se",
-                    "c_beta_p",
-                    "m_h_p",
-                    "m_cmf_p",
-                    "m_cm_p",
-                    "m_mf_p",
-                    "m_beta",
-                    "m_beta_se",
-                    "m_beta_p",
-                    "f_h_p",
-                    "f_cmf_p",
-                    "f_cf_p",
-                    "f_mf_p",
-                    "f_beta",
-                    "f_beta_se",
-                    "f_beta_p"
-            );
-        outputWriter.writeLine(header);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(
+                String.join(IoUtils.separator,
+                        "phenotype",
+                        "variantId",
+                        "n",
+                        "nAlt",
+                        "nH"
+                )
+        );
+        for (Model model : models) {
+            
+            model.getHeader(stringBuilder);
+            
+        }
+        
+        outputWriter.writeLine(stringBuilder.toString());
 
         try {
 
@@ -225,6 +174,7 @@ public class LinearModelComputer {
                             i -> new LinearModelRunnable(
                                     iterator,
                                     childToParentMap,
+                                    models,
                                     phenotypesHandler,
                                     outputWriter
                             )

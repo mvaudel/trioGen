@@ -1,13 +1,13 @@
 # LinearModel
 
-This command line runs linear regression between phenotypes and levels of transmitted alternative alleles using different models. As detailed below, the models are based on hard-called genotypes, and need children genotypes to be phased. For each model, the estimated regression coefficients are returned, and models are compared to infer the relevance of including mother, father, and child in the regression.
+This command line runs linear regression between phenotypes and levels of transmitted alternative alleles. As detailed below, different models are available. They are based on hard-called genotypes, and need children genotypes to be phased. For each model, the estimated regression coefficients are returned, and models are compared to infer the relevance of including mother, father, and child in the regression.
 
 ### Regression against the number of transmitted alternative alleles
 
 In the `h` model, the regression is conducted against the number of transmitted and non-transmitted alternative alleles, h, as defined by [Chen _et al._](https://doi.org/10.1101/737106).
 
 ```
-y = β1 h1 + β2 h2 + β3 h3 + β4 h4 + ε								(h)
+y = β1 h1 + β2 h2 + β3 h3 + β4 h4 + ε                                                     (h)
 ```
 
 Where y represents the phenotypes, h1 the number of maternal alternative alleles transmitted to the child, h2 the number of maternal alternative alleles non-transmitted to the child, h3 the number of paternal alternative alleles transmitted to the child, and h4 the number of paternal alternative alleles non-transmitted to the child.
@@ -19,7 +19,7 @@ In the `h` model above: (1) `β1 - β2` and `β3 - β4` represent the _child gen
 Under these assumptions, the `h` model above can be written as child-mother-father `cmf` as below:
 
 ```
-y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + ε						(cmf)
+y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + ε                                        (cmf)
 ```
 
 ### Regression against the number of alternative alleles for the child, mother, or father 
@@ -36,27 +36,27 @@ From the cmf model, we can derive the following models:
 | father | `f` | `βc = 0` and `βm = 0` |
 
 ```
-y = βm (h1 + h2) + βc (h2 + h3) + ε								(cm)
+y = βm (h1 + h2) + βc (h2 + h3) + ε                                                       (cm)
 ```
 
 ```
-y = βc (h2 + h3) + βf (h3 + h4) + ε								(cf)
+y = βc (h2 + h3) + βf (h3 + h4) + ε                                                       (cf)
 ```
 
 ```
-y = βm (h1 + h2) + βf (h3 + h4) + ε								(mf)
+y = βm (h1 + h2) + βf (h3 + h4) + ε                                                       (mf)
 ```
 
 ```
-y = βc (h2 + h3) + ε										(c)
+y = βc (h2 + h3) + ε                                                                      (c)
 ```
 
 ```
-y = βm (h1 + h2) + ε										(m)
+y = βm (h1 + h2) + ε                                                                      (m)
 ```
 
 ```
-y = βf (h3 + h4) + ε										(f)
+y = βf (h3 + h4) + ε                                                                      (f)
 ```
 
 
@@ -91,6 +91,7 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 ### Additional Parameters
 
 ```
+-m/--model         List of the names of the models to use. Default: h,cmf.
 -v/variantId       File listing the variants to include in the analysis. Example: rs123,rs456. Default: iterate though all variants.
 -gf/--genoFormat   The genotypes file format. 0: VCF, 1: Sanger VCF. Default is VCF.
 -nv/--nVariants    The number of variants to process in parallel. Default is 8.
@@ -133,10 +134,10 @@ The output file contains the results of the linear regression, one line per phen
 
 | Column Name Scheme | Example | Description |
 | ------------------ | ------- | ----------- |
-| `model1_model2` | `mf_cmf_p` | Estimate of whether model2 provides significantly better fit to the data than model1 using an F-test. |
-| `model_variable_beta` | `mf_mother_beta` | Estimate of the slope of the variable in the model. |
-| `model_variable_beta_se` | `h_h2_se` | [Standard error of the slope estimate](http://www.xycoon.com/standerrorb(1).htm). |
-| `model_variable_beta_p` | `cmf_child_p` | Significance level of the slope (equiv) correlation Prob(|t| > 0). |
+| `model1_model2_p` | `mf_cmf_p` | Estimate of whether model2 provides significantly better fit to the data than model1 using an F-test. |
+| `model_variable_beta` | `mf_βm` | Estimate of the slope of the variable in the model. |
+| `model_variable_beta_se` | `h_β2_se` | [Standard error of the slope estimate](http://www.xycoon.com/standerrorb(1).htm). |
+| `model_variable_beta_p` | `cmf_βc_p` | Significance level of the slope (equiv) correlation. |
 
 - F-test
 

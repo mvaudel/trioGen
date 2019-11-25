@@ -2,7 +2,7 @@ package no.uib.triogen.model.geno;
 
 import java.io.File;
 import java.util.ArrayList;
-import no.uib.triogen.io.Utils;
+import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 
 /**
@@ -86,7 +86,7 @@ public class VariantList {
 
                     lineNumber++;
 
-                    String[] lineSplit = line.split(Utils.separator);
+                    String[] lineSplit = line.split(IoUtils.separator);
 
                     if (lineSplit.length < 4) {
 

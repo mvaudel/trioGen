@@ -2,8 +2,9 @@ package no.uib.triogen.cmd.association;
 
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
-import static no.uib.triogen.io.Utils.lineSeparator;
+import static no.uib.triogen.io.IoUtils.lineSeparator;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
+import no.uib.triogen.model.geno.Model;
 
 /**
  * Enum of the different options
@@ -19,6 +20,7 @@ public enum LinearModelOptions {
     childId("id", "childId", "The name of the column containing the child id. Default: child_SentrixID.", false, true),
     phenoName("pn", "phenoName", "List of the names of the phenotypes to include in the analysis. Example: pheno1,pheno2.", true, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not.", true, true),
+    model("m", "model", "List of the names of the models to use. Default: h,cmf. Available: " + Model.getCommandLineOptions() + ".", false, true),
     x0("x0", "x0", "If present the association results will only be reported when multiple values of x are available for the regression.", false, false),
     out("o", "out", "The file where to write the results.", true, true),
     nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is 8.", false, true),

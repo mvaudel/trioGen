@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import no.uib.triogen.io.Utils;
+import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 
 /**
@@ -79,7 +79,7 @@ public class PhenotypesHandler {
 
             }
 
-            String[] lineContent = line.split(Utils.separator);
+            String[] lineContent = line.split(IoUtils.separator);
 
             int nColumns = lineContent.length;
 
@@ -138,7 +138,7 @@ public class PhenotypesHandler {
 
                 lineNumber++;
 
-                lineContent = line.split(Utils.separator);
+                lineContent = line.split(IoUtils.separator);
 
                 if (lineContent.length != nColumns) {
 

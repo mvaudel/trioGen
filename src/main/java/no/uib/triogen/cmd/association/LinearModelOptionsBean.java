@@ -1,7 +1,11 @@
 package no.uib.triogen.cmd.association;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
+import no.uib.triogen.model.geno.Model;
 import no.uib.triogen.model.pheno.PhenotypesHandler;
 import no.uib.triogen.processing.association.linear_model.LinearModelRunnable;
 import org.apache.commons.cli.CommandLine;
@@ -37,6 +41,10 @@ public class LinearModelOptionsBean {
      * The file listing the variants to process.
      */
     public File variantFile = null;
+    /**
+     * List of the names of the models to use.
+     */
+    public String[] modelNames = new String[]{"h", "cmf"};
     /**
      * The file where to write the output.
      */
@@ -168,10 +176,54 @@ public class LinearModelOptionsBean {
 
         }
 
+        // The models
+        if (aLine.hasOption(LinearModelOptions.model.opt)) {
+
+            option = aLine.getOptionValue(LinearModelOptions.model.opt);
+
+            modelNames = option.split(",");
+
+            if (option.length() == 0 || modelNames.length == 0) {
+
+                throw new IllegalArgumentException("No model found.");
+
+            }
+
+            HashSet<String> implementedModels = Arrays.stream(Model.values())
+                    .map(
+                            model -> model.name()
+                    )
+                    .collect(
+                            Collectors.toCollection(HashSet::new)
+                    );
+            String missingModels = Arrays.stream(modelNames)
+                    .filter(
+                            model -> !implementedModels.contains(model)
+                    )
+                    .collect(
+                            Collectors.joining(",")
+                    );
+
+            if (missingModels.length() > 0) {
+
+                throw new IllegalArgumentException("Models not implemented: " + missingModels + ". Please use one of the following models: " + Model.getCommandLineOptions() + ".");
+
+            }
+        }
+
+        HashSet<String> includedModels = Arrays.stream(modelNames)
+                .collect(
+                        Collectors.toCollection(HashSet::new)
+                );
+        Arrays.stream(Model.values())
+                .forEach(
+                        model -> model.setParentModels(includedModels)
+                );
+
         // Inclusion of cases where no regression can be done
         if (aLine.hasOption(LinearModelOptions.x0.opt)) {
 
-                LinearModelRunnable.x0 = true;
+            LinearModelRunnable.x0 = true;
 
         }
 

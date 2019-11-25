@@ -7,7 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.zip.GZIPOutputStream;
-import static no.uib.triogen.io.Utils.encoding;
+import static no.uib.triogen.io.IoUtils.encoding;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
