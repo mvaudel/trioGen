@@ -213,24 +213,12 @@ idDF <- read.table(
     ) %>%
     mutate(
         sex_number = as.numeric(factor(sex, levels = c("Boy", "Girl"))),
-        child_genotyping_batch = ifelse(!is.na(child_SentrixID) & !is.na(child_Harvest_SentrixID) & child_SentrixID == child_Harvest_SentrixID, "Harvest",
-                                        ifelse(!is.na(child_SentrixID) & !is.na(child_Rotterdam1_SentrixID) & child_SentrixID == child_Rotterdam1_SentrixID, "Rotterdam1",
-                                               ifelse(!is.na(child_SentrixID) & !is.na(child_Rotterdam2_SentrixID) & child_SentrixID == child_Rotterdam2_SentrixID, "Rotterdam2",
-                                                      ifelse(!is.na(child_SentrixID) & !is.na(child_NormentMay16_SentrixID) & child_SentrixID == child_NormentMay16_SentrixID, "NormentMay16",
-                                                             ifelse(!is.na(child_SentrixID) & !is.na(child_NormentFeb18_SentrixID) & child_SentrixID == child_NormentFeb18_SentrixID, "NormentFeb18",
-                                                                    ifelse(!is.na(child_SentrixID) & !is.na(child_Ted_SentrixID) & child_SentrixID == child_Ted_SentrixID, "Ted",
-                                                                           NA
-                                                                    )  
-                                                             )    
-                                                      )    
-                                               )   
-                                        )
-        ),
-        child_genotyping_batch_number = as.numeric(
-            factor(
-                child_genotyping_batch
-            )
-        )
+        harvest = ifelse(!is.na(child_SentrixID) & !is.na(child_Harvest_SentrixID) & child_SentrixID == child_Harvest_SentrixID, 1, 0),
+        rotterdam1 = ifelse(!is.na(child_SentrixID) & !is.na(child_Rotterdam1_SentrixID) & child_SentrixID == child_Rotterdam1_SentrixID, 1, 0),
+        rotterdam2 = ifelse(!is.na(child_SentrixID) & !is.na(child_Rotterdam2_SentrixID) & child_SentrixID == child_Rotterdam2_SentrixID, 1, 0),
+        normentMay16 = ifelse(!is.na(child_SentrixID) & !is.na(child_NormentMay16_SentrixID) & child_SentrixID == child_NormentMay16_SentrixID, 1, 0),
+        normentMay18 = ifelse(!is.na(child_SentrixID) & !is.na(child_NormentFeb18_SentrixID) & child_SentrixID == child_NormentFeb18_SentrixID, 1, 0),
+        ted = ifelse(!is.na(child_SentrixID) & !is.na(child_Ted_SentrixID) & child_SentrixID == child_Ted_SentrixID, 1, 0)
     )
 
 parentDF <- read.table(
@@ -348,6 +336,21 @@ levels(childNutritionDF$formula_freq_6m) <- c(0, 2, 5, 7)
 childNutritionDF$formula_freq_6m <- as.numeric(childNutritionDF$formula_freq_6m)
 
 
+# PCA
+
+pcaDF <- read.table(
+    file = pcaFile,
+    header = T, 
+    stringsAsFactors = F
+) %>% 
+    select(
+        -FID
+    ) %>%
+    rename(
+        child_SentrixID = IID
+    )
+
+
 # Filter ethnic outliers and ADHD cases
 
 print(paste0(Sys.time(), "    Excluding cases"))
@@ -403,7 +406,18 @@ print(paste0(Sys.time(), "    Merging"))
 
 phenoDF <- idDF %>% 
     select(
-        child_SentrixID, sex_number, child_genotyping_batch_number
+        child_SentrixID, 
+        sex_number, 
+        harvest,
+        rotterdam1,
+        rotterdam2,
+        normentMay16,
+        normentMay18,
+        ted
+    ) %>% 
+    left_join(
+        y = pcaDF,
+        by = "child_SentrixID"
     ) %>% 
     left_join(
         y = childNutritionDF,
