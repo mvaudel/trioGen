@@ -22,6 +22,43 @@ Under these assumptions, the `h` model above can be written as child-mother-fath
 y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + ε                                        (cmf)
 ```
 
+### Transmitted or non-transmitted maternal or paternal association
+
+In the presence of an association with the transmitted or non-transmitted alleles specifically, `β2 ≠ β1 - βc` and `β4 ≠ β3 - βc`, for maternal and paternal alleles, respectively. This can be modeled by including `βmt`, `βft`, the regression coefficients corresponding to the maternal and paternal transmitted alleles, respectively, and their non-transmitted counterparts, `βmnt` and `βfnt`, respectively.
+
+| Name | Variable | Definition |
+| ---- | -------- | ---------- |
+| Mother transmitted allele | `βmt` | `βmt = β1 - βc - βm` |
+| Father transmitted allele | `βft` | `βft = β3 - βc - βf` |
+| Mother non-transmitted allele | `βmnt` | `βmt = β2 - βm` |
+| Father non-transmitted allele | `βfnt` | `βft = β4 - βf` |
+
+From the previous models, we hence derive the following models:
+
+| Name | Variable | Hypothesis |
+| ---- | -------- | ---------- |
+| child-mother-father_mother-transmitted | `cmf_mt` | `β1 - βc - βm ≠ 0` |
+| child-mother-father_mother-non-transmitted | `cmf_mnt` | `β2 - βm ≠ 0` |
+| child-mother-father_father-transmitted | `cmf_ft` | `β3 - βc - βf ≠ 0` |
+| child-mother-father_father-non-transmitted | `cmf_fnt` | `β4 - βf ≠ 0` |
+
+```
+y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βmt h1 + ε                               (cmf_mt)
+```
+
+```
+y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βmnt h2 + ε                              (cmf_mnt)
+```
+
+```
+y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βft h3 + ε                               (cmf_ft)
+```
+
+```
+y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βfnt h4 + ε                              (cmf_fnt)
+```
+
+
 ### Regression against the number of alternative alleles for the child, mother, or father 
 
 From the cmf model, we can derive the following models:

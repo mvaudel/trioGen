@@ -260,24 +260,29 @@ public class PhenotypesHandler {
 
         }
 
+        
         // Adjust for covariates
-        OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
+        
+        if (covariates.length > 0) {
+            
+            OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
 
-        for (String phenoName : phenoNames) {
+            for (String phenoName : phenoNames) {
 
-            double[] phenos = phenoMap.get(phenoName);
+                double[] phenos = phenoMap.get(phenoName);
 
-            regression.newSampleData(phenos, covariatesX);
+                regression.newSampleData(phenos, covariatesX);
 
-            try {
+                try {
 
-                double[] residuals = regression.estimateResiduals();
-                phenoMap.put(phenoName, residuals);
+                    double[] residuals = regression.estimateResiduals();
+                    phenoMap.put(phenoName, residuals);
 
-            } catch (SingularMatrixException singularMatrixException) {
+                } catch (SingularMatrixException singularMatrixException) {
 
-                throw new IllegalArgumentException("Singular matrix obtained when adjusting " + phenoName + " for the given covariates.", singularMatrixException);
+                    throw new IllegalArgumentException("Singular matrix obtained when adjusting " + phenoName + " for the given covariates.", singularMatrixException);
 
+                }
             }
         }
     }

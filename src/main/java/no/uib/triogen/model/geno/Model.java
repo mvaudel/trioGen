@@ -23,8 +23,36 @@ public enum Model {
             "child-mother-father",
             "Regression against the number of alternative alleles of the child, mother, and father.",
             "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + ε",
-            new String[]{"h"},
+            new String[]{"h", "cmf_mt", "cmf_mnt", "cmf_ft", "cmf_fnt"},
             new String[]{"βc", "βm", "βf"}
+    ),
+    cmf_mt(
+            "child-mother-father_mother-transmitted",
+            "Regression against the number of alternative alleles of the child, mother, and father, and transmitted maternal allele.",
+            "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βmt h1 + ε",
+            new String[0],
+            new String[]{"βc", "βm", "βf", "βmt"}
+    ),
+    cmf_mnt(
+            "child-mother-father_mother-transmitted",
+            "Regression against the number of alternative alleles of the child, mother, and father, and non-transmitted maternal allele.",
+            "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βmnt h2 + ε",
+            new String[0],
+            new String[]{"βc", "βm", "βf", "βmnt"}
+    ),
+    cmf_ft(
+            "child-mother-father_father-transmitted",
+            "Regression against the number of alternative alleles of the child, mother, and father, and transmitted paternal allele.",
+            "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βft h1 + ε",
+            new String[0],
+            new String[]{"βc", "βm", "βf", "βft"}
+    ),
+    cmf_fnt(
+            "child-mother-father_father-transmitted",
+            "Regression against the number of alternative alleles of the child, mother, and father, and non-transmitted pmaternal allele.",
+            "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βfnt h2 + ε",
+            new String[0],
+            new String[]{"βc", "βm", "βf", "βfnt"}
     ),
     cm(
             "child-mother",
@@ -136,6 +164,17 @@ public enum Model {
                 );
 
     }
+    
+    /**
+     * Returns the models to run by default.
+     * 
+     * @return the models to run by default
+     */
+    public static String[] getDefaultOption() {
+        
+        return new String[]{"h", "cmf_mt", "cmf_ft", "cmf"};
+        
+    }
 
     /**
      * Fills the given x matrix based on the model.
@@ -172,6 +211,34 @@ public enum Model {
                 x[iterationI][0] = nAltChild;
                 x[iterationI][1] = nAltMother;
                 x[iterationI][2] = nAltFather;
+                return;
+
+            case cmf_mt:
+                x[iterationI][0] = nAltChild;
+                x[iterationI][1] = nAltMother;
+                x[iterationI][2] = nAltFather;
+                x[iterationI][3] = h[0];
+                return;
+
+            case cmf_mnt:
+                x[iterationI][0] = nAltChild;
+                x[iterationI][1] = nAltMother;
+                x[iterationI][2] = nAltFather;
+                x[iterationI][3] = h[1];
+                return;
+
+            case cmf_ft:
+                x[iterationI][0] = nAltChild;
+                x[iterationI][1] = nAltMother;
+                x[iterationI][2] = nAltFather;
+                x[iterationI][3] = h[2];
+                return;
+
+            case cmf_fnt:
+                x[iterationI][0] = nAltChild;
+                x[iterationI][1] = nAltMother;
+                x[iterationI][2] = nAltFather;
+                x[iterationI][3] = h[3];
                 return;
 
             case cm:
@@ -239,6 +306,12 @@ public enum Model {
 
             case cmf:
                 return childNotSingular && motherNotSingular && fatherNotSingular;
+
+            case cmf_mt:
+            case cmf_mnt:
+            case cmf_ft:
+            case cmf_fnt:
+                return childNotSingular && motherNotSingular && fatherNotSingular && hNotSingluar;
 
             case cm:
                 return childNotSingular && motherNotSingular;

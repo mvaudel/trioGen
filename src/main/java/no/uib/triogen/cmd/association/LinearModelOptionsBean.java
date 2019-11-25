@@ -48,7 +48,7 @@ public class LinearModelOptionsBean {
     /**
      * List of the names of the models to use.
      */
-    public String[] modelNames = new String[]{"h", "cmf"};
+    public String[] modelNames = Model.getDefaultOption();
     /**
      * The file where to write the output.
      */
