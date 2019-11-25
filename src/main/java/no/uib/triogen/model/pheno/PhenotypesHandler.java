@@ -277,6 +277,9 @@ public class PhenotypesHandler {
 
                     double[] residuals = regression.estimateResiduals();
                     phenoMap.put(phenoName, residuals);
+                    
+                    System.out.println(phenoName + ": " + phenos[0] + "," + phenos[1] + "," + phenos[2] + "," + phenos[3] + "," + phenos[4] + "," + phenos[5]);
+                    System.out.println(phenoName + ": " + residuals[0] + "," + residuals[1] + "," + residuals[2] + "," + residuals[3] + "," + residuals[4] + "," + residuals[5]);
 
                 } catch (SingularMatrixException singularMatrixException) {
 
