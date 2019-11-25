@@ -365,7 +365,7 @@ public enum Model {
             StringBuilder stringBuilder
     ) {
 
-        Arrays.stream(parentModels)
+        Arrays.stream(includedParentModels)
                 .map(
                         parentModel -> String.join("_", name(), parentModel, "p")
                 )
