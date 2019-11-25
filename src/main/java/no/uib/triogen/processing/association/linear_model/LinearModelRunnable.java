@@ -338,7 +338,7 @@ public class LinearModelRunnable implements Runnable {
 
                 Model model = models[i];
 
-                if (!Model.likelyNotSingular(
+                if (Model.likelyNotSingular(
                         model,
                         hNotSingluar,
                         childNotSingular,

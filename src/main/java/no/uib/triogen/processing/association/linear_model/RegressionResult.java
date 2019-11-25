@@ -59,6 +59,7 @@ public class RegressionResult {
     public RegressionResult(
             Model model
     ) {
+        
         this.model = model;
 
         switch (model.betaNames.length) {
@@ -95,6 +96,7 @@ public class RegressionResult {
                 throw new IllegalArgumentException("Only 4 betas implemented.");
 
         }
+        
         modelSignificance = new double[model.includedParentModels.length];
         Arrays.fill(modelSignificance, Double.NaN);
 
