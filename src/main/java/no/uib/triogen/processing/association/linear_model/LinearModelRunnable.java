@@ -356,9 +356,9 @@ public class LinearModelRunnable implements Runnable {
                         double[] betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
                         double[] betaResiduals = regression.estimateResiduals();
 
-                        regressionResult.beta = Arrays.copyOfRange(betas, 1, betas.length - 1);
-                        regressionResult.betaStandardError = Arrays.copyOfRange(betaStandardErrors, 1, betaStandardErrors.length - 1);;
-                        regressionResult.betaResiduals = Arrays.copyOfRange(betaResiduals, 1, betaResiduals.length - 1);;
+                        regressionResult.beta = Arrays.copyOfRange(betas, 1, betas.length);
+                        regressionResult.betaStandardError = Arrays.copyOfRange(betaStandardErrors, 1, betaStandardErrors.length);
+                        regressionResult.betaResiduals = Arrays.copyOfRange(betaResiduals, 1, betaResiduals.length);
 
                         regressionResult.computeRSS();
                         regressionResult.computeBetaSignificance(nValidValues);
