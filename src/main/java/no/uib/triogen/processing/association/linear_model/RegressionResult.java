@@ -1,9 +1,7 @@
 package no.uib.triogen.processing.association.linear_model;
 
-import htsjdk.samtools.util.IOUtil;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.model.geno.Model;
 import no.uib.triogen.utils.Utils;
@@ -116,7 +114,7 @@ public class RegressionResult {
     }
 
     /**
-     * Computes the significance of a beta.
+     * Computes the significance the beta estimates.
      *
      * @param nValidValues the number of valid values
      */
@@ -127,14 +125,17 @@ public class RegressionResult {
         int degreesOfFreedom = nValidValues - beta.length - 1;
 
         if (degreesOfFreedom > 1) {
+            
+            betaSignificance = Arrays.copyOf(betaSignificance, betaSignificance.length);
+            
             for (int i = 0; i < beta.length; i++) {
 
-                double beta = this.beta[i];
+                double betaEstimate = beta[i];
                 double betaSE = betaStandardError[i];
 
-                if (!Double.isNaN(beta) && !Double.isNaN(betaSE) && betaSE > 0.0) {
+                if (!Double.isNaN(betaEstimate) && !Double.isNaN(betaSE) && betaSE > 0.0) {
 
-                    double x = beta / betaSE;
+                    double x = betaEstimate / betaSE;
                     double p = Double.NaN;
 
                     for (double epsilon : epsilons) {
