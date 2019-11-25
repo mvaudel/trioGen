@@ -154,6 +154,19 @@ An example of phenotype file can be found in `src/main/resources/transmission/ph
 The names of the columns to use for the regressions must be provided as comma-separated list, example: `pheno1,pheno2,pheno3,pheno4`. Spaces and quotes are not supported, please refrain from using spaces in column names. When multiple phenotypes are provided the regressions are conducted in parallel.
 
 
+### Covariates
+
+It is possible to include covariates in the phenotypes file. Covariates should be numeric and not contain missing or infinite values. For factors, we recommend [one-hot endcoding](https://en.wikipedia.org/wiki/One-hot). These covariates are typically PCs or batches, we recommend to account for phenotypic covariates like age when normalizing the phenotypes, see [gamlss](https://www.gamlss.com/) for examples.
+
+If covariates are provided, the [OLS implementation](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/regression/OLSMultipleLinearRegression.html) of the [Commons Math library](http://commons.apache.org/proper/commons-math/) is used to run a linear regression between the phenotypes and the matrix of covariates.
+
+```
+y = βi xi + ε                                                                             (covariates)
+```
+
+where y is the phenotypes, xi the ith covariates, and ε the residuals. The residuals are then used as new phenotypes.
+
+
 ### Output
 
 The output file contains the results of the linear regression, one line per phenotype per variant. The regression is conducted using the [OLS implementation](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/regression/OLSMultipleLinearRegression.html) of the [Commons Math library](http://commons.apache.org/proper/commons-math/) and the documentation borrows information from the library documentation. For version details, please check the [pom file](https://github.com/mvaudel/trioGen/blob/master/pom.xml). 

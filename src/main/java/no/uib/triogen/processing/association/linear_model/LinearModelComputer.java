@@ -125,7 +125,15 @@ public class LinearModelComputer {
 
         }
 
-        System.out.println(Instant.now() + " - Parsing phenotyes from " + phenotypesFile.getAbsolutePath());
+        if (covariates.length > 0) {
+        
+            System.out.println(Instant.now() + " - Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath() + " and adjusting for " + covariates.length + " covariates");
+            
+        } else {
+        
+            System.out.println(Instant.now() + " - Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath());
+            
+        }
 
         long start = Instant.now().getEpochSecond();
 
