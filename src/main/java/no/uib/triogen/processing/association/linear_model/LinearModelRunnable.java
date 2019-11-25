@@ -94,7 +94,8 @@ public class LinearModelRunnable implements Runnable {
                                 entry -> runLinearModel(
                                         genotypesProvider,
                                         entry.getKey(),
-                                        entry.getValue()
+                                        entry.getValue(),
+                                        phenotypesHandler.nValidValuesMap.get(entry.getKey())
                                 )
                         );
             }
@@ -113,19 +114,14 @@ public class LinearModelRunnable implements Runnable {
      * @param genotypesProvider the genotypes provider
      * @param phenoName the phenotype name
      * @param phenotypes the phenotype values
+     * @param nValidValues the number of phenotypes that are finite and not NA
      */
     private void runLinearModel(
             GenotypesProvider genotypesProvider,
             String phenoName,
-            double[] phenotypes
+            double[] phenotypes,
+            int nValidValues
     ) {
-
-        // Count the number of pheno values that can be used in the regression
-        int nValidValues = (int) Arrays.stream(phenotypes)
-                .filter(
-                        y -> !Double.isNaN(y) && !Double.isInfinite(y)
-                )
-                .count();
 
         // Gather the input to use for the models
         double[] phenoY = new double[nValidValues];

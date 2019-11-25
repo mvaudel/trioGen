@@ -32,6 +32,12 @@ public class PhenotypesHandler {
     public final HashMap<String, double[]> phenoMap;
 
     /**
+     * Phenotype name to number of valid values. A valid value here is not NA
+     * and not infinite.
+     */
+    public final HashMap<String, Integer> nValidValuesMap;
+
+    /**
      * The number of children for which a phenotype was found.
      */
     public final int nChildren;
@@ -52,12 +58,15 @@ public class PhenotypesHandler {
     ) {
 
         phenoMap = new HashMap<>(phenoNames.length);
+        nValidValuesMap = new HashMap<>(phenoNames.length);
 
         for (String phenoName : phenoNames) {
 
             double[] phenoValues = new double[childrenIds.size()];
             Arrays.fill(phenoValues, Double.NaN);
             phenoMap.put(phenoName, phenoValues);
+
+            nValidValuesMap.put(phenoName, 0);
 
         }
 
@@ -199,8 +208,7 @@ public class PhenotypesHandler {
 
                     for (Entry<String, Integer> phenoColumn : phenoColumnIndexMap.entrySet()) {
 
-                        double[] phenoValues = phenoMap.get(phenoColumn.getKey());
-
+                        String phenoName = phenoColumn.getKey();
                         String valueString = lineContent[phenoColumn.getValue()];
 
                         if (!valueString.equals("NA") && !valueString.equals("Inf") && !valueString.equals("-Inf")) {
@@ -217,7 +225,10 @@ public class PhenotypesHandler {
                                 );
                             }
 
+                            double[] phenoValues = phenoMap.get(phenoName);
                             phenoValues[childIndex] = newValue;
+
+                            nValidValuesMap.put(phenoName, nValidValuesMap.get(phenoName) + 1);
 
                         }
                     }
@@ -260,24 +271,62 @@ public class PhenotypesHandler {
 
         }
 
-        
         // Adjust for covariates
-        
         if (covariates.length > 0) {
-            
+
             OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
 
             for (String phenoName : phenoNames) {
 
                 double[] phenos = phenoMap.get(phenoName);
 
-                regression.newSampleData(phenos, covariatesX);
+                int nValidValues = nValidValuesMap.get(phenoName);
+
+                int[] index = new int[nValidValues];
+                double[] y = new double[nValidValues];
+                double[][] x = new double[nValidValues][covariatesX.length];
+
+                int j = 0;
+                for (int i = 0; i < phenos.length; i++) {
+
+                    if (!Double.isNaN(phenos[i])) {
+
+                        index[j] = i;
+                        y[j] = phenos[i];
+                        x[j] = covariatesX[i];
+                        j++;
+
+                    }
+                }
+
+                regression.newSampleData(y, x);
 
                 try {
 
                     double[] residuals = regression.estimateResiduals();
-                    phenoMap.put(phenoName, residuals);
-                    
+
+                    double[] newPhenos = Arrays.copyOf(phenos, phenos.length);
+
+                    for (int i = 0; i < index.length; i++) {
+
+                        j = index[i];
+                        newPhenos[j] = residuals[i];
+
+                    }
+
+                    phenoMap.put(phenoName, newPhenos);
+
+                    for (int i = 0; i < phenos.length; i++) {
+
+                        if (Double.isNaN(phenos[i]) && !Double.isNaN(newPhenos[i])) {
+
+                            System.out.println(phenoName + ": " + phenos[i] + " - " + newPhenos[i]);
+                            throw new IllegalArgumentException("NA issue");
+
+                        }
+
+                    }
+
                     System.out.println(phenoName + ": " + phenos[0] + "," + phenos[1] + "," + phenos[2] + "," + phenos[3] + "," + phenos[4] + "," + phenos[5]);
                     System.out.println(phenoName + ": " + residuals[0] + "," + residuals[1] + "," + residuals[2] + "," + residuals[3] + "," + residuals[4] + "," + residuals[5]);
 
