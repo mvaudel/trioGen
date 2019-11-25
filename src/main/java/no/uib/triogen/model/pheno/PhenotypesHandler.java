@@ -316,20 +316,6 @@ public class PhenotypesHandler {
 
                     phenoMap.put(phenoName, newPhenos);
 
-                    for (int i = 0; i < phenos.length; i++) {
-
-                        if (Double.isNaN(phenos[i]) && !Double.isNaN(newPhenos[i])) {
-
-                            System.out.println(phenoName + ": " + phenos[i] + " - " + newPhenos[i]);
-                            throw new IllegalArgumentException("NA issue");
-
-                        }
-
-                    }
-
-                    System.out.println(phenoName + ": " + phenos[0] + "," + phenos[1] + "," + phenos[2] + "," + phenos[3] + "," + phenos[4] + "," + phenos[5]);
-                    System.out.println(phenoName + ": " + newPhenos[0] + "," + newPhenos[1] + "," + newPhenos[2] + "," + newPhenos[3] + "," + newPhenos[4] + "," + newPhenos[5]);
-
                 } catch (SingularMatrixException singularMatrixException) {
 
                     throw new IllegalArgumentException("Singular matrix obtained when adjusting " + phenoName + " for the given covariates.", singularMatrixException);
