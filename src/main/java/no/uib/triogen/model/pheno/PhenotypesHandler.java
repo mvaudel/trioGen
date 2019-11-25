@@ -161,7 +161,7 @@ public class PhenotypesHandler {
 
             String missingCovariates = Arrays.stream(covariates)
                     .filter(
-                            phenoName -> !phenoColumnIndexMap.containsKey(phenoName)
+                            phenoName -> !covariatesColumnIndexMap.containsKey(phenoName)
                     )
                     .collect(
                             Collectors.joining(", ")
