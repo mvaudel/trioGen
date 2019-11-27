@@ -99,7 +99,7 @@ java -Xmx64G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 
 ## Citation
 
-TrioGen is not published yet. To cite the software please use the URL of the repository and our DOI: [10.5281/zenodo.3541110](https://zenodo.org/badge/latestdoi/210819589). To cite the association models using the transmitted alleles please cite [Chen _et al._](https://doi.org/10.1101/737106).
+TrioGen is not published yet. To cite the software please use the URL of the repository and our [DOI](https://zenodo.org/badge/latestdoi/210819589). To cite the association models using the transmitted alleles please cite [Chen _et al._](https://doi.org/10.1101/737106).
 
 
 ## Errors, questions, and bug report
