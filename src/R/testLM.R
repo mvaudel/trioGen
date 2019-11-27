@@ -34,3 +34,10 @@ for (pheno in unique(chr7DF$phenotype)) {
     )
     
 }
+
+
+# Export MHs
+
+
+
+
