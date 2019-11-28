@@ -161,7 +161,7 @@ pPlot <- ggplot(
         legend.title = element_blank()
     )
 
-png("docs/lm_test/lm_targets_7_h_p.png", width = 450, height = 300)
+png("docs/lm_test/lm_targets_7_h_p.png", width = 900, height = 300)
 pPlot
 dummy <- dev.off()
 

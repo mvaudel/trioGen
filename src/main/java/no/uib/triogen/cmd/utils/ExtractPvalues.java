@@ -45,54 +45,54 @@ public class ExtractPvalues {
                                 (a, b) -> a,
                                 HashMap::new)
                 );
-        
+
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(resultFile)) {
-            
+
             String line = reader.readLine();
             String[] headerSplit = line.split(IoUtils.separator);
-            
+
             ArrayList<Integer> columns = new ArrayList<>();
             StringBuilder stringBuilder = new StringBuilder();
-            
-            for (int i = 0 ; i < headerSplit.length ; i++) {
-                
+
+            for (int i = 0; i < headerSplit.length; i++) {
+
                 String column = headerSplit[i];
-                
+
                 if (column.endsWith("_p") || i < 5) {
-                    
+
                     columns.add(i);
-                    
+
+                    if (i > 0) {
+
+                        stringBuilder.append(IoUtils.separator);
+
+                    }
+
+                    String newColum = column.replaceAll("β", "B");
+
+                    stringBuilder.append(newColum);
+
                 }
-                
-                if (i > 0) {
-                    
-                stringBuilder.append(IoUtils.separator);
-                    
-                }
-                
-                String newColum = column.replaceAll("β", "B");
-                
-                stringBuilder.append(newColum);
             }
-            
+
             String newHeader = stringBuilder.toString();
-            
+
             for (SimpleFileWriter writer : fileWriters.values()) {
-                
+
                 writer.writeLine(newHeader);
-                
+
             }
-            
-            while((line = reader.readLine()) != null) {
-                
+
+            while ((line = reader.readLine()) != null) {
+
                 String[] lineSplit = line.split(IoUtils.separator);
-                
+
                 String pheno = lineSplit[0];
-                
+
                 SimpleFileWriter writer = fileWriters.get(pheno);
-                
+
                 if (writer != null) {
-                    
+
                     String newLine = columns.stream()
                             .map(
                                     i -> lineSplit[i]
@@ -100,13 +100,13 @@ public class ExtractPvalues {
                             .collect(
                                     Collectors.joining(IoUtils.separator)
                             );
-                    
+
                     writer.writeLine(newLine);
-                    
-                }                
-            }            
+
+                }
+            }
         }
-        
+
         fileWriters.values()
                 .forEach(
                         writer -> writer.close()
