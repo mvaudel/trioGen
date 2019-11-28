@@ -17,84 +17,84 @@ public enum Model {
             "Regression on the h as defined by Chen et al..",
             "y = β1 h1 + β2 h2 + β3 h3 + β4 h4 + ε",
             new String[0],
-            new String[]{"β1", "β2", "β3", "β4"}
+            new String[]{"B1", "B2", "B3", "B4"}
     ),
     cmf(
             "child-mother-father",
             "Regression against the number of alternative alleles of the child, mother, and father.",
             "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + ε",
             new String[]{"h", "cmf_mt", "cmf_mnt", "cmf_ft", "cmf_fnt"},
-            new String[]{"βc", "βm", "βf"}
+            new String[]{"Bc", "Bm", "Bf"}
     ),
     cmf_mt(
             "child-mother-father_mother-transmitted",
             "Regression against the number of alternative alleles of the child, mother, and father, and transmitted maternal allele.",
             "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βmt h1 + ε",
             new String[0],
-            new String[]{"βc", "βm", "βf", "βmt"}
+            new String[]{"Bc", "Bm", "Bf", "Bmt"}
     ),
     cmf_mnt(
             "child-mother-father_mother-transmitted",
             "Regression against the number of alternative alleles of the child, mother, and father, and non-transmitted maternal allele.",
             "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βmnt h2 + ε",
             new String[0],
-            new String[]{"βc", "βm", "βf", "βmnt"}
+            new String[]{"Bc", "Bm", "Bf", "Bmnt"}
     ),
     cmf_ft(
             "child-mother-father_father-transmitted",
             "Regression against the number of alternative alleles of the child, mother, and father, and transmitted paternal allele.",
             "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βft h1 + ε",
             new String[0],
-            new String[]{"βc", "βm", "βf", "βft"}
+            new String[]{"Bc", "Bm", "Bf", "Bft"}
     ),
     cmf_fnt(
             "child-mother-father_father-transmitted",
             "Regression against the number of alternative alleles of the child, mother, and father, and non-transmitted pmaternal allele.",
             "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βfnt h2 + ε",
             new String[0],
-            new String[]{"βc", "βm", "βf", "βfnt"}
+            new String[]{"Bc", "Bm", "Bf", "Bfnt"}
     ),
     cm(
             "child-mother",
             "Regression against the number of alternative alleles of the child and mother.",
             "y = βm (h1 + h2) + βc (h2 + h3) + ε",
             new String[]{"h", "cmf"},
-            new String[]{"βc", "βm"}
+            new String[]{"Bc", "Bm"}
     ),
     cf(
             "child-father",
             "Regression against the number of alternative alleles of the child and father.",
             "y = βc (h2 + h3) + βf (h3 + h4) + ε",
             new String[]{"h", "cmf"},
-            new String[]{"βc", "βf"}
+            new String[]{"Bc", "Bf"}
     ),
     mf(
             "mother-father",
             "Regression against the number of alternative alleles of the mother and father.",
             "y = βm (h1 + h2) + βf (h3 + h4) + ε",
             new String[]{"h", "cmf"},
-            new String[]{"βm", "βf"}
+            new String[]{"Bm", "Bf"}
     ),
     c(
             "child",
             "Regression against the number of alternative alleles of the child.",
             "y = βc (h2 + h3) + ε",
             new String[]{"h", "cmf", "cm", "cf"},
-            new String[]{"βc"}
+            new String[]{"Bc"}
     ),
     m(
             "mother",
             "Regression against the number of alternative alleles of the mother.",
             "y = βm (h2 + h3) + ε",
             new String[]{"h", "cmf", "cm", "mf"},
-            new String[]{"βm"}
+            new String[]{"Bm"}
     ),
     f(
             "father",
             "Regression against the number of alternative alleles of the father.",
             "y = βf (h2 + h3) + ε",
             new String[]{"h", "cmf", "cf", "mf"},
-            new String[]{"βf"}
+            new String[]{"Bf"}
     );
 
     /**

@@ -59,7 +59,7 @@ Currently, only monoallelic variants from diploid chromosomes are supported. Eac
 
 Two parsers are available and can be selected when running the command lines (see details on each command line).
 
-1. VCF: This option uses the generic [htslib](htslib.org) parser and can parse [all vcf files supported by htslib](https://github.com/samtools/hts-specs). The vcf file must be [compressed and indexed](https://genometoolbox.blogspot.com/2014/09/how-to-index-vcf-file.html).
+1. VCF: This option uses the generic [htslib](https://www.htslib.org/) parser and can parse [all vcf files supported by htslib](https://github.com/samtools/hts-specs). The vcf file must be [compressed and indexed](https://genometoolbox.blogspot.com/2014/09/how-to-index-vcf-file.html).
 
 2. Sanger VCF: This option uses a custom parser tested on VCF files produced by the Sanger Imputatoin service only, allowing a faster processing of the file but is not compatible with all vcf files. This parser is provided with no guarantee, and we recommend using the _Generic VCF_ parser for testing and if this parser does not work on your files. The vcf file must containt the 8 mandatory columns at the beginning. The hard calls of the genotypes of the samples must be indicated in the beginning of the field by a `0` or `1` indicating _ref_ and _alt_ alleles, respectively, and separated by a pipe (`|`) or a slash (`/`). Example: `0|1:bla:bla:bla`. Columns shoud be tab-separated. The vcf file can be gzipped or not.
 

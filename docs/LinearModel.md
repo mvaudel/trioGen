@@ -186,9 +186,9 @@ The output file contains the results of the linear regression, one line per phen
 | Column Name Scheme | Example | Description |
 | ------------------ | ------- | ----------- |
 | `model1_model2_p` | `mf_cmf_p` | Estimate of whether model2 provides significantly better fit to the data than model1 using an F-test. |
-| `model_variable_beta` | `mf_βm` | Estimate of the slope of the variable in the model. |
-| `model_variable_beta_se` | `h_β2_se` | [Standard error of the slope estimate](http://www.xycoon.com/standerrorb(1).htm). |
-| `model_variable_beta_p` | `cmf_βc_p` | Significance level of the slope (equiv) correlation. |
+| `model_variable_beta` | `mf_Bm` | Estimate of the slope of the variable in the model. |
+| `model_variable_beta_se` | `h_B2_se` | [Standard error of the slope estimate](http://www.xycoon.com/standerrorb(1).htm). |
+| `model_variable_beta_p` | `cmf_Bc_p` | Significance level of the slope (equiv) correlation. |
 
 - F-test
 
