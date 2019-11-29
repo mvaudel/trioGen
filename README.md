@@ -71,20 +71,18 @@ Trios must be provided as text file. The file can be gzipped or not. The file mu
 
 ## Performance
 
-### I/O
+### Threading, IO, and job distribution
 
-According to our preliminary tests, I/O is the main limitation in terms of speed. You can improve this by using SSD discs.
+You can set the number of variants to process in parallel using the command line options. When doing regression analyses, phenotypes are processed in parallel for each variant. If you see that not all cores are used, you can try to include the number of variants processed in parallel, or run different vcf files in parallel. Note, however, that if the performance on your setup is limited by the I/O, this will not have much of an effect. If this is the case please make sure that TrioGen has direct and rapid access to the files (i.e. not accessing them through a network). IO will be dramatically improved by using SSD discs. If all CPUs are running 100%, you can consider running different phenotypes or vcf files on different nodes.
 
-### Threading
-
-You can set the number of variants to process in parallel using the command line options. Note, however, that if the performance on your setup is limited by the I/O, this will not have much of an effect. Note also that some variant-specific tasks are parallelized when possible using all available resources. You can override the number of threads used by default using the `-Djava.util.concurrent.ForkJoinPool.common.parallelism` argument. 
+Variant-specific tasks are parallelized when possible using all available resources. You can override the number of threads used by default using the `-Djava.util.concurrent.ForkJoinPool.common.parallelism` argument. 
 
 Example with 32 threads:
 ```
 java -Djava.util.concurrent.ForkJoinPool.common.parallelism=32 -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.Command [parameters]
 ```
 
-It is possible to run multiple instances of TrioGen from the same _jar_ file. The preformance gain of processing multiple vcf files in parallel depends on your setup but should be limited.
+It is possible to run multiple instances of TrioGen from the same _jar_ file, but we recommend using one clean copy of TrioGen per run.
 
 
 ### Memory Settings
