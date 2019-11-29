@@ -100,9 +100,9 @@ for (pheno in phenos) {
         
         plotDF$logValues <- -log10(plotDF[[pColumn]])
         
-        pValuePlot <- yMax <- ceiling(max(plotDF$logValues))
+        yMax <- ceiling(max(plotDF$logValues))
         
-        ggplot(
+        pValuePlot <- ggplot(
             data = plotDF
         ) +
             geom_point(

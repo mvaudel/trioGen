@@ -96,7 +96,7 @@ public class VcfLine implements GenotypesProvider {
         char separator = line.charAt(indexSeparator);
         char allele2 = line.charAt(index2);
 
-        if (separator != '|' && separator != '/') {
+        if (separator != '|' && separator != '/' && separator != ':') {
 
             throw new IllegalArgumentException(
                     "Unexpected separator in genotype " + line.substring(index1, index2 + 1) + " for variant " + getVariantID()+ " in sample " + sampleId + "."
