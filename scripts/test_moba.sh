@@ -22,10 +22,10 @@ do
 
     echo "Processing chromosome $chr"
 
-    java -Xmx32G -cp bin/triogen-0.3.0-beta/triogen-0.3.0-beta.jar no.uib.triogen.cmd.association.LinearModel -g $vcfFolder/$chr.vcf.gz -maf 0.05 -gf 0 -f $trioFile -p $phenoFile -pn $phenoName -cv $covariates -o $outputFolder/chr_$chr.gz -test
+    java -Xmx32G -cp bin/triogen-0.3.0-beta/triogen-0.3.0-beta.jar no.uib.triogen.cmd.association.LinearModel -g $vcfFolder/$chr.vcf.gz -maf 0.05 -gf 0 -f $trioFile -p $phenoFile -pn $phenoName -cv $covariates -o $outputFolder/chr_$chr.gz
 
 done
 
 echo "Processing chromosome X"
 
-java -Xmx32G -cp bin/triogen-0.3.0-beta/triogen-0.3.0-beta.jar no.uib.triogen.cmd.association.LinearModel -g $vcfFolder/X.vcf.gz -maf 0.05 -gf 0 -f $trioFile -p $phenoFile -pn $phenoName -cv $covariates -o $outputFolder/chr_X.gz -test
+java -Xmx32G -cp bin/triogen-0.3.0-beta/triogen-0.3.0-beta.jar no.uib.triogen.cmd.association.LinearModel -g $vcfFolder/X.vcf.gz -maf 0.05 -gf 0 -f $trioFile -p $phenoFile -pn $phenoName -cv $covariates -o $outputFolder/chr_X.gz
