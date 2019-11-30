@@ -163,7 +163,7 @@ for (pheno in phenos) {
                     x = expectedP,
                     y = logValues
                 ),
-                col = "darkblue",
+                col = colors[i],
                 size = 2
             ) +
             scale_y_continuous(

@@ -36,6 +36,11 @@ public class LinearModelComputer {
      */
     private final VariantList variantList;
     /**
+     * The maf threshold. maf is computed in parents and values lower than
+     * threshold are not included.
+     */
+    private final double mafThreshold;
+    /**
      * The file containing the phenotypes.
      */
     private final File phenotypesFile;
@@ -70,6 +75,7 @@ public class LinearModelComputer {
      * @param genotypesFile the file containing the genotypes
      * @param genotypesFileType the type of genotypes file
      * @param variantList the variants to process
+     * @param mafThreshold the maf threshold
      * @param childToParentMap the map of trios
      * @param phenotypesFile the file containing the phenotypes
      * @param phenoNames the names of the phenotypes to use
@@ -82,6 +88,7 @@ public class LinearModelComputer {
             File genotypesFile,
             GenotypesFileType genotypesFileType,
             VariantList variantList,
+            double mafThreshold,
             ChildToParentMap childToParentMap,
             File phenotypesFile,
             String[] phenoNames,
@@ -94,6 +101,7 @@ public class LinearModelComputer {
         this.genotypesFile = genotypesFile;
         this.genotypesFileType = genotypesFileType;
         this.variantList = variantList;
+        this.mafThreshold = mafThreshold;
         this.childToParentMap = childToParentMap;
         this.phenotypesFile = phenotypesFile;
         this.phenoNames = phenoNames;
@@ -193,6 +201,7 @@ public class LinearModelComputer {
                     .mapToObj(
                             i -> new LinearModelRunnable(
                                     iterator,
+                                    mafThreshold,
                                     childToParentMap,
                                     models,
                                     phenotypesHandler,

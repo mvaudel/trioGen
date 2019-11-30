@@ -90,6 +90,7 @@ public class LinearModel {
                 bean.genotypesFile,
                 bean.genotypesFileType,
                 variantList,
+                bean.maf,
                 childToParentMap,
                 bean.phenotypesFile,
                 bean.phenoNames,

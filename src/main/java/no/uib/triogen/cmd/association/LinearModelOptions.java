@@ -16,6 +16,7 @@ public enum LinearModelOptions {
     geno("g", "geno", "The genotypes file.", true, true),
     genoFormat("gf", "genoFormat", "The genotypes file format. " + GenotypesFileType.getCommandLineOptions() + ". Default: " + GenotypesFileType.vcf.index + ".", false, true),
     variantId("v", "variantId", "File listing the variants to include in the analysis. Example: rs123,rs456. Default: iterate though all variants.", false, true),
+    maf("maf", "mafThreshold", "Minor allele frequency threshold. 0.05 excludes all variants with a maf < 5% among all parents belonging to trios where a phenotype is available for the regression.", false, true),
     phenoFile("p", "phenoFile", "The phenotypes file.", true, true),
     childId("id", "childId", "The name of the column containing the child id. Default: child_SentrixID.", false, true),
     phenoName("pn", "phenoName", "List of the names of the phenotypes to include in the analysis. Example: pheno1,pheno2.", true, true),

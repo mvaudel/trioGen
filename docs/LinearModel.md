@@ -131,6 +131,7 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 -cv/--covariate    List of the names of the covariates columns in the phenotypes file. Example: pc1,pc2,pc3,pc4,pc5,pc6.
 -m/--model         List of the names of the models to use. Default: h,cmf.
 -v/variantId       File listing the variants to include in the analysis. Example: rs123,rs456. Default: iterate though all variants.
+-maf/mafThreshold  Minor allele frequency threshold. 0.05 excludes all variants with a maf < 5% among all parents belonging to trios where a phenotype is available for the regression.
 -gf/--genoFormat   The genotypes file format. 0: VCF, 1: Sanger VCF. Default is VCF.
 -nv/--nVariants    The number of variants to process in parallel. Default is 8.
 -z/--timeOut       The number of days before timeout, default is 365.

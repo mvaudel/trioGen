@@ -46,6 +46,10 @@ public class LinearModelOptionsBean {
      */
     public File variantFile = null;
     /**
+     * The maf threshold.
+     */
+    public double maf = 0.0;
+    /**
      * List of the names of the models to use.
      */
     public String[] modelNames = Model.getDefaultOption();
@@ -128,6 +132,33 @@ public class LinearModelOptionsBean {
             if (!variantFile.exists()) {
 
                 throw new IllegalArgumentException("Variant file (" + variantFile + ") not found.");
+
+            }
+        }
+
+        // The maf threshold
+        if (aLine.hasOption(LinearModelOptions.maf.opt)) {
+            
+            String option = aLine.getOptionValue(LinearModelOptions.maf.opt);
+
+            try {
+
+                maf = Double.parseDouble(option);
+
+                if (maf < 0.0 || maf > 1.0) {
+
+                    throw new IllegalArgumentException(
+                            "Input for maf (" + option + ")must be a number between 0 and 1."
+                    );
+                }
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                throw new IllegalArgumentException(
+                        "Input for timeout could not be parsed as a number: " + option + "."
+                );
 
             }
         }
@@ -258,16 +289,16 @@ public class LinearModelOptionsBean {
         // Number of variants to chew in parallel
         if (aLine.hasOption(LinearModelOptions.nVariants.opt)) {
 
-            String argString = aLine.getOptionValue(LinearModelOptions.nVariants.opt);
+            option = aLine.getOptionValue(LinearModelOptions.nVariants.opt);
 
             try {
 
-                nVariants = Integer.parseInt(argString);
+                nVariants = Integer.parseInt(option);
 
                 if (timeOut <= 0) {
 
                     throw new IllegalArgumentException(
-                            "Input for number of variants must be a strictly positive number."
+                            "Input for number of variants (" + option + ") must be a strictly positive number."
                     );
 
                 }
@@ -277,7 +308,7 @@ public class LinearModelOptionsBean {
                 e.printStackTrace();
 
                 throw new IllegalArgumentException(
-                        "Input for number of variants could not be parsed as a number: " + argString + "."
+                        "Input for number of variants could not be parsed as a number: " + option + "."
                 );
 
             }
@@ -286,16 +317,16 @@ public class LinearModelOptionsBean {
         // Timeout
         if (aLine.hasOption(LinearModelOptions.timeOut.opt)) {
 
-            String argString = aLine.getOptionValue(LinearModelOptions.timeOut.opt);
+            option = aLine.getOptionValue(LinearModelOptions.timeOut.opt);
 
             try {
 
-                timeOut = Integer.parseInt(argString);
+                timeOut = Integer.parseInt(option);
 
                 if (timeOut <= 0) {
 
                     throw new IllegalArgumentException(
-                            "Input for timeout must be a positive number."
+                            "Input for timeout (" + option + ") must be a positive number."
                     );
 
                 }
@@ -305,7 +336,7 @@ public class LinearModelOptionsBean {
                 e.printStackTrace();
 
                 throw new IllegalArgumentException(
-                        "Input for timeout could not be parsed as a number: " + argString + "."
+                        "Input for timeout could not be parsed as a number: " + option + "."
                 );
 
             }

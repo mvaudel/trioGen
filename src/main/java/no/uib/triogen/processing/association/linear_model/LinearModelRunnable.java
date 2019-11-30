@@ -36,6 +36,11 @@ public class LinearModelRunnable implements Runnable {
      */
     private final ChildToParentMap childToParentMap;
     /**
+     * The maf threshold. maf is computed in parents and values lower than
+     * threshold are not included.
+     */
+    private final double mafThreshold;
+    /**
      * List of models to use.
      */
     public Model[] models;
@@ -56,6 +61,7 @@ public class LinearModelRunnable implements Runnable {
      * Constructor.
      *
      * @param iterator the variants iterator
+     * @param mafThreshold the maf threshold
      * @param childToParentMap the child to parent map
      * @param models the list of the names of the models to use
      * @param phenotypesHandler the phenotypes handler
@@ -63,6 +69,7 @@ public class LinearModelRunnable implements Runnable {
      */
     public LinearModelRunnable(
             VariantIterator iterator,
+            double mafThreshold,
             ChildToParentMap childToParentMap,
             Model[] models,
             PhenotypesHandler phenotypesHandler,
@@ -72,6 +79,7 @@ public class LinearModelRunnable implements Runnable {
         this.iterator = iterator;
         this.childToParentMap = childToParentMap;
         this.models = models;
+        this.mafThreshold = mafThreshold;
         this.phenotypesHandler = phenotypesHandler;
         this.outputWriter = outputWriter;
 
@@ -164,6 +172,7 @@ public class LinearModelRunnable implements Runnable {
 
         int phenoI = 0;
         int iterationI = 0;
+        int nAltParent = 0;
 
         for (String childId : childToParentMap.children) {
 
@@ -176,6 +185,8 @@ public class LinearModelRunnable implements Runnable {
                 for (int j = 0; j < 4; j++) {
 
                     int hJ = h[j];
+
+                    nAltParent += hJ;
 
                     if (hJ < hMin[j]) {
 
@@ -293,106 +304,112 @@ public class LinearModelRunnable implements Runnable {
             }
         }
 
-        // Try to anticipate singularities
-        boolean hNotSingluar = hMax[0] - hMin[0] > 0 && hMax[1] - hMin[1] > 0 && hMax[2] - hMin[2] > 0 && hMax[3] - hMin[3] > 0;
-        boolean childNotSingular = childMax - childMin > 0;
-        boolean motherNotSingular = motherMax - motherMin > 0;
-        boolean fatherNotSingular = fatherMax - fatherMin > 0;
+        // maf
+        double maf = ((double) nAltParent) / (4 * nValidValues);
 
-        if (!x0 || hNotSingluar) {
+        if (maf > mafThreshold) {
 
-            // Build histograms
-            String altHistograms = String.join("",
-                    "child(",
-                    getHistogramAsString(childHist),
-                    ");mother(",
-                    getHistogramAsString(motherHist),
-                    ");father(",
-                    getHistogramAsString(fatherHist),
-                    ")"
-            );
-            String hHistograms = String.join("",
-                    "h1(",
-                    getHistogramAsString(hHist[0]),
-                    ");h2(",
-                    getHistogramAsString(hHist[1]),
-                    ");h3(",
-                    getHistogramAsString(hHist[2]),
-                    ");h4(",
-                    getHistogramAsString(hHist[3]),
-                    ")"
-            );
+            // Try to anticipate singularities
+            boolean hNotSingluar = hMax[0] - hMin[0] > 0 && hMax[1] - hMin[1] > 0 && hMax[2] - hMin[2] > 0 && hMax[3] - hMin[3] > 0;
+            boolean childNotSingular = childMax - childMin > 0;
+            boolean motherNotSingular = motherMax - motherMin > 0;
+            boolean fatherNotSingular = fatherMax - fatherMin > 0;
 
-            // Run the regressions
-            OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
-            HashMap<String, RegressionResult> regressionRestultsMap = new HashMap<>(regressionResults.size());
+            if (!x0 || hNotSingluar) {
 
-            for (int i = 0; i < models.length; i++) {
+                // Build histograms
+                String altHistograms = String.join("",
+                        "child(",
+                        getHistogramAsString(childHist),
+                        ");mother(",
+                        getHistogramAsString(motherHist),
+                        ");father(",
+                        getHistogramAsString(fatherHist),
+                        ")"
+                );
+                String hHistograms = String.join("",
+                        "h1(",
+                        getHistogramAsString(hHist[0]),
+                        ");h2(",
+                        getHistogramAsString(hHist[1]),
+                        ");h3(",
+                        getHistogramAsString(hHist[2]),
+                        ");h4(",
+                        getHistogramAsString(hHist[3]),
+                        ")"
+                );
 
-                Model model = models[i];
+                // Run the regressions
+                OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
+                HashMap<String, RegressionResult> regressionRestultsMap = new HashMap<>(regressionResults.size());
 
-                if (Model.likelyNotSingular(
-                        model,
-                        hNotSingluar,
-                        childNotSingular,
-                        motherNotSingular,
-                        fatherNotSingular
-                )) {
+                for (int i = 0; i < models.length; i++) {
 
-                    double[][] x = modelsX.get(i);
-                    RegressionResult regressionResult = regressionResults.get(i);
+                    Model model = models[i];
 
-                    try {
+                    if (Model.likelyNotSingular(
+                            model,
+                            hNotSingluar,
+                            childNotSingular,
+                            motherNotSingular,
+                            fatherNotSingular
+                    )) {
 
-                        regression.newSampleData(phenoY, x);
-                        double[] betas = regression.estimateRegressionParameters();
-                        double[] betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
-                        double[] betaResiduals = regression.estimateResiduals();
+                        double[][] x = modelsX.get(i);
+                        RegressionResult regressionResult = regressionResults.get(i);
 
-                        regressionResult.beta = Arrays.copyOfRange(betas, 1, betas.length);
-                        regressionResult.betaStandardError = Arrays.copyOfRange(betaStandardErrors, 1, betaStandardErrors.length);
-                        regressionResult.betaResiduals = Arrays.copyOfRange(betaResiduals, 1, betaResiduals.length);
+                        try {
 
-                        regressionResult.computeRSS();
-                        regressionResult.computeBetaSignificance(nValidValues);
+                            regression.newSampleData(phenoY, x);
+                            double[] betas = regression.estimateRegressionParameters();
+                            double[] betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
+                            double[] betaResiduals = regression.estimateResiduals();
 
-                        regressionRestultsMap.put(model.name(), regressionResult);
+                            regressionResult.beta = Arrays.copyOfRange(betas, 1, betas.length);
+                            regressionResult.betaStandardError = Arrays.copyOfRange(betaStandardErrors, 1, betaStandardErrors.length);
+                            regressionResult.betaResiduals = Arrays.copyOfRange(betaResiduals, 1, betaResiduals.length);
 
-                    } catch (SingularMatrixException singularMatrixException) {
+                            regressionResult.computeRSS();
+                            regressionResult.computeBetaSignificance(nValidValues);
 
+                            regressionRestultsMap.put(model.name(), regressionResult);
+
+                        } catch (SingularMatrixException singularMatrixException) {
+
+                        }
                     }
                 }
+
+                // Estimate model significance
+                regressionRestultsMap.values()
+                        .forEach(
+                                regressionResult -> regressionResult.computeModelSignificance(
+                                        regressionRestultsMap,
+                                        nValidValues
+                                )
+                        );
+
+                // Export
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder
+                        .append(phenoName)
+                        .append(IoUtils.separator)
+                        .append(genotypesProvider.getVariantID())
+                        .append(IoUtils.separator)
+                        .append(nValidValues)
+                        .append(IoUtils.separator)
+                        .append(altHistograms)
+                        .append(IoUtils.separator)
+                        .append(hHistograms);
+
+                regressionResults
+                        .forEach(
+                                regressionResult -> regressionResult.appendResults(stringBuilder)
+                        );
+                String line = stringBuilder.toString();
+                outputWriter.writeLine(line);
+
             }
-
-            // Estimate model significance
-            regressionRestultsMap.values()
-                    .forEach(
-                            regressionResult -> regressionResult.computeModelSignificance(
-                                    regressionRestultsMap,
-                                    nValidValues
-                            )
-                    );
-
-            // Export
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder
-                    .append(phenoName)
-                    .append(IoUtils.separator)
-                    .append(genotypesProvider.getVariantID())
-                    .append(IoUtils.separator)
-                    .append(nValidValues)
-                    .append(IoUtils.separator)
-                    .append(altHistograms)
-                    .append(IoUtils.separator)
-                    .append(hHistograms);
-            
-            regressionResults
-                    .forEach(
-                            regressionResult -> regressionResult.appendResults(stringBuilder)
-                    );
-            String line = stringBuilder.toString();
-            outputWriter.writeLine(line);
-
         }
     }
 
