@@ -30,17 +30,10 @@ In the presence of an association with the transmitted or non-transmitted allele
 | ---- | -------- | ---------- |
 | Mother transmitted allele | `βmt` | `βmt = β1 - βc - βm` |
 | Father transmitted allele | `βft` | `βft = β3 - βc - βf` |
-| Mother non-transmitted allele | `βmnt` | `βmt = β2 - βm` |
-| Father non-transmitted allele | `βfnt` | `βft = β4 - βf` |
+| Mother non-transmitted allele | `βmnt` | `βmnt = β2 - βm` |
+| Father non-transmitted allele | `βfnt` | `βfnt = β4 - βf` |
 
 From the previous models, we hence derive the following models:
-
-| Name | Variable | Hypothesis |
-| ---- | -------- | ---------- |
-| child-mother-father_mother-transmitted | `cmf_mt` | `β1 - βc - βm ≠ 0` |
-| child-mother-father_mother-non-transmitted | `cmf_mnt` | `β2 - βm ≠ 0` |
-| child-mother-father_father-transmitted | `cmf_ft` | `β3 - βc - βf ≠ 0` |
-| child-mother-father_father-non-transmitted | `cmf_fnt` | `β4 - βf ≠ 0` |
 
 ```
 y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βmt h1 + ε                               (cmf_mt)
@@ -135,7 +128,7 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 -gf/--genoFormat   The genotypes file format. 0: VCF, 1: Sanger VCF. Default is VCF.
 -nv/--nVariants    The number of variants to process in parallel. Default is 8.
 -z/--timeOut       The number of days before timeout, default is 365.
--t/--test          If present, runs only othe first 1000 variants.
+-t/--test          If present, runs only the first 1000 variants.
 ```
 
 ### Command line example
