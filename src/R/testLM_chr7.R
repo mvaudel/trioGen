@@ -33,6 +33,11 @@ conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
 
 
+# Time points
+
+timePoints <- c("Birth", "6 w", "3 m", "6 m", "8 m", "1 y", "1.5 y", "2 y", "3 y", "5 y", "7 y", "8 y")
+
+
 # pheno names
 
 phenos <- paste0("z_bmi", 0:11)
@@ -187,3 +192,63 @@ for (pheno in phenos) {
         
     }
 }
+
+# Write doc
+
+docFile <- "docs/lm_test/chr7.md"
+write(x = "# Chromosome 7 - z_BMI\n\n", file = docFile, append = F)
+
+write(x = "Chromosome 7 run with TrioGen v.0.3.0-beta on 27,451 full trios, ADHD cases, related, and ethnic outliers excluded. 10 PCs and genotyping batch as covariates. Reference panel AF > 5%, info score >= 0.7, singularities excluded\n", file = docFile, append = T)
+write(x = "z_BMI “à la Chris”, see details [here](../pheno/plots.md):\n", file = docFile, append = T)
+write(x = "- not the same as the pheno tables used so far!\n", file = docFile, append = T)
+write(x = "- adjusted for pregnancy duration!\n\n", file = docFile, append = T)
+
+write(x = "4 Models:\n", file = docFile, append = T)
+write(x = "-h: `y = β1 h1 + β2 h2 + β3 h3 + β4 h4  + ε`\n", file = docFile, append = T)
+write(x = "-cmf: `y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + ε`\n", file = docFile, append = T)
+write(x = "-cmf_mt: `y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + βmt h1 + ε`\n", file = docFile, append = T)
+write(x = "-cmf_ft: `y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + βft h1 + ε`\n", file = docFile, append = T)
+
+for (ageI in 0:11) {
+    
+    age = timePoints[ageI + 1]
+    pheno <- paste0("z_bmi", ageI)
+    
+    write(x = paste0("\n### ", age, " - h vs. cmf (F-test p-value)\n"), file = docFile, append = T)
+    write(x = paste0("![](", pheno, "_cmf_h_p_MH.png)\n"), file = docFile, append = T)
+    write(x = paste0("![](", pheno, "_cmf_h_p_QQ.png)\n"), file = docFile, append = T)
+    
+    write(x = paste0("\n### ", age, " - h betas (Prob(|t| > 0))\n"), file = docFile, append = T)
+    
+    for (betaI in 1:4) {
+        
+        write(x = paste0("- B", betaI, "\n"), file = docFile, append = T)
+        write(x = paste0("![](", pheno, "_h_B", betaI, "_p_MH.png)\n"), file = docFile, append = T)
+        write(x = paste0("![](", pheno, "_h_B", betaI, "_p_QQ.png)\n"), file = docFile, append = T)
+        
+    }
+    
+    write(x = paste0("\n### ", age, " - cmf betas (Prob(|t| > 0))\n"), file = docFile, append = T)
+    
+    for (betaI in c("c", "m", "f")) {
+        
+        write(x = paste0("- B", betaI, "\n"), file = docFile, append = T)
+        write(x = paste0("![](", pheno, "_cmf_B", betaI, "_p_MH.png)\n"), file = docFile, append = T)
+        write(x = paste0("![](", pheno, "_cmf_B", betaI, "_p_QQ.png)\n"), file = docFile, append = T)
+        
+    }
+    
+    write(x = paste0("\n### ", age, " - cmf_mt and cmf_ft (Prob(|t| > 0))\n"), file = docFile, append = T)
+    
+    write(x = paste0("- Bmt\n"), file = docFile, append = T)
+    write(x = paste0("![](", pheno, "_cmf_mt_Bmt_p_MH.png)\n"), file = docFile, append = T)
+    write(x = paste0("![](", pheno, "_cmf_mt_Bmt_p_QQ.png)\n"), file = docFile, append = T)
+    
+    write(x = paste0("- Bft\n"), file = docFile, append = T)
+    write(x = paste0("![](", pheno, "_cmf_ft_Bft_p_MH.png)\n"), file = docFile, append = T)
+    write(x = paste0("![](", pheno, "_cmf_ft_Bft_p_QQ.png)\n"), file = docFile, append = T)
+    
+}
+
+
+
