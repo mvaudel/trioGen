@@ -204,10 +204,10 @@ write(x = "- not the same as the pheno tables used so far!\n", file = docFile, a
 write(x = "- adjusted for pregnancy duration!\n\n", file = docFile, append = T)
 
 write(x = "4 Models:\n", file = docFile, append = T)
-write(x = "-h: `y = β1 h1 + β2 h2 + β3 h3 + β4 h4  + ε`\n", file = docFile, append = T)
-write(x = "-cmf: `y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + ε`\n", file = docFile, append = T)
-write(x = "-cmf_mt: `y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + βmt h1 + ε`\n", file = docFile, append = T)
-write(x = "-cmf_ft: `y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + βft h1 + ε`\n", file = docFile, append = T)
+write(x = "- h: `y = β1 h1 + β2 h2 + β3 h3 + β4 h4  + ε`\n", file = docFile, append = T)
+write(x = "- cmf: `y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + ε`\n", file = docFile, append = T)
+write(x = "- cmf_mt: `y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + βmt h1 + ε`\n", file = docFile, append = T)
+write(x = "- cmf_ft: `y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + βft h1 + ε`\n", file = docFile, append = T)
 
 for (ageI in 0:11) {
     

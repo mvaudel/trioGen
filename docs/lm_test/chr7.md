@@ -12,13 +12,13 @@ z_BMI “à la Chris”, see details [here](../pheno/plots.md):
 
 4 Models:
 
--h: `y = ß1 h1 + ß2 h2 + ß3 h3 + ß4 h4  + e`
+- h: `y = ß1 h1 + ß2 h2 + ß3 h3 + ß4 h4  + e`
 
--cmf: `y = ßm (h1 + h2) + ßc (h1 + h3) + ßf (h3 + h4) + e`
+- cmf: `y = ßm (h1 + h2) + ßc (h1 + h3) + ßf (h3 + h4) + e`
 
--cmf_mt: `y = ßm (h1 + h2) + ßc (h1 + h3) + ßf (h3 + h4) + ßmt h1 + e`
+- cmf_mt: `y = ßm (h1 + h2) + ßc (h1 + h3) + ßf (h3 + h4) + ßmt h1 + e`
 
--cmf_ft: `y = ßm (h1 + h2) + ßc (h1 + h3) + ßf (h3 + h4) + ßft h1 + e`
+- cmf_ft: `y = ßm (h1 + h2) + ßc (h1 + h3) + ßf (h3 + h4) + ßft h1 + e`
 
 
 ### Birth - h vs. cmf (F-test p-value)

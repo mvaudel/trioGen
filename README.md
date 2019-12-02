@@ -25,6 +25,8 @@ For a given variant, TrioGen uses phased genotypes to extract the alleles transm
 
 2. LinearModel: This command line runs simple linear regression on phenotypes against _h_. [[Documentation]](docs/LinearModel.md)
 
+3. Extract: This is a convenience command line that allos splitting the results against the values of a column and extract specific columns. [[Documentation]](docs/Extract.md)
+
 
 ## Getting Started
 
