@@ -203,6 +203,12 @@ public class Extract {
                 writer.writeLine(newLine);
 
             }
+            
+            fileWriters.values()
+                    .forEach(
+                            writer -> writer.close()
+                    );
+            
         }
     }
 
