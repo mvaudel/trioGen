@@ -80,9 +80,6 @@ public enum GenotypesFileType {
     ) {
 
         if (variantList != null) {
-            
-            System.out.println("Generic VCF");
-
             return new VcfIteratorTargets(
                     genotypesFile,
                     variantList
@@ -92,14 +89,10 @@ public enum GenotypesFileType {
 
         switch (genotypesFileType) {
             case sangerVCF:
-            
-            System.out.println("Custom VCF");
                 return new CustomVcfIterator(
                         genotypesFile
                 );
             case vcf:
-            
-            System.out.println("Generic VCF");
                 return new VcfIterator(
                         genotypesFile
                 );
