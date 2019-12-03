@@ -131,191 +131,161 @@ public class LinearModelRunnable implements Runnable {
             int nValidValues
     ) {
 
-        // Gather the input to use for the models
-        double[] phenoY = new double[nValidValues];
-        ArrayList<double[][]> modelsX = new ArrayList<>(models.length);
-        ArrayList<RegressionResult> regressionResults = new ArrayList<>(models.length);
+        // Gether valid values, check maf and transmission
+        int[] indexes = new int[nValidValues];
 
-        for (int i = 0; i < models.length; i++) {
-
-            Model model = models[i];
-
-            double[][] x = new double[nValidValues][model.betaNames.length];
-            modelsX.add(x);
-
-            regressionResults.add(new RegressionResult(model));
-
-        }
-
-        int[] hMin = new int[4];
-        int[] hMax = new int[4];
-        TreeMap<Integer, Integer>[] hHist = new TreeMap[4];
-
-        for (int j = 0; j < 4; j++) {
-
-            hMin[j] = Integer.MAX_VALUE;
-            hMax[j] = Integer.MIN_VALUE;
-            hHist[j] = new TreeMap<>();
-
-        }
-
-        int childMin = Integer.MAX_VALUE;
-        int childMax = Integer.MIN_VALUE;
-        int motherMin = Integer.MAX_VALUE;
-        int motherMax = Integer.MIN_VALUE;
-        int fatherMin = Integer.MAX_VALUE;
-        int fatherMax = Integer.MIN_VALUE;
-
-        TreeMap<Integer, Integer> childHist = new TreeMap<>();
-        TreeMap<Integer, Integer> motherHist = new TreeMap<>();
-        TreeMap<Integer, Integer> fatherHist = new TreeMap<>();
-
-        int phenoI = 0;
-        int iterationI = 0;
+        int cpt = 0;
         int nAltParent = 0;
+        boolean h1_0 = false;
+        boolean h1_1 = false;
+        boolean h2_0 = false;
+        boolean h2_1 = false;
+        boolean h3_0 = false;
+        boolean h3_1 = false;
+        boolean h4_0 = false;
+        boolean h4_1 = false;
 
-        for (String childId : childToParentMap.children) {
+        for (int i = 0; i < childToParentMap.children.length; i++) {
 
-            double y = phenotypes[phenoI++];
+            double y = phenotypes[i];
 
             if (!Double.isNaN(y) && !Double.isInfinite(y)) {
 
+                String childId = childToParentMap.children[i];
                 int[] h = genotypesProvider.getH(childToParentMap, childId);
 
-                for (int j = 0; j < 4; j++) {
+                h1_0 = h1_0 || h[0] == 0;
+                h1_1 = h1_1 || h[0] == 1;
+                h2_0 = h2_0 || h[1] == 0;
+                h2_1 = h2_1 || h[1] == 1;
+                h3_0 = h3_0 || h[2] == 0;
+                h3_1 = h3_1 || h[2] == 1;
+                h4_0 = h4_0 || h[3] == 0;
+                h4_1 = h4_1 || h[3] == 1;
 
-                    int hJ = h[j];
+                nAltParent += h[0] + h[1] + h[2] + h[3];
 
-                    nAltParent += hJ;
-
-                    if (hJ < hMin[j]) {
-
-                        hMin[j] = hJ;
-
-                    }
-                    if (hJ > hMax[j]) {
-
-                        hMax[j] = hJ;
-
-                    }
-
-                    TreeMap<Integer, Integer> hHistJ = hHist[j];
-                    Integer frequency = hHistJ.get(hJ);
-
-                    if (frequency != null) {
-
-                        hHistJ.put(hJ, frequency + 1);
-
-                    } else {
-
-                        hHistJ.put(hJ, 1);
-
-                    }
-                }
-
-                int nAltChild = h[0] + h[2];
-
-                if (nAltChild < childMin) {
-
-                    childMin = nAltChild;
-
-                }
-                if (nAltChild > childMax) {
-
-                    childMax = nAltChild;
-
-                }
-
-                Integer frequency = childHist.get(nAltChild);
-
-                if (frequency != null) {
-
-                    childHist.put(nAltChild, frequency + 1);
-
-                } else {
-
-                    childHist.put(nAltChild, 1);
-
-                }
-
-                int nAltMother = h[0] + h[1];
-
-                if (nAltMother < motherMin) {
-
-                    motherMin = nAltMother;
-
-                }
-                if (nAltMother > motherMax) {
-
-                    motherMax = nAltMother;
-
-                }
-
-                frequency = motherHist.get(nAltMother);
-
-                if (frequency != null) {
-
-                    motherHist.put(nAltMother, frequency + 1);
-
-                } else {
-
-                    motherHist.put(nAltMother, 1);
-
-                }
-
-                int nAltFather = h[2] + h[3];
-
-                if (nAltFather < fatherMin) {
-
-                    fatherMin = nAltFather;
-
-                }
-                if (nAltFather > fatherMax) {
-
-                    fatherMax = nAltFather;
-
-                }
-
-                frequency = fatherHist.get(nAltFather);
-
-                if (frequency != null) {
-
-                    fatherHist.put(nAltFather, frequency + 1);
-
-                } else {
-
-                    fatherHist.put(nAltFather, 1);
-
-                }
-
-                for (int i = 0; i < models.length; i++) {
-
-                    Model model = models[i];
-                    double[][] x = modelsX.get(i);
-
-                    Model.fillX(x, model, iterationI, h, nAltChild, nAltMother, nAltFather);
-
-                }
-
-                phenoY[iterationI] = y;
-
-                iterationI++;
+                indexes[cpt++] = i;
 
             }
         }
 
-        // maf
         double maf = ((double) nAltParent) / (4 * nValidValues);
 
         if (maf > mafThreshold) {
 
-            // Try to anticipate singularities
-            boolean hNotSingluar = hMax[0] - hMin[0] > 0 && hMax[1] - hMin[1] > 0 && hMax[2] - hMin[2] > 0 && hMax[3] - hMin[3] > 0;
-            boolean childNotSingular = childMax - childMin > 0;
-            boolean motherNotSingular = motherMax - motherMin > 0;
-            boolean fatherNotSingular = fatherMax - fatherMin > 0;
+            if (!x0 || h1_0 && h1_1 && h2_0 && h2_1 && h3_0 && h3_1 && h4_0 && h4_1) {
 
-            if (!x0 || hNotSingluar) {
+                // Gather the input to use for the models
+                double[] phenoY = new double[nValidValues];
+
+                ArrayList<double[][]> modelsX = new ArrayList<>(models.length);
+                ArrayList<RegressionResult> regressionResults = new ArrayList<>(models.length);
+
+                for (int i = 0; i < models.length; i++) {
+
+                    Model model = models[i];
+
+                    double[][] x = new double[nValidValues][model.betaNames.length];
+                    modelsX.add(x);
+
+                    regressionResults.add(new RegressionResult(model));
+
+                }
+
+                TreeMap<Integer, Integer>[] hHist = new TreeMap[4];
+
+                for (int j = 0; j < 4; j++) {
+
+                    hHist[j] = new TreeMap<>();
+
+                }
+
+                TreeMap<Integer, Integer> childHist = new TreeMap<>();
+                TreeMap<Integer, Integer> motherHist = new TreeMap<>();
+                TreeMap<Integer, Integer> fatherHist = new TreeMap<>();
+
+                for (int i = 0; i < indexes.length; i++) {
+
+                    int index = indexes[i];
+
+                    double y = phenotypes[index];
+                    String childId = childToParentMap.children[index];
+
+                    int[] h = genotypesProvider.getH(childToParentMap, childId);
+
+                    for (int j = 0; j < 4; j++) {
+
+                        int hJ = h[j];
+
+                        TreeMap<Integer, Integer> hHistJ = hHist[j];
+                        Integer frequency = hHistJ.get(hJ);
+
+                        if (frequency != null) {
+
+                            hHistJ.put(hJ, frequency + 1);
+
+                        } else {
+
+                            hHistJ.put(hJ, 1);
+
+                        }
+                    }
+
+                    int nAltChild = h[0] + h[2];
+
+                    Integer frequency = childHist.get(nAltChild);
+
+                    if (frequency != null) {
+
+                        childHist.put(nAltChild, frequency + 1);
+
+                    } else {
+
+                        childHist.put(nAltChild, 1);
+
+                    }
+
+                    int nAltMother = h[0] + h[1];
+
+                    frequency = motherHist.get(nAltMother);
+
+                    if (frequency != null) {
+
+                        motherHist.put(nAltMother, frequency + 1);
+
+                    } else {
+
+                        motherHist.put(nAltMother, 1);
+
+                    }
+
+                    int nAltFather = h[2] + h[3];
+
+                    frequency = fatherHist.get(nAltFather);
+
+                    if (frequency != null) {
+
+                        fatherHist.put(nAltFather, frequency + 1);
+
+                    } else {
+
+                        fatherHist.put(nAltFather, 1);
+
+                    }
+
+                    for (int k = 0; k < models.length; k++) {
+
+                        Model model = models[k];
+                        double[][] x = modelsX.get(k);
+
+                        Model.fillX(x, model, i, h, nAltChild, nAltMother, nAltFather);
+
+                    }
+
+                    phenoY[i] = y;
+
+                }
 
                 // Build histograms
                 String altHistograms = String.join("",
@@ -338,6 +308,12 @@ public class LinearModelRunnable implements Runnable {
                         getHistogramAsString(hHist[3]),
                         ")"
                 );
+
+                // Anticipate singularities
+                boolean hNotSingluar = h1_0 && h1_1 && h2_0 && h2_1 && h3_0 && h3_1 && h4_0 && h4_1;
+                boolean childNotSingular = h2_0 && h2_1 && h3_0 && h3_1;
+                boolean motherNotSingular = h1_0 && h1_1 && h2_0 && h2_1;
+                boolean fatherNotSingular = h3_0 && h3_1 && h4_0 && h4_1;
 
                 // Run the regressions
                 OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();

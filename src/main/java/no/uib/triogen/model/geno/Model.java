@@ -181,7 +181,7 @@ public enum Model {
      *
      * @param x the x matrix
      * @param model the model
-     * @param iterationI the index where to fill the matrix
+     * @param index the index where to fill the matrix
      * @param h the array of hs
      * @param nAltChild the number of alternative alleles of the child
      * @param nAltMother the number of alternative alleles of the mother
@@ -190,7 +190,7 @@ public enum Model {
     public static void fillX(
             double[][] x,
             Model model,
-            int iterationI,
+            int index,
             int[] h,
             int nAltChild,
             int nAltMother,
@@ -201,71 +201,71 @@ public enum Model {
 
             case h:
 
-                x[iterationI][0] = h[0];
-                x[iterationI][1] = h[1];
-                x[iterationI][2] = h[2];
-                x[iterationI][3] = h[3];
+                x[index][0] = h[0];
+                x[index][1] = h[1];
+                x[index][2] = h[2];
+                x[index][3] = h[3];
                 return;
 
             case cmf:
-                x[iterationI][0] = nAltChild;
-                x[iterationI][1] = nAltMother;
-                x[iterationI][2] = nAltFather;
+                x[index][0] = nAltChild;
+                x[index][1] = nAltMother;
+                x[index][2] = nAltFather;
                 return;
 
             case cmf_mt:
-                x[iterationI][0] = nAltChild;
-                x[iterationI][1] = nAltMother;
-                x[iterationI][2] = nAltFather;
-                x[iterationI][3] = h[0];
+                x[index][0] = nAltChild;
+                x[index][1] = nAltMother;
+                x[index][2] = nAltFather;
+                x[index][3] = h[0];
                 return;
 
             case cmf_mnt:
-                x[iterationI][0] = nAltChild;
-                x[iterationI][1] = nAltMother;
-                x[iterationI][2] = nAltFather;
-                x[iterationI][3] = h[1];
+                x[index][0] = nAltChild;
+                x[index][1] = nAltMother;
+                x[index][2] = nAltFather;
+                x[index][3] = h[1];
                 return;
 
             case cmf_ft:
-                x[iterationI][0] = nAltChild;
-                x[iterationI][1] = nAltMother;
-                x[iterationI][2] = nAltFather;
-                x[iterationI][3] = h[2];
+                x[index][0] = nAltChild;
+                x[index][1] = nAltMother;
+                x[index][2] = nAltFather;
+                x[index][3] = h[2];
                 return;
 
             case cmf_fnt:
-                x[iterationI][0] = nAltChild;
-                x[iterationI][1] = nAltMother;
-                x[iterationI][2] = nAltFather;
-                x[iterationI][3] = h[3];
+                x[index][0] = nAltChild;
+                x[index][1] = nAltMother;
+                x[index][2] = nAltFather;
+                x[index][3] = h[3];
                 return;
 
             case cm:
-                x[iterationI][0] = nAltChild;
-                x[iterationI][1] = nAltMother;
+                x[index][0] = nAltChild;
+                x[index][1] = nAltMother;
                 return;
 
             case cf:
-                x[iterationI][0] = nAltChild;
-                x[iterationI][1] = nAltFather;
+                x[index][0] = nAltChild;
+                x[index][1] = nAltFather;
                 return;
 
             case mf:
-                x[iterationI][0] = nAltMother;
-                x[iterationI][1] = nAltFather;
+                x[index][0] = nAltMother;
+                x[index][1] = nAltFather;
                 return;
 
             case c:
-                x[iterationI][0] = nAltChild;
+                x[index][0] = nAltChild;
                 return;
 
             case m:
-                x[iterationI][0] = nAltMother;
+                x[index][0] = nAltMother;
                 return;
 
             case f:
-                x[iterationI][0] = nAltFather;
+                x[index][0] = nAltFather;
                 return;
 
             default:
