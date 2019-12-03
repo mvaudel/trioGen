@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import org.apache.commons.math3.linear.SingularMatrixException;
@@ -46,13 +45,13 @@ public class PhenotypesHandler {
      * Constructor from a phenotypes file.
      *
      * @param phenoFile a file containing the phenotypes
-     * @param childrenIds childrenIds
+     * @param childrenIds the ids of the children
      * @param phenoNames the names of the phenotypes to parse
      * @param covariates the names of the covariates to parse
      */
     public PhenotypesHandler(
             File phenoFile,
-            TreeSet<String> childrenIds,
+            String[] childrenIds,
             String[] phenoNames,
             String[] covariates
     ) {
@@ -62,7 +61,7 @@ public class PhenotypesHandler {
 
         for (String phenoName : phenoNames) {
 
-            double[] phenoValues = new double[childrenIds.size()];
+            double[] phenoValues = new double[childrenIds.length];
             Arrays.fill(phenoValues, Double.NaN);
             phenoMap.put(phenoName, phenoValues);
 
@@ -70,9 +69,9 @@ public class PhenotypesHandler {
 
         }
 
-        double[][] covariatesX = new double[childrenIds.size()][covariates.length];
+        double[][] covariatesX = new double[childrenIds.length][covariates.length];
 
-        for (int i = 0; i < childrenIds.size(); i++) {
+        for (int i = 0; i < childrenIds.length; i++) {
             for (int j = 0; j < covariates.length; j++) {
 
                 covariatesX[i][j] = Double.NaN;
@@ -80,7 +79,7 @@ public class PhenotypesHandler {
             }
         }
 
-        HashMap<String, Integer> childIndexMap = new HashMap<>(childrenIds.size());
+        HashMap<String, Integer> childIndexMap = new HashMap<>(childrenIds.length);
         int childIndex = 0;
 
         for (String childId : childrenIds) {

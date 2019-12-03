@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.VariantIterator;
@@ -122,12 +123,9 @@ public class Extractor {
         );
         
         String header = String.join(
-                "\t",
+                IoUtils.separator,
                 "childId",
-                childToParentMap.children.stream()
-                        .collect(
-                                Collectors.joining("\t")
-                        )
+                String.join(IoUtils.separator, childToParentMap.children)
         );
         h1Writer.writeLine(header);
         h2Writer.writeLine(header);

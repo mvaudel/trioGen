@@ -21,19 +21,19 @@ public class ChildToParentMap {
      */
     private final HashMap<String, String> childToFatherMap;
     /**
-     * Ordered list of children.
+     * Ordered array of children.
      */
-    public final TreeSet<String> children;
+    public final String[] children;
 
     /**
      * Constructor.
      *
-     * @param children a list of all children
+     * @param children an ordered array of all children
      * @param childToMotherMap a child to mother map
      * @param childToFatherMap a child to father map
      */
     public ChildToParentMap(
-            TreeSet<String> children, 
+            String[] children, 
             HashMap<String, String> childToMotherMap, 
             HashMap<String, String> childToFatherMap
     ) {
@@ -58,7 +58,7 @@ public class ChildToParentMap {
             File trioFile
     ) {
 
-        TreeSet<String> childIds = new TreeSet<>();
+        TreeSet<String> childIdsSet = new TreeSet<>();
         HashMap<String, String> childToMotherMap = new HashMap<>();
         HashMap<String, String> childToFatherMap = new HashMap<>();
 
@@ -93,7 +93,7 @@ public class ChildToParentMap {
                     String fatherId = lineSplit[1];
                     String motherId = lineSplit[2];
                     
-                    childIds.add(childId);
+                    childIdsSet.add(childId);
                     
                     if (!fatherId.equals("NA")) {
                         
@@ -109,6 +109,8 @@ public class ChildToParentMap {
                 }
             }
         }
+        
+        String[] childIds = childIdsSet.toArray(new String[childIdsSet.size()]);
         
         return new ChildToParentMap(
                 childIds, 
