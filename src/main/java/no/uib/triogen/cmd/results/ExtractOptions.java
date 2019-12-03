@@ -12,8 +12,8 @@ import static no.uib.triogen.io.IoUtils.lineSeparator;
 public enum ExtractOptions {
 
     input("i", "input", "The results file.", true, true),
-    category("c", "category", "The categories columns as comma separated list, one file will be produced per level. Example: pheno,variantId. Default: no category.", false, true),
-    value("v", "value", "The columns to include in the results file as comma separated list. Example: h_B1,h_B1_se,h_B1_p. Default: all columns.", false, true),
+    category("cat", "category", "The categories columns as comma separated list, one file will be produced per level. Example: pheno,variantId. Default: no category.", false, true),
+    value("val", "value", "The columns to include in the results file as comma separated list. Example: h_B1,h_B1_se,h_B1_p. Default: all columns.", false, true),
     output("o", "output", "Stem where to write the output", true, true);
 
     /**

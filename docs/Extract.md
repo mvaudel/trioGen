@@ -31,8 +31,8 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 ### Additional Parameters
 
 ```
--c/--category      The categories columns as comma separated list, one file will be produced per level. Example: pheno,variantId. Default: no category.
--v/--value         The columns to include in the results file as comma separated list. Example: variantId,h_B1,h_B1_se,h_B1_p. Default: all columns.
+-cat/--category      The categories columns as comma separated list, one file will be produced per level. Example: phenotype,variantId. Default: no category.
+-val/--value         The columns to include in the results file as comma separated list. Example: variantId,h_B1,h_B1_se,h_B1_p. Default: all columns.
 ```
 
 ### Command line example
