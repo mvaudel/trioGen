@@ -61,7 +61,7 @@ public class ExtractOptionsBean {
 
         if (!inputFile.exists()) {
 
-            throw new IllegalArgumentException("Vcf file (" + inputFile + ") not found.");
+            throw new IllegalArgumentException("Input file (" + inputFile + ") not found.");
 
         }
 
