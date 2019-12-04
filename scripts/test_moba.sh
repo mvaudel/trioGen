@@ -17,12 +17,12 @@ phenoName=breastmilk_duration,formula_freq_6m,pregnancy_duration,z_umbilical_cho
 covariates=harvest,rotterdam1,rotterdam2,normentMay16,normentMay18,ted,PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10
 
 # Commands
-for chr in {1..7}
+for chr in {15..22}
 do
 
     echo "Processing chromosome $chr"
 
-    java -Xmx32G -cp bin/triogen-0.3.0-beta/triogen-0.3.0-beta.jar no.uib.triogen.cmd.association.LinearModel -g $vcfFolder/$chr.vcf.gz -maf 0.05 -gf 1 -f $trioFile -p $phenoFile -pn $phenoName -cv $covariates -o $outputFolder/chr_$chr.gz
+    java -Xmx24G -cp bin/triogen-0.3.0-beta/triogen-0.3.0-beta.jar no.uib.triogen.cmd.association.LinearModel -g $vcfFolder/$chr.vcf.gz -maf 0.05 -gf 1 -f $trioFile -p $phenoFile -pn $phenoName -cv $covariates -o $outputFolder/chr_$chr.gz
 
 done
 
