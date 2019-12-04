@@ -124,7 +124,7 @@ public class LinearModel {
             lPrintWriter.print("==================================" + lineSeparator);
             lPrintWriter.print("              trioGen             " + lineSeparator);
             lPrintWriter.print("               ****               " + lineSeparator);
-            lPrintWriter.print("   Transmitted Allele Extraction  " + lineSeparator);
+            lPrintWriter.print("      Linear Model Regression     " + lineSeparator);
             lPrintWriter.print("==================================" + lineSeparator);
             lPrintWriter.print(lineSeparator
                     + "The extraction command line iterates a vcf file and extracts transmitted alleles of children." + lineSeparator
