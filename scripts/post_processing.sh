@@ -6,9 +6,9 @@
 
 
 # Paths
-resultFolder=~/mnt/work/marc/moba/test_TrioGen/results
-postProcessingFolder=~/mnt/work/marc/moba/test_TrioGen/results/post_processed
-markersInfoFolder=~/mnt/archive/MOBAGENETICS/genotypes-base/aux/markerinfo
+resultFolder=/mnt/work/marc/moba/test_TrioGen/results
+postProcessingFolder=/mnt/work/marc/moba/test_TrioGen/results/post_processed
+markersInfoFolder=/mnt/archive/MOBAGENETICS/genotypes-base/aux/markerinfo
 
 # Commands
 for chr in {8..9}
