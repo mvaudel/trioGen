@@ -82,6 +82,8 @@ public class Extract {
             ExtractOptionsBean bean
     ) {
 
+        HashMap<String, SimpleFileWriter> fileWriters = new HashMap<>();
+
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(bean.inputFile)) {
 
             String line = reader.readLine();
@@ -149,8 +151,6 @@ public class Extract {
                                     Collectors.joining(IoUtils.separator)
                             );
 
-            HashMap<String, SimpleFileWriter> fileWriters = new HashMap<>();
-
             if (bean.categoryColumns == null) {
 
                 String outputPath = bean.outputStem.endsWith(".gz") ? bean.outputStem : bean.outputStem + ".gz";
@@ -203,12 +203,13 @@ public class Extract {
                 writer.writeLine(newLine);
 
             }
-            
+        } finally {
+
             fileWriters.values()
                     .forEach(
                             writer -> writer.close()
                     );
-            
+
         }
     }
 

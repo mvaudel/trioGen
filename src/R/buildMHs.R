@@ -143,14 +143,15 @@ getMh <- function(
     
     
     # Make plot
-    mhPlot <- ggplot() + 
+    mhPlot <- ggplot(
+        data = plotDF
+    ) + 
         geom_hline(
             yintercept = -log10(5e-8), 
             col = "green4", 
             size = 0.3
         ) + 
         geom_point(
-            data = plotDF, 
             aes(x = x, 
                 y = logP, 
                 col = color
@@ -236,8 +237,13 @@ getQQ <- function(
             p > 0
         ) %>%
         mutate(
-            logP = -log10(p),
-            expectedP = sort(-log10(runif(n = nrow(plotDF)))),
+            logP = -log10(p)
+        ) %>%
+        arrange(
+            p
+        ) %>%
+        mutate(
+            expectedP = sort(-log10(runif(n = n()))),
             x = chromosomeStart[chrom] + pos,
             color = factor(chrom %% 2, levels = c(0, 1))
         )
@@ -249,7 +255,9 @@ getQQ <- function(
     
     
     # Make plot
-    qqPlot <- ggplot() + 
+    qqPlot <- ggplot(
+        data = plotDF
+    ) + 
         geom_abline(
             slope = 1,
             intercept = 0,
@@ -414,3 +422,58 @@ for (colname in c("h_B1_p", "h_B2_p", "h_B3_p", "h_B4_p", "cmf_Bc_p", "cmf_Bm_p"
     dummy <- dev.off()
     
 }
+
+
+# Write doc
+
+docFile <- file.path(resultsPath, paste0(pheno, ".md"))
+write(x = paste0("# ", pheno, "\n\n"), file = docFile, append = F)
+
+write(x = "TrioGen v.0.3.0-beta on 27,451 full trios, ADHD cases, related, and ethnic outliers excluded. 10 PCs and genotyping batch as covariates. Reference panel AF > 5%, info score >= 0.7, singularities excluded\n", file = docFile, append = T)
+write(x = "z_BMI “à la Chris”, see details [here](../pheno/plots.md):\n", file = docFile, append = T)
+write(x = "- not the same as the pheno tables used so far!\n", file = docFile, append = T)
+write(x = "- BMI adjusted for pregnancy duration!\n\n", file = docFile, append = T)
+
+write(x = "4 Models:\n", file = docFile, append = T)
+write(x = "- h: `y = β1 h1 + β2 h2 + β3 h3 + β4 h4  + ε`\n", file = docFile, append = T)
+write(x = "- cmf: `y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + ε`\n", file = docFile, append = T)
+write(x = "- cmf_mt: `y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + βmt h1 + ε`\n", file = docFile, append = T)
+write(x = "- cmf_ft: `y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + βft h1 + ε`\n", file = docFile, append = T)
+
+
+write(x = paste0("\n### h vs. cmf (F-test p-value)\n"), file = docFile, append = T)
+write(x = paste0("![](", pheno, "_", "cmf_h_p", "_MH.png)\n"), file = docFile, append = T)
+write(x = paste0("![](", pheno, "_", "cmf_h_p", "_QQ.png)\n"), file = docFile, append = T)
+
+for (i in 1:4) {
+    
+    write(x = paste0("\n### h B", i, " (Prob(|t| > 0))\n"), file = docFile, append = T)
+    
+    write(x = paste0("![](", pheno, "_h_B", i, "_p_MH.png)\n"), file = docFile, append = T)
+    write(x = paste0("![](", pheno, "_h_B", i, "_p_QQ.png)\n"), file = docFile, append = T)
+    
+    
+}
+
+for (i in c("c", "m", "f")) {
+    
+    write(x = paste0("\n### cmf B", i, " (Prob(|t| > 0))\n"), file = docFile, append = T)
+    
+    write(x = paste0("![](", pheno, "_cmf_B", i, "_p_MH.png)\n"), file = docFile, append = T)
+    write(x = paste0("![](", pheno, "_cmf_B", i, "_p_QQ.png)\n"), file = docFile, append = T)
+    
+    
+}
+
+write(x = paste0("\n### cmf_mt Bmt (Prob(|t| > 0))\n"), file = docFile, append = T)
+
+write(x = paste0("![](", pheno, "_cmf_mt_Bmt_p_MH.png)\n"), file = docFile, append = T)
+write(x = paste0("![](", pheno, "_cmf_mt_Bmt_p_QQ.png)\n"), file = docFile, append = T)
+
+
+write(x = paste0("\n### cmf_ft Bft (Prob(|t| > 0))\n"), file = docFile, append = T)
+
+write(x = paste0("![](", pheno, "_cmf_ft_Bft_p_MH.png)\n"), file = docFile, append = T)
+write(x = paste0("![](", pheno, "_cmf_ft_Bft_p_QQ.png)\n"), file = docFile, append = T)
+
+
