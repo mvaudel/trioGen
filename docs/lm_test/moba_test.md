@@ -21,7 +21,7 @@ z_BMI “à la Chris”, see details [here](../pheno/plots.md). Note:
 
 1. [Breastmilk Duration](breastmilk_duration.md)
 1. [Formula Frequency at 6 months](formula_freq_6m.md)
-1- [Pregnancy Duration](pregnancy_duration.md)
+1. [Pregnancy Duration](pregnancy_duration.md)
 1. [BMI at birth (z_BMI0)](z_bmi0.md)
 1. [BMI at 6 w (z_BMI1)](z_bmi1.md)
 1. [BMI at 3 m (z_BMI2)](z_bmi2.md)
