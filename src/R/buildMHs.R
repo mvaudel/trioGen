@@ -359,7 +359,7 @@ markerInfoDF <- NULL
 
 # Sanity check
 
-if (nrow(pDF) == 0) {
+if (length(pDF) == 0 || nrow(pDF) == 0) {
     
     stop(paste0("No data for phenotype ", pheno))
     

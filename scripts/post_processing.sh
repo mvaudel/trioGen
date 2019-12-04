@@ -21,7 +21,7 @@ do
 
 done
 
-for pheno in pheno{0..11} breastmilk_duration formula_freq_6m pregnancy_duration father_bmi mother_height placenta_weight umbilical_chord_length
+for pheno in z_bmi{0..11} breastmilk_duration formula_freq_6m pregnancy_duration father_bmi mother_height placenta_weight umbilical_chord_length
 do
 
     echo "MH and QQ for $pheno"
