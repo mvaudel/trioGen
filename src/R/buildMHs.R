@@ -359,6 +359,11 @@ markerInfoDF <- NULL
 
 # Sanity check
 
+if (nrow(pDF) == 0) {
+    
+    stop(paste0("No data for phenotype ", pheno))
+    
+}
 if (! "chrom" %in% names(pDF)) {
     
     stop("Missing crom column")
