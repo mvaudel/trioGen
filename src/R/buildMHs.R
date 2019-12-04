@@ -237,7 +237,7 @@ getQQ <- function(
             logP = -log10(p)
         ) %>%
         arrange(
-            p
+            logP
         ) %>%
         mutate(
             expectedP = sort(-log10(runif(n = n()))),
