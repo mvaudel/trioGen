@@ -35,9 +35,6 @@ library(vctrs, lib = lib)
 library(crayon, lib = lib)
 library(tidyr, lib = lib)
 library(dplyr, lib = lib)
-library(gamlss.data, lib = lib)
-library(gamlss.dist, lib = lib)
-library(gamlss, lib = lib)
 library(withr, lib.loc = lib)
 library(labeling, lib.loc = lib)
 library(digest, lib.loc = lib)
@@ -358,6 +355,20 @@ pDF <- do.call("rbind", pDFs)
 pDFs <- NULL
 trioGenDF <- NULL
 markerInfoDF <- NULL
+
+
+# Sanity check
+
+if (! "chrom" %in% names(pDF)) {
+    
+    stop("Missing crom column")
+    
+}
+if (! "pos" %in% names(pDF)) {
+    
+    stop("Missing pos column")
+    
+}
 
 
 # Order data frame
