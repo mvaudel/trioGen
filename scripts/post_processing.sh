@@ -11,7 +11,7 @@ postProcessingFolder=/mnt/work/marc/moba/test_TrioGen/results/post_processed
 markersInfoFolder=/mnt/archive/MOBAGENETICS/genotypes-base/aux/markerinfo
 
 # Commands
-for chr in {8..9}
+for chr in {1..22} X
 do
 
     echo "extracting p-values for chromosome $chr"
@@ -21,17 +21,7 @@ do
 
 done
 
-for phenoI in {0..11}
-do
-
-    echo "MH and QQ for z_bmi$phenoI"
-
-    # MH and QQ
-    Rscript src/R/buildMHs.R $postProcessingFolder $markersInfoFolder z_bmi$phenoI docs/lm_test "~/R"
-
-done
-
-for pheno in breastmilk_duration formula_freq_6m pregnancy_duration father_bmi mother_height placenta_weight umbilical_chord_length
+for pheno in pheno{0..11} breastmilk_duration formula_freq_6m pregnancy_duration father_bmi mother_height placenta_weight umbilical_chord_length
 do
 
     echo "MH and QQ for $pheno"
