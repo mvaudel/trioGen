@@ -20,7 +20,6 @@ z_BMI “à la Chris”, see details [here](../pheno/plots.md). Note:
 ### Phenotypes
 
 1. [Breastmilk Duration](breastmilk_duration.md)
-
 1. [Formula Frequency at 6 months](formula_freq_6m.md)
 
 1- [Pregnancy Duration](pregnancy_duration.md)
