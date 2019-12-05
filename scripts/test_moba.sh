@@ -28,4 +28,4 @@ done
 
 echo "Processing chromosome X"
 
-java -Xmx32G -cp bin/triogen-0.3.0-beta/triogen-0.3.0-beta.jar no.uib.triogen.cmd.association.LinearModel -g $vcfFolder/X.vcf.gz -maf 0.05 -gf 1 -f $trioFile -p $phenoFile -pn $phenoName -cv $covariates -o $outputFolder/chr_X.gz
+echo java -Xmx32G -cp bin/triogen-0.3.0-beta/triogen-0.3.0-beta.jar no.uib.triogen.cmd.association.LinearModel -g $vcfFolder/X.vcf.gz -maf 0.05 -gf 1 -f $trioFile -p $phenoFile -pn $phenoName -cv $covariates -o $outputFolder/chr_X.gz
