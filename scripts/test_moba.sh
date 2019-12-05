@@ -17,7 +17,7 @@ phenoName=breastmilk_duration,formula_freq_6m,pregnancy_duration,z_umbilical_cho
 covariates=harvest,rotterdam1,rotterdam2,normentMay16,normentMay18,ted,PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10
 
 # Commands
-for chr in {15..22}
+for chr in 6 5 13 14 15
 do
 
     echo "Processing chromosome $chr"
