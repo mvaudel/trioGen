@@ -9,6 +9,7 @@ import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.geno.Model;
 import no.uib.triogen.model.pheno.PhenotypesHandler;
@@ -53,6 +54,10 @@ public class LinearModelRunnable implements Runnable {
      */
     private final SimpleFileWriter outputWriter;
     /**
+     * The logger.
+     */
+    private final Logger logger;
+    /**
      * Boolean indicating whether the runnable has been canceled.
      */
     private static boolean canceled = false;
@@ -66,6 +71,7 @@ public class LinearModelRunnable implements Runnable {
      * @param models the list of the names of the models to use
      * @param phenotypesHandler the phenotypes handler
      * @param outputWriter the output writer
+     * @param logger the logger
      */
     public LinearModelRunnable(
             VariantIterator iterator,
@@ -73,7 +79,8 @@ public class LinearModelRunnable implements Runnable {
             ChildToParentMap childToParentMap,
             Model[] models,
             PhenotypesHandler phenotypesHandler,
-            SimpleFileWriter outputWriter
+            SimpleFileWriter outputWriter,
+            Logger logger
     ) {
 
         this.iterator = iterator;
@@ -82,6 +89,7 @@ public class LinearModelRunnable implements Runnable {
         this.mafThreshold = mafThreshold;
         this.phenotypesHandler = phenotypesHandler;
         this.outputWriter = outputWriter;
+        this.logger = logger;
 
     }
 
@@ -111,6 +119,15 @@ public class LinearModelRunnable implements Runnable {
         } catch (Throwable t) {
 
             canceled = true;
+
+            logger.logError(
+                    Arrays.stream(t.getStackTrace())
+                            .map(
+                                    element -> element.toString()
+                            )
+                            .collect(Collectors.joining(" "))
+            );
+
             t.printStackTrace();
 
         }
@@ -385,7 +402,19 @@ public class LinearModelRunnable implements Runnable {
                 String line = stringBuilder.toString();
                 outputWriter.writeLine(line);
 
+            } else {
+
+                logger.logVariant(
+                        genotypesProvider.getVariantID(),
+                        "no transmission"
+                );
             }
+        } else {
+
+            logger.logVariant(
+                    genotypesProvider.getVariantID(),
+                    "low maf"
+            );
         }
     }
 

@@ -69,6 +69,10 @@ public class LinearModelOptionsBean {
      * Test mode.
      */
     public final boolean test;
+    /**
+     * Variant log.
+     */
+    public final boolean variantLog;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -344,6 +348,9 @@ public class LinearModelOptionsBean {
 
         // Test
         test = aLine.hasOption(LinearModelOptions.test.opt);
+
+        // Variant log
+        variantLog = aLine.hasOption(LinearModelOptions.variantLog.opt);
 
     }
 }

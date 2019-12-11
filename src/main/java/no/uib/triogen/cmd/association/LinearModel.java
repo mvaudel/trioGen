@@ -1,10 +1,13 @@
 package no.uib.triogen.cmd.association;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
 import static no.uib.triogen.io.IoUtils.lineSeparator;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
+import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.geno.Model;
 import no.uib.triogen.model.geno.VariantList;
@@ -86,6 +89,19 @@ public class LinearModel {
                 )
                 .toArray(Model[]::new);
 
+        String resultStem = bean.destinationFile.getAbsolutePath();
+
+        if (resultStem.endsWith(".gz")) {
+
+            resultStem = resultStem.substring(0, resultStem.length() - 3);
+
+        }
+
+        File logFile = new File(resultStem + ".log");
+        File variantLogFile = bean.variantLog ? new File(resultStem + ".variantLog") : null;
+
+        Logger logger = new Logger(logFile, variantLogFile);
+
         LinearModelComputer linearModelComputer = new LinearModelComputer(
                 bean.genotypesFile,
                 bean.genotypesFileType,
@@ -97,7 +113,8 @@ public class LinearModel {
                 bean.covariates,
                 models,
                 bean.destinationFile,
-                bean.nVariants
+                bean.nVariants,
+                logger
         );
 
         try {
@@ -108,6 +125,14 @@ public class LinearModel {
             );
 
         } catch (Throwable e) {
+
+            logger.logError(
+                    Arrays.stream(e.getStackTrace())
+                            .map(
+                                    element -> element.toString()
+                            )
+                            .collect(Collectors.joining(" "))
+            );
 
             e.printStackTrace();
 

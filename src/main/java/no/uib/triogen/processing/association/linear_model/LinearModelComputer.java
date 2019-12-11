@@ -11,6 +11,7 @@ import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.geno.Model;
 import no.uib.triogen.model.geno.VariantList;
@@ -68,6 +69,10 @@ public class LinearModelComputer {
      * The number of variants to process in parallel.
      */
     private final int nVariants;
+    /**
+     * The logger.
+     */
+    private final Logger logger;
 
     /**
      * Constructor.
@@ -83,6 +88,7 @@ public class LinearModelComputer {
      * @param models the models to use
      * @param destinationFile the file to export the result to
      * @param nVariants the number of variants to process in parallel
+     * @param logger the logger
      */
     public LinearModelComputer(
             File genotypesFile,
@@ -95,7 +101,8 @@ public class LinearModelComputer {
             String[] covariates,
             Model[] models,
             File destinationFile,
-            int nVariants
+            int nVariants,
+            Logger logger
     ) {
 
         this.genotypesFile = genotypesFile;
@@ -109,6 +116,7 @@ public class LinearModelComputer {
         this.models = models;
         this.destinationFile = destinationFile;
         this.nVariants = nVariants;
+        this.logger = logger;
 
     }
 
@@ -129,17 +137,17 @@ public class LinearModelComputer {
 
         if (test) {
 
-            System.out.println("*** TEST MODE ***");
+            logger.logMessage("*** TEST MODE ***");
 
         }
 
         if (covariates.length > 0) {
         
-            System.out.println(Instant.now() + " - Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath() + " and adjusting for " + covariates.length + " covariates");
+            logger.logMessage("Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath() + " and adjusting for " + covariates.length + " covariates");
             
         } else {
         
-            System.out.println(Instant.now() + " - Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath());
+            logger.logMessage("Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath());
             
         }
 
@@ -155,13 +163,11 @@ public class LinearModelComputer {
         long end = Instant.now().getEpochSecond();
         long duration = end - start;
 
-        System.out.println(
-                Instant.now() + " - Done (" + phenoNames.length + " phenotypes for " + phenotypesHandler.nChildren + " children imported in " + duration + " seconds)"
-        );
+            logger.logMessage("Done (" + phenoNames.length + " phenotypes for " + phenotypesHandler.nChildren + " children imported in " + duration + " seconds)");
 
         String nVariantsText = variantList == null ? "" : ", " + variantList.variantId.length + " variants";
 
-        System.out.println(Instant.now() + " - Linear association (geno: " + genotypesFile.getAbsolutePath() + nVariantsText + ", pheno: " + phenotypesFile.getAbsolutePath() + ")");
+            logger.logMessage("Linear association (geno: " + genotypesFile.getAbsolutePath() + nVariantsText + ", pheno: " + phenotypesFile.getAbsolutePath() + ")");
 
         start = Instant.now().getEpochSecond();
 
@@ -205,7 +211,8 @@ public class LinearModelComputer {
                                     childToParentMap,
                                     models,
                                     phenotypesHandler,
-                                    outputWriter
+                                    outputWriter,
+                                    logger
                             )
                     )
                     .forEach(
@@ -230,8 +237,7 @@ public class LinearModelComputer {
         end = Instant.now().getEpochSecond();
         duration = end - start;
 
-        System.out.println(
-                Instant.now() + " - Done (" + iterator.getnVariants() + " variants processed in " + duration + " seconds)"
-        );
+            logger.logMessage("Done (" + iterator.getnVariants() + " variants processed in " + duration + " seconds)");
+            
     }
 }
