@@ -137,6 +137,9 @@ public class LinearModel {
             e.printStackTrace();
 
         }
+        
+        logger.close();
+        
     }
 
     /**

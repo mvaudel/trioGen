@@ -94,4 +94,15 @@ public class Logger {
 
         }
     }
+    
+    public void close() {
+        
+        logWriter.close();
+        
+        if (variantWriter != null) {
+            
+            variantWriter.close();
+            
+        }
+    }
 }
