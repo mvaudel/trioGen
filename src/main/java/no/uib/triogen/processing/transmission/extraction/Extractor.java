@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
@@ -121,6 +122,11 @@ public class Extractor {
                 new File(destinationStem + "_h4.gz"),
                 true
         );
+        
+        h1Writer.writeLine("# TrioGen version: " + TrioGen.getVersion());
+        h2Writer.writeLine("# TrioGen version: " + TrioGen.getVersion());
+        h3Writer.writeLine("# TrioGen version: " + TrioGen.getVersion());
+        h4Writer.writeLine("# TrioGen version: " + TrioGen.getVersion());
         
         String header = String.join(
                 IoUtils.separator,

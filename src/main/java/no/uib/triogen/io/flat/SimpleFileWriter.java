@@ -2,6 +2,7 @@ package no.uib.triogen.io.flat;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import static java.io.File.separator;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,10 +27,6 @@ public class SimpleFileWriter implements AutoCloseable {
      * A simple mutex.
      */
     private final SimpleSemaphore mutex = new SimpleSemaphore(1);
-    /**
-     * The separator for exported files.
-     */
-    public static final String separator = " ";
 
     /**
      * Constructor.

@@ -129,6 +129,7 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 -nv/--nVariants    The number of variants to process in parallel. Default is 8.
 -z/--timeOut       The number of days before timeout, default is 365.
 -t/--test          If present, runs only the first 1000 variants.
+-vl/--variantLog   If present, writes a log for every variant next to the results file.
 ```
 
 ### Command line example

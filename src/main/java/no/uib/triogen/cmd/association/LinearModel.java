@@ -97,8 +97,8 @@ public class LinearModel {
 
         }
 
-        File logFile = new File(resultStem + ".log");
-        File variantLogFile = bean.variantLog ? new File(resultStem + ".variantLog") : null;
+        File logFile = new File(resultStem + ".log.gz");
+        File variantLogFile = bean.variantLog ? new File(resultStem + ".variantLog.gz") : null;
 
         Logger logger = new Logger(logFile, variantLogFile);
 

@@ -249,3 +249,74 @@ betaPlot <- ggplot(
 png("docs/lm_test/lm_targets_3_cmf_beta.png", width = 900, height = 300)
 betaPlot
 dummy <- dev.off()
+
+
+# Test chr 10
+
+
+chr10DF <- read.table(
+    "docs/lm_test/p_chr_10.z_bmi0.gz",
+    sep = "\t",
+    header = T,
+    stringsAsFactors = F
+)
+markerInfo10DF <- read.table(
+    file = "docs/lm_test/10-markerinfo",
+    header = F,
+    quote = "",
+    stringsAsFactors = F
+)
+names(markerInfo10DF) <- c("chrom", "pos", "variantId", "ref", "alt", "typed", "info", "refPanelAF")
+chr10LogDF <- read.table(
+    "docs/lm_test/chr_10.variantLog.gz",
+    sep = "\t",
+    header = T,
+    stringsAsFactors = F
+)
+
+chr10DF %>%
+    left_join(
+        markerInfo10DF,
+        by = "variantId"
+    ) %>%
+    filter(
+        !is.na(info) & info > 0.7
+    ) -> trioGen10DF
+
+
+ggplot(
+    data = trioGen10DF
+) + 
+    geom_hline(
+        yintercept = -log10(5e-8), 
+        col = "green4", 
+        size = 0.3
+    ) + 
+    geom_point(
+        aes(x = pos, 
+            y = -log10(cmf_h_p)
+        ), 
+        size = 2
+    ) + 
+    scale_y_continuous(
+        name = "p-value [-log10]", 
+        expand = expand_scale(
+            mult = c(0, 0.05)
+        )
+    ) + 
+    scale_x_continuous(
+        name = "Chromosome", 
+        limits = c(0, 135534747), 
+        expand = expand_scale(
+            mult = 0.01
+        )
+    ) + 
+    theme(
+        legend.position = "none",
+        panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(size = 0.3),
+        strip.background = element_rect(
+            fill = "grey99"
+        )
+    )
