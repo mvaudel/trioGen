@@ -2,13 +2,13 @@ package no.uib.triogen.io.flat;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import static java.io.File.separator;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.zip.GZIPOutputStream;
 import static no.uib.triogen.io.IoUtils.encoding;
+import static no.uib.triogen.io.IoUtils.separator;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
