@@ -70,6 +70,53 @@ public class Logger {
     }
 
     /**
+     * Write a comment line as '# key: value'.
+     * 
+     * @param key the key
+     * @param value the value
+     */
+    public void writeComment(
+            String key,
+            String value
+    ) {
+
+        String line = String.join(
+                "",
+                "# ", key, ": ", value
+        );
+
+        logWriter.writeLine(line);
+
+        if (variantWriter != null) {
+
+            variantWriter.writeLine(line);
+
+        }
+    }
+
+    /**
+     * Writes the headers to the files.
+     */
+    public void writeHeaders() {
+
+        logWriter.writeLine(
+                "time",
+                "type",
+                "log"
+        );
+
+        if (variantWriter != null) {
+
+            variantWriter.writeLine(
+                    "time",
+                    "variant",
+                    "log"
+            );
+
+        }
+    }
+
+    /**
      * Logs a message.
      *
      * @param message the message
