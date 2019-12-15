@@ -2,6 +2,7 @@ package no.uib.triogen.log;
 
 import java.io.File;
 import java.time.Instant;
+import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 
@@ -12,21 +13,39 @@ import no.uib.triogen.io.flat.SimpleFileWriter;
  */
 public class Logger {
 
+    /**
+     * Writer for the variant log.
+     */
     private final SimpleFileWriter variantWriter;
+    /**
+     * Writer for the general log.
+     */
     private final SimpleFileWriter logWriter;
 
+    /**
+     * Constructor.
+     *
+     * @param logFile the file where to write the log
+     */
     public Logger(
             File logFile
     ) {
         this(logFile, null);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param logFile the file where to write the log
+     * @param variantFile the file where to write the variants log
+     */
     public Logger(
             File logFile,
             File variantFile
     ) {
 
         logWriter = new SimpleFileWriter(logFile, true);
+        logWriter.writeLine("# TrioGen version: " + TrioGen.getVersion());
         logWriter.writeLine(
                 "time",
                 "type",
@@ -36,7 +55,8 @@ public class Logger {
         if (variantFile != null) {
 
             variantWriter = new SimpleFileWriter(variantFile, true);
-            logWriter.writeLine(
+            variantWriter.writeLine("# TrioGen version " + TrioGen.getVersion());
+            variantWriter.writeLine(
                     "time",
                     "variant",
                     "log"
@@ -49,6 +69,58 @@ public class Logger {
         }
     }
 
+    /**
+     * Write a comment line as '# key: value'.
+     * 
+     * @param key the key
+     * @param value the value
+     */
+    public void writeComment(
+            String key,
+            String value
+    ) {
+
+        String line = String.join(
+                "",
+                "# ", key, ": ", value
+        );
+
+        logWriter.writeLine(line);
+
+        if (variantWriter != null) {
+
+            variantWriter.writeLine(line);
+
+        }
+    }
+
+    /**
+     * Writes the headers to the files.
+     */
+    public void writeHeaders() {
+
+        logWriter.writeLine(
+                "time",
+                "type",
+                "log"
+        );
+
+        if (variantWriter != null) {
+
+            variantWriter.writeLine(
+                    "time",
+                    "variant",
+                    "log"
+            );
+
+        }
+    }
+
+    /**
+     * Logs a message.
+     *
+     * @param message the message
+     */
     public void logMessage(
             String message
     ) {
@@ -65,6 +137,11 @@ public class Logger {
 
     }
 
+    /**
+     * Logs an error.
+     *
+     * @param message the error message
+     */
     public void logError(String message) {
 
         String now = Instant.now().toString();
@@ -77,6 +154,12 @@ public class Logger {
 
     }
 
+    /**
+     * Log for a variant.
+     *
+     * @param variantId the id of the variant
+     * @param message the message
+     */
     public void logVariant(
             String variantId,
             String message
@@ -94,15 +177,18 @@ public class Logger {
 
         }
     }
-    
+
+    /**
+     * Closes the logger.
+     */
     public void close() {
-        
+
         logWriter.close();
-        
+
         if (variantWriter != null) {
-            
+
             variantWriter.close();
-            
+
         }
     }
 }

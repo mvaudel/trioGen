@@ -64,7 +64,10 @@ public class LinearModel {
 
             }
 
-            run(bean);
+            run(
+                    bean,
+                    String.join(" ", args)
+            );
 
         } catch (Throwable e) {
 
@@ -78,7 +81,8 @@ public class LinearModel {
      * @param bean the bean of command line parameters
      */
     private static void run(
-            LinearModelOptionsBean bean
+            LinearModelOptionsBean bean,
+            String command
     ) {
 
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
@@ -97,10 +101,15 @@ public class LinearModel {
 
         }
 
-        File logFile = new File(resultStem + ".log");
-        File variantLogFile = bean.variantLog ? new File(resultStem + ".variantLog") : null;
+        File logFile = new File(resultStem + ".log.gz");
+        File variantLogFile = bean.variantLog ? new File(resultStem + ".variantLog.gz") : null;
 
         Logger logger = new Logger(logFile, variantLogFile);
+        logger.writeComment("Software", "TrioGen");
+        logger.writeComment("Version", TrioGen.getVersion());
+        logger.writeComment("Command", "LinearModel");
+        logger.writeComment("Arguments", command);
+        logger.writeHeaders();
 
         LinearModelComputer linearModelComputer = new LinearModelComputer(
                 bean.genotypesFile,
@@ -137,9 +146,9 @@ public class LinearModel {
             e.printStackTrace();
 
         }
-        
+
         logger.close();
-        
+
     }
 
     /**

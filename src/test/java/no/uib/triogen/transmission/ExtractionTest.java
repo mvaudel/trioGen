@@ -182,6 +182,7 @@ public class ExtractionTest extends TestCase {
 
         SimpleFileReader reader = SimpleFileReader.getFileReader(hFile);
         String line = reader.readLine();
+        line = reader.readLine();
         String[] header = line.split(IoUtils.separator);
 
         while ((line = reader.readLine()) != null) {

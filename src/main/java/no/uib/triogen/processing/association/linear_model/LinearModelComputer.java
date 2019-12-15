@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
+import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
@@ -181,6 +182,7 @@ public class LinearModelComputer {
                 true
         );
 
+        outputWriter.writeLine("# TrioGen version: " + TrioGen.getVersion());
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(
                 String.join(IoUtils.separator,

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.zip.GZIPOutputStream;
 import static no.uib.triogen.io.IoUtils.encoding;
+import static no.uib.triogen.io.IoUtils.separator;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
@@ -26,10 +27,6 @@ public class SimpleFileWriter implements AutoCloseable {
      * A simple mutex.
      */
     private final SimpleSemaphore mutex = new SimpleSemaphore(1);
-    /**
-     * The separator for exported files.
-     */
-    public static final String separator = " ";
 
     /**
      * Constructor.
