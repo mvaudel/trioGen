@@ -7,6 +7,8 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.triogen.io.flat.indexed.gz.IndexedGzCoordinates;
+import no.uib.triogen.io.flat.indexed.gz.IndexedGzWriter;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.log.Logger;
@@ -52,7 +54,11 @@ public class LinearModelRunnable implements Runnable {
     /**
      * The output writer.
      */
-    private final SimpleFileWriter outputWriter;
+    private final IndexedGzWriter outputWriter;
+    /**
+     * Writer for the index of the results file.
+     */
+    private final SimpleFileWriter resultsIndex;
     /**
      * The logger.
      */
@@ -71,6 +77,7 @@ public class LinearModelRunnable implements Runnable {
      * @param models the list of the names of the models to use
      * @param phenotypesHandler the phenotypes handler
      * @param outputWriter the output writer
+     * @param resultsIndex writer for the index of the results file
      * @param logger the logger
      */
     public LinearModelRunnable(
@@ -79,7 +86,8 @@ public class LinearModelRunnable implements Runnable {
             ChildToParentMap childToParentMap,
             Model[] models,
             PhenotypesHandler phenotypesHandler,
-            SimpleFileWriter outputWriter,
+            IndexedGzWriter outputWriter,
+            SimpleFileWriter resultsIndex,
             Logger logger
     ) {
 
@@ -89,6 +97,7 @@ public class LinearModelRunnable implements Runnable {
         this.mafThreshold = mafThreshold;
         this.phenotypesHandler = phenotypesHandler;
         this.outputWriter = outputWriter;
+        this.resultsIndex = resultsIndex;
         this.logger = logger;
 
     }
@@ -399,8 +408,19 @@ public class LinearModelRunnable implements Runnable {
                         .forEach(
                                 regressionResult -> regressionResult.appendResults(stringBuilder)
                         );
-                String line = stringBuilder.toString();
-                outputWriter.writeLine(line);
+
+                String line = stringBuilder
+                        .append(IoUtils.lineSeparator)
+                        .toString();
+
+                IndexedGzCoordinates coordinates = outputWriter.append(line);
+
+                resultsIndex.writeLine(
+                        genotypesProvider.getVariantID(),
+                        phenoName,
+                        Integer.toString(coordinates.compressedLength),
+                        Integer.toString(coordinates.uncompressedLength)
+                );
 
             } else {
 

@@ -1,6 +1,7 @@
 package no.uib.triogen.processing.association.linear_model;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,6 +11,8 @@ import java.util.stream.IntStream;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.triogen.io.flat.indexed.gz.IndexedGzCoordinates;
+import no.uib.triogen.io.flat.indexed.gz.IndexedGzWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.log.Logger;
@@ -130,11 +133,12 @@ public class LinearModelComputer {
      * @throws InterruptedException exception thrown if the process was
      * interrupted
      * @throws TimeoutException exception thrown if the process timed out
+     * @throws IOException exception thrown if an i/o error occurred
      */
     public void run(
             int timeOutDays,
             boolean test
-    ) throws InterruptedException, TimeoutException {
+    ) throws InterruptedException, TimeoutException, IOException {
 
         if (test) {
 
@@ -143,17 +147,17 @@ public class LinearModelComputer {
         }
 
         if (covariates.length > 0) {
-        
+
             logger.logMessage("Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath() + " and adjusting for " + covariates.length + " covariates");
-            
+
         } else {
-        
+
             logger.logMessage("Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath());
-            
+
         }
 
         long start = Instant.now().getEpochSecond();
-        
+
         PhenotypesHandler phenotypesHandler = new PhenotypesHandler(
                 phenotypesFile,
                 childToParentMap.children,
@@ -164,11 +168,11 @@ public class LinearModelComputer {
         long end = Instant.now().getEpochSecond();
         long duration = end - start;
 
-            logger.logMessage("Done (" + phenoNames.length + " phenotypes for " + phenotypesHandler.nChildren + " children imported in " + duration + " seconds)");
+        logger.logMessage("Done (" + phenoNames.length + " phenotypes for " + phenotypesHandler.nChildren + " children imported in " + duration + " seconds)");
 
         String nVariantsText = variantList == null ? "" : ", " + variantList.variantId.length + " variants";
 
-            logger.logMessage("Linear association (geno: " + genotypesFile.getAbsolutePath() + nVariantsText + ", pheno: " + phenotypesFile.getAbsolutePath() + ")");
+        logger.logMessage("Linear association (geno: " + genotypesFile.getAbsolutePath() + nVariantsText + ", pheno: " + phenotypesFile.getAbsolutePath() + ")");
 
         start = Instant.now().getEpochSecond();
 
@@ -177,12 +181,28 @@ public class LinearModelComputer {
                 genotypesFileType,
                 variantList
         );
-        SimpleFileWriter outputWriter = new SimpleFileWriter(
-                destinationFile,
-                true
+        IndexedGzWriter outputWriter = new IndexedGzWriter(
+                destinationFile
         );
 
-        outputWriter.writeLine("# TrioGen version: " + TrioGen.getVersion());
+        File indexFile = new File(destinationFile.getAbsolutePath() + ".index.gz");
+        SimpleFileWriter index = new SimpleFileWriter(indexFile, true);
+        index.writeLine(
+                "VariantId",
+                "Phenotype",
+                "Pointer",
+                "CompressedLength",
+                "UncompressedLength"
+        );
+
+        IndexedGzCoordinates coordinates = outputWriter.append("# TrioGen version: " + TrioGen.getVersion() + IoUtils.lineSeparator);
+        index.writeLine(
+                "Header",
+                "Header",
+                Integer.toString(coordinates.compressedLength),
+                Integer.toString(coordinates.uncompressedLength)
+        );
+
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(
                 String.join(IoUtils.separator,
@@ -199,7 +219,15 @@ public class LinearModelComputer {
 
         }
 
-        outputWriter.writeLine(stringBuilder.toString());
+        stringBuilder.append(IoUtils.lineSeparator);
+
+        coordinates = outputWriter.append(stringBuilder.toString());
+        index.writeLine(
+                "Header",
+                "Header",
+                Integer.toString(coordinates.compressedLength),
+                Integer.toString(coordinates.uncompressedLength)
+        );
 
         try {
 
@@ -214,6 +242,7 @@ public class LinearModelComputer {
                                     models,
                                     phenotypesHandler,
                                     outputWriter,
+                                    index,
                                     logger
                             )
                     )
@@ -232,6 +261,7 @@ public class LinearModelComputer {
         } finally {
 
             outputWriter.close();
+            index.close();
             iterator.close();
 
         }
@@ -239,7 +269,7 @@ public class LinearModelComputer {
         end = Instant.now().getEpochSecond();
         duration = end - start;
 
-            logger.logMessage("Done (" + iterator.getnVariants() + " variants processed in " + duration + " seconds)");
-            
+        logger.logMessage("Done (" + iterator.getnVariants() + " variants processed in " + duration + " seconds)");
+
     }
 }
