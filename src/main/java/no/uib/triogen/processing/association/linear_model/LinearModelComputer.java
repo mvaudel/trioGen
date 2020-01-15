@@ -10,9 +10,10 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.IoUtils;
+import static no.uib.triogen.io.IoUtils.getIndexFile;
 import no.uib.triogen.io.flat.SimpleFileWriter;
-import no.uib.triogen.io.flat.indexed.gz.IndexedGzCoordinates;
-import no.uib.triogen.io.flat.indexed.gz.IndexedGzWriter;
+import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
+import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.log.Logger;
@@ -185,12 +186,11 @@ public class LinearModelComputer {
                 destinationFile
         );
 
-        File indexFile = new File(destinationFile.getAbsolutePath() + ".index.gz");
+        File indexFile = getIndexFile(destinationFile);
         SimpleFileWriter index = new SimpleFileWriter(indexFile, true);
         index.writeLine(
                 "VariantId",
                 "Phenotype",
-                "Pointer",
                 "CompressedLength",
                 "UncompressedLength"
         );

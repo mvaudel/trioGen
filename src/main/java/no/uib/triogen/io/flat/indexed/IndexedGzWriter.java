@@ -1,4 +1,4 @@
-package no.uib.triogen.io.flat.indexed.gz;
+package no.uib.triogen.io.flat.indexed;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,6 @@ import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.utils.SimpleSemaphore;
-import uk.ac.ebi.pride.tools.braf.BufferedRandomAccessFile;
 
 /**
  * This class writes an indexed gz file. Note that unless otherwise specified,
@@ -24,7 +23,7 @@ public class IndexedGzWriter implements AutoCloseable {
     /**
      * Length of the header in bytes. Content starts at this position.
      */
-    public final int headerLength = 10;
+    public static final int HEADER_LENGTH = 10;
     /**
      * GZIP header magic number.
      *

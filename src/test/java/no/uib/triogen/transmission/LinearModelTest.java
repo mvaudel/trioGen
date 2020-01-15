@@ -7,7 +7,11 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import no.uib.triogen.cmd.association.LinearModel;
 import no.uib.triogen.io.IoUtils;
+import static no.uib.triogen.io.IoUtils.getIndexFile;
 import no.uib.triogen.io.flat.SimpleFileReader;
+import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.triogen.io.flat.indexed.IndexedGzReader;
+import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 
 /**
@@ -18,7 +22,7 @@ import no.uib.triogen.io.genotypes.GenotypesFileType;
  * @author Marc Vaudel
  */
 public class LinearModelTest extends TestCase {
-    
+
     /**
      * Tolerance used to compare summary statistics.
      */
@@ -31,11 +35,11 @@ public class LinearModelTest extends TestCase {
 
         String resultsFilePath = "src/test/resources/transmission/test_lm.gz";
         File resultsFile = new File(resultsFilePath);
-        
+
         if (resultsFile.exists()) {
-            
+
             resultsFile.delete();
-            
+
         }
 
         HashMap<String, HashMap<String, double[]>> groundTruthMap = getGroundTruth(
@@ -53,6 +57,33 @@ public class LinearModelTest extends TestCase {
         LinearModel.main(
                 args
         );
+
+        File indexFile = getIndexFile(resultsFile);
+        long position = IndexedGzWriter.HEADER_LENGTH;
+        try (IndexedGzReader gzReader = new IndexedGzReader(resultsFile)) {
+
+            try (SimpleFileReader reader = IoUtils.getFileReader(indexFile)) {
+
+                String line = reader.readLine();
+
+                while ((line = reader.readLine()) != null) {
+
+                    String[] lineSplit = line.split(IoUtils.separator);
+                    int compressedLength = Integer.parseInt(lineSplit[2]);
+                    int uncompressedLength = Integer.parseInt(lineSplit[3]);
+                    
+                    String uncompressedLine = gzReader.read(position, compressedLength, uncompressedLength);
+                    
+                    position += compressedLength;
+
+                }
+            }
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+
 //
 //        HashMap<String, HashMap<String, double[]>> resultsMap = getResults(
 //                resultsFile,
@@ -71,7 +102,6 @@ public class LinearModelTest extends TestCase {
 //                        "Phenotype " + pheno + " not found in the results."
 //                );
 //            }
-
 //            for (Entry<String, double[]> entry2 : hMapGroundTruth.entrySet()) {
 //
 //                String h = entry2.getKey();

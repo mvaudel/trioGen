@@ -1,4 +1,4 @@
-package no.uib.triogen.io.flat.indexed.gz;
+package no.uib.triogen.io.flat.indexed;
 
 /**
  * Placeholder for the coordinates of a section in the gzip file.
