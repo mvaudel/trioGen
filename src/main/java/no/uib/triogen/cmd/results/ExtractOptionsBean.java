@@ -1,13 +1,6 @@
 package no.uib.triogen.cmd.results;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.stream.Collectors;
-import no.uib.triogen.io.genotypes.GenotypesFileType;
-import no.uib.triogen.model.geno.Model;
-import no.uib.triogen.model.pheno.PhenotypesHandler;
-import no.uib.triogen.processing.association.linear_model.LinearModelRunnable;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -22,13 +15,25 @@ public class ExtractOptionsBean {
      */
     public final File inputFile;
     /**
-     * The category columns.
+     * Splits the results by variant.
      */
-    public final String[] categoryColumns;
+    public final boolean splitByVariant;
     /**
-     * The value columns.
+     * Splits the results by phenotype.
      */
-    public final String[] valueColumns;
+    public final boolean splitByPheno;
+    /**
+     * The columns.
+     */
+    public final String[] columns;
+    /**
+     * The variant ids.
+     */
+    public final String[] variantIds;
+    /**
+     * The phenotype names.
+     */
+    public final String[] phenoNames;
     /**
      * The stem of the output file.
      */
@@ -78,31 +83,49 @@ public class ExtractOptionsBean {
 
         }
 
-        // The category columns
-        if (aLine.hasOption(ExtractOptions.category.opt)) {
+        // Split by variant
+        splitByVariant = aLine.hasOption(ExtractOptions.split_by_variant.opt);
 
-            String option = aLine.getOptionValue(ExtractOptions.category.opt);
-            
-            categoryColumns = option.split(",");
-            
-        } else {
-            
-            categoryColumns = null;
-            
-        }
+        // Split by pheno
+        splitByPheno = aLine.hasOption(ExtractOptions.split_by_pheno.opt);
 
         // The values columns
-        if (aLine.hasOption(ExtractOptions.value.opt)) {
+        if (aLine.hasOption(ExtractOptions.columns.opt)) {
 
-            String option = aLine.getOptionValue(ExtractOptions.value.opt);
+            String option = aLine.getOptionValue(ExtractOptions.columns.opt);
             
-            valueColumns = option.split(",");
+            columns = option.split(",");
             
         } else {
             
-            valueColumns = null;
+            columns = null;
             
         }
 
+        // The variant ids
+        if (aLine.hasOption(ExtractOptions.variantId.opt)) {
+
+            String option = aLine.getOptionValue(ExtractOptions.variantId.opt);
+            
+            variantIds = option.split(",");
+            
+        } else {
+            
+            variantIds = null;
+            
+        }
+
+        // The pheno names
+        if (aLine.hasOption(ExtractOptions.phenoName.opt)) {
+
+            String option = aLine.getOptionValue(ExtractOptions.phenoName.opt);
+            
+            phenoNames = option.split(",");
+            
+        } else {
+            
+            phenoNames = null;
+            
+        }
     }
 }

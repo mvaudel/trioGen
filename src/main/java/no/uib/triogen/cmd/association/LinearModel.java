@@ -164,7 +164,7 @@ public class LinearModel {
             lPrintWriter.print("      Linear Model Regression     " + lineSeparator);
             lPrintWriter.print("==================================" + lineSeparator);
             lPrintWriter.print(lineSeparator
-                    + "The extraction command line iterates a vcf file and extracts transmitted alleles of children." + lineSeparator
+                    + "The linear model regression command performs linear regression using various models." + lineSeparator
                     + lineSeparator
                     + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + lineSeparator
                     + lineSeparator

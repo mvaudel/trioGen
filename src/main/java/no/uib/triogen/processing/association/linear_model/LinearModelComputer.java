@@ -198,7 +198,7 @@ public class LinearModelComputer {
         IndexedGzCoordinates coordinates = outputWriter.append("# TrioGen version: " + TrioGen.getVersion() + IoUtils.lineSeparator);
         index.writeLine(
                 "Header",
-                "Header",
+                "Comment",
                 Integer.toString(coordinates.compressedLength),
                 Integer.toString(coordinates.uncompressedLength)
         );

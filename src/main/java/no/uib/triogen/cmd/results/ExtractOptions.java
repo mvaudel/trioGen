@@ -12,8 +12,11 @@ import static no.uib.triogen.io.IoUtils.lineSeparator;
 public enum ExtractOptions {
 
     input("i", "input", "The results file.", true, true),
-    category("cat", "category", "The categories columns as comma separated list, one file will be produced per level. Example: pheno,variantId. Default: no category.", false, true),
-    value("val", "value", "The columns to include in the results file as comma separated list. Example: h_B1,h_B1_se,h_B1_p. Default: all columns.", false, true),
+    split_by_variant("sv", "split_by_variant", "Splits the output creating one file per variant. Default: no split.", false, false),
+    split_by_pheno("sp", "split_by_pheno", "Splits the output creating one file per phenotype. Default: no split.", false, false),
+    columns("col", "columns", "The columns to include in the results file as comma separated list. Example: h_B1,h_B1_se,h_B1_p. Default: all columns.", false, true),
+    variantId("id", "variantId", "The ids of the variants to include in the results file as comma separated list. Example: rs123,rs456,rs789. Default: all variants.", false, true),
+    phenoName("p", "pheno", "The phenotypes to include in the results file as comma separated list. Example: pheno1,pheno2,pheno3. Default: all phenotypes.", false, true),
     output("o", "output", "Stem where to write the output", true, true);
 
     /**

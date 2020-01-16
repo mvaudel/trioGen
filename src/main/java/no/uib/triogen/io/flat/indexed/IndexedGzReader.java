@@ -106,11 +106,11 @@ public class IndexedGzReader implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() throws IOException {
 
         inflater.end();
         raf.close();
-
+        
     }
 
 }

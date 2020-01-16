@@ -1,24 +1,21 @@
 package no.uib.triogen.cmd.results;
 
 import java.io.File;
-import no.uib.triogen.cmd.association.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.lineSeparator;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.flat.SimpleFileWriter;
-import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
-import no.uib.triogen.model.family.ChildToParentMap;
-import no.uib.triogen.model.geno.Model;
-import no.uib.triogen.model.geno.VariantList;
-import no.uib.triogen.processing.association.linear_model.LinearModelComputer;
+import no.uib.triogen.io.flat.indexed.IndexedGzReader;
+import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -77,131 +74,204 @@ public class Extract {
      * Runs the command.
      *
      * @param bean the bean of command line parameters
+     *
+     * @throws IOException Exception thrown if an I/O error occurs.
      */
     private static void run(
             ExtractOptionsBean bean
-    ) {
+    ) throws IOException {
 
         HashMap<String, SimpleFileWriter> fileWriters = new HashMap<>();
 
-        try (SimpleFileReader reader = SimpleFileReader.getFileReader(bean.inputFile)) {
+        ArrayList<String> headerComments = new ArrayList<>(2);
+        String headerLine = null;
 
-            String line = reader.readLine();
-            String[] headerSplit = line.split(IoUtils.separator);
+        ArrayList<String> columns = new ArrayList<>();
+        HashMap<String, Integer> columnIndexes = new HashMap<>();
 
-            ArrayList<String> values = new ArrayList<>(headerSplit.length);
-            ArrayList<String> categories = new ArrayList<>(1);
-            HashMap<String, Integer> columnIndexes = new HashMap<>();
+        File resultFile = bean.inputFile;
+        long position = IndexedGzWriter.HEADER_LENGTH;
 
-            if (bean.valueColumns != null || bean.categoryColumns != null) {
+        try (IndexedGzReader gzReader = new IndexedGzReader(resultFile)) {
 
-                HashSet<String> valuesSet = bean.valueColumns == null ? new HashSet<>(0)
-                        : Arrays.stream(bean.valueColumns)
-                                .collect(
-                                        Collectors.toCollection(HashSet::new)
-                                );
+            File indexFile = IoUtils.getIndexFile(resultFile);
 
-                HashSet<String> categoriesSet = bean.categoryColumns == null ? new HashSet<>(0)
-                        : Arrays.stream(bean.categoryColumns)
-                                .collect(
-                                        Collectors.toCollection(HashSet::new)
-                                );
+            if (!indexFile.exists()) {
 
-                HashSet<String> headerSet = Arrays.stream(headerSplit)
-                        .collect(
-                                Collectors.toCollection(HashSet::new)
-                        );
-
-                String missingColumns = Stream.concat(valuesSet.stream(), categoriesSet.stream())
-                        .filter(
-                                column -> !headerSet.contains(column)
-                        )
-                        .collect(
-                                Collectors.joining(",")
-                        );
-
-                if (missingColumns.length() > 0) {
-
-                    throw new IllegalArgumentException("Column not found: " + missingColumns + ".");
-
-                }
-
-                for (int i = 0; i < headerSplit.length; i++) {
-
-                    String colname = headerSplit[i];
-
-                    if (valuesSet.contains(colname)) {
-
-                        values.add(colname);
-                        columnIndexes.put(colname, i);
-
-                    }
-                    if (categoriesSet.contains(colname)) {
-
-                        categories.add(colname);
-                        columnIndexes.put(colname, i);
-
-                    }
-                }
+                throw new RuntimeException(
+                        new FileNotFoundException("Index file " + indexFile + " not found for " + resultFile + ".")
+                );
             }
 
-            String headerLine = bean.valueColumns == null ? line
-                    : values.stream()
-                            .collect(
-                                    Collectors.joining(IoUtils.separator)
-                            );
+            try (SimpleFileReader indexReader = SimpleFileReader.getFileReader(indexFile)) {
 
-            if (bean.categoryColumns == null) {
+                HashSet<String> variantIds = bean.variantIds == null
+                        ? new HashSet<>(0)
+                        : Arrays.stream(bean.variantIds)
+                                .collect(Collectors.toCollection(HashSet::new));
+                HashSet<String> phenoNames = bean.phenoNames == null
+                        ? new HashSet<>(0)
+                        : Arrays.stream(bean.phenoNames)
+                                .collect(Collectors.toCollection(HashSet::new));
 
-                String outputPath = bean.outputStem.endsWith(".gz") ? bean.outputStem : bean.outputStem + ".gz";
-                SimpleFileWriter writer = new SimpleFileWriter(new File(outputPath), true);
-                writer.writeLine(headerLine);
-                fileWriters.put("dummy", writer);
+                String indexLine = indexReader.readLine();
 
-            }
+                while ((indexLine = indexReader.readLine()) != null) {
 
-            while ((line = reader.readLine()) != null) {
+                    String[] lineSplit = indexLine.split(IoUtils.separator);
 
-                String[] lineSplit = line.split(IoUtils.separator);
+                    String variantId = lineSplit[0];
+                    String phenoName = lineSplit[1];
+                    int compressedLength = Integer.parseInt(lineSplit[2]);
+                    int uncompressedLength = Integer.parseInt(lineSplit[3]);
 
-                String phenoKey = bean.categoryColumns == null
-                        ? "dummy"
-                        : categories.stream()
-                                .mapToInt(
-                                        colName -> columnIndexes.get(colName)
-                                )
-                                .mapToObj(
-                                        i -> lineSplit[i]
-                                )
-                                .collect(
-                                        Collectors.joining("_")
-                                );
+                    position += compressedLength;
 
-                SimpleFileWriter writer = fileWriters.get(phenoKey);
+                    if (phenoName.equals("Comment")) {
 
-                if (writer == null) {
+                        String resultLine = gzReader.read(position, compressedLength, uncompressedLength);
+                        headerComments.add(resultLine);
 
-                    String outputPath = String.join(".", bean.outputStem, phenoKey, "gz");
-                    writer = new SimpleFileWriter(new File(outputPath), true);
-                    writer.writeLine(headerLine);
-                    fileWriters.put(phenoKey, writer);
+                    } else if (phenoName.equals("Header")) {
 
+                        String resultLine = gzReader.read(position, compressedLength, uncompressedLength);
+
+                        String[] headerSplit = resultLine.split(IoUtils.separator);
+
+                        if (bean.columns != null) {
+
+                            HashSet<String> valuesSet = bean.columns == null ? new HashSet<>(0)
+                                    : Arrays.stream(bean.columns)
+                                            .collect(
+                                                    Collectors.toCollection(HashSet::new)
+                                            );
+
+                            HashSet<String> headerSet = Arrays.stream(headerSplit)
+                                    .collect(
+                                            Collectors.toCollection(HashSet::new)
+                                    );
+
+                            String missingColumns = valuesSet.stream()
+                                    .filter(
+                                            column -> !headerSet.contains(column)
+                                    )
+                                    .collect(
+                                            Collectors.joining(",")
+                                    );
+
+                            if (missingColumns.length() > 0) {
+
+                                throw new IllegalArgumentException("Column not found: " + missingColumns + ".");
+
+                            }
+
+                            for (int i = 0; i < headerSplit.length; i++) {
+
+                                String colname = headerSplit[i];
+
+                                if (valuesSet.contains(colname)) {
+
+                                    columns.add(colname);
+                                    columnIndexes.put(colname, i);
+
+                                }
+                            }
+                        }
+
+                        headerLine = bean.columns == null ? resultLine
+                                : columns.stream()
+                                        .collect(
+                                                Collectors.joining(IoUtils.separator)
+                                        );
+
+                        if (!bean.splitByVariant && !bean.splitByPheno) {
+
+                            String outputPath = bean.outputStem.endsWith(".gz") ? bean.outputStem : bean.outputStem + ".gz";
+                            SimpleFileWriter writer = new SimpleFileWriter(new File(outputPath), true);
+
+                            for (String headerComment : headerComments) {
+
+                                writer.writeLine(headerComment);
+
+                            }
+
+                            writer.writeLine(headerLine);
+
+                            fileWriters.put("generic", writer);
+
+                        }
+
+                    } else if (variantIds.isEmpty() && phenoNames.isEmpty()
+                            || variantIds.contains(variantId) && phenoNames.isEmpty()
+                            || variantIds.isEmpty() && phenoNames.contains(phenoName)
+                            || variantIds.contains(variantId) && phenoNames.contains(phenoName)) {
+
+                        String fileKey;
+                        if (!bean.splitByPheno && !bean.splitByVariant) {
+
+                            fileKey = "generic";
+
+                        } else if (bean.splitByPheno && !bean.splitByVariant) {
+
+                            fileKey = phenoName;
+
+                        } else if (!bean.splitByPheno && bean.splitByVariant) {
+
+                            fileKey = variantId;
+
+                        } else {
+
+                            fileKey = String.join("_", variantId, phenoName);
+
+                        }
+
+                        SimpleFileWriter writer = fileWriters.get(fileKey);
+
+                        if (writer == null) {
+
+                            String outputPath = String.join(".", bean.outputStem, fileKey, "gz");
+                            writer = new SimpleFileWriter(new File(outputPath), true);
+
+                            for (String headerComment : headerComments) {
+
+                                writer.writeLine(headerComment);
+
+                            }
+
+                            writer.writeLine(headerLine);
+
+                            fileWriters.put(fileKey, writer);
+
+                        }
+
+                        String resultLine = gzReader.read(position, compressedLength, uncompressedLength);
+
+                        String newLine;
+                        if (bean.columns == null) {
+
+                            newLine = resultLine;
+
+                        } else {
+
+                            String[] resultLineSplit = resultLine.split(IoUtils.separator);
+
+                            newLine = columns.stream()
+                                    .mapToInt(
+                                            colName -> columnIndexes.get(colName)
+                                    )
+                                    .mapToObj(
+                                            i -> resultLineSplit[i]
+                                    )
+                                    .collect(
+                                            Collectors.joining(IoUtils.separator)
+                                    );
+
+                        }
+
+                        writer.writeLine(newLine);
+
+                    }
                 }
-
-                String newLine = bean.valueColumns == null ? line
-                        : values.stream()
-                                .mapToInt(
-                                        colName -> columnIndexes.get(colName)
-                                )
-                                .mapToObj(
-                                        i -> lineSplit[i]
-                                )
-                                .collect(
-                                        Collectors.joining(IoUtils.separator)
-                                );
-
-                writer.writeLine(newLine);
-
             }
         } finally {
 
@@ -226,7 +296,7 @@ public class Extract {
             lPrintWriter.print("        Results Extraction        " + lineSeparator);
             lPrintWriter.print("==================================" + lineSeparator);
             lPrintWriter.print(lineSeparator
-                    + "The extraction command line iterates a vcf file and extracts transmitted alleles of children." + lineSeparator
+                    + "The extraction command line extracts lines and columns from the results of a linear model." + lineSeparator
                     + lineSeparator
                     + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + lineSeparator
                     + lineSeparator
