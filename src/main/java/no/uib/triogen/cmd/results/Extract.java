@@ -14,6 +14,7 @@ import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.lineSeparator;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
 import no.uib.triogen.io.flat.indexed.IndexedGzReader;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import org.apache.commons.cli.CommandLine;
@@ -81,7 +82,8 @@ public class Extract {
             ExtractOptionsBean bean
     ) throws IOException {
 
-        HashMap<String, SimpleFileWriter> fileWriters = new HashMap<>();
+        HashMap<String, IndexedGzWriter> gzWriters = new HashMap<>();
+        HashMap<String, SimpleFileWriter> indexWriters = new HashMap<>();
 
         ArrayList<String> headerComments = new ArrayList<>(2);
         String headerLine = null;
@@ -136,7 +138,8 @@ public class Extract {
 
                         String resultLine = gzReader.read(position, compressedLength, uncompressedLength);
 
-                        String[] headerSplit = resultLine.split(IoUtils.separator);
+                        String[] headerSplit = resultLine
+                                .split(IoUtils.separator);
 
                         if (bean.columns != null) {
 
@@ -187,17 +190,15 @@ public class Extract {
                         if (!bean.splitByVariant && !bean.splitByPheno) {
 
                             String outputPath = bean.outputStem.endsWith(".gz") ? bean.outputStem : bean.outputStem + ".gz";
-                            SimpleFileWriter writer = new SimpleFileWriter(new File(outputPath), true);
 
-                            for (String headerComment : headerComments) {
-
-                                writer.writeLine(headerComment);
-
-                            }
-
-                            writer.writeLine(headerLine);
-
-                            fileWriters.put("generic", writer);
+                            setupWriters(
+                                    "generic",
+                                    outputPath,
+                                    headerComments,
+                                    headerLine,
+                                    gzWriters,
+                                    indexWriters
+                            );
 
                         }
 
@@ -225,24 +226,24 @@ public class Extract {
 
                         }
 
-                        SimpleFileWriter writer = fileWriters.get(fileKey);
+                        IndexedGzWriter outputWriter = gzWriters.get(fileKey);
 
-                        if (writer == null) {
+                        if (outputWriter == null) {
 
                             String outputPath = String.join(".", bean.outputStem, fileKey, "gz");
-                            writer = new SimpleFileWriter(new File(outputPath), true);
 
-                            for (String headerComment : headerComments) {
-
-                                writer.writeLine(headerComment);
-
-                            }
-
-                            writer.writeLine(headerLine);
-
-                            fileWriters.put(fileKey, writer);
+                            setupWriters(
+                                    fileKey,
+                                    outputPath,
+                                    headerComments,
+                                    headerLine,
+                                    gzWriters,
+                                    indexWriters
+                            );
 
                         }
+
+                        SimpleFileWriter outputIndexWriter = indexWriters.get(fileKey);
 
                         String resultLine = gzReader.read(position, compressedLength, uncompressedLength);
 
@@ -268,19 +269,79 @@ public class Extract {
 
                         }
 
-                        writer.writeLine(newLine);
+                        IndexedGzCoordinates coordinates = outputWriter.append(newLine);
+                        outputIndexWriter.writeLine(
+                                variantId,
+                                phenoName,
+                                Integer.toString(coordinates.compressedLength),
+                                Integer.toString(coordinates.uncompressedLength)
+                        );
 
                     }
                 }
             }
         } finally {
 
-            fileWriters.values()
+            gzWriters.values()
+                    .forEach(
+                            writer -> writer.close()
+                    );
+            indexWriters.values()
                     .forEach(
                             writer -> writer.close()
                     );
 
         }
+    }
+
+    /**
+     * Sets up the writers for the given file key.
+     * 
+     * @param key the key of the file
+     * @param outputPath the path to the output
+     * @param headerComments the comments to include in the reader
+     * @param headerLine the header line
+     * @param gzWriters the map of output gz writers
+     * @param indexWriters the map of output index writers
+     * 
+     * @throws IOException Exception thrown if an I/O error occurs.
+     */
+    private static void setupWriters(
+            String key,
+            String outputPath,
+            ArrayList<String> headerComments,
+            String headerLine,
+            HashMap<String, IndexedGzWriter> gzWriters,
+            HashMap<String, SimpleFileWriter> indexWriters
+    ) throws IOException {
+
+        File outputFile = new File(outputPath);
+        IndexedGzWriter outputWriter = new IndexedGzWriter(outputFile);
+        gzWriters.put(key, outputWriter);
+
+        File outputIndexFile = IoUtils.getIndexFile(outputFile);
+        SimpleFileWriter outputIndexWriter = new SimpleFileWriter(outputIndexFile, true);
+        indexWriters.put(key, outputIndexWriter);
+
+        for (String headerComment : headerComments) {
+
+            IndexedGzCoordinates coordinates = outputWriter.append(headerComment);
+            outputIndexWriter.writeLine(
+                    "Header",
+                    "Comment",
+                    Integer.toString(coordinates.compressedLength),
+                    Integer.toString(coordinates.uncompressedLength)
+            );
+
+        }
+
+        IndexedGzCoordinates coordinates = outputWriter.append(headerLine);
+        outputIndexWriter.writeLine(
+                "Header",
+                "Header",
+                Integer.toString(coordinates.compressedLength),
+                Integer.toString(coordinates.uncompressedLength)
+        );
     }
 
     /**

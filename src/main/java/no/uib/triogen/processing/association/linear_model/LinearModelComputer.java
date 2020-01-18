@@ -21,6 +21,7 @@ import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.geno.Model;
 import no.uib.triogen.model.geno.VariantList;
 import no.uib.triogen.model.pheno.PhenotypesHandler;
+import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
  * This class runs a linear model on the given phenotypes.
@@ -228,6 +229,8 @@ public class LinearModelComputer {
                 Integer.toString(coordinates.compressedLength),
                 Integer.toString(coordinates.uncompressedLength)
         );
+        
+        SimpleSemaphore gzIndexMutex = new SimpleSemaphore(1);
 
         try {
 
@@ -243,6 +246,7 @@ public class LinearModelComputer {
                                     phenotypesHandler,
                                     outputWriter,
                                     index,
+                                    gzIndexMutex,
                                     logger
                             )
                     )

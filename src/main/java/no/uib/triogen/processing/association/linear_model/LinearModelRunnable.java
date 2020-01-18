@@ -15,6 +15,7 @@ import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.geno.Model;
 import no.uib.triogen.model.pheno.PhenotypesHandler;
+import no.uib.triogen.utils.SimpleSemaphore;
 import org.apache.commons.math3.linear.SingularMatrixException;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 
@@ -60,6 +61,10 @@ public class LinearModelRunnable implements Runnable {
      */
     private final SimpleFileWriter resultsIndex;
     /**
+     * Mutex to keep gz file and index synchronized.
+     */
+    private final SimpleSemaphore gzIndexMutex;
+    /**
      * The logger.
      */
     private final Logger logger;
@@ -78,6 +83,7 @@ public class LinearModelRunnable implements Runnable {
      * @param phenotypesHandler the phenotypes handler
      * @param outputWriter the output writer
      * @param resultsIndex writer for the index of the results file
+     * @param gzIndexMutex Mutex to keep gz file and index synchronized.
      * @param logger the logger
      */
     public LinearModelRunnable(
@@ -88,6 +94,7 @@ public class LinearModelRunnable implements Runnable {
             PhenotypesHandler phenotypesHandler,
             IndexedGzWriter outputWriter,
             SimpleFileWriter resultsIndex,
+            SimpleSemaphore gzIndexMutex,
             Logger logger
     ) {
 
@@ -98,6 +105,7 @@ public class LinearModelRunnable implements Runnable {
         this.phenotypesHandler = phenotypesHandler;
         this.outputWriter = outputWriter;
         this.resultsIndex = resultsIndex;
+        this.gzIndexMutex = gzIndexMutex;
         this.logger = logger;
 
     }
@@ -412,6 +420,8 @@ public class LinearModelRunnable implements Runnable {
                 String line = stringBuilder
                         .append(IoUtils.lineSeparator)
                         .toString();
+                
+                gzIndexMutex.acquire();
 
                 IndexedGzCoordinates coordinates = outputWriter.append(line);
 
@@ -421,6 +431,8 @@ public class LinearModelRunnable implements Runnable {
                         Integer.toString(coordinates.compressedLength),
                         Integer.toString(coordinates.uncompressedLength)
                 );
+                
+                gzIndexMutex.release();
 
             } else {
 

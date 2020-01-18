@@ -7,6 +7,7 @@ import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.utils.SimpleSemaphore;
+import static no.uib.triogen.utils.Utils.mergeArrays;
 
 /**
  * This class writes an indexed gz file. Note that unless otherwise specified,
@@ -32,16 +33,6 @@ public class IndexedGzWriter implements AutoCloseable {
      * intended.
      */
     private final static int GZIP_MAGIC = 0x8b1f;
-
-    /**
-     * Compression method for the deflate algorithm (the only one currently
-     * supported).
-     *
-     * Adapted from java.util.zip.GZIPOutputStream by David Connelly. Copyright
-     * (c) 1996, 2013, Oracle and/or its affiliates. No copyright infringement
-     * intended.
-     */
-    public static final int DEFLATED = 8;
     /**
      * CRC-32 of uncompressed data.
      *
@@ -109,18 +100,19 @@ public class IndexedGzWriter implements AutoCloseable {
      */
     private void writeHeader() throws IOException {
 
-        bw.write(new byte[]{
-            (byte) GZIP_MAGIC, // Magic number (short)
-            (byte) (GZIP_MAGIC >> 8), // Magic number (short)
-            DEFLATED, // Compression method (CM)
-            0, // Flags (FLG)
-            0, // Modification time MTIME (int)
-            0, // Modification time MTIME (int)
-            0, // Modification time MTIME (int)
-            0, // Modification time MTIME (int)
-            0, // Extra flags (XFLG)
-            0 // Operating system (OS)
-        });
+        bw.write(
+                new byte[]{
+                    (byte) GZIP_MAGIC, // Magic number (short)
+                    (byte) (GZIP_MAGIC >> 8), // Magic number (short)
+                    Deflater.DEFLATED, // Compression method (CM)
+                    0, // Flags (FLG)
+                    0, // Modification time MTIME (int)
+                    0, // Modification time MTIME (int)
+                    0, // Modification time MTIME (int)
+                    0, // Modification time MTIME (int)
+                    0, // Extra flags (XFLG)
+                    0 // Operating system (OS)
+                });
     }
 
     /**
@@ -144,7 +136,20 @@ public class IndexedGzWriter implements AutoCloseable {
 
             deflater.setInput(inputBytes);
 
-            int compressedDataLength = deflater.deflate(output, 0, output.length, Deflater.FULL_FLUSH);
+            int outputLength = output.length;
+            int compressedDataLength = deflater.deflate(output, 0, outputLength, Deflater.FULL_FLUSH);
+            int compressedByteLength = compressedDataLength;
+
+            while (compressedByteLength == outputLength) {
+
+                byte[] output2 = new byte[output.length];
+                outputLength = output2.length;
+                compressedByteLength = deflater.deflate(output2, 0, outputLength, Deflater.FULL_FLUSH);
+
+                output = mergeArrays(output, output2, compressedByteLength);
+                compressedDataLength += compressedByteLength;
+
+            }
 
             if (compressedDataLength > 0) {
 
@@ -175,13 +180,43 @@ public class IndexedGzWriter implements AutoCloseable {
 
         try {
 
-            byte[] trailer = new byte[8];
+            deflater.finish();
 
-            writeInt((int) crc.getValue(), trailer, 0); // CRC-32 of uncompr. data
-            writeInt(deflater.getTotalIn(), trailer, 4); // Number of uncompr. bytes
-            bw.write(trailer);
+            while (!deflater.finished()) {
 
+                byte[] output = new byte[512];
+
+                int outputLength = output.length;
+                int compressedDataLength = deflater.deflate(output, 0, outputLength, Deflater.FULL_FLUSH);
+                int compressedByteLength = compressedDataLength;
+
+                while (compressedByteLength == outputLength) {
+
+                    byte[] output2 = new byte[output.length];
+                    outputLength = output2.length;
+                    compressedByteLength = deflater.deflate(output2, 0, outputLength, Deflater.FULL_FLUSH);
+
+                    output = mergeArrays(output, output2, compressedByteLength);
+                    compressedDataLength += compressedByteLength;
+
+                }
+
+                if (compressedDataLength > 0) {
+
+                    bw.write(output, 0, compressedDataLength);
+
+                }
+            }
+
+            int crcValue = (int) crc.getValue();
+            int deflaterInput = deflater.getTotalIn();
             deflater.end();
+
+            byte[] trailer = new byte[8];
+            writeInt(crcValue, trailer, 0); // CRC-32 of uncompr. data
+            writeInt(deflaterInput, trailer, 4); // Number of uncompr. bytes
+
+            bw.write(trailer);
             bw.close();
 
         } catch (Exception e) {

@@ -83,6 +83,8 @@ public class IndexedGzReader implements AutoCloseable {
                 throw new IllegalArgumentException("Missing input or dictionary.");
 
             } else if (bytesUncompressed != uncompressedLength) {
+                
+//                String debug = new String(uncompressedByteAray, 0, uncompressedByteAray.length, encoding);
 
                 throw new IllegalArgumentException("Unexpected number of bytes uncompressed " + bytesUncompressed + " (expected: " + uncompressedLength + ")");
 

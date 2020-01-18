@@ -1,11 +1,13 @@
 package no.uib.triogen.transmission;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import no.uib.triogen.cmd.association.LinearModel;
+import no.uib.triogen.cmd.results.Extract;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.getIndexFile;
 import no.uib.triogen.io.flat.SimpleFileReader;
@@ -30,8 +32,10 @@ public class LinearModelTest extends TestCase {
 
     /**
      * Runs the command line and checks the output.
+     * 
+     * @throws java.io.IOException Exception thrown if an I/O error occurs.
      */
-    public void testTransmission() {
+    public void testTransmission() throws IOException {
 
         String resultsFilePath = "src/test/resources/transmission/test_lm.gz";
         File resultsFile = new File(resultsFilePath);
@@ -41,10 +45,6 @@ public class LinearModelTest extends TestCase {
             resultsFile.delete();
 
         }
-
-        HashMap<String, HashMap<String, double[]>> groundTruthMap = getGroundTruth(
-                new File("src/test/resources/transmission/ground_truth_linear_model.txt")
-        );
 
         String[] args = new String[]{
             "-g", "src/test/resources/transmission/test_transmission.vcf",
@@ -63,6 +63,8 @@ public class LinearModelTest extends TestCase {
         try (IndexedGzReader gzReader = new IndexedGzReader(resultsFile)) {
 
             try (SimpleFileReader reader = IoUtils.getFileReader(indexFile)) {
+                
+                try (SimpleFileWriter writer = new SimpleFileWriter(new File("src/test/resources/transmission/test_lm.test.gz"), true)) {
 
                 String line = reader.readLine();
 
@@ -74,172 +76,33 @@ public class LinearModelTest extends TestCase {
                     
                     String uncompressedLine = gzReader.read(position, compressedLength, uncompressedLength);
                     
+                    writer.writeLine(uncompressedLine);
+                    
                     position += compressedLength;
 
                 }
-            }
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-        }
-
-//
-//        HashMap<String, HashMap<String, double[]>> resultsMap = getResults(
-//                resultsFile,
-//                "rs1"
-//        );
-//
-//        for (Entry<String, HashMap<String, double[]>> entry1 : groundTruthMap.entrySet()) {
-//
-//            String pheno = entry1.getKey();
-//            HashMap<String, double[]> hMapGroundTruth = entry1.getValue();
-//            HashMap<String, double[]> hMapData = resultsMap.get(pheno);
-//
-//            if (hMapData == null) {
-//
-//                throw new IllegalArgumentException(
-//                        "Phenotype " + pheno + " not found in the results."
-//                );
-//            }
-//            for (Entry<String, double[]> entry2 : hMapGroundTruth.entrySet()) {
-//
-//                String h = entry2.getKey();
-//                double[] statsGroundTruth = entry2.getValue();
-//                double[] statsData = hMapData.get(h);
-//
-//                if (statsData == null) {
-//
-//                    throw new IllegalArgumentException(
-//                            "h " + h + " for phenotype " + pheno + " not found in the results."
-//                    );
-//                }
-//
-//                for (int i = 0; i < statsGroundTruth.length; i++) {
-//
-//                    if (statsGroundTruth[i] == 0.0) {
-//
-//                        Assert.assertTrue(Math.abs(statsData[i]) < tolerance);
-//
-//                    } else {
-//
-//                        double error = statsData[i] - statsGroundTruth[i];
-//
-//                        Assert.assertTrue(Math.abs(error) < tolerance);
-//
-//                    }
-//                }
-//            }
-//        }
-    }
-
-    /**
-     * Parses the results for the given snp into a map: pheno to h to beta and
-     * se.
-     *
-     * @param resultFile the result file
-     * @param rsId the id of the snp to parse
-     *
-     * @return the ground truth results
-     */
-    private HashMap<String, HashMap<String, double[]>> getResults(
-            File resultFile,
-            String rsId
-    ) {
-
-        HashMap<String, HashMap<String, double[]>> result = new HashMap<>();
-
-        SimpleFileReader reader = SimpleFileReader.getFileReader(resultFile);
-
-        String line = reader.readLine();
-
-        String[] lineSplit = line.split(IoUtils.separator);
-        Assert.assertTrue(lineSplit[0].equals("phenotype"));
-        Assert.assertTrue(lineSplit[1].equals("variantID"));
-        Assert.assertTrue(lineSplit[2].equals("h"));
-        Assert.assertTrue(lineSplit[3].equals("beta"));
-        Assert.assertTrue(lineSplit[4].equals("betaSE"));
-
-        while ((line = reader.readLine()) != null) {
-
-            lineSplit = line.split(IoUtils.separator);
-
-            String variantId = lineSplit[1];
-
-            if (variantId.equals(rsId)) {
-
-                String pheno = lineSplit[0];
-                String h = lineSplit[2];
-                double beta = Double.parseDouble(lineSplit[3]);
-                double se = Double.parseDouble(lineSplit[4]);
-
-                HashMap<String, double[]> phenoMap = result.get(pheno);
-
-                if (phenoMap == null) {
-
-                    phenoMap = new HashMap<>(4);
-                    result.put(pheno, phenoMap);
-
                 }
-
-                double[] stats = new double[]{beta, se};
-                phenoMap.put(h, stats);
-
             }
-
         }
-
-        return result;
-
+        
+//        testExtraction(resultsFilePath);
+                
     }
-
-    /**
-     * Parses the ground truth results into a map: pheno to h to beta and se.
-     *
-     * @param resultFile the result file
-     *
-     * @return the ground truth results
-     */
-    private HashMap<String, HashMap<String, double[]>> getGroundTruth(
-            File resultFile
-    ) {
-
-        HashMap<String, HashMap<String, double[]>> result = new HashMap<>();
-
-        SimpleFileReader reader = SimpleFileReader.getFileReader(resultFile);
-
-        String line = reader.readLine();
-
-        String[] lineSplit = line.split(IoUtils.separator);
-        Assert.assertTrue(lineSplit[0].equals("h"));
-        Assert.assertTrue(lineSplit[1].equals("pheno"));
-        Assert.assertTrue(lineSplit[2].equals("beta"));
-        Assert.assertTrue(lineSplit[3].equals("se"));
-
-        while ((line = reader.readLine()) != null) {
-
-            lineSplit = line.split(IoUtils.separator);
-
-            String h = lineSplit[0];
-            String pheno = lineSplit[1];
-            double beta = Double.parseDouble(lineSplit[2]);
-            double se = Double.parseDouble(lineSplit[3]);
-
-            HashMap<String, double[]> phenoMap = result.get(pheno);
-
-            if (phenoMap == null) {
-
-                phenoMap = new HashMap<>(4);
-                result.put(pheno, phenoMap);
-
-            }
-
-            double[] stats = new double[]{beta, se};
-            phenoMap.put(h, stats);
-
-        }
-
-        return result;
-
+    
+    private void testExtraction(String resultsFilePath) {
+        
+        String[] args = new String[]{
+            "-i", resultsFilePath,
+            "-p", "pheno1,pheno2",
+            "-sp",
+            "-col", "h_B1,h_B1_se,h_B1_p,h_B2,h_B2_se,h_B2_p,h_B3,h_B3_se,h_B3_p,h_B4,h_B4_se,h_B4_p",
+            "-pn", "pheno1,pheno2,pheno3,pheno4",
+            "-o", resultsFilePath + "_extract"
+        };
+        Extract.main(
+                args
+        );
+        
+        
     }
 }
