@@ -127,8 +127,6 @@ public class Extract {
                     int compressedLength = Integer.parseInt(lineSplit[2]);
                     int uncompressedLength = Integer.parseInt(lineSplit[3]);
 
-                    position += compressedLength;
-
                     if (phenoName.equals("Comment")) {
 
                         String resultLine = gzReader.read(position, compressedLength, uncompressedLength);
@@ -138,16 +136,17 @@ public class Extract {
 
                         String resultLine = gzReader.read(position, compressedLength, uncompressedLength);
 
-                        String[] headerSplit = resultLine
-                                .split(IoUtils.separator);
-
                         if (bean.columns != null) {
 
-                            HashSet<String> valuesSet = bean.columns == null ? new HashSet<>(0)
-                                    : Arrays.stream(bean.columns)
-                                            .collect(
-                                                    Collectors.toCollection(HashSet::new)
-                                            );
+                            String[] headerSplit = resultLine
+                                    .trim()
+                                    .split(IoUtils.separator);
+
+                            HashSet<String> valuesSet = Arrays.stream(bean.columns)
+                                    .collect(
+                                            Collectors.toCollection(HashSet::new)
+                                    );
+                            valuesSet.addAll(getDefualtColumns());
 
                             HashSet<String> headerSet = Arrays.stream(headerSplit)
                                     .collect(
@@ -179,13 +178,19 @@ public class Extract {
 
                                 }
                             }
-                        }
 
-                        headerLine = bean.columns == null ? resultLine
-                                : columns.stream()
-                                        .collect(
-                                                Collectors.joining(IoUtils.separator)
-                                        );
+                            headerLine = columns.stream()
+                                    .collect(
+                                            Collectors.joining(IoUtils.separator)
+                                    );
+
+                            headerLine = String.join("", headerLine, IoUtils.lineSeparator);
+
+                        } else {
+
+                            headerLine = resultLine;
+
+                        }
 
                         if (!bean.splitByVariant && !bean.splitByPheno) {
 
@@ -229,10 +234,18 @@ public class Extract {
                         IndexedGzWriter outputWriter = gzWriters.get(fileKey);
 
                         if (outputWriter == null) {
+                            
+                            String stem = bean.outputStem;
+                            
+                            if (stem.endsWith(".gz")) {
+                                
+                                stem = stem.substring(0, stem.length() - 3);
+                                
+                            }
 
-                            String outputPath = String.join(".", bean.outputStem, fileKey, "gz");
+                            String outputPath = String.join(".", stem, fileKey, "gz");
 
-                            setupWriters(
+                            outputWriter = setupWriters(
                                     fileKey,
                                     outputPath,
                                     headerComments,
@@ -254,7 +267,9 @@ public class Extract {
 
                         } else {
 
-                            String[] resultLineSplit = resultLine.split(IoUtils.separator);
+                            String[] resultLineSplit = resultLine
+                                    .trim()
+                                    .split(IoUtils.separator);
 
                             newLine = columns.stream()
                                     .mapToInt(
@@ -267,6 +282,8 @@ public class Extract {
                                             Collectors.joining(IoUtils.separator)
                                     );
 
+                            newLine = String.join("", newLine, IoUtils.lineSeparator);
+
                         }
 
                         IndexedGzCoordinates coordinates = outputWriter.append(newLine);
@@ -278,6 +295,9 @@ public class Extract {
                         );
 
                     }
+
+                    position += compressedLength;
+
                 }
             }
         } finally {
@@ -296,17 +316,19 @@ public class Extract {
 
     /**
      * Sets up the writers for the given file key.
-     * 
+     *
      * @param key the key of the file
      * @param outputPath the path to the output
      * @param headerComments the comments to include in the reader
      * @param headerLine the header line
      * @param gzWriters the map of output gz writers
      * @param indexWriters the map of output index writers
-     * 
+     *
+     * @return The new output writer.
+     *
      * @throws IOException Exception thrown if an I/O error occurs.
      */
-    private static void setupWriters(
+    private static IndexedGzWriter setupWriters(
             String key,
             String outputPath,
             ArrayList<String> headerComments,
@@ -342,6 +364,9 @@ public class Extract {
                 Integer.toString(coordinates.compressedLength),
                 Integer.toString(coordinates.uncompressedLength)
         );
+
+        return outputWriter;
+
     }
 
     /**
@@ -370,5 +395,23 @@ public class Extract {
             lPrintWriter.print(ExtractOptions.getOptionsAsString());
             lPrintWriter.flush();
         }
+    }
+
+    /**
+     * Returns the default columns that are always included in the results.
+     *
+     * @return The default columns that are always included in the results.
+     */
+    public static HashSet<String> getDefualtColumns() {
+
+        HashSet<String> results = new HashSet<>(4);
+        results.add("phenotype");
+        results.add("variantId");
+        results.add("n");
+        results.add("nAlt");
+        results.add("nH");
+
+        return results;
+
     }
 }

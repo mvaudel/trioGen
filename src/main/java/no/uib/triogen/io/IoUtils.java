@@ -79,17 +79,26 @@ public class IoUtils {
         } catch (Exception ex) {
         }
     }
-    
+
     /**
      * Returns the index corresponding to the given file.
-     * 
+     *
      * @param file The file indexed.
-     * 
+     *
      * @return The index file.
      */
     public static File getIndexFile(
             File file
     ) {
-        return new File(file.getAbsolutePath() + ".index.gz");
+
+        String stem = file.getAbsolutePath();
+
+        if (stem.endsWith(".gz")) {
+
+            stem = stem.substring(0, stem.length() - 3);
+
+        }
+
+        return new File(stem + ".index.gz");
     }
 }

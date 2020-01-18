@@ -32,7 +32,7 @@ public class LinearModelTest extends TestCase {
 
     /**
      * Runs the command line and checks the output.
-     * 
+     *
      * @throws java.io.IOException Exception thrown if an I/O error occurs.
      */
     public void testTransmission() throws IOException {
@@ -63,8 +63,6 @@ public class LinearModelTest extends TestCase {
         try (IndexedGzReader gzReader = new IndexedGzReader(resultsFile)) {
 
             try (SimpleFileReader reader = IoUtils.getFileReader(indexFile)) {
-                
-                try (SimpleFileWriter writer = new SimpleFileWriter(new File("src/test/resources/transmission/test_lm.test.gz"), true)) {
 
                 String line = reader.readLine();
 
@@ -73,24 +71,21 @@ public class LinearModelTest extends TestCase {
                     String[] lineSplit = line.split(IoUtils.separator);
                     int compressedLength = Integer.parseInt(lineSplit[2]);
                     int uncompressedLength = Integer.parseInt(lineSplit[3]);
-                    
+
                     String uncompressedLine = gzReader.read(position, compressedLength, uncompressedLength);
-                    
-                    writer.writeLine(uncompressedLine);
-                    
+
                     position += compressedLength;
 
                 }
-                }
             }
         }
-        
-//        testExtraction(resultsFilePath);
-                
+
+        testExtraction(resultsFilePath);
+
     }
-    
+
     private void testExtraction(String resultsFilePath) {
-        
+
         String[] args = new String[]{
             "-i", resultsFilePath,
             "-p", "pheno1,pheno2",
@@ -102,7 +97,6 @@ public class LinearModelTest extends TestCase {
         Extract.main(
                 args
         );
-        
-        
+
     }
 }
