@@ -20,22 +20,24 @@ public class TrioGen {
      * @return the version number
      */
     public static String getVersion() {
+//
+//        java.util.Properties p = new java.util.Properties();
+//
+//        try {
+//
+//            InputStream is = (new TrioGen()).getClass().getClassLoader().getResourceAsStream("trioGen.properties");
+//            p.load(is);
+//
+//        } catch (IOException e) {
+//
+//            e.printStackTrace();
+//
+//        }
+//
+//        return p.getProperty("triogen.version");
 
-        java.util.Properties p = new java.util.Properties();
-
-        try {
-
-            InputStream is = (new TrioGen()).getClass().getClassLoader().getResourceAsStream("trioGen.properties");
-            p.load(is);
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-
-        }
-
-        return p.getProperty("triogen.version");
+        return "0.4.0-beta";
 
     }
-    
+
 }
