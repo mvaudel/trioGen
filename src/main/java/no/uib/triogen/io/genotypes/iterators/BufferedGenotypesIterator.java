@@ -9,11 +9,11 @@ import no.uib.triogen.io.genotypes.iterators.VariantIterator;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
- * Bufferred iterator for the genotypes of a file.
+ * Buffered iterator for the genotypes of a file.
  *
  * @author Marc Vaudel
  */
-public class BufferredGenotypesIterator {
+public class BufferedGenotypesIterator {
 
     /**
      * The loading factor can be used to reduce the frequency of buffering and
@@ -63,7 +63,7 @@ public class BufferredGenotypesIterator {
      * @param downStreamDistance The distance in bp to keep after the current bp
      * (inclusive).
      */
-    public BufferredGenotypesIterator(
+    public BufferedGenotypesIterator(
             VariantIterator iterator,
             int upStreamDistance,
             int downStreamDistance

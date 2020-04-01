@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
+import no.uib.triogen.io.genotypes.iterators.BufferedGenotypesIterator;
 import no.uib.triogen.io.genotypes.iterators.VariantIterator;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
@@ -22,12 +23,16 @@ import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
  * This class iterates through genotypes and writes a matrix of ld between
- * markers.
+ * markers computed using sliding widows of the specified range.
  *
  * @author Marc Vaudel
  */
 public class LdMatrixWriter {
 
+    /**
+     * Loading factor used to make sure that the buffer contains the ld range. A loading factor of 2 for a sliding window of 10 bp results in buffering 20 pb.
+     */
+    public static final double LOADING_FACTOR = 2.0;
     /**
      * The file containing the genotypes.
      */
@@ -45,7 +50,7 @@ public class LdMatrixWriter {
      */
     private final VariantList variantList;
     /**
-     * The maximal number of bp to allow between variants.
+     * The bp distance used to compute the ld in sliding windows. A max distance of 10 bp means a sliding window of 20 bp.
      */
     private final int maxDistance;
     /**
@@ -129,7 +134,11 @@ public class LdMatrixWriter {
                 variantList
         );
         
-        
+        BufferedGenotypesIterator bufferedIterator = new BufferedGenotypesIterator(
+                iterator, 
+                (int) LOADING_FACTOR * maxDistance, 
+                (int) LOADING_FACTOR * maxDistance
+        );
 
         try {
 
@@ -138,11 +147,7 @@ public class LdMatrixWriter {
             IntStream.range(0, nVariants)
                     .mapToObj(
                             i -> new LdMatrixWriterRunnable(
-                                    iterator,
-                                    mutex,
-                                    currentBp,
-                                    variantIndex,
-                                    buffer,
+                                    bufferedIterator,
                                     logger
                             )
                     )

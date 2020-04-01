@@ -1,6 +1,6 @@
 package no.uib.triogen.processing.ld;
 
-import no.uib.triogen.io.genotypes.iterators.BufferredGenotypesIterator;
+import no.uib.triogen.io.genotypes.iterators.BufferedGenotypesIterator;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
@@ -17,7 +17,7 @@ public class LdMatrixWriterRunnable implements Runnable {
     /**
      * The buffer.
      */
-    private final BufferredGenotypesIterator buffer;
+    private final BufferedGenotypesIterator iterator;
     /**
      * The logger.
      */
@@ -30,15 +30,15 @@ public class LdMatrixWriterRunnable implements Runnable {
     /**
      * Constructor.
      * 
-     * @param buffer The variant buffer.
+     * @param iterator The variant iterator.
      * @param logger The logger.
      */
     public LdMatrixWriterRunnable(
-            BufferredGenotypesIterator buffer,
+            BufferedGenotypesIterator iterator,
             Logger logger
     ) {
         
-        this.buffer = buffer;
+        this.iterator = iterator;
         this.logger = logger;
         
     }
