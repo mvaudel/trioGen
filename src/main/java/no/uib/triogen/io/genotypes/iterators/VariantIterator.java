@@ -1,4 +1,6 @@
-package no.uib.triogen.io.genotypes;
+package no.uib.triogen.io.genotypes.iterators;
+
+import no.uib.triogen.io.genotypes.GenotypesProvider;
 
 /**
  * The variant iterator iterates through  all the variants of a file.

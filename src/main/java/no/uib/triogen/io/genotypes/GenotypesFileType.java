@@ -1,5 +1,6 @@
 package no.uib.triogen.io.genotypes;
 
+import no.uib.triogen.io.genotypes.iterators.VariantIterator;
 import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;

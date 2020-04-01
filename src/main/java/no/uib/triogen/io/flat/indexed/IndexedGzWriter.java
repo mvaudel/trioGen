@@ -142,8 +142,7 @@ public class IndexedGzWriter implements AutoCloseable {
 
             while (compressedByteLength == outputLength) {
 
-                byte[] output2 = new byte[output.length];
-                outputLength = output2.length;
+                byte[] output2 = new byte[outputLength];
                 compressedByteLength = deflater.deflate(output2, 0, outputLength, Deflater.FULL_FLUSH);
 
                 output = mergeArrays(output, output2, compressedByteLength);
@@ -192,8 +191,7 @@ public class IndexedGzWriter implements AutoCloseable {
 
                 while (compressedByteLength == outputLength) {
 
-                    byte[] output2 = new byte[output.length];
-                    outputLength = output2.length;
+                    byte[] output2 = new byte[outputLength];
                     compressedByteLength = deflater.deflate(output2, 0, outputLength, Deflater.FULL_FLUSH);
 
                     output = mergeArrays(output, output2, compressedByteLength);

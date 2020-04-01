@@ -15,7 +15,7 @@ import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
-import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.io.genotypes.iterators.VariantIterator;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.geno.Model;
@@ -83,18 +83,18 @@ public class LinearModelComputer {
     /**
      * Constructor.
      *
-     * @param genotypesFile the file containing the genotypes
-     * @param genotypesFileType the type of genotypes file
-     * @param variantList the variants to process
-     * @param mafThreshold the maf threshold
-     * @param childToParentMap the map of trios
-     * @param phenotypesFile the file containing the phenotypes
-     * @param phenoNames the names of the phenotypes to use
-     * @param covariates the names of the covariates to use
-     * @param models the models to use
-     * @param destinationFile the file to export the result to
-     * @param nVariants the number of variants to process in parallel
-     * @param logger the logger
+     * @param genotypesFile The file containing the genotypes.
+     * @param genotypesFileType The type of genotypes file.
+     * @param variantList The variants to process.
+     * @param mafThreshold The maf threshold.
+     * @param childToParentMap The map of trios.
+     * @param phenotypesFile The file containing the phenotypes.
+     * @param phenoNames The names of the phenotypes to use.
+     * @param covariates The names of the covariates to use.
+     * @param models The models to use.
+     * @param destinationFile The file to export the result to.
+     * @param nVariants The number of variants to process in parallel.
+     * @param logger The logger.
      */
     public LinearModelComputer(
             File genotypesFile,
@@ -129,13 +129,13 @@ public class LinearModelComputer {
     /**
      * Runs the linear association.
      *
-     * @param timeOutDays the time out time in days
-     * @param test in test mode only a few variants will be processed
+     * @param timeOutDays The time out time in days.
+     * @param test In test mode only a few variants will be processed.
      *
-     * @throws InterruptedException exception thrown if the process was
+     * @throws InterruptedException Exception thrown if the process was.
      * interrupted
-     * @throws TimeoutException exception thrown if the process timed out
-     * @throws IOException exception thrown if an i/o error occurred
+     * @throws TimeoutException Exception thrown if the process timed out.
+     * @throws IOException Exception thrown if an i/o error occurred.
      */
     public void run(
             int timeOutDays,

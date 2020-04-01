@@ -62,7 +62,7 @@ public class LinearModelTest extends TestCase {
         long position = IndexedGzWriter.HEADER_LENGTH;
         try (IndexedGzReader gzReader = new IndexedGzReader(resultsFile)) {
 
-            try (SimpleFileReader reader = IoUtils.getFileReader(indexFile)) {
+            try (SimpleFileReader reader = SimpleFileReader.getFileReader(indexFile)) {
 
                 String line = reader.readLine();
 

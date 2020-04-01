@@ -41,20 +41,6 @@ public class IoUtils {
     }
 
     /**
-     * Returns a file reader for the given file. Gz reader if the file ends with
-     * ".gz", text reader otherwise.
-     *
-     * @param file the file to read
-     *
-     * @return a file reader for the given file
-     */
-    public static SimpleFileReader getFileReader(File file) {
-
-        return file.getName().endsWith(".gz") ? new SimpleGzReader(file) : new SimpleTextReader(file);
-
-    }
-
-    /**
      * Attempts at closing a buffer to avoid memory issues. Adapted from
      * https://stackoverflow.com/questions/2972986/how-to-unmap-a-file-from-memory-mapped-using-filechannel-in-java.
      *

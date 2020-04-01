@@ -4,7 +4,7 @@ import java.io.File;
 import java.time.Instant;
 import java.util.HashMap;
 import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.io.genotypes.iterators.VariantIterator;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**

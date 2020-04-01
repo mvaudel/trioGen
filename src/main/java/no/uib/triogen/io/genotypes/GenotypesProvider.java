@@ -45,4 +45,32 @@ public interface GenotypesProvider {
      */
     public String getVariantID();
 
+    /**
+     * Returns the contig of the variant.
+     
+     * @return the contig of the variant
+     */
+    public String getContig();
+
+    /**
+     * Returns the bp of the variant.
+     
+     * @return the bp of the variant
+     */
+    public int getBp();
+
+    /**
+     * Returns the reference allele of the variant.
+     
+     * @return the reference allele of the variant
+     */
+    public String getRef();
+
+    /**
+     * Returns the alternative allele of the variant.
+     
+     * @return the alternative allele of the variant
+     */
+    public String getAlt();
+
 }

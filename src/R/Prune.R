@@ -1,6 +1,6 @@
 ##
 #
-# This script loads results from Triogen and plots Manhattan and QQ plots. 
+# This script extracts the hits with best p-value. 
 # 
 # Results are expected to be split by chromosome under the naming scheme "p_chrX.pheno.gz"
 # 
@@ -10,9 +10,8 @@
 # This script excepts the following arguments:
 # 1- Folder containing Triogen results.
 # 2- Path to folder containing SNP coordinates table
-# 3- Phenotype
-# 4- folder where to write the plots
-# 5- Path where the libraries are installed
+# 3- Folder where to write the snp lists
+# 4- Path where the libraries are installed
 #
 ##
 
@@ -21,13 +20,12 @@
 
 args <- commandArgs(TRUE)
 
-pheno <- args[3]
-outputFolder <- args[4]
+outputFolder <- args[3]
 
 
 # Libraries
 
-lib = args[5]
+lib = args[4]
 
 library(scales, lib.loc = lib)
 library(backports, lib = lib)
@@ -49,240 +47,93 @@ conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
 
 
+# Parameters
+
+distance <- 10E3
+hPvalueThreshold <- 1E-6
+cmfPvalueThreshold <- 1E-6
+poePvalueThreshold <- 1E-2
+
+
 # Functions
 
-#' Returns a ggplot object with the MH for the given association data frame.
+#' Returns the top hits.
 #' 
 #' @param associationDF the association data frame
 #' @param pColumn the name of the column containing the p-values
-#' @param maxY the max value to use for the y axis
+#' @param threshold the p-value threshold
 #' 
 #' @return a ggplot object with the MH
-getMh <- function(
+getTopHits <- function(
     associationDF, 
     pColumn, 
-    maxY = NA
+    threshold
 ) {
     
     # Sanity checks
     
     if (! pColumn %in% names(associationDF)) {
         
-        stop(paste0(pColumn), " not found in data frame")
+        stop(paste0(pColumn), " not found in data frame.")
+        
+    }
+    if (! "snp" %in% names(associationDF)) {
+        
+        stop("snp column not found in data frame.")
         
     }
     if (! "chrom" %in% names(associationDF)) {
         
-        stop("chrom column not found in data frame")
+        stop("chrom column not found in data frame.")
         
     }
     if (! "pos" %in% names(associationDF)) {
         
-        stop("pos column not found in data frame")
+        stop("pos column not found in data frame.")
+        
+    }
+    if (length(unique(associationDF$chrom)) > 1) {
+        
+        stop("Only one chromosome at a time should be provided to top-hits pruning.")
         
     }
     
     
-    # make data frame with only the data needed to plot
+    # Filter p-values
     
-    plotDF <- associationDF %>%
+    pruneDF <- associationDF %>%
         select(
-            chrom, pos, !!sym(pColumn)
+            pos, !!sym(pColumn)
         ) %>%
         rename(
             p = !!sym(pColumn)
         ) %>%
         filter(
-            p > 0
-        ) %>%
-        mutate(
-            logP = -log10(p),
-            x = chromosomeStart[chrom] + pos,
-            color = factor(chrom %% 2, levels = c(0, 1))
-        )
-    
-    
-    # Chromosome labels
-    
-    xLabels <- 1:22
-    xLabels[xLabels %% 2 == 0 & xLabels > 17] <- ""
-    xLabels <- c(xLabels, "X")
-    
-    # y axis
-    
-    if (is.na(maxY)) {
-        
-        maxY <- 10 * ceiling(max(plotDF$logP / 10))
-        
-    }
-    
-    maxY <- max(maxY, 10)
-    
-    yBreaks <- c(0, 5, -log10(5e-8))
-    yLabels <- c("", 5, round(-log10(5e-8), digits = 1))
-    
-    lastBreak <- floor(max(maxY / 10))
-    
-    if (lastBreak > 0) {
-        
-        newBreaks <- 10*(1:lastBreak)
-        
-        while(length(newBreaks) > 3) {
-            
-            newBreaks <- newBreaks[c(T, F)]
-            
-        }
-        
-        yBreaks <- c(yBreaks, newBreaks)
-        yLabels <- c(yLabels, round(newBreaks, digits = 1))
-        
-    }
-    
-    
-    # Make plot
-    mhPlot <- ggplot(
-        data = plotDF
-    ) + 
-        geom_hline(
-            yintercept = -log10(5e-8), 
-            col = "green4", 
-            size = 0.3
-        ) + 
-        geom_point(
-            aes(x = x, 
-                y = logP, 
-                col = color
-            ), 
-            size = 2
-        ) + 
-        scale_y_continuous(
-            name = paste0(pColumn, " [-log10]"), 
-            breaks = yBreaks, 
-            labels = yLabels, 
-            expand = expand_scale(
-                mult = c(0, 0.05)
-            ), 
-            limits = c(0, maxY)
-        ) + 
-        scale_x_continuous(
-            name = "Chromosome", 
-            breaks = chromosomeMiddle, 
-            labels = xLabels, 
-            limits = c(0, genomeLength), 
-            expand = expand_scale(
-                mult = 0.01
-            )
-        ) + 
-        scale_color_manual(
-            values = c(mhColor1, mhColor2)
-        ) + 
-        theme(
-            legend.position = "none",
-            panel.grid.minor = element_blank(),
-            panel.grid.major.x = element_blank(),
-            panel.grid.major.y = element_line(size = 0.3),
-            strip.background = element_rect(
-                fill = "grey99"
-            )
-        )
-    
-    return(mhPlot)
-    
-}
-
-#' Returns a ggplot object with the QQ for the given association data frame.
-#' 
-#' @param associationDF the association data frame
-#' @param pColumn the name of the column containing the p-values
-#' @param maxAxis the max value to use for the axes
-#' 
-#' @return a ggplot object with the MH
-getQQ <- function(
-    associationDF, 
-    pColumn
-) {
-    
-    # Sanity checks
-    
-    if (! pColumn %in% names(associationDF)) {
-        
-        stop(paste0(pColumn), " not found in data frame")
-        
-    }
-    if (! "chrom" %in% names(associationDF)) {
-        
-        stop("chrom column not found in data frame")
-        
-    }
-    if (! "pos" %in% names(associationDF)) {
-        
-        stop("pos column not found in data frame")
-        
-    }
-    
-    
-    # make data frame with only the data needed to plot
-    
-    plotDF <- associationDF %>%
-        select(
-            chrom, pos, !!sym(pColumn)
-        ) %>%
-        rename(
-            p = !!sym(pColumn)
-        ) %>%
-        filter(
-            p > 0
-        ) %>%
-        mutate(
-            logP = -log10(p)
+            p <= threshold
         ) %>%
         arrange(
-            logP
-        ) %>%
-        mutate(
-            expectedP = sort(-log10(runif(n = n()))),
-            x = chromosomeStart[chrom] + pos,
-            color = factor(chrom %% 2, levels = c(0, 1))
+            p
         )
     
     
-    # Axis
+    # Pick best hit and remove neighbors iteratively
     
-    maxValue <- max(plotDF$logP, plotDF$expectedP)
+    results <- c()
     
+    while(nrow(pruneDF) > 0) {
+        
+        results[lenth(results) + 1] <- pruneDF$snp[1]
+        
+        pos <- pruneDF$pos[1]
+        
+        pruneDF %>%
+            filter(
+                pos <= pos - distance | pos >= pos - distance
+            ) -> pruneDF
+        
+    }
     
-    # Make plot
-    qqPlot <- ggplot(
-        data = plotDF
-    ) + 
-        geom_abline(
-            slope = 1,
-            intercept = 0,
-            linetype = "dotted"
-        ) +
-        geom_point(
-            mapping = aes(
-                x = expectedP,
-                y = logP
-            ),
-            size = 2
-        ) +
-        scale_y_continuous(
-            name = paste0(pColumn, " [-log10]"), 
-            limits = c(0, maxValue),
-            expand = expand_scale(
-                mult = 0.02
-            )
-        ) +
-        scale_x_continuous(
-            name = "Expected p-value [-log10]",
-            limits = c(0, maxValue),
-            expand = expand_scale(
-                mult = 0.02
-            )
-        )
-    
-    return(qqPlot)
+    return(results)
     
 }
 
