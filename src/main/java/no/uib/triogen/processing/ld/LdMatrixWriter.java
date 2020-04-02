@@ -37,6 +37,10 @@ public class LdMatrixWriter {
      */
     private final GenotypesFileType genotypesFileType;
     /**
+     * The child ids of the trios to include.
+     */
+    private final String[] childIds;
+    /**
      * The map of trios.
      */
     private final ChildToParentMap childToParentMap;
@@ -70,6 +74,7 @@ public class LdMatrixWriter {
      *
      * @param genotypesFile The file containing the genotypes.
      * @param genotypesFileType The type of genotypes file.
+     * @param childIds The child ids of the trios to include.
      * @param childToParentMap The map of trios.
      * @param variantList The variants to process.
      * @param destinationFile File to write to.
@@ -80,6 +85,7 @@ public class LdMatrixWriter {
     public LdMatrixWriter(
             File genotypesFile,
             GenotypesFileType genotypesFileType,
+            String[] childIds,
             ChildToParentMap childToParentMap,
             VariantList variantList,
             File destinationFile,
@@ -90,6 +96,7 @@ public class LdMatrixWriter {
 
         this.genotypesFile = genotypesFile;
         this.genotypesFileType = genotypesFileType;
+        this.childIds = childIds;
         this.childToParentMap = childToParentMap;
         this.variantList = variantList;
         this.destinationFile = destinationFile;
@@ -146,7 +153,11 @@ public class LdMatrixWriter {
             IntStream.range(0, nVariants)
                     .mapToObj(
                             i -> new LdMatrixWriterRunnable(
-                                    bufferedIterator,
+                                    bufferedIterator, 
+                                    childIds, 
+                                    childToParentMap, 
+                                    maxDistance, 
+                                    variantIndex, 
                                     logger
                             )
                     )

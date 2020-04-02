@@ -21,6 +21,10 @@ public class LdMatrixWriterRunnable implements Runnable {
      */
     private final BufferedGenotypesIterator iterator;
     /**
+     * The child ids of the trios to include.
+     */
+    private final String[] childIds;
+    /**
      * The map of trios.
      */
     private final ChildToParentMap childToParentMap;
@@ -46,6 +50,7 @@ public class LdMatrixWriterRunnable implements Runnable {
      * Constructor.
      *
      * @param iterator The variant iterator.
+     * @param childIds The child ids of the trios to include.
      * @param childToParentMap The map of trios.
      * @param maxDistance The maximal number of bp to allow between variants.
      * @param variantIndex The index to use for the variants.
@@ -53,6 +58,7 @@ public class LdMatrixWriterRunnable implements Runnable {
      */
     public LdMatrixWriterRunnable(
             BufferedGenotypesIterator iterator,
+            String[] childIds,
             ChildToParentMap childToParentMap,
             int maxDistance,
             VariantIndex variantIndex,
@@ -60,6 +66,7 @@ public class LdMatrixWriterRunnable implements Runnable {
     ) {
 
         this.iterator = iterator;
+        this.childIds = childIds;
         this.childToParentMap = childToParentMap;
         this.maxDistance = maxDistance;
         this.variantIndex = variantIndex;
@@ -90,9 +97,9 @@ public class LdMatrixWriterRunnable implements Runnable {
                     int nAB = 0;
                     int nA = 0;
                     int nB = 0;
-                    int n = 2 * childToParentMap.children.length;
+                    int n = 2 * childIds.length;
 
-                    for (String childId : childToParentMap.children) {
+                    for (String childId : childIds) {
 
                         int[] hA = genotypesProviderA.getH(childToParentMap, childId);
                         int[] hB = genotypesProviderB.getH(childToParentMap, childId);
@@ -118,16 +125,18 @@ public class LdMatrixWriterRunnable implements Runnable {
                         }
                     }
 
-                    double pAB = nAB / n;
-                    double pA = nA / n;
-                    double pB = nB / n;
+                    if (nA != 0 && nA != n && nB != 0 && nB != n && nAB * n != nA * nB) {
 
-                    double d = pAB - (pA * pB);
+                        double pAB = nAB / n;
+                        double pA = nA / n;
+                        double pB = nB / n;
 
-                    double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
+                        double d = pAB - (pA * pB);
 
+                        double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
+
+                    }
                 }
-
             }
 
         } catch (Throwable t) {
