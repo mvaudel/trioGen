@@ -98,24 +98,19 @@ public class LdMatrixWriter implements AutoCloseable {
         indexesInFile.add((int) index);
 
         int nVariants = variantIds.size();
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES + nVariants * Integer.BYTES + nVariants * Double.BYTES);
+        ByteBuffer buffer = ByteBuffer.allocate(2 * nVariants * Integer.BYTES);
         
-        buffer.putInt(nVariants);
-        
-        for (int variantIndex2 : variantIds) {
+        for (int i = 0 ; i < nVariants ; i++) {
             
-            buffer.putInt(variantIndex2);
-            
-        }
-        
-        for (double r2 : r2s) {
-            
-            buffer.putDouble(r2);
+            buffer.putInt(variantIds.get(i));
+            buffer.putDouble(r2s.get(i));
             
         }
         
         TempByteArray compressedData = compress(buffer.array());
         
+        raf.write(nVariants);
+        raf.write(compressedData.length);
         raf.write(compressedData.array, 0, compressedData.length);
         
     }
@@ -209,9 +204,11 @@ public class LdMatrixWriter implements AutoCloseable {
 
         byte[] titleBytes = variantIdsString.getBytes(IoUtils.ENCODING);
         
-        ByteBuffer buffer = ByteBuffer.allocate(titleBytes.length + indexesInFile.size() * Integer.BYTES);
+        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES + titleBytes.length + indexesInFile.size() * Integer.BYTES);
         
-        buffer.put(titleBytes);
+        buffer
+                .putInt(titleBytes.length)
+                .put(titleBytes);
         
         for (int i = 0 ; i < variantIndexes.size() ; i++) {
             
