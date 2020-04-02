@@ -403,13 +403,13 @@ public class LinearModelRunnable implements Runnable {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder
                         .append(phenoName)
-                        .append(IoUtils.separator)
+                        .append(IoUtils.SEPARATOR)
                         .append(genotypesProvider.getVariantID())
-                        .append(IoUtils.separator)
+                        .append(IoUtils.SEPARATOR)
                         .append(nValidValues)
-                        .append(IoUtils.separator)
+                        .append(IoUtils.SEPARATOR)
                         .append(altHistograms)
-                        .append(IoUtils.separator)
+                        .append(IoUtils.SEPARATOR)
                         .append(hHistograms);
 
                 regressionResults
@@ -418,7 +418,7 @@ public class LinearModelRunnable implements Runnable {
                         );
 
                 String line = stringBuilder
-                        .append(IoUtils.lineSeparator)
+                        .append(IoUtils.LINE_SEPARATOR)
                         .toString();
                 
                 gzIndexMutex.acquire();

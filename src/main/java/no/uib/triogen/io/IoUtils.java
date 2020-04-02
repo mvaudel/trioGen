@@ -3,9 +3,6 @@ package no.uib.triogen.io;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.nio.MappedByteBuffer;
-import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.triogen.io.flat.readers.SimpleGzReader;
-import no.uib.triogen.io.flat.readers.SimpleTextReader;
 
 /**
  * Utilities for reading and writing files.
@@ -17,15 +14,15 @@ public class IoUtils {
     /**
      * Default encoding, cf the second rule.
      */
-    public static final String encoding = "UTF-8";
+    public static final String ENCODING = "UTF-8";
     /**
      * Default separator
      */
-    public static final String separator = "\t";
+    public static final String SEPARATOR = "\t";
     /**
      * The line separator.
      */
-    public static final String lineSeparator = System.getProperty("line.separator");
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     /**
      * Returns the index file for the given vcf file.

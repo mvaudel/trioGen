@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.IoUtils;
-import static no.uib.triogen.io.IoUtils.lineSeparator;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
@@ -21,6 +20,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
+import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 
 /**
  * Runs multiple linear models for the association with phenotypes.
@@ -120,7 +120,7 @@ public class Extract {
 
                 while ((indexLine = indexReader.readLine()) != null) {
 
-                    String[] lineSplit = indexLine.split(IoUtils.separator);
+                    String[] lineSplit = indexLine.split(IoUtils.SEPARATOR);
 
                     String variantId = lineSplit[0];
                     String phenoName = lineSplit[1];
@@ -140,7 +140,7 @@ public class Extract {
 
                             String[] headerSplit = resultLine
                                     .trim()
-                                    .split(IoUtils.separator);
+                                    .split(IoUtils.SEPARATOR);
 
                             HashSet<String> valuesSet = Arrays.stream(bean.columns)
                                     .collect(
@@ -181,10 +181,10 @@ public class Extract {
 
                             headerLine = columns.stream()
                                     .collect(
-                                            Collectors.joining(IoUtils.separator)
+                                            Collectors.joining(IoUtils.SEPARATOR)
                                     );
 
-                            headerLine = String.join("", headerLine, IoUtils.lineSeparator);
+                            headerLine = String.join("", headerLine, IoUtils.LINE_SEPARATOR);
 
                         } else {
 
@@ -269,7 +269,7 @@ public class Extract {
 
                             String[] resultLineSplit = resultLine
                                     .trim()
-                                    .split(IoUtils.separator);
+                                    .split(IoUtils.SEPARATOR);
 
                             newLine = columns.stream()
                                     .mapToInt(
@@ -279,10 +279,10 @@ public class Extract {
                                             i -> resultLineSplit[i]
                                     )
                                     .collect(
-                                            Collectors.joining(IoUtils.separator)
+                                            Collectors.joining(IoUtils.SEPARATOR)
                                     );
 
-                            newLine = String.join("", newLine, IoUtils.lineSeparator);
+                            newLine = String.join("", newLine, IoUtils.LINE_SEPARATOR);
 
                         }
 
@@ -375,23 +375,23 @@ public class Extract {
     private static void printHelp() {
 
         try (PrintWriter lPrintWriter = new PrintWriter(System.out)) {
-            lPrintWriter.print(lineSeparator);
-            lPrintWriter.print("==================================" + lineSeparator);
-            lPrintWriter.print("              trioGen             " + lineSeparator);
-            lPrintWriter.print("               ****               " + lineSeparator);
-            lPrintWriter.print("        Results Extraction        " + lineSeparator);
-            lPrintWriter.print("==================================" + lineSeparator);
-            lPrintWriter.print(lineSeparator
-                    + "The extraction command line extracts lines and columns from the results of a linear model." + lineSeparator
-                    + lineSeparator
-                    + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + lineSeparator
-                    + lineSeparator
+            lPrintWriter.print(LINE_SEPARATOR);
+            lPrintWriter.print("==================================" + LINE_SEPARATOR);
+            lPrintWriter.print("              trioGen             " + LINE_SEPARATOR);
+            lPrintWriter.print("               ****               " + LINE_SEPARATOR);
+            lPrintWriter.print("        Results Extraction        " + LINE_SEPARATOR);
+            lPrintWriter.print("==================================" + LINE_SEPARATOR);
+            lPrintWriter.print(LINE_SEPARATOR
+                    + "The extraction command line extracts lines and columns from the results of a linear model." + LINE_SEPARATOR
+                    + LINE_SEPARATOR
+                    + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + LINE_SEPARATOR
+                    + LINE_SEPARATOR
                     + "----------------------"
-                    + lineSeparator
+                    + LINE_SEPARATOR
                     + "OPTIONS"
-                    + lineSeparator
-                    + "----------------------" + lineSeparator
-                    + lineSeparator);
+                    + LINE_SEPARATOR
+                    + "----------------------" + LINE_SEPARATOR
+                    + LINE_SEPARATOR);
             lPrintWriter.print(ExtractOptions.getOptionsAsString());
             lPrintWriter.flush();
         }

@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
-import static no.uib.triogen.io.IoUtils.encoding;
 import no.uib.triogen.utils.SimpleSemaphore;
+import static no.uib.triogen.io.IoUtils.ENCODING;
 
 /**
  * This class reads an indexed gz file. Note that unless otherwise specified, io
@@ -90,7 +90,7 @@ public class IndexedGzReader implements AutoCloseable {
 
             }
 
-            return new String(uncompressedByteAray, 0, uncompressedByteAray.length, encoding);
+            return new String(uncompressedByteAray, 0, uncompressedByteAray.length, ENCODING);
 
         } catch (IOException e) {
 

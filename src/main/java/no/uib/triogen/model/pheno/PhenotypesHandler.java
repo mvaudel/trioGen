@@ -103,7 +103,7 @@ public class PhenotypesHandler {
 
             }
 
-            String[] lineContent = line.split(IoUtils.separator);
+            String[] lineContent = line.split(IoUtils.SEPARATOR);
 
             int nColumns = lineContent.length;
 
@@ -187,7 +187,7 @@ public class PhenotypesHandler {
 
                 lineNumber++;
 
-                lineContent = line.split(IoUtils.separator);
+                lineContent = line.split(IoUtils.SEPARATOR);
 
                 if (lineContent.length != nColumns) {
 

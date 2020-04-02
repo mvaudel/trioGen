@@ -130,7 +130,7 @@ public class Logger {
         logWriter.writeLine(
                 now,
                 "Message",
-                "\"" + message.replace(IoUtils.lineSeparator, " ") + "\""
+                "\"" + message.replace(IoUtils.LINE_SEPARATOR, " ") + "\""
         );
 
         System.out.println(now + " - " + message);
@@ -149,7 +149,7 @@ public class Logger {
         logWriter.writeLine(
                 now,
                 "Error",
-                "\"" + message.replace(IoUtils.lineSeparator, " ") + "\""
+                "\"" + message.replace(IoUtils.LINE_SEPARATOR, " ") + "\""
         );
 
     }

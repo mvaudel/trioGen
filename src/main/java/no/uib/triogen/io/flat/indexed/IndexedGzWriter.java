@@ -131,7 +131,7 @@ public class IndexedGzWriter implements AutoCloseable {
 
         try {
 
-            byte[] inputBytes = inputString.getBytes(IoUtils.encoding);
+            byte[] inputBytes = inputString.getBytes(IoUtils.ENCODING);
             byte[] output = new byte[inputBytes.length];
 
             deflater.setInput(inputBytes);

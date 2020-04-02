@@ -8,8 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.zip.GZIPInputStream;
-import static no.uib.triogen.io.IoUtils.encoding;
 import no.uib.triogen.io.flat.SimpleFileReader;
+import static no.uib.triogen.io.IoUtils.ENCODING;
 
 /**
  * Simple wrapper for a gz file reader.
@@ -36,7 +36,7 @@ public class SimpleGzReader implements SimpleFileReader {
 
             InputStream fileStream = new FileInputStream(file);
             InputStream gzipStream = new GZIPInputStream(fileStream);
-            Reader decoder = new InputStreamReader(gzipStream, encoding);
+            Reader decoder = new InputStreamReader(gzipStream, ENCODING);
 
             br = new BufferedReader(decoder);
 

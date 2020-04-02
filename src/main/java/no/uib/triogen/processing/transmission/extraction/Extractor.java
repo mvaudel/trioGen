@@ -127,10 +127,9 @@ public class Extractor {
         h3Writer.writeLine("# TrioGen version: " + TrioGen.getVersion());
         h4Writer.writeLine("# TrioGen version: " + TrioGen.getVersion());
         
-        String header = String.join(
-                IoUtils.separator,
+        String header = String.join(IoUtils.SEPARATOR,
                 "childId",
-                String.join(IoUtils.separator, childToParentMap.children)
+                String.join(IoUtils.SEPARATOR, childToParentMap.children)
         );
         h1Writer.writeLine(header);
         h2Writer.writeLine(header);

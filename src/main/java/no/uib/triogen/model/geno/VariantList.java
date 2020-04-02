@@ -86,7 +86,7 @@ public class VariantList {
 
                     lineNumber++;
 
-                    String[] lineSplit = line.split(IoUtils.separator);
+                    String[] lineSplit = line.split(IoUtils.SEPARATOR);
 
                     if (lineSplit.length < 4) {
 

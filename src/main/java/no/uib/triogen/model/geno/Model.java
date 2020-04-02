@@ -371,7 +371,7 @@ public enum Model {
                 )
                 .forEach(
                         label -> stringBuilder
-                                .append(IoUtils.separator)
+                                .append(IoUtils.SEPARATOR)
                                 .append(label)
                 );
 
@@ -381,7 +381,7 @@ public enum Model {
                 )
                 .forEach(
                         label -> stringBuilder
-                                .append(IoUtils.separator)
+                                .append(IoUtils.SEPARATOR)
                                 .append(label)
                 );
 
@@ -391,7 +391,7 @@ public enum Model {
                 )
                 .forEach(
                         label -> stringBuilder
-                                .append(IoUtils.separator)
+                                .append(IoUtils.SEPARATOR)
                                 .append(label)
                 );
 
@@ -401,7 +401,7 @@ public enum Model {
                 )
                 .forEach(
                         label -> stringBuilder
-                                .append(IoUtils.separator)
+                                .append(IoUtils.SEPARATOR)
                                 .append(label)
                 );
 

@@ -183,11 +183,11 @@ public class ExtractionTest extends TestCase {
         SimpleFileReader reader = SimpleFileReader.getFileReader(hFile);
         String line = reader.readLine();
         line = reader.readLine();
-        String[] header = line.split(IoUtils.separator);
+        String[] header = line.split(IoUtils.SEPARATOR);
 
         while ((line = reader.readLine()) != null) {
 
-            String[] lineSplit = line.split(IoUtils.separator);
+            String[] lineSplit = line.split(IoUtils.SEPARATOR);
 
             String snpId = lineSplit[0];
 
@@ -225,7 +225,7 @@ public class ExtractionTest extends TestCase {
 
         String line = reader.readLine();
 
-        String[] lineSplit = line.split(IoUtils.separator);
+        String[] lineSplit = line.split(IoUtils.SEPARATOR);
         Assert.assertTrue(lineSplit[2].equals("variant"));
         Assert.assertTrue(lineSplit[3].equals("childId"));
         Assert.assertTrue(lineSplit[12].equals("h1"));
@@ -235,7 +235,7 @@ public class ExtractionTest extends TestCase {
 
         while ((line = reader.readLine()) != null) {
 
-            lineSplit = line.split(IoUtils.separator);
+            lineSplit = line.split(IoUtils.SEPARATOR);
             String variantId = lineSplit[2];
             String childid = lineSplit[3];
             int h1 = Integer.parseInt(lineSplit[12]);

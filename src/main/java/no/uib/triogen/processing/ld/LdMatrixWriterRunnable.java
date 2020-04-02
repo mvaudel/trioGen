@@ -1,5 +1,6 @@
 package no.uib.triogen.processing.ld;
 
+import java.util.ArrayList;
 import no.uib.triogen.io.genotypes.iterators.BufferedGenotypesIterator;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -89,6 +90,8 @@ public class LdMatrixWriterRunnable implements Runnable {
                 );
 
                 int variantIdA = variantIndex.getIndex(genotypesProviderA.getVariantID());
+                ArrayList<Integer> variantIds = new ArrayList<>(genotypesProviders.length);
+                ArrayList<Double> r2s = new ArrayList<>(genotypesProviders.length);
 
                 for (GenotypesProvider genotypesProviderB : genotypesProviders) {
 
@@ -134,6 +137,9 @@ public class LdMatrixWriterRunnable implements Runnable {
                         double d = pAB - (pA * pB);
 
                         double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
+                        
+                        variantIds.add(variantIdB);
+                        r2s.add(r2);
 
                     }
                 }

@@ -2,7 +2,6 @@ package no.uib.triogen.cmd.transmission;
 
 import java.io.PrintWriter;
 import no.uib.triogen.TrioGen;
-import static no.uib.triogen.io.IoUtils.lineSeparator;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.geno.VariantList;
@@ -11,6 +10,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
+import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 
 /**
  * Extracts h matrices from the vcf files.
@@ -108,23 +108,23 @@ public class ExtractTransmission {
     private static void printHelp() {
 
         try (PrintWriter lPrintWriter = new PrintWriter(System.out)) {
-            lPrintWriter.print(lineSeparator);
-            lPrintWriter.print("==================================" + lineSeparator);
-            lPrintWriter.print("              trioGen             " + lineSeparator);
-            lPrintWriter.print("               ****               " + lineSeparator);
-            lPrintWriter.print("   Transmitted Allele Extraction  " + lineSeparator);
-            lPrintWriter.print("==================================" + lineSeparator);
-            lPrintWriter.print(lineSeparator
-                    + "The extraction command line iterates a vcf file and extracts transmitted alleles of children." + lineSeparator
-                    + lineSeparator
-                    + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + lineSeparator
-                    + lineSeparator
+            lPrintWriter.print(LINE_SEPARATOR);
+            lPrintWriter.print("==================================" + LINE_SEPARATOR);
+            lPrintWriter.print("              trioGen             " + LINE_SEPARATOR);
+            lPrintWriter.print("               ****               " + LINE_SEPARATOR);
+            lPrintWriter.print("   Transmitted Allele Extraction  " + LINE_SEPARATOR);
+            lPrintWriter.print("==================================" + LINE_SEPARATOR);
+            lPrintWriter.print(LINE_SEPARATOR
+                    + "The extraction command line iterates a vcf file and extracts transmitted alleles of children." + LINE_SEPARATOR
+                    + LINE_SEPARATOR
+                    + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + LINE_SEPARATOR
+                    + LINE_SEPARATOR
                     + "----------------------"
-                    + lineSeparator
+                    + LINE_SEPARATOR
                     + "OPTIONS"
-                    + lineSeparator
-                    + "----------------------" + lineSeparator
-                    + lineSeparator);
+                    + LINE_SEPARATOR
+                    + "----------------------" + LINE_SEPARATOR
+                    + LINE_SEPARATOR);
             lPrintWriter.print(ExtractTransmissionOptions.getOptionsAsString());
             lPrintWriter.flush();
         }

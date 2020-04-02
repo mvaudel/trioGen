@@ -196,7 +196,7 @@ public class LinearModelComputer {
                 "UncompressedLength"
         );
 
-        IndexedGzCoordinates coordinates = outputWriter.append("# TrioGen version: " + TrioGen.getVersion() + IoUtils.lineSeparator);
+        IndexedGzCoordinates coordinates = outputWriter.append("# TrioGen version: " + TrioGen.getVersion() + IoUtils.LINE_SEPARATOR);
         index.writeLine(
                 "Header",
                 "Comment",
@@ -206,7 +206,7 @@ public class LinearModelComputer {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(
-                String.join(IoUtils.separator,
+                String.join(IoUtils.SEPARATOR,
                         "phenotype",
                         "variantId",
                         "n",
@@ -220,7 +220,7 @@ public class LinearModelComputer {
 
         }
 
-        stringBuilder.append(IoUtils.lineSeparator);
+        stringBuilder.append(IoUtils.LINE_SEPARATOR);
 
         coordinates = outputWriter.append(stringBuilder.toString());
         index.writeLine(

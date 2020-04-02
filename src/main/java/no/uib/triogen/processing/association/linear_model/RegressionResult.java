@@ -237,25 +237,25 @@ public class RegressionResult {
         Arrays.stream(modelSignificance)
                 .forEach(
                         value -> stringBuilder
-                                .append(IoUtils.separator)
+                                .append(IoUtils.SEPARATOR)
                                 .append(value)
                 );
         Arrays.stream(beta)
                 .forEach(
                         value -> stringBuilder
-                                .append(IoUtils.separator)
+                                .append(IoUtils.SEPARATOR)
                                 .append(value)
                 );
         Arrays.stream(betaStandardError)
                 .forEach(
                         value -> stringBuilder
-                                .append(IoUtils.separator)
+                                .append(IoUtils.SEPARATOR)
                                 .append(value)
                 );
         Arrays.stream(betaSignificance)
                 .forEach(
                         value -> stringBuilder
-                                .append(IoUtils.separator)
+                                .append(IoUtils.SEPARATOR)
                                 .append(value)
                 );
 

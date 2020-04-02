@@ -68,7 +68,7 @@ public class LinearModelTest extends TestCase {
 
                 while ((line = reader.readLine()) != null) {
 
-                    String[] lineSplit = line.split(IoUtils.separator);
+                    String[] lineSplit = line.split(IoUtils.SEPARATOR);
                     int compressedLength = Integer.parseInt(lineSplit[2]);
                     int uncompressedLength = Integer.parseInt(lineSplit[3]);
 

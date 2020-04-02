@@ -7,9 +7,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.zip.GZIPOutputStream;
-import static no.uib.triogen.io.IoUtils.encoding;
-import static no.uib.triogen.io.IoUtils.separator;
 import no.uib.triogen.utils.SimpleSemaphore;
+import static no.uib.triogen.io.IoUtils.ENCODING;
+import static no.uib.triogen.io.IoUtils.SEPARATOR;
 
 /**
  * Simple gz file writer that is thread safe and throws exceptions as runtime
@@ -45,7 +45,7 @@ public class SimpleFileWriter implements AutoCloseable {
 
                 FileOutputStream fileStream = new FileOutputStream(file);
                 GZIPOutputStream gzipStream = new GZIPOutputStream(fileStream);
-                OutputStreamWriter encoder = new OutputStreamWriter(gzipStream, encoding);
+                OutputStreamWriter encoder = new OutputStreamWriter(gzipStream, ENCODING);
                 bw = new BufferedWriter(encoder);
 
             } else {
@@ -71,7 +71,7 @@ public class SimpleFileWriter implements AutoCloseable {
             String... elements
     ) {
 
-        String line = String.join(separator, elements);
+        String line = String.join(SEPARATOR, elements);
         writeLine(line);
 
     }

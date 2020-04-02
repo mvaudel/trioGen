@@ -2,8 +2,8 @@ package no.uib.triogen.cmd.transmission;
 
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
-import static no.uib.triogen.io.IoUtils.lineSeparator;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
+import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 
 /**
  * Enum of the different options
@@ -94,31 +94,31 @@ public enum ExtractTransmissionOptions {
         String formatter = "%-35s";
 
         output.append("General Options:");
-        output.append(lineSeparator)
-                .append(lineSeparator);
+        output.append(LINE_SEPARATOR)
+                .append(LINE_SEPARATOR);
         
-        output.append("-").append(String.format(formatter, "h (--help)")).append(" ").append("Shows a brief help message.").append(lineSeparator);
-        output.append("-").append(String.format(formatter, "v (--version)")).append(" ").append("Shows the version of the tool.").append(lineSeparator);
+        output.append("-").append(String.format(formatter, "h (--help)")).append(" ").append("Shows a brief help message.").append(LINE_SEPARATOR);
+        output.append("-").append(String.format(formatter, "v (--version)")).append(" ").append("Shows the version of the tool.").append(LINE_SEPARATOR);
 
-        output.append(lineSeparator)
-                .append(lineSeparator);
+        output.append(LINE_SEPARATOR)
+                .append(LINE_SEPARATOR);
         output.append("Mandatory Options:");
-        output.append(lineSeparator)
-                .append(lineSeparator);
+        output.append(LINE_SEPARATOR)
+                .append(LINE_SEPARATOR);
 
         Arrays.stream(values())
                 .filter(option -> option.mandatory)
-                .forEach(option -> output.append("-").append(String.format(formatter, option.opt + " (--" + option.longOpt + ")")).append(" ").append(option.description).append(lineSeparator));
+                .forEach(option -> output.append("-").append(String.format(formatter, option.opt + " (--" + option.longOpt + ")")).append(" ").append(option.description).append(LINE_SEPARATOR));
 
-        output.append(lineSeparator)
-                .append(lineSeparator);
+        output.append(LINE_SEPARATOR)
+                .append(LINE_SEPARATOR);
         output.append("Additional Options:");
-        output.append(lineSeparator)
-                .append(lineSeparator);
+        output.append(LINE_SEPARATOR)
+                .append(LINE_SEPARATOR);
 
         Arrays.stream(values())
                 .filter(option -> !option.mandatory)
-                .forEach(option -> output.append("-").append(String.format(formatter, option.opt + " (--" + option.longOpt + ")")).append(" ").append(option.description).append(lineSeparator));
+                .forEach(option -> output.append("-").append(String.format(formatter, option.opt + " (--" + option.longOpt + ")")).append(" ").append(option.description).append(LINE_SEPARATOR));
 
         return output.toString();
     }

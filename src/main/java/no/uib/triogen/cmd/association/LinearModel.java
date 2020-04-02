@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
-import static no.uib.triogen.io.IoUtils.lineSeparator;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
@@ -16,6 +15,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
+import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 
 /**
  * Runs multiple linear models for the association with phenotypes.
@@ -157,23 +157,23 @@ public class LinearModel {
     private static void printHelp() {
 
         try (PrintWriter lPrintWriter = new PrintWriter(System.out)) {
-            lPrintWriter.print(lineSeparator);
-            lPrintWriter.print("==================================" + lineSeparator);
-            lPrintWriter.print("              trioGen             " + lineSeparator);
-            lPrintWriter.print("               ****               " + lineSeparator);
-            lPrintWriter.print("      Linear Model Regression     " + lineSeparator);
-            lPrintWriter.print("==================================" + lineSeparator);
-            lPrintWriter.print(lineSeparator
-                    + "The linear model regression command performs linear regression using various models." + lineSeparator
-                    + lineSeparator
-                    + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + lineSeparator
-                    + lineSeparator
+            lPrintWriter.print(LINE_SEPARATOR);
+            lPrintWriter.print("==================================" + LINE_SEPARATOR);
+            lPrintWriter.print("              trioGen             " + LINE_SEPARATOR);
+            lPrintWriter.print("               ****               " + LINE_SEPARATOR);
+            lPrintWriter.print("      Linear Model Regression     " + LINE_SEPARATOR);
+            lPrintWriter.print("==================================" + LINE_SEPARATOR);
+            lPrintWriter.print(LINE_SEPARATOR
+                    + "The linear model regression command performs linear regression using various models." + LINE_SEPARATOR
+                    + LINE_SEPARATOR
+                    + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + LINE_SEPARATOR
+                    + LINE_SEPARATOR
                     + "----------------------"
-                    + lineSeparator
+                    + LINE_SEPARATOR
                     + "OPTIONS"
-                    + lineSeparator
-                    + "----------------------" + lineSeparator
-                    + lineSeparator);
+                    + LINE_SEPARATOR
+                    + "----------------------" + LINE_SEPARATOR
+                    + LINE_SEPARATOR);
             lPrintWriter.print(LinearModelOptions.getOptionsAsString());
             lPrintWriter.flush();
         }
