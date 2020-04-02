@@ -3,10 +3,6 @@ package no.uib.triogen.processing.ld;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -17,9 +13,8 @@ import no.uib.triogen.io.genotypes.iterators.BufferedGenotypesIterator;
 import no.uib.triogen.io.genotypes.iterators.VariantIterator;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.geno.VariantIndex;
 import no.uib.triogen.model.geno.VariantList;
-import no.uib.triogen.processing.association.linear_model.LinearModelRunnable;
-import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
  * This class iterates through genotypes and writes a matrix of ld between
@@ -53,6 +48,10 @@ public class LdMatrixWriter {
      * The bp distance used to compute the ld in sliding windows. A max distance of 10 bp means a sliding window of 20 bp.
      */
     private final int maxDistance;
+    /**
+     * Index for the variants.
+     */
+    private final VariantIndex variantIndex = new VariantIndex();
     /**
      * The file where to write the results.
      */

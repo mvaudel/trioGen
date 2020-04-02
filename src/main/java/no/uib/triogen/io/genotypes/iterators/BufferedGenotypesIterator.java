@@ -1,12 +1,12 @@
 package no.uib.triogen.io.genotypes.iterators;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
-import no.uib.triogen.io.genotypes.GenotypesProvider;
-import no.uib.triogen.io.genotypes.iterators.VariantIterator;
 import no.uib.triogen.utils.SimpleSemaphore;
+import sun.awt.Mutex;
 
 /**
  * Buffered iterator for the genotypes of a file.
@@ -33,6 +33,10 @@ public class BufferedGenotypesIterator {
      * Semaphore for the edition of the buffer.
      */
     private final SimpleSemaphore bufferSemaphore = new SimpleSemaphore(1);
+    /**
+     * The list of contigs.
+     */
+    private final ArrayDeque<String> contigList = new ArrayDeque<>();
     /**
      * Contig to bp to snp index to list of array of h.
      */
@@ -92,10 +96,22 @@ public class BufferedGenotypesIterator {
 
         GenotypesProvider nextElement = currentQueue.pollFirst();
 
+        String contig = nextElement.getContig();
+
         checkBuffer(
-                nextElement.getContig(),
+                contig,
                 nextElement.getBp()
         );
+
+        while (!contig.equals(contigList.peekFirst())) {
+
+            bufferSemaphore.acquire();
+
+            buffer.remove(contigList.pollFirst());
+
+            bufferSemaphore.release();
+
+        }
 
         return nextElement;
 
@@ -127,58 +143,61 @@ public class BufferedGenotypesIterator {
             int bp
     ) {
 
-        // Load until there are enough variants in the buffer
-        if (bp + upStreamDistance > currentMaxBp.get(contig)) {
+        if (contigList.getLast().equals(contig)) {
 
-            bufferSemaphore.acquire();
+            // Load until there are enough variants in the buffer
+            if (bp + upStreamDistance > currentMaxBp.get(contig)) {
 
-            int maxBp = currentMaxBp.get(contig);
+                bufferSemaphore.acquire();
 
-            if (bp + upStreamDistance > maxBp) {
+                int maxBp = currentMaxBp.get(contig);
 
-                while (bp + LOADING_FACTOR * upStreamDistance >= maxBp) {
+                if (bp + upStreamDistance > maxBp) {
 
-                    GenotypesProvider genotypesProvider = iterator.next();
+                    while (bp + LOADING_FACTOR * upStreamDistance >= maxBp) {
 
-                    if (genotypesProvider == null) {
+                        GenotypesProvider genotypesProvider = iterator.next();
 
-                        return;
+                        if (genotypesProvider == null) {
+
+                            return;
+
+                        }
+
+                        add(genotypesProvider);
 
                     }
+                }
 
-                    add(genotypesProvider);
+                bufferSemaphore.release();
+
+            }
+
+            // Remove variants outside range
+            if (bp - LOADING_FACTOR * downStreamDistance > currentMaxBp.get(contig)) {
+
+                bufferSemaphore.acquire();
+                int minBp = currentMaxBp.get(contig);
+
+                if (bp - LOADING_FACTOR * downStreamDistance > minBp) {
+
+                    ConcurrentHashMap<Integer, ArrayList<GenotypesProvider>> contigMap = buffer.get(contig);
+
+                    contigMap.keySet().stream()
+                            .filter(
+                                    tempBp -> tempBp - downStreamDistance > minBp
+                            )
+                            .forEach(
+                                    tempBp -> contigMap.remove(tempBp)
+                            );
+
+                    currentMinBp.put(contig, minBp);
 
                 }
-            }
 
-            bufferSemaphore.release();
-
-        }
-
-        // Remove variants outside range
-        if (bp - LOADING_FACTOR * downStreamDistance > currentMaxBp.get(contig)) {
-
-            bufferSemaphore.acquire();
-            int minBp = currentMaxBp.get(contig);
-
-            if (bp - LOADING_FACTOR * downStreamDistance > minBp) {
-
-                ConcurrentHashMap<Integer, ArrayList<GenotypesProvider>> contigMap = buffer.get(contig);
-
-                contigMap.keySet().stream()
-                        .filter(
-                                tempBp -> tempBp - downStreamDistance > minBp
-                        )
-                        .forEach(
-                                tempBp -> contigMap.remove(tempBp)
-                        );
-
-                currentMinBp.put(contig, minBp);
+                bufferSemaphore.release();
 
             }
-
-            bufferSemaphore.release();
-
         }
     }
 
@@ -204,6 +223,7 @@ public class BufferedGenotypesIterator {
 
             contigMap = new ConcurrentHashMap<>();
             buffer.put(contig, contigMap);
+            contigList.add(contig);
 
         }
 
@@ -221,19 +241,50 @@ public class BufferedGenotypesIterator {
     }
 
     /**
-     * Removes the buffer content for the given contig.
+     * Returns an array of the genotypes of the given contig in the given bp
+     * range.
      *
-     * @param contig The contig for which to clean the buffer.
+     * @param contig The contig.
+     * @param startBp The bp range start (inclusive).
+     * @param endBp The bp range end (inclusive).
+     *
+     * @return An array of the genotypes.
      */
-    public void clearBuffer(
-            String contig
+    public GenotypesProvider[] getGenotypesInRange(
+            String contig,
+            int startBp,
+            int endBp
     ) {
 
-        bufferSemaphore.acquire();
+        ConcurrentHashMap<Integer, ArrayList<GenotypesProvider>> contigMap = buffer.get(contig);
 
-        buffer.remove(contig);
+        if (contigMap == null) {
 
-        bufferSemaphore.release();
+            throw new IllegalArgumentException("Contig " + contig + " not in buffer.");
 
+        }
+
+        if (startBp < currentMinBp.get(contig)) {
+
+            throw new IllegalArgumentException("Sliding window start (" + startBp + ") out of range (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ").");
+
+        }
+
+        if (endBp > currentMaxBp.get(contig)) {
+
+            throw new IllegalArgumentException("Sliding window end (" + endBp + ") out of range (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ").");
+
+        }
+
+        return contigMap.entrySet().stream()
+                .filter(
+                        entry -> entry.getKey() >= startBp && entry.getKey() <= endBp
+                )
+                .flatMap(
+                        entry -> entry.getValue().stream()
+                )
+                .toArray(
+                        GenotypesProvider[]::new
+                );
     }
 }
