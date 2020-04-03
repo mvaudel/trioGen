@@ -6,7 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.utils.SimpleSemaphore;
-import sun.awt.Mutex;
 
 /**
  * Buffered iterator for the genotypes of a file.
