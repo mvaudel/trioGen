@@ -28,6 +28,22 @@ public class VcfLine implements GenotypesProvider {
      * The variant id.
      */
     private String variantId;
+    /**
+     * The variant contig.
+     */
+    private String contig;
+    /**
+     * The variant location on the contig in bp.
+     */
+    private int bp;
+    /**
+     * The reference allele.
+     */
+    private String ref;
+    /**
+     * The alternative allele.
+     */
+    private String alt;
 
     /**
      * Constructor.
@@ -63,13 +79,32 @@ public class VcfLine implements GenotypesProvider {
 
                     indexes[nSeparators - vcfIterator.getnVariantColumns()] = index;
                 }
-                if (nSeparators == 2) {
+                if (nSeparators == 1) {
 
+                    contig = line.substring(index1 + 1, index);
+                    index1 = index;
+
+                } else if (nSeparators == 2) {
+
+                    bp = Integer.parseInt(
+                            line.substring(index1 + 1, index)
+                    );
                     index1 = index;
 
                 } else if (nSeparators == 3) {
                     
                     variantId = line.substring(index1 + 1, index);
+                    index1 = index;
+                
+                } else if (nSeparators == 4) {
+                    
+                    ref = line.substring(index1 + 1, index);
+                    index1 = index;
+                
+                } else if (nSeparators == 5) {
+                    
+                    alt = line.substring(index1 + 1, index);
+                    index1 = index;
                 
                 }
             }
@@ -163,5 +198,33 @@ public class VcfLine implements GenotypesProvider {
 
         return new int[]{h1, h2, h3, h4};
 
+    }
+
+    @Override
+    public String getContig() {
+        
+        return contig;
+        
+    }
+
+    @Override
+    public int getBp() {
+        
+        return bp;
+        
+    }
+
+    @Override
+    public String getRef() {
+        
+        return ref;
+        
+    }
+
+    @Override
+    public String getAlt() {
+        
+        return alt;
+        
     }
 }

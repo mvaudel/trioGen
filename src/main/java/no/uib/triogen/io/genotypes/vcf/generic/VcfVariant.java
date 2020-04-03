@@ -2,9 +2,9 @@ package no.uib.triogen.io.genotypes.vcf.generic;
 
 import htsjdk.variant.variantcontext.Allele;
 import htsjdk.variant.variantcontext.Genotype;
-import htsjdk.variant.variantcontext.GenotypesContext;
 import htsjdk.variant.variantcontext.VariantContext;
 import java.util.List;
+import java.util.stream.Collectors;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.model.family.ChildToParentMap;
 
@@ -115,6 +115,39 @@ public class VcfVariant implements GenotypesProvider {
 
         return new int[]{h1, h2, h3, h4};
 
+    }
+
+    @Override
+    public String getContig() {
+        
+        return variantContext.getContig();
+        
+    }
+
+    @Override
+    public int getBp() {
+        
+        return variantContext.getStart();
+        
+    }
+
+    @Override
+    public String getRef() {
+        
+        return variantContext.getReference().getBaseString();
+        
+    }
+
+    @Override
+    public String getAlt() {
+        
+        return variantContext.getAlternateAlleles().stream()
+                .map(
+                        allele -> allele.getBaseString()
+                )
+                .collect(
+                        Collectors.joining(",")
+                );
     }
 
 }
