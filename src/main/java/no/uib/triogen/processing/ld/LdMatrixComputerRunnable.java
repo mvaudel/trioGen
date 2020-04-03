@@ -15,7 +15,7 @@ import no.uib.triogen.model.geno.VariantIndex;
  *
  * @author Marc Vaudel
  */
-public class LdMatrixWriterRunnable implements Runnable {
+public class LdMatrixComputerRunnable implements Runnable {
 
     /**
      * The buffer.
@@ -57,7 +57,7 @@ public class LdMatrixWriterRunnable implements Runnable {
      * @param variantIndex The index to use for the variants.
      * @param logger The logger.
      */
-    public LdMatrixWriterRunnable(
+    public LdMatrixComputerRunnable(
             BufferedGenotypesIterator iterator,
             String[] childIds,
             ChildToParentMap childToParentMap,

@@ -22,7 +22,7 @@ import no.uib.triogen.model.geno.VariantList;
  *
  * @author Marc Vaudel
  */
-public class LdMatrixWriter {
+public class LdMatrixComputer {
 
     /**
      * Loading factor used to make sure that the buffer contains the ld range. A loading factor of 2 for a sliding window of 10 bp results in buffering 20 pb.
@@ -82,7 +82,7 @@ public class LdMatrixWriter {
      * @param nVariants The number of variants to process in parallel.
      * @param logger The logger.
      */
-    public LdMatrixWriter(
+    public LdMatrixComputer(
             File genotypesFile,
             GenotypesFileType genotypesFileType,
             String[] childIds,
@@ -152,7 +152,7 @@ public class LdMatrixWriter {
 
             IntStream.range(0, nVariants)
                     .mapToObj(
-                            i -> new LdMatrixWriterRunnable(
+                            i -> new LdMatrixComputerRunnable(
                                     bufferedIterator, 
                                     childIds, 
                                     childToParentMap, 
