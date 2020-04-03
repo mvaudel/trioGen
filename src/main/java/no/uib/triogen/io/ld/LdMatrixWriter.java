@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.zip.Deflater;
 import no.uib.triogen.io.IoUtils;
@@ -98,7 +99,7 @@ public class LdMatrixWriter implements AutoCloseable {
         indexesInFile.add((int) index);
 
         int nVariants = variantIds.size();
-        ByteBuffer buffer = ByteBuffer.allocate(2 * nVariants * Integer.BYTES);
+        ByteBuffer buffer = ByteBuffer.allocate(nVariants * Integer.BYTES + nVariants * Double.BYTES);
         
         for (int i = 0 ; i < nVariants ; i++) {
             
@@ -109,8 +110,8 @@ public class LdMatrixWriter implements AutoCloseable {
         
         TempByteArray compressedData = compress(buffer.array());
         
-        raf.write(nVariants);
-        raf.write(compressedData.length);
+        raf.writeInt(nVariants);
+        raf.writeInt(compressedData.length);
         raf.write(compressedData.array, 0, compressedData.length);
         
     }
@@ -194,37 +195,35 @@ public class LdMatrixWriter implements AutoCloseable {
         
         String[] variantIds = variantIndex.getVariants();
 
-        String variantIdsString = variantIndexes.stream()
-                .map(
-                        index -> variantIds[index]
-                )
+        String variantIdsString = Arrays.stream(variantIds)
                 .collect(
                         Collectors.joining(SEPARATOR)
                 );
 
         byte[] titleBytes = variantIdsString.getBytes(IoUtils.ENCODING);
         
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES + titleBytes.length + indexesInFile.size() * Integer.BYTES);
+        ByteBuffer buffer = ByteBuffer.allocate(2 * Integer.BYTES + titleBytes.length + 2 * indexesInFile.size() * Integer.BYTES);
         
         buffer
                 .putInt(titleBytes.length)
-                .put(titleBytes);
+                .put(titleBytes)
+                .putInt(variantIndexes.size());
         
         for (int i = 0 ; i < variantIndexes.size() ; i++) {
             
-            buffer.putInt(indexesInFile.get(i));
+            int variantI = variantIndexes.get(i);
+            buffer.putInt(variantI);
+            
+            int index = indexesInFile.get(i);
+            buffer.putInt(index);
             
         }
         
         compressAndWrite(buffer.array());
 
         raf.seek(0);
-
-        buffer = ByteBuffer.allocate(HEADER_LENGTH);
-        buffer.put(MAGIC_NUMBER)
-                .putLong(footerPosition);
-
-        raf.write(buffer.array());
+        raf.write(MAGIC_NUMBER);
+        raf.writeLong(footerPosition);
 
     }
 

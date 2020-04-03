@@ -93,12 +93,15 @@ public class LdMatrixReader {
             String idsString = new String(idsBytes, 0, idsByteLength, ENCODING);
             variantIds = idsString.split(IoUtils.SEPARATOR);
 
-            indexMap = new HashMap<>(variantIds.length);
+            int nVariants = byteBuffer.getInt();
+            indexMap = new HashMap<>(nVariants);
 
-            for (int i = 0; i < variantIds.length; i++) {
+            for (int i = 0; i < nVariants; i++) {
 
+                int variantI = byteBuffer.getInt();
+                String variantId = variantIds[variantI];
                 int index = byteBuffer.getInt();
-                indexMap.put(variantIds[i], index);
+                indexMap.put(variantId, index);
 
             }
 
@@ -190,7 +193,7 @@ public class LdMatrixReader {
 
         semaphore.release();
 
-        int uncompressedLength = 2 * nVariants * Integer.BYTES;
+        int uncompressedLength = nVariants * Integer.BYTES + nVariants * Double.BYTES;
 
         byte[] uncompressedData = uncompress(compressedData, uncompressedLength);
         ByteBuffer byteBuffer = ByteBuffer.wrap(uncompressedData);

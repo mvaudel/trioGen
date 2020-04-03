@@ -97,70 +97,73 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                     int variantIdB = variantIndex.getIndex(genotypesProviderB.getVariantID());
 
-                    int nAB = 0;
-                    int nA = 0;
-                    int nB = 0;
-                    int n = 2 * childIds.length;
+                    if (variantIdA != variantIdB) {
 
-                    for (String childId : childIds) {
+                        int nAB = 0;
+                        int nA = 0;
+                        int nB = 0;
+                        int n = 2 * childIds.length;
 
-                        int[] hA = genotypesProviderA.getH(childToParentMap, childId);
-                        int[] hB = genotypesProviderB.getH(childToParentMap, childId);
+                        for (String childId : childIds) {
 
-                        boolean a = hA[0] == 0 && hA[1] == 0;
-                        boolean b = hB[0] == 0 && hB[1] == 0;
+                            int[] hA = genotypesProviderA.getH(childToParentMap, childId);
+                            int[] hB = genotypesProviderB.getH(childToParentMap, childId);
 
-                        if (a) {
+                            boolean a = hA[0] == 0 && hA[1] == 0;
+                            boolean b = hB[0] == 0 && hB[1] == 0;
 
-                            nA++;
+                            if (a) {
+
+                                nA++;
+
+                                if (b) {
+
+                                    nAB++;
+
+                                }
+                            }
 
                             if (b) {
 
-                                nAB++;
+                                nB++;
+
+                            }
+
+                            a = hA[2] == 0 && hA[3] == 0;
+                            b = hB[2] == 0 && hB[3] == 0;
+
+                            if (a) {
+
+                                nA++;
+
+                                if (b) {
+
+                                    nAB++;
+
+                                }
+                            }
+
+                            if (b) {
+
+                                nB++;
 
                             }
                         }
 
-                        if (b) {
+                        if (nA != 0 && nA != n && nB != 0 && nB != n && nAB * n != nA * nB) {
 
-                            nB++;
+                            double pAB = nAB / n;
+                            double pA = nA / n;
+                            double pB = nB / n;
 
-                        }
+                            double d = pAB - (pA * pB);
 
-                         a = hA[2] == 0 && hA[3] == 0;
-                         b = hB[2] == 0 && hB[3] == 0;
+                            double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
 
-                        if (a) {
-
-                            nA++;
-
-                            if (b) {
-
-                                nAB++;
-
-                            }
-                        }
-
-                        if (b) {
-
-                            nB++;
+                            variantIds.add(variantIdB);
+                            r2s.add(r2);
 
                         }
-                    }
-
-                    if (nA != 0 && nA != n && nB != 0 && nB != n && nAB * n != nA * nB) {
-
-                        double pAB = nAB / n;
-                        double pA = nA / n;
-                        double pB = nB / n;
-
-                        double d = pAB - (pA * pB);
-
-                        double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
-                        
-                        variantIds.add(variantIdB);
-                        r2s.add(r2);
-
                     }
                 }
             }
