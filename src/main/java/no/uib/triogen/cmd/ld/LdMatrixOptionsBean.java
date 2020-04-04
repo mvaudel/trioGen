@@ -1,4 +1,4 @@
-package no.uib.triogen.cmd.transmission;
+package no.uib.triogen.cmd.ld;
 
 import java.io.File;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
@@ -9,7 +9,7 @@ import org.apache.commons.cli.CommandLine;
  *
  * @author Marc Vaudel
  */
-public class ExtractTransmissionOptionsBean {
+public class LdMatrixOptionsBean {
 
     /**
      * The genotypes file.
@@ -20,21 +20,26 @@ public class ExtractTransmissionOptionsBean {
      */
     public GenotypesFileType genotypesFileType = GenotypesFileType.vcf;
     /**
-     * The file listing the variants to process.
-     */
-    public File variantFile = null;
-    /**
      * the trio file.
      */
     public final File trioFile;
     /**
-     * Stem of the file where to write the output.
+     * the max distance.
      */
-    public final String destinationStem;
+    public int maxDistance = 500000;
+    /**
+     * Boolean indicating whether hard calls should be used.
+     */
+    public boolean hardCalls = false;
+    /**
+     * File where to write the output.
+     */
+    public final String destinationFile;
     /**
      * The number of variants to process simultaneously.
      */
-    public int nVariants = 8;
+    public int nVariants = Runtime.getRuntime().availableProcessors();
+    ;
     /**
      * The number of days before timeout.
      */
@@ -50,12 +55,12 @@ public class ExtractTransmissionOptionsBean {
      *
      * @param aLine a command line
      */
-    public ExtractTransmissionOptionsBean(
+    public LdMatrixOptionsBean(
             CommandLine aLine
     ) {
 
         // Check that mandatory options are provided
-        for (ExtractTransmissionOptions option : ExtractTransmissionOptions.values()) {
+        for (LdMatrixOptions option : LdMatrixOptions.values()) {
 
             if (option.mandatory && !aLine.hasOption(option.opt)) {
 
@@ -65,7 +70,7 @@ public class ExtractTransmissionOptionsBean {
         }
 
         // The genotypes file
-        String filePath = aLine.getOptionValue(ExtractTransmissionOptions.geno.opt);
+        String filePath = aLine.getOptionValue(LdMatrixOptions.geno.opt);
 
         genotypesFile = new File(filePath);
 
@@ -76,9 +81,9 @@ public class ExtractTransmissionOptionsBean {
         }
 
         // The genotypes file type
-        if (aLine.hasOption(ExtractTransmissionOptions.genoFormat.opt)) {
+        if (aLine.hasOption(LdMatrixOptions.genoFormat.opt)) {
 
-            String option = aLine.getOptionValue(ExtractTransmissionOptions.genoFormat.opt);
+            String option = aLine.getOptionValue(LdMatrixOptions.genoFormat.opt);
             int genoFormat;
 
             try {
@@ -96,22 +101,8 @@ public class ExtractTransmissionOptionsBean {
 
         }
 
-        // The variant ids
-        if (aLine.hasOption(ExtractTransmissionOptions.variantId.opt)) {
-
-            filePath = aLine.getOptionValue(ExtractTransmissionOptions.variantId.opt);
-
-            variantFile = new File(filePath);
-
-            if (!variantFile.exists()) {
-
-                throw new IllegalArgumentException("Variant file (" + variantFile + ") not found.");
-
-            }
-        }
-
         // the trio file
-        filePath = aLine.getOptionValue(ExtractTransmissionOptions.trio.opt);
+        filePath = aLine.getOptionValue(LdMatrixOptions.trio.opt);
 
         trioFile = new File(filePath);
 
@@ -121,12 +112,32 @@ public class ExtractTransmissionOptionsBean {
 
         }
 
+        // The max distance
+        if (aLine.hasOption(LdMatrixOptions.maxDistance.opt)) {
+
+            String stringValue = aLine.getOptionValue(LdMatrixOptions.maxDistance.opt);
+
+            maxDistance = Integer.parseInt(stringValue);
+
+            if (maxDistance <= 0) {
+
+                throw new IllegalArgumentException("Distance (" + maxDistance + ") should be a stricly positive integer.");
+
+            }
+        }
+
+        // Hard calls
+        if (aLine.hasOption(LdMatrixOptions.hardCalls.opt)) {
+
+            hardCalls = true;
+        }
+
         // The output file
-        filePath = aLine.getOptionValue(ExtractTransmissionOptions.out.opt);
+        filePath = aLine.getOptionValue(LdMatrixOptions.out.opt);
 
-        destinationStem = filePath;
+        destinationFile = filePath;
 
-        File destinationFolder = (new File(destinationStem)).getParentFile();
+        File destinationFolder = (new File(destinationFile)).getParentFile();
 
         if (!destinationFolder.exists()) {
 
@@ -135,9 +146,9 @@ public class ExtractTransmissionOptionsBean {
         }
 
         // Number of variants to chew in parallel
-        if (aLine.hasOption(ExtractTransmissionOptions.nVariants.opt)) {
+        if (aLine.hasOption(LdMatrixOptions.nVariants.opt)) {
 
-            String argString = aLine.getOptionValue(ExtractTransmissionOptions.nVariants.opt);
+            String argString = aLine.getOptionValue(LdMatrixOptions.nVariants.opt);
 
             try {
 
@@ -163,9 +174,9 @@ public class ExtractTransmissionOptionsBean {
         }
 
         // Timeout
-        if (aLine.hasOption(ExtractTransmissionOptions.timeOut.opt)) {
+        if (aLine.hasOption(LdMatrixOptions.timeOut.opt)) {
 
-            String argString = aLine.getOptionValue(ExtractTransmissionOptions.timeOut.opt);
+            String argString = aLine.getOptionValue(LdMatrixOptions.timeOut.opt);
 
             try {
 
@@ -191,7 +202,7 @@ public class ExtractTransmissionOptionsBean {
         }
 
         // Test
-        test = aLine.hasOption(ExtractTransmissionOptions.test.opt);
+        test = aLine.hasOption(LdMatrixOptions.test.opt);
 
     }
 }

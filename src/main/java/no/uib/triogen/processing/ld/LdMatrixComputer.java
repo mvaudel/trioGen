@@ -14,7 +14,6 @@ import no.uib.triogen.io.genotypes.iterators.VariantIterator;
 import no.uib.triogen.io.ld.LdMatrixWriter;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
-import no.uib.triogen.model.geno.InputType;
 import no.uib.triogen.model.geno.VariantIndex;
 import no.uib.triogen.model.geno.VariantList;
 
@@ -39,25 +38,17 @@ public class LdMatrixComputer {
      */
     private final GenotypesFileType genotypesFileType;
     /**
-     * The child ids of the trios to include.
-     */
-    private final String[] childIds;
-    /**
      * The map of trios.
      */
     private final ChildToParentMap childToParentMap;
-    /**
-     * The variants to process.
-     */
-    private final VariantList variantList;
     /**
      * The bp distance used to compute the ld in sliding windows. A max distance of 10 bp means a sliding window of 20 bp.
      */
     private final int maxDistance;
     /**
-     * The genotype input type.
+     * Boolean indicating whether hard calls should be used.
      */
-    private final InputType inputType;
+    private final boolean hardCalls;
     /**
      * Index for the variants.
      */
@@ -80,36 +71,30 @@ public class LdMatrixComputer {
      *
      * @param genotypesFile The file containing the genotypes.
      * @param genotypesFileType The type of genotypes file.
-     * @param childIds The child ids of the trios to include.
      * @param childToParentMap The map of trios.
-     * @param variantList The variants to process.
      * @param destinationFile File to write to.
      * @param maxDistance The maximal number of bp to allow between variants.
-     * @param inputType The genotype input type.
+     * @param hardCalls Boolean indicating whether hard calls should be used instead of dosages.
      * @param nVariants The number of variants to process in parallel.
      * @param logger The logger.
      */
     public LdMatrixComputer(
             File genotypesFile,
             GenotypesFileType genotypesFileType,
-            String[] childIds,
             ChildToParentMap childToParentMap,
-            VariantList variantList,
             File destinationFile,
             int maxDistance,
-            InputType inputType,
+            boolean hardCalls,
             int nVariants,
             Logger logger
     ) {
 
         this.genotypesFile = genotypesFile;
         this.genotypesFileType = genotypesFileType;
-        this.childIds = childIds;
         this.childToParentMap = childToParentMap;
-        this.variantList = variantList;
         this.destinationFile = destinationFile;
         this.maxDistance = maxDistance;
-        this.inputType = inputType;
+        this.hardCalls = hardCalls;
         this.nVariants = nVariants;
         this.logger = logger;
 
@@ -137,16 +122,13 @@ public class LdMatrixComputer {
 
         }
 
-        String nVariantsText = variantList == null ? "" : ", " + variantList.variantId.length + " variants";
-
-        logger.logMessage("LD extraction (geno: " + genotypesFile.getAbsolutePath() + nVariantsText + ")");
+        logger.logMessage("LD extraction (geno: " + genotypesFile.getAbsolutePath() + ")");
 
         long start = Instant.now().getEpochSecond();
 
         VariantIterator iterator = GenotypesFileType.getVariantIterator(
                 genotypesFile,
-                genotypesFileType,
-                variantList
+                genotypesFileType
         );
         
         BufferedGenotypesIterator bufferedIterator = new BufferedGenotypesIterator(
@@ -168,11 +150,10 @@ public class LdMatrixComputer {
                     .mapToObj(
                             i -> new LdMatrixComputerRunnable(
                                     writer,
-                                    bufferedIterator, 
-                                    childIds, 
+                                    bufferedIterator,
                                     childToParentMap, 
                                     maxDistance, 
-                                    inputType,
+                                    hardCalls,
                                     variantIndex, 
                                     logger
                             )

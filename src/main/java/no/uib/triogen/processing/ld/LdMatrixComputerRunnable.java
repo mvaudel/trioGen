@@ -5,11 +5,9 @@ import no.uib.triogen.io.genotypes.iterators.BufferedGenotypesIterator;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
-import no.uib.triogen.io.genotypes.iterators.VariantIterator;
 import no.uib.triogen.io.ld.LdMatrixWriter;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
-import no.uib.triogen.model.geno.InputType;
 import no.uib.triogen.model.geno.VariantIndex;
 
 /**
@@ -28,10 +26,6 @@ public class LdMatrixComputerRunnable implements Runnable {
      */
     private final BufferedGenotypesIterator iterator;
     /**
-     * The child ids of the trios to include.
-     */
-    private final String[] childIds;
-    /**
      * The map of trios.
      */
     private final ChildToParentMap childToParentMap;
@@ -41,9 +35,9 @@ public class LdMatrixComputerRunnable implements Runnable {
      */
     private final int maxDistance;
     /**
-     * The genotype input type.
+     * Boolean indicating whether hard calls should be used.
      */
-    private final InputType inputType;
+    private final boolean hardCalls;
     /**
      * Index for the variants.
      */
@@ -62,30 +56,27 @@ public class LdMatrixComputerRunnable implements Runnable {
      *
      * @param writer The writer to use.
      * @param iterator The variant iterator.
-     * @param childIds The child ids of the trios to include.
      * @param childToParentMap The map of trios.
      * @param maxDistance The maximal number of bp to allow between variants.
-     * @param inputType The genotype input type.
+     * @param hardCalls Boolean indicating whether hard calls should be used instead of dosages.
      * @param variantIndex The index to use for the variants.
      * @param logger The logger.
      */
     public LdMatrixComputerRunnable(
             LdMatrixWriter writer,
             BufferedGenotypesIterator iterator,
-            String[] childIds,
             ChildToParentMap childToParentMap,
             int maxDistance,
-            InputType inputType,
+            boolean hardCalls,
             VariantIndex variantIndex,
             Logger logger
     ) {
 
         this.writer = writer;
         this.iterator = iterator;
-        this.childIds = childIds;
         this.childToParentMap = childToParentMap;
         this.maxDistance = maxDistance;
-        this.inputType = inputType;
+        this.hardCalls = hardCalls;
         this.variantIndex = variantIndex;
         this.logger = logger;
 
@@ -118,11 +109,11 @@ public class LdMatrixComputerRunnable implements Runnable {
                         double nAB = 0.0;
                         double nA = 0.0;
                         double nB = 0.0;
-                        double n = 2 * childIds.length;
+                        double n = 2 * childToParentMap.children.length;
 
-                        for (String childId : childIds) {
+                        for (String childId : childToParentMap.children) {
 
-                            if (inputType == InputType.dosages) {
+                            if (!hardCalls) {
                                 
                                 String motherId = childToParentMap.getMother(childId);
                                 
@@ -148,7 +139,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                                 nB += pB0;
                                 nAB += pA0 * pB0;
 
-                            } else if (inputType == InputType.hard_calls) {
+                            } else {
 
                                 short[] hA = genotypesProviderA.getH(childToParentMap, childId);
                                 short[] hB = genotypesProviderB.getH(childToParentMap, childId);
@@ -157,45 +148,29 @@ public class LdMatrixComputerRunnable implements Runnable {
                                 boolean b = hB[0] == 0 && hB[1] == 0;
 
                                 if (a) {
-
                                     nA++;
-
                                     if (b) {
-
                                         nAB++;
-
                                     }
                                 }
 
                                 if (b) {
-
                                     nB++;
-
                                 }
 
                                 a = hA[2] == 0 && hA[3] == 0;
                                 b = hB[2] == 0 && hB[3] == 0;
 
                                 if (a) {
-
                                     nA++;
-
                                     if (b) {
-
                                         nAB++;
-
                                     }
                                 }
 
                                 if (b) {
-
                                     nB++;
-
                                 }
-                            } else {
-
-                                throw new UnsupportedOperationException("Input type " + inputType + " not supported.");
-
                             }
                         }
 

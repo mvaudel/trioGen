@@ -68,11 +68,31 @@ public enum GenotypesFileType {
     /**
      * Returns a variant iterator for the given file and file type.
      *
-     * @param genotypesFile the file containing the genotypes
-     * @param genotypesFileType the genotypes file type
-     * @param variantList the variants to process
+     * @param genotypesFile The file containing the genotypes.
+     * @param genotypesFileType The genotypes file type.
      *
-     * @return a variant iterator
+     * @return An iterator for the variants.
+     */
+    public static VariantIterator getVariantIterator(
+            File genotypesFile,
+            GenotypesFileType genotypesFileType
+    ) {
+        
+        return getVariantIterator(
+                genotypesFile, 
+                genotypesFileType
+        );
+        
+    }
+
+    /**
+     * Returns a variant iterator for the given file and file type.
+     *
+     * @param genotypesFile The file containing the genotypes.
+     * @param genotypesFileType The genotypes file type.
+     * @param variantList The variants to process.
+     *
+     * @return An iterator for the variants.
      */
     public static VariantIterator getVariantIterator(
             File genotypesFile,
