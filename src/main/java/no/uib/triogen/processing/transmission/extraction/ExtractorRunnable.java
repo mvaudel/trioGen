@@ -2,7 +2,6 @@ package no.uib.triogen.processing.transmission.extraction;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import no.uib.triogen.io.flat.SimpleFileWriter;
@@ -135,7 +134,7 @@ public class ExtractorRunnable implements Runnable {
             GenotypesProvider genotypesProvider
     ) {
 
-        HashMap<String, int[]> hMap = Arrays.stream(childToParentMap.children)
+        HashMap<String, short[]> hMap = Arrays.stream(childToParentMap.children)
                 .parallel()
                 .collect(
                         Collectors.toMap(
@@ -169,7 +168,7 @@ public class ExtractorRunnable implements Runnable {
      * @return a tab separated string of the hs of all kids
      */
     private String aggregateH(
-            HashMap<String, int[]> hMap,
+            HashMap<String, short[]> hMap,
             int i
     ) {
 

@@ -186,7 +186,7 @@ public class LinearModelRunnable implements Runnable {
             if (!Double.isNaN(y) && !Double.isInfinite(y)) {
 
                 String childId = childToParentMap.children[i];
-                int[] h = genotypesProvider.getH(childToParentMap, childId);
+                short[] h = genotypesProvider.getH(childToParentMap, childId);
 
                 h1_0 = h1_0 || h[0] == 0;
                 h1_1 = h1_1 || h[0] == 1;
@@ -227,7 +227,7 @@ public class LinearModelRunnable implements Runnable {
 
                 }
 
-                TreeMap<Integer, Integer>[] hHist = new TreeMap[4];
+                TreeMap<Short, Integer>[] hHist = new TreeMap[4];
 
                 for (int j = 0; j < 4; j++) {
 
@@ -235,9 +235,9 @@ public class LinearModelRunnable implements Runnable {
 
                 }
 
-                TreeMap<Integer, Integer> childHist = new TreeMap<>();
-                TreeMap<Integer, Integer> motherHist = new TreeMap<>();
-                TreeMap<Integer, Integer> fatherHist = new TreeMap<>();
+                TreeMap<Short, Integer> childHist = new TreeMap<>();
+                TreeMap<Short, Integer> motherHist = new TreeMap<>();
+                TreeMap<Short, Integer> fatherHist = new TreeMap<>();
 
                 for (int i = 0; i < indexes.length; i++) {
 
@@ -246,13 +246,13 @@ public class LinearModelRunnable implements Runnable {
                     double y = phenotypes[index];
                     String childId = childToParentMap.children[index];
 
-                    int[] h = genotypesProvider.getH(childToParentMap, childId);
+                    short[] h = genotypesProvider.getH(childToParentMap, childId);
 
                     for (int j = 0; j < 4; j++) {
 
-                        int hJ = h[j];
+                        short hJ = h[j];
 
-                        TreeMap<Integer, Integer> hHistJ = hHist[j];
+                        TreeMap<Short, Integer> hHistJ = hHist[j];
                         Integer frequency = hHistJ.get(hJ);
 
                         if (frequency != null) {
@@ -266,7 +266,7 @@ public class LinearModelRunnable implements Runnable {
                         }
                     }
 
-                    int nAltChild = h[0] + h[2];
+                    short nAltChild = (short) (h[0] + h[2]);
 
                     Integer frequency = childHist.get(nAltChild);
 
@@ -280,7 +280,7 @@ public class LinearModelRunnable implements Runnable {
 
                     }
 
-                    int nAltMother = h[0] + h[1];
+                    short nAltMother = (short) (h[0] + h[1]);
 
                     frequency = motherHist.get(nAltMother);
 
@@ -294,7 +294,7 @@ public class LinearModelRunnable implements Runnable {
 
                     }
 
-                    int nAltFather = h[2] + h[3];
+                    short nAltFather = (short) (h[2] + h[3]);
 
                     frequency = fatherHist.get(nAltFather);
 
@@ -313,7 +313,15 @@ public class LinearModelRunnable implements Runnable {
                         Model model = models[k];
                         double[][] x = modelsX.get(k);
 
-                        Model.fillX(x, model, i, h, nAltChild, nAltMother, nAltFather);
+                        Model.fillX(
+                                x, 
+                                model, 
+                                i, 
+                                h, 
+                                nAltChild, 
+                                nAltMother, 
+                                nAltFather
+                        );
 
                     }
 
@@ -458,7 +466,7 @@ public class LinearModelRunnable implements Runnable {
      * @return a string for the histogram
      */
     private String getHistogramAsString(
-            TreeMap<Integer, Integer> hHist
+            TreeMap<Short, Integer> hHist
     ) {
 
         return hHist.entrySet().stream()

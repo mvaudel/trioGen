@@ -106,8 +106,8 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                         for (String childId : childIds) {
 
-                            int[] hA = genotypesProviderA.getH(childToParentMap, childId);
-                            int[] hB = genotypesProviderB.getH(childToParentMap, childId);
+                            short[] hA = genotypesProviderA.getH(childToParentMap, childId);
+                            short[] hB = genotypesProviderB.getH(childToParentMap, childId);
 
                             boolean a = hA[0] == 0 && hA[1] == 0;
                             boolean b = hB[0] == 0 && hB[1] == 0;

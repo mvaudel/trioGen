@@ -51,7 +51,7 @@ public class VcfVariant implements GenotypesProvider {
     }
 
     @Override
-    public int getGenotype(String sampleId) {
+    public short getGenotype(String sampleId) {
         
         Genotype genotype = variantContext.getGenotype(sampleId);
         
@@ -93,7 +93,7 @@ public class VcfVariant implements GenotypesProvider {
     }
     
     @Override
-    public int[] getH(
+    public short[] getH(
             ChildToParentMap childToParentMap,
             String childId
     ) {
@@ -101,19 +101,19 @@ public class VcfVariant implements GenotypesProvider {
         String motherId = childToParentMap.getMother(childId);
         String fatherId = childToParentMap.getFather(childId);
 
-        int genotypeKid = getGenotype(childId);
-        int genotypeMother = getGenotype(motherId);
-        int genotypeFather = getGenotype(fatherId);
+        short genotypeKid = getGenotype(childId);
+        short genotypeMother = getGenotype(motherId);
+        short genotypeFather = getGenotype(fatherId);
 
-        int nAltMother = genotypeMother >= 2 ? genotypeMother - 1 : genotypeMother;
-        int nAltFather = genotypeFather >= 2 ? genotypeFather - 1 : genotypeFather;
+        short nAltMother = (short) (genotypeMother >= 2 ? genotypeMother - 1 : genotypeMother);
+        short nAltFather = (short) (genotypeFather >= 2 ? genotypeFather - 1 : genotypeFather);
 
-        int h3 = genotypeKid == 0 || genotypeKid == 2 ? 0 : 1;
-        int h1 = genotypeKid == 0 || genotypeKid == 1 ? 0 : 1;
-        int h2 = nAltMother - h1;
-        int h4 = nAltFather - h3;
+        short h3 = (short) (genotypeKid == 0 || genotypeKid == 2 ? 0 : 1);
+        short h1 = (short) (genotypeKid == 0 || genotypeKid == 1 ? 0 : 1);
+        short h2 = (short) (nAltMother - h1);
+        short h4 = (short) (nAltFather - h3);
 
-        return new int[]{h1, h2, h3, h4};
+        return new short[]{h1, h2, h3, h4};
 
     }
 

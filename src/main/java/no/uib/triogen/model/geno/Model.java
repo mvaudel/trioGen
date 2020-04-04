@@ -191,7 +191,7 @@ public enum Model {
             double[][] x,
             Model model,
             int index,
-            int[] h,
+            short[] h,
             int nAltChild,
             int nAltMother,
             int nAltFather

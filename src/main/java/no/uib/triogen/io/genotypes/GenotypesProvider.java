@@ -21,19 +21,19 @@ public interface GenotypesProvider {
      *
      * @return the genotype
      */
-    public int getGenotype(
+    public short getGenotype(
             String sampleId
     );
     
     /**
-     * Returns the hs according to the nomenclature of Chen et al. (https://doi.org/10.1101/737106).
+     * Returns the hs for a trio according to the nomenclature of Chen et al. (https://doi.org/10.1101/737106).
      *
-     * @param sampleId the id of the sample
-     * @param childToParentMap the child to parent map
+     * @param sampleId The id of the child in the trio.
+     * @param childToParentMap The child to parent map.
      *
-     * @return the genotype
+     * @return An array containing the hs.
      */
-    public int[] getH(
+    public short[] getH(
             ChildToParentMap childToParentMap,
             String sampleId
     );
