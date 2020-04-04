@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.genotypes.iterators.VariantIterator;
+import no.uib.triogen.io.ld.LdMatrixWriter;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.geno.InputType;
@@ -18,6 +19,10 @@ import no.uib.triogen.model.geno.VariantIndex;
  */
 public class LdMatrixComputerRunnable implements Runnable {
 
+    /**
+     * The writer.
+     */
+    private final LdMatrixWriter writer;
     /**
      * The buffer.
      */
@@ -55,6 +60,7 @@ public class LdMatrixComputerRunnable implements Runnable {
     /**
      * Constructor.
      *
+     * @param writer The writer to use.
      * @param iterator The variant iterator.
      * @param childIds The child ids of the trios to include.
      * @param childToParentMap The map of trios.
@@ -64,6 +70,7 @@ public class LdMatrixComputerRunnable implements Runnable {
      * @param logger The logger.
      */
     public LdMatrixComputerRunnable(
+            LdMatrixWriter writer,
             BufferedGenotypesIterator iterator,
             String[] childIds,
             ChildToParentMap childToParentMap,
@@ -73,6 +80,7 @@ public class LdMatrixComputerRunnable implements Runnable {
             Logger logger
     ) {
 
+        this.writer = writer;
         this.iterator = iterator;
         this.childIds = childIds;
         this.childToParentMap = childToParentMap;
@@ -206,6 +214,15 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                         }
                     }
+                }
+                
+                if (!variantIds.isEmpty()) {
+                    
+                    writer.addVariant(
+                            variantIdA, 
+                            variantIds, 
+                            r2s
+                    );
                 }
             }
 

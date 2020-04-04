@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.iterators.BufferedGenotypesIterator;
 import no.uib.triogen.io.genotypes.iterators.VariantIterator;
+import no.uib.triogen.io.ld.LdMatrixWriter;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.geno.InputType;
@@ -153,6 +154,11 @@ public class LdMatrixComputer {
                 (int) LOADING_FACTOR * maxDistance, 
                 (int) LOADING_FACTOR * maxDistance
         );
+        
+        LdMatrixWriter writer = new LdMatrixWriter(
+                variantIndex,
+                destinationFile
+        );
 
         try {
 
@@ -161,6 +167,7 @@ public class LdMatrixComputer {
             IntStream.range(0, nVariants)
                     .mapToObj(
                             i -> new LdMatrixComputerRunnable(
+                                    writer,
                                     bufferedIterator, 
                                     childIds, 
                                     childToParentMap, 
