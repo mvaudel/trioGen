@@ -11,6 +11,10 @@ import no.uib.triogen.model.family.ChildToParentMap;
 public class VcfLine implements GenotypesProvider {
 
     /**
+     * Vcf key for the genotyping floag.
+     */
+    public final static String TYPED = "TYPED";
+    /**
      * The iterator used to parse the file.
      */
     private final CustomVcfIterator vcfIterator;
@@ -44,6 +48,10 @@ public class VcfLine implements GenotypesProvider {
      * The alternative allele.
      */
     private String alt;
+    /**
+     * Boolean indicating whether the marker was genotyped.
+     */
+    private boolean typed;
 
     /**
      * Constructor.
@@ -67,7 +75,7 @@ public class VcfLine implements GenotypesProvider {
         indexes = new int[vcfIterator.getnSamples()];
 
         int nSeparators = 0;
-        int index1 = 0;
+        int index1 = -1;
 
         for (int index = 0; index < line.length(); index++) {
 
@@ -106,6 +114,16 @@ public class VcfLine implements GenotypesProvider {
                     alt = line.substring(index1 + 1, index);
                     index1 = index;
                 
+                } else if (nSeparators == 7) {
+                    
+                    index1 = index;
+                
+                } else if (nSeparators == 8) {
+                    
+                    String info = line.substring(index1 + 1, index);
+                    typed = info.startsWith(TYPED);
+                    index1 = index;
+                
                 }
             }
         }
@@ -116,6 +134,41 @@ public class VcfLine implements GenotypesProvider {
 
         return variantId;
 
+    }
+
+    @Override
+    public String getContig() {
+        
+        return contig;
+        
+    }
+
+    @Override
+    public int getBp() {
+        
+        return bp;
+        
+    }
+
+    @Override
+    public String getRef() {
+        
+        return ref;
+        
+    }
+
+    @Override
+    public String getAlt() {
+        
+        return alt;
+        
+    }
+
+    @Override
+    public boolean genotyped() {
+        
+        return typed;
+        
     }
 
     @Override
@@ -201,30 +254,32 @@ public class VcfLine implements GenotypesProvider {
     }
 
     @Override
-    public String getContig() {
-        
-        return contig;
-        
-    }
+    public float[] getDosages(String sampleId) {
 
-    @Override
-    public int getBp() {
+        int sampleIndex = vcfIterator.getSampleIndex(sampleId);
+        int index1 = indexes[sampleIndex] + 1;
+        int index2 = sampleIndex == indexes.length - 1 ? line.length() : indexes[sampleIndex + 1];
         
-        return bp;
+        String sampleData = line.substring(index1, index2);
+        String[] split = sampleData.split(":");
+        String[] dosagesString = split[split.length - 1].split(",");
         
-    }
-
-    @Override
-    public String getRef() {
+        if (dosagesString.length != 3) {
+            
+            throw new IllegalArgumentException(
+                    dosagesString.length + " dosages found where 3 expected."
+            );
+        }
         
-        return ref;
+        float[] result = new float[3];
         
-    }
-
-    @Override
-    public String getAlt() {
+        for (int i = 0 ; i < 3 ; i++) {
+            
+            result[i] = Float.parseFloat(dosagesString[i]);
+            
+        }
         
-        return alt;
+        return result;
         
     }
 }

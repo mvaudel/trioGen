@@ -16,6 +16,15 @@ import no.uib.triogen.model.family.ChildToParentMap;
 public class VcfVariant implements GenotypesProvider {
     
     /**
+     * Vcf key for the genotyping floag.
+     */
+    public final static String TYPED = "TYPED";
+    /**
+     * Vcf key for the dosages.
+     */
+    public final static String DOSAGE_KEY = "GP";
+    
+    /**
      * The variant context.
      */
     private final VariantContext variantContext;
@@ -48,6 +57,53 @@ public class VcfVariant implements GenotypesProvider {
         
         altAllele = altAlleles.get(0);
     
+    }
+
+    @Override
+    public String getVariantID() {
+        
+        return variantContext.getID();
+        
+    }
+
+    @Override
+    public String getContig() {
+        
+        return variantContext.getContig();
+        
+    }
+
+    @Override
+    public int getBp() {
+        
+        return variantContext.getStart();
+        
+    }
+
+    @Override
+    public String getRef() {
+        
+        return variantContext.getReference().getBaseString();
+        
+    }
+
+    @Override
+    public String getAlt() {
+        
+        return variantContext.getAlternateAlleles().stream()
+                .map(
+                        allele -> allele.getBaseString()
+                )
+                .collect(
+                        Collectors.joining(",")
+                );
+    }
+
+    @Override
+    public boolean genotyped() {
+        
+        return variantContext.hasAttribute(TYPED);
+        
     }
 
     @Override
@@ -84,13 +140,6 @@ public class VcfVariant implements GenotypesProvider {
 
         }
     }
-
-    @Override
-    public String getVariantID() {
-        
-        return variantContext.getID();
-        
-    }
     
     @Override
     public short[] getH(
@@ -118,36 +167,30 @@ public class VcfVariant implements GenotypesProvider {
     }
 
     @Override
-    public String getContig() {
+    public float[] getDosages(String sampleId) {
         
-        return variantContext.getContig();
+        String attribute = variantContext.getAttributeAsString(DOSAGE_KEY, sampleId);
         
-    }
-
-    @Override
-    public int getBp() {
+        if (attribute == null) {
+            
+            throw new IllegalArgumentException(
+                    "Attribute for dosages (" + DOSAGE_KEY + ") not found."
+            );
+            
+        }
         
-        return variantContext.getStart();
+        String[] split = attribute.split(",");
         
-    }
-
-    @Override
-    public String getRef() {
+        float[] dosages = new float[3];
         
-        return variantContext.getReference().getBaseString();
+        for (int i = 0 ; i < 3 ; i++) {
+            
+            dosages[i] = Float.parseFloat(split[i]);
+            
+        }
         
-    }
-
-    @Override
-    public String getAlt() {
+        return dosages;
         
-        return variantContext.getAlternateAlleles().stream()
-                .map(
-                        allele -> allele.getBaseString()
-                )
-                .collect(
-                        Collectors.joining(",")
-                );
     }
 
 }

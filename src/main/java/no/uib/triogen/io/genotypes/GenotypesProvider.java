@@ -15,13 +15,24 @@ public interface GenotypesProvider {
     public void parse();
     
     /**
-     * Returns the genotype for a given sample. 0: 0|0 1: 1|0 2: 0|1 3: 1|1
+     * Returns the hard-called genotype for a given sample. 0: 0|0 1: 1|0 2: 0|1 3: 1|1
      *
-     * @param sampleId the id of the sample
+     * @param sampleId The id of the sample.
      *
-     * @return the genotype
+     * @return The hard-called genotype.
      */
     public short getGenotype(
+            String sampleId
+    );
+    
+    /**
+     * Returns the dosages for the given sample as an array [p0, p1, p2].
+     *
+     * @param sampleId The id of the sample.
+     *
+     * @return The dosages.
+     */
+    public float[] getDosages(
             String sampleId
     );
     
@@ -68,9 +79,16 @@ public interface GenotypesProvider {
 
     /**
      * Returns the alternative allele of the variant.
-     
+     *
      * @return the alternative allele of the variant
      */
     public String getAlt();
+    
+    /**
+     * Returns a boolean indicating whether the marker is genotyped.
+     *
+     * @return A boolean indicating whether the marker is genotyped.
+     */
+    public boolean genotyped();
 
 }

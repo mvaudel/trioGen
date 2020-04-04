@@ -13,6 +13,7 @@ import no.uib.triogen.io.genotypes.iterators.BufferedGenotypesIterator;
 import no.uib.triogen.io.genotypes.iterators.VariantIterator;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.geno.InputType;
 import no.uib.triogen.model.geno.VariantIndex;
 import no.uib.triogen.model.geno.VariantList;
 
@@ -53,6 +54,10 @@ public class LdMatrixComputer {
      */
     private final int maxDistance;
     /**
+     * The genotype input type.
+     */
+    private final InputType inputType;
+    /**
      * Index for the variants.
      */
     private final VariantIndex variantIndex = new VariantIndex();
@@ -79,6 +84,7 @@ public class LdMatrixComputer {
      * @param variantList The variants to process.
      * @param destinationFile File to write to.
      * @param maxDistance The maximal number of bp to allow between variants.
+     * @param inputType The genotype input type.
      * @param nVariants The number of variants to process in parallel.
      * @param logger The logger.
      */
@@ -90,6 +96,7 @@ public class LdMatrixComputer {
             VariantList variantList,
             File destinationFile,
             int maxDistance,
+            InputType inputType,
             int nVariants,
             Logger logger
     ) {
@@ -101,6 +108,7 @@ public class LdMatrixComputer {
         this.variantList = variantList;
         this.destinationFile = destinationFile;
         this.maxDistance = maxDistance;
+        this.inputType = inputType;
         this.nVariants = nVariants;
         this.logger = logger;
 
@@ -157,6 +165,7 @@ public class LdMatrixComputer {
                                     childIds, 
                                     childToParentMap, 
                                     maxDistance, 
+                                    inputType,
                                     variantIndex, 
                                     logger
                             )
