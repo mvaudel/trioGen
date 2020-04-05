@@ -14,6 +14,7 @@ import static no.uib.triogen.io.IoUtils.SEPARATOR;
 import no.uib.triogen.io.TempByteArray;
 import static no.uib.triogen.io.ld.LdMatrixUtils.MAGIC_NUMBER;
 import no.uib.triogen.model.geno.VariantIndex;
+import no.uib.triogen.utils.SimpleSemaphore;
 import no.uib.triogen.utils.Utils;
 
 /**
@@ -47,6 +48,10 @@ public class LdMatrixWriter implements AutoCloseable {
      * List of the index in the file.
      */
     private final ArrayList<Integer> indexesInFile = new ArrayList<>();
+    /**
+     * Semaphore to synchronize threads writing to the file.
+     */
+    private final SimpleSemaphore semaphore = new SimpleSemaphore(1);
 
     /**
      * Constructor.
@@ -87,17 +92,6 @@ public class LdMatrixWriter implements AutoCloseable {
             ArrayList<Double> r2s
     ) throws IOException {
 
-        long index = raf.getFilePointer() - HEADER_LENGTH;
-
-        if (index > Integer.MAX_VALUE) {
-
-            throw new IOException("File exceeds memory mapped reader max buffer size.");
-
-        }
-        
-        variantIndexes.add(variantIndex);
-        indexesInFile.add((int) index);
-
         int nVariants = variantIds.size();
         ByteBuffer buffer = ByteBuffer.allocate(nVariants * Integer.BYTES + nVariants * Double.BYTES);
         
@@ -110,9 +104,24 @@ public class LdMatrixWriter implements AutoCloseable {
         
         TempByteArray compressedData = compress(buffer.array());
         
+        semaphore.acquire();
+
+        long index = raf.getFilePointer() - HEADER_LENGTH;
+
+        if (index > Integer.MAX_VALUE) {
+
+            throw new IOException("File exceeds memory mapped reader max buffer size.");
+
+        }
+        
+        variantIndexes.add(variantIndex);
+        indexesInFile.add((int) index);
+        
         raf.writeInt(nVariants);
         raf.writeInt(compressedData.length);
         raf.write(compressedData.array, 0, compressedData.length);
+        
+        semaphore.release();
         
     }
 

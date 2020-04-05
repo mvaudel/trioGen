@@ -117,10 +117,14 @@ public class BufferedGenotypesIterator {
         while (!contig.equals(contigList.peekFirst())) {
 
             bufferSemaphore.acquire();
-                    
-                    System.out.println("Removing contig " + contigList.peekFirst());
 
-            buffer.remove(contigList.pollFirst());
+            if (!contig.equals(contigList.peekFirst())) {
+
+                System.out.println("Removing contig " + contigList.peekFirst());
+
+                buffer.remove(contigList.pollFirst());
+
+            }
 
             bufferSemaphore.release();
 
@@ -166,8 +170,8 @@ public class BufferedGenotypesIterator {
                 bufferSemaphore.acquire();
 
                 if (bp + upStreamDistance > currentMaxBp.get(contig)) {
-                    
-                    System.out.println("Filling buffer to " + (bp + upStreamDistance) + "(bp " + bp + "max " + currentMaxBp.get(contig) + ")");
+
+                    System.out.println("Filling buffer to " + (bp + upStreamDistance) + "(bp " + bp + " max " + currentMaxBp.get(contig) + ")");
 
                     while (bp + LOADING_FACTOR * upStreamDistance >= currentMaxBp.get(contig)) {
 
@@ -205,9 +209,9 @@ public class BufferedGenotypesIterator {
                         batch.clear();
 
                     }
-                    
+
                     System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ")");
-                    
+
                 }
 
                 bufferSemaphore.release();
@@ -220,7 +224,7 @@ public class BufferedGenotypesIterator {
                 bufferSemaphore.acquire();
 
                 if (bp - LOADING_FACTOR * downStreamDistance > currentMinBp.get(contig)) {
-                    
+
                     System.out.println("Trimming buffer to " + (bp - downStreamDistance) + "(bp " + bp + ")");
 
                     ConcurrentHashMap<Integer, ArrayList<GenotypesProvider>> contigMap = buffer.get(contig);
@@ -234,7 +238,7 @@ public class BufferedGenotypesIterator {
                             );
 
                     currentMinBp.put(contig, bp - downStreamDistance);
-                    
+
                     System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ")");
 
                 }

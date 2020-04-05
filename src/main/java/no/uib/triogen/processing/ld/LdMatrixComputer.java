@@ -15,7 +15,6 @@ import no.uib.triogen.io.ld.LdMatrixWriter;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.geno.VariantIndex;
-import no.uib.triogen.model.geno.VariantList;
 
 /**
  * This class iterates through genotypes and writes a matrix of ld between
@@ -122,7 +121,7 @@ public class LdMatrixComputer {
 
         }
 
-        logger.logMessage("LD extraction (geno: " + genotypesFile.getAbsolutePath() + ")");
+        logger.logMessage("LD extraction (geno: " + genotypesFile.getAbsolutePath() + ") using " + nVariants + " threads.");
 
         long start = Instant.now().getEpochSecond();
 
