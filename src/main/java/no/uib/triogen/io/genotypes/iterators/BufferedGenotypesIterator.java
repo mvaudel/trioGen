@@ -160,16 +160,14 @@ public class BufferedGenotypesIterator {
 
         if (contigList.getLast().equals(contig)) {
 
-            // Load until there are enough variants in the buffer
+            // Load until enough variants are in buffer
             if (bp + upStreamDistance > currentMaxBp.get(contig)) {
 
                 bufferSemaphore.acquire();
 
-                int maxBp = currentMaxBp.get(contig);
+                if (bp + upStreamDistance > currentMaxBp.get(contig)) {
 
-                if (bp + upStreamDistance > maxBp) {
-
-                    while (bp + LOADING_FACTOR * upStreamDistance >= maxBp) {
+                    while (bp + LOADING_FACTOR * upStreamDistance >= currentMaxBp.get(contig)) {
 
                         GenotypesProvider genotypesProvider;
 
@@ -192,6 +190,8 @@ public class BufferedGenotypesIterator {
                             return;
 
                         }
+                    
+                    System.out.println("Filling buffer to " + (bp + upStreamDistance));
 
                         batch.parallelStream()
                                 .forEach(
@@ -215,9 +215,10 @@ public class BufferedGenotypesIterator {
             if (bp - LOADING_FACTOR * downStreamDistance > currentMinBp.get(contig)) {
 
                 bufferSemaphore.acquire();
-                int minBp = currentMinBp.get(contig);
 
-                if (bp - LOADING_FACTOR * downStreamDistance > minBp) {
+                if (bp - LOADING_FACTOR * downStreamDistance > currentMinBp.get(contig)) {
+                    
+                    System.out.println("Trimming buffer tail to " + (bp - downStreamDistance));
 
                     ConcurrentHashMap<Integer, ArrayList<GenotypesProvider>> contigMap = buffer.get(contig);
 
