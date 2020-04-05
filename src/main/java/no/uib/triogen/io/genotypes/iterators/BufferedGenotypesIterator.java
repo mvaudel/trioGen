@@ -147,6 +147,11 @@ public class BufferedGenotypesIterator {
 
             add(genotypesProvider);
 
+            checkBuffer(
+                    genotypesProvider.getContig(),
+                    genotypesProvider.getBp()
+            );
+
         }
     }
 

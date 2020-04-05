@@ -50,6 +50,7 @@ public class LdMatrixComputerRunnable implements Runnable {
      * Boolean indicating whether the runnable has been canceled.
      */
     private static boolean canceled = false;
+    private final int id;
 
     /**
      * Constructor.
@@ -69,7 +70,8 @@ public class LdMatrixComputerRunnable implements Runnable {
             int maxDistance,
             boolean hardCalls,
             VariantIndex variantIndex,
-            Logger logger
+            Logger logger,
+            int id
     ) {
 
         this.writer = writer;
@@ -79,6 +81,7 @@ public class LdMatrixComputerRunnable implements Runnable {
         this.hardCalls = hardCalls;
         this.variantIndex = variantIndex;
         this.logger = logger;
+        this.id = id;
 
     }
 
@@ -90,7 +93,7 @@ public class LdMatrixComputerRunnable implements Runnable {
             GenotypesProvider genotypesProviderA;
             while ((genotypesProviderA = iterator.next()) != null) {
                 
-                System.out.println("Processing " + genotypesProviderA.getVariantID() + " (chr " + genotypesProviderA.getContig() + " bp " + genotypesProviderA.getBp() + ")");
+                System.out.println("Thread " + id + ": " + genotypesProviderA.getVariantID() + " (chr " + genotypesProviderA.getContig() + " bp " + genotypesProviderA.getBp() + ")");
 
                 GenotypesProvider[] genotypesProviders = iterator.getGenotypesInRange(
                         genotypesProviderA.getContig(),
