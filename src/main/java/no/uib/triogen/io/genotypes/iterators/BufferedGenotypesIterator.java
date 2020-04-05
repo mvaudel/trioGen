@@ -168,6 +168,8 @@ public class BufferedGenotypesIterator {
                 bufferSemaphore.acquire();
 
                 if (bp + upStreamDistance > currentMaxBp.get(contig)) {
+                    
+                    System.out.println("Filling buffer to " + (bp + upStreamDistance) + "(max" + currentMaxBp.get(contig) + ")");
 
                     while (bp + LOADING_FACTOR * upStreamDistance >= currentMaxBp.get(contig)) {
 
@@ -192,8 +194,6 @@ public class BufferedGenotypesIterator {
                             return;
 
                         }
-                    
-                    System.out.println("Filling buffer to " + (bp + upStreamDistance) + "(max" + currentMaxBp.get(contig) + ")");
 
                         batch.parallelStream()
                                 .forEach(
@@ -205,8 +205,6 @@ public class BufferedGenotypesIterator {
                         );
 
                         batch.clear();
-                        
-                    System.out.println("Buffer filled to " + currentMaxBp.get(contig));
 
                     }
                 }
