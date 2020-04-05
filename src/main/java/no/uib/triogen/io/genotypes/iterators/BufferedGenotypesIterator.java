@@ -136,6 +136,8 @@ public class BufferedGenotypesIterator {
         GenotypesProvider genotypesProvider = iterator.next();
 
         if (genotypesProvider != null) {
+            
+            genotypesProvider.parse();
 
             add(genotypesProvider);
 
