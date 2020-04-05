@@ -80,7 +80,8 @@ public enum GenotypesFileType {
         
         return getVariantIterator(
                 genotypesFile, 
-                genotypesFileType
+                genotypesFileType,
+                null
         );
         
     }
