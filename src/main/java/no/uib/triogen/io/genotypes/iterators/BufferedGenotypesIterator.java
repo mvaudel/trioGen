@@ -117,6 +117,8 @@ public class BufferedGenotypesIterator {
         while (!contig.equals(contigList.peekFirst())) {
 
             bufferSemaphore.acquire();
+                    
+                    System.out.println("Removing contig " + contigList.peekFirst());
 
             buffer.remove(contigList.pollFirst());
 
@@ -191,7 +193,7 @@ public class BufferedGenotypesIterator {
 
                         }
                     
-                    System.out.println("Filling buffer to " + (bp + upStreamDistance));
+                    System.out.println("Filling buffer to " + (bp + upStreamDistance) + "(max" + currentMaxBp.get(contig) + ")");
 
                         batch.parallelStream()
                                 .forEach(
@@ -203,6 +205,8 @@ public class BufferedGenotypesIterator {
                         );
 
                         batch.clear();
+                        
+                    System.out.println("Buffer filled to " + currentMaxBp.get(contig));
 
                     }
                 }
@@ -251,12 +255,6 @@ public class BufferedGenotypesIterator {
 
         String contig = genotypesProvider.getContig();
         int bp = genotypesProvider.getBp();
-
-        if (contig == null) {
-
-            throw new IllegalArgumentException("Missing contig for variant " + genotypesProvider.getVariantID() + ".");
-
-        }
 
         currentQueue.add(genotypesProvider);
 
