@@ -136,11 +136,11 @@ public class BufferedGenotypesIterator {
         GenotypesProvider genotypesProvider = iterator.next();
 
         if (genotypesProvider != null) {
-            
+
             genotypesProvider.parse();
 
             add(genotypesProvider);
-            
+
             currentMinBp.put(genotypesProvider.getContig(), genotypesProvider.getBp());
 
         }
@@ -186,11 +186,11 @@ public class BufferedGenotypesIterator {
                             batch.add(genotypesProvider);
 
                         }
-                        
+
                         if (batch.isEmpty()) {
-                            
+
                             return;
-                            
+
                         }
 
                         batch.parallelStream()
@@ -201,7 +201,7 @@ public class BufferedGenotypesIterator {
                         batch.forEach(
                                 value -> add(value)
                         );
-                        
+
                         batch.clear();
 
                     }
@@ -215,7 +215,7 @@ public class BufferedGenotypesIterator {
             if (bp - LOADING_FACTOR * downStreamDistance > currentMinBp.get(contig)) {
 
                 bufferSemaphore.acquire();
-                int minBp = currentMaxBp.get(contig);
+                int minBp = currentMinBp.get(contig);
 
                 if (bp - LOADING_FACTOR * downStreamDistance > minBp) {
 
@@ -223,13 +223,13 @@ public class BufferedGenotypesIterator {
 
                     contigMap.keySet().stream()
                             .filter(
-                                    tempBp -> tempBp - downStreamDistance > minBp
+                                    tempBp -> tempBp < bp - downStreamDistance
                             )
                             .forEach(
                                     tempBp -> contigMap.remove(tempBp)
                             );
 
-                    currentMinBp.put(contig, minBp);
+                    currentMinBp.put(contig, bp - downStreamDistance);
 
                 }
 
