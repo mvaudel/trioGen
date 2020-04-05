@@ -18,6 +18,6 @@ do
 
     echo "Processing chromosome $chr"
 
-echo    java -Xmx32G -cp bin/triogen-0.3.0-beta/triogen-0.3.0-beta.jar no.uib.triogen.cmd.ld.LdMatrix -g $vcfFolder/$chr.vcf.gz -gf 1 -f $trioFile -o $outputFolder/chr_$chr
+echo    java -Xmx32G -cp bin/triogen-0.3.0-beta/triogen-0.3.0-beta.jar no.uib.triogen.cmd.ld.LdMatrix -g $vcfFolder/$chr.vcf.gz -gf 1 -f $trioFile -o $outputFolder/chr_$chr -nv 32
 
 done
