@@ -155,8 +155,7 @@ public class LdMatrixComputer {
                                     maxDistance, 
                                     hardCalls,
                                     variantIndex, 
-                                    logger,
-                                    i + 1
+                                    logger
                             )
                     )
                     .forEach(
