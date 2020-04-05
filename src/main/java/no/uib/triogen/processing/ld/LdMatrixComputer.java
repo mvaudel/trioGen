@@ -134,7 +134,8 @@ public class LdMatrixComputer {
         BufferedGenotypesIterator bufferedIterator = new BufferedGenotypesIterator(
                 iterator, 
                 (int) LOADING_FACTOR * maxDistance, 
-                (int) LOADING_FACTOR * maxDistance
+                (int) LOADING_FACTOR * maxDistance,
+                nVariants
         );
         
         LdMatrixWriter writer = new LdMatrixWriter(

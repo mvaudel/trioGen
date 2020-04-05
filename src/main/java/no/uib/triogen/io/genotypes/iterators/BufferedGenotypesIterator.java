@@ -56,6 +56,14 @@ public class BufferedGenotypesIterator {
      * The distance in bp to keep after the current bp.
      */
     private final ConcurrentLinkedDeque<GenotypesProvider> currentQueue = new ConcurrentLinkedDeque();
+    /**
+     * The number of variants to process in batch.
+     */
+    private final int nVariants;
+    /**
+     * Placeholder for a batch of genotypes providers.
+     */
+    private final ArrayList<GenotypesProvider> batch;
 
     /**
      * Constructor.
@@ -65,16 +73,20 @@ public class BufferedGenotypesIterator {
      * bp (inclusive).
      * @param downStreamDistance The distance in bp to keep after the current bp
      * (inclusive).
+     * @param nVariants The number of variants to process in batch.
      */
     public BufferedGenotypesIterator(
             VariantIterator iterator,
             int upStreamDistance,
-            int downStreamDistance
+            int downStreamDistance,
+            int nVariants
     ) {
 
         this.iterator = iterator;
         this.upStreamDistance = upStreamDistance;
         this.downStreamDistance = downStreamDistance;
+        this.nVariants = nVariants;
+        this.batch = new ArrayList<>(nVariants);
 
         init();
 
@@ -155,15 +167,38 @@ public class BufferedGenotypesIterator {
 
                     while (bp + LOADING_FACTOR * upStreamDistance >= maxBp) {
 
-                        GenotypesProvider genotypesProvider = iterator.next();
+                        GenotypesProvider genotypesProvider;
 
-                        if (genotypesProvider == null) {
+                        for (int i = 0; i < nVariants; i++) {
 
-                            return;
+                            genotypesProvider = iterator.next();
+
+                            if (genotypesProvider == null) {
+
+                                break;
+
+                            }
+
+                            batch.add(genotypesProvider);
 
                         }
+                        
+                        if (batch.isEmpty()) {
+                            
+                            return;
+                            
+                        }
 
-                        add(genotypesProvider);
+                        batch.parallelStream()
+                                .forEach(
+                                        value -> value.parse()
+                                );
+
+                        batch.forEach(
+                                value -> add(value)
+                        );
+                        
+                        batch.clear();
 
                     }
                 }
@@ -211,11 +246,11 @@ public class BufferedGenotypesIterator {
 
         String contig = genotypesProvider.getContig();
         int bp = genotypesProvider.getBp();
-        
+
         if (contig == null) {
-            
+
             throw new IllegalArgumentException("Missing contig for variant " + genotypesProvider.getVariantID() + ".");
-            
+
         }
 
         currentQueue.add(genotypesProvider);
