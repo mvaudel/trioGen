@@ -85,19 +85,21 @@ public class LdMatrix {
 
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
 
-        File logFile = new File(bean.destinationFile + ".log.gz");
+        File logFile = new File(bean.destinationFilePath + ".log.gz");
         Logger logger = new Logger(logFile, null);
         logger.writeComment("Software", "TrioGen");
         logger.writeComment("Version", TrioGen.getVersion());
         logger.writeComment("Command", "LinearModel");
         logger.writeComment("Arguments", command);
         logger.writeHeaders();
+        
+        File outputFile = new File(bean.destinationFilePath + ".tld");
 
         LdMatrixComputer computer = new LdMatrixComputer(
                 bean.genotypesFile, 
                 bean.genotypesFileType, 
                 childToParentMap, 
-                new File(bean.destinationFile), 
+                outputFile, 
                 bean.maxDistance, 
                 bean.hardCalls, 
                 bean.timeOut, 

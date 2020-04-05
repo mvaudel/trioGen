@@ -34,7 +34,7 @@ public class LdMatrixOptionsBean {
     /**
      * File where to write the output.
      */
-    public final String destinationFile;
+    public final String destinationFilePath;
     /**
      * The number of variants to process simultaneously.
      */
@@ -134,10 +134,16 @@ public class LdMatrixOptionsBean {
 
         // The output file
         filePath = aLine.getOptionValue(LdMatrixOptions.out.opt);
+        
+        if (filePath.endsWith(".tld")) {
+            
+            filePath = filePath.substring(0, filePath.length() - 4);
+            
+        }
 
-        destinationFile = filePath;
+        destinationFilePath = filePath;
 
-        File destinationFolder = (new File(destinationFile)).getParentFile();
+        File destinationFolder = (new File(destinationFilePath)).getParentFile();
 
         if (!destinationFolder.exists()) {
 

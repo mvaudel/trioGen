@@ -17,7 +17,7 @@ public enum LdMatrixOptions {
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not. Consider including only unrelated samples and controling for admixture.", true, true),
     maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Default: 500000.", false, true),
     hardCalls("hc", "hard_calls", "Use hard calls instead of dosages. Default: false.", false, false),
-    out("o", "out", "The file where to write the matrix.", true, true),
+    out("o", "out", "The file where to write the matrix. The extension '.tld' will be added if not present.", true, true),
     nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is the number of cores on the machine.", false, true),
     timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true),
     test("t", "test", "If present, runs only othe first 1000 variants.", false, false);
