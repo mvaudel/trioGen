@@ -211,6 +211,12 @@ public class BufferedGenotypesIterator {
 
         String contig = genotypesProvider.getContig();
         int bp = genotypesProvider.getBp();
+        
+        if (contig == null) {
+            
+            throw new IllegalArgumentException("Missing contig for variant " + genotypesProvider.getVariantID() + ".");
+            
+        }
 
         currentQueue.add(genotypesProvider);
 
