@@ -140,6 +140,8 @@ public class BufferedGenotypesIterator {
             genotypesProvider.parse();
 
             add(genotypesProvider);
+            
+            currentMinBp.put(genotypesProvider.getContig(), genotypesProvider.getBp());
 
         }
     }
@@ -210,7 +212,7 @@ public class BufferedGenotypesIterator {
             }
 
             // Remove variants outside range
-            if (bp - LOADING_FACTOR * downStreamDistance > currentMaxBp.get(contig)) {
+            if (bp - LOADING_FACTOR * downStreamDistance > currentMinBp.get(contig)) {
 
                 bufferSemaphore.acquire();
                 int minBp = currentMaxBp.get(contig);
