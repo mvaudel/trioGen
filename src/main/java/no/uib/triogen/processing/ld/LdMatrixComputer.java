@@ -45,6 +45,11 @@ public class LdMatrixComputer {
      */
     private final int maxDistance;
     /**
+     * The maf threshold. maf is computed in parents and values lower than
+     * threshold are not included (inclusive).
+     */
+    private final double mafThreshold;
+    /**
      * Boolean indicating whether hard calls should be used.
      */
     private final boolean hardCalls;
@@ -73,6 +78,8 @@ public class LdMatrixComputer {
      * @param childToParentMap The map of trios.
      * @param destinationFile File to write to.
      * @param maxDistance The maximal number of bp to allow between variants.
+     * @param mafThreshold The maf threshold. maf is computed in parents and values lower than
+     * threshold are not included (inclusive).
      * @param hardCalls Boolean indicating whether hard calls should be used instead of dosages.
      * @param nVariants The number of variants to process in parallel.
      * @param logger The logger.
@@ -83,6 +90,7 @@ public class LdMatrixComputer {
             ChildToParentMap childToParentMap,
             File destinationFile,
             int maxDistance,
+            double mafThreshold,
             boolean hardCalls,
             int nVariants,
             Logger logger
@@ -93,6 +101,7 @@ public class LdMatrixComputer {
         this.childToParentMap = childToParentMap;
         this.destinationFile = destinationFile;
         this.maxDistance = maxDistance;
+        this.mafThreshold = mafThreshold;
         this.hardCalls = hardCalls;
         this.nVariants = nVariants;
         this.logger = logger;
@@ -132,8 +141,10 @@ public class LdMatrixComputer {
         
         BufferedGenotypesIterator bufferedIterator = new BufferedGenotypesIterator(
                 iterator, 
+                childToParentMap,
                 (int) LOADING_FACTOR * maxDistance, 
                 (int) LOADING_FACTOR * maxDistance,
+                mafThreshold,
                 nVariants
         );
         

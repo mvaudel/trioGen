@@ -28,6 +28,10 @@ public class LdMatrixOptionsBean {
      */
     public int maxDistance = 500000;
     /**
+     * The maf threshold.
+     */
+    public double maf = 0.05;
+    /**
      * Boolean indicating whether hard calls should be used.
      */
     public boolean hardCalls = false;
@@ -101,7 +105,7 @@ public class LdMatrixOptionsBean {
 
         }
 
-        // the trio file
+        // The trio file
         filePath = aLine.getOptionValue(LdMatrixOptions.trio.opt);
 
         trioFile = new File(filePath);
@@ -121,7 +125,34 @@ public class LdMatrixOptionsBean {
 
             if (maxDistance <= 0) {
 
-                throw new IllegalArgumentException("Distance (" + maxDistance + ") should be a stricly positive integer.");
+                throw new IllegalArgumentException("Distance (" + maxDistance + ") must be a stricly positive integer.");
+
+            }
+        }
+
+        // The maf threshold
+        if (aLine.hasOption(LdMatrixOptions.maf.opt)) {
+            
+            String option = aLine.getOptionValue(LdMatrixOptions.maf.opt);
+
+            try {
+
+                maf = Double.parseDouble(option);
+
+                if (maf < 0.0 || maf > 1.0) {
+
+                    throw new IllegalArgumentException(
+                            "Input for maf (" + option + ") must be a number between 0 and 1."
+                    );
+                }
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                throw new IllegalArgumentException(
+                        "Input for timeout could not be parsed as a number: " + option + "."
+                );
 
             }
         }

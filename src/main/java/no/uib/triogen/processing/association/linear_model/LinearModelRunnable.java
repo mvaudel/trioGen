@@ -40,8 +40,9 @@ public class LinearModelRunnable implements Runnable {
      */
     private final ChildToParentMap childToParentMap;
     /**
-     * The maf threshold. maf is computed in parents and values lower than
-     * threshold are not included.
+     * The maf threshold. maf is computed in parents for trios where a phenotype
+     * is available and values lower than threshold are not included
+     * (inclusive).
      */
     private final double mafThreshold;
     /**
@@ -76,15 +77,17 @@ public class LinearModelRunnable implements Runnable {
     /**
      * Constructor.
      *
-     * @param iterator the variants iterator
-     * @param mafThreshold the maf threshold
-     * @param childToParentMap the child to parent map
-     * @param models the list of the names of the models to use
-     * @param phenotypesHandler the phenotypes handler
-     * @param outputWriter the output writer
-     * @param resultsIndex writer for the index of the results file
-     * @param gzIndexMutex Mutex to keep gz file and index synchronized.
-     * @param logger the logger
+     * @param iterator The variants iterator.
+     * @param mafThreshold The maf threshold. maf is computed in parents for
+     * trios where a phenotype is available and values lower than threshold are
+     * not included (inclusive).
+     * @param childToParentMap The child to parent map.
+     * @param models The list of the names of the models to use.
+     * @param phenotypesHandler The phenotypes handler.
+     * @param outputWriter The output writer.
+     * @param resultsIndex The writer for the index of the results file.
+     * @param gzIndexSemaphore The semaphore to keep gz file and index synchronized.
+     * @param logger The logger.
      */
     public LinearModelRunnable(
             VariantIterator iterator,
@@ -94,7 +97,7 @@ public class LinearModelRunnable implements Runnable {
             PhenotypesHandler phenotypesHandler,
             IndexedGzWriter outputWriter,
             SimpleFileWriter resultsIndex,
-            SimpleSemaphore gzIndexMutex,
+            SimpleSemaphore gzIndexSemaphore,
             Logger logger
     ) {
 
@@ -105,7 +108,7 @@ public class LinearModelRunnable implements Runnable {
         this.phenotypesHandler = phenotypesHandler;
         this.outputWriter = outputWriter;
         this.resultsIndex = resultsIndex;
-        this.gzIndexMutex = gzIndexMutex;
+        this.gzIndexMutex = gzIndexSemaphore;
         this.logger = logger;
 
     }
@@ -314,12 +317,12 @@ public class LinearModelRunnable implements Runnable {
                         double[][] x = modelsX.get(k);
 
                         Model.fillX(
-                                x, 
-                                model, 
-                                i, 
-                                h, 
-                                nAltChild, 
-                                nAltMother, 
+                                x,
+                                model,
+                                i,
+                                h,
+                                nAltChild,
+                                nAltMother,
                                 nAltFather
                         );
 
@@ -428,7 +431,7 @@ public class LinearModelRunnable implements Runnable {
                 String line = stringBuilder
                         .append(IoUtils.LINE_SEPARATOR)
                         .toString();
-                
+
                 gzIndexMutex.acquire();
 
                 IndexedGzCoordinates coordinates = outputWriter.append(line);
@@ -439,7 +442,7 @@ public class LinearModelRunnable implements Runnable {
                         Integer.toString(coordinates.compressedLength),
                         Integer.toString(coordinates.uncompressedLength)
                 );
-                
+
                 gzIndexMutex.release();
 
             } else {

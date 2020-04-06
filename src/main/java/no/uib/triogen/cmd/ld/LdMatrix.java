@@ -99,6 +99,7 @@ public class LdMatrix {
                 childToParentMap, 
                 outputFile, 
                 bean.maxDistance, 
+                bean.maf,
                 bean.hardCalls, 
                 bean.nVariants, 
                 logger

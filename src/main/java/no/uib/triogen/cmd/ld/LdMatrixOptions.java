@@ -16,6 +16,7 @@ public enum LdMatrixOptions {
     genoFormat("gf", "genoFormat", "The genotypes file format. " + GenotypesFileType.getCommandLineOptions() + ". Default: " + GenotypesFileType.vcf.index + ".", false, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not. Consider including only unrelated samples and controling for admixture.", true, true),
     maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Default: 500000.", false, true),
+    maf("maf", "mafThreshold", "Minor allele frequency threshold. 0.05 excludes all variants with a maf < 5% among all parents belonging to trios where a phenotype is available for the regression. Default: 0.05.", false, true),
     hardCalls("hc", "hard_calls", "Use hard calls instead of dosages. Default: false.", false, false),
     out("o", "out", "The file where to write the matrix. The extension '.tld' will be added if not present.", true, true),
     nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is the number of cores on the machine.", false, true),

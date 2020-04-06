@@ -48,7 +48,7 @@ public class LinearModelOptionsBean {
     /**
      * The maf threshold.
      */
-    public double maf = 0.0;
+    public double maf = 0.05;
     /**
      * List of the names of the models to use.
      */
@@ -152,7 +152,7 @@ public class LinearModelOptionsBean {
                 if (maf < 0.0 || maf > 1.0) {
 
                     throw new IllegalArgumentException(
-                            "Input for maf (" + option + ")must be a number between 0 and 1."
+                            "Input for maf (" + option + ") must be a number between 0 and 1."
                     );
                 }
 

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
+import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.maf.MafEstimator;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
@@ -45,6 +47,10 @@ public class BufferedGenotypesIterator {
      */
     private final VariantIterator iterator;
     /**
+     * The map of trios.
+     */
+    private final ChildToParentMap childToParentMap;
+    /**
      * The distance in bp to load ahead of the next bp.
      */
     private final int upStreamDistance;
@@ -52,6 +58,11 @@ public class BufferedGenotypesIterator {
      * The distance in bp to keep after the next bp.
      */
     private final int downStreamDistance;
+    /**
+     * The maf threshold. maf is computed in parents and values lower than
+     * threshold are not included (inclusive).
+     */
+    private final double mafThreshold;
     /**
      * The distance in bp to keep after the current bp.
      */
@@ -69,22 +80,29 @@ public class BufferedGenotypesIterator {
      * Constructor.
      *
      * @param iterator The variants iterator to use.
+     * @param childToParentMap The map of trios.
      * @param upStreamDistance The distance in bp to load ahead of the current
      * bp (inclusive).
      * @param downStreamDistance The distance in bp to keep after the current bp
      * (inclusive).
+     * @param mafThreshold The maf threshold. maf is computed in parents and
+     * values lower than threshold are not included (inclusive).
      * @param nVariants The number of variants to process in batch.
      */
     public BufferedGenotypesIterator(
             VariantIterator iterator,
+            ChildToParentMap childToParentMap,
             int upStreamDistance,
             int downStreamDistance,
+            double mafThreshold,
             int nVariants
     ) {
 
         this.iterator = iterator;
+        this.childToParentMap = childToParentMap;
         this.upStreamDistance = upStreamDistance;
         this.downStreamDistance = downStreamDistance;
+        this.mafThreshold = mafThreshold;
         this.nVariants = nVariants;
         this.batch = new ArrayList<>(nVariants);
 
@@ -139,19 +157,31 @@ public class BufferedGenotypesIterator {
      */
     private void init() {
 
-        GenotypesProvider genotypesProvider = iterator.next();
+        GenotypesProvider genotypesProvider;
 
-        if (genotypesProvider != null) {
+        while ((genotypesProvider = iterator.next()) != null) {
 
             genotypesProvider.parse();
 
-            add(genotypesProvider);
-
-            checkBuffer(
-                    genotypesProvider.getContig(),
-                    genotypesProvider.getBp()
+            double maf = MafEstimator.getMaf(
+                    genotypesProvider,
+                    childToParentMap
             );
 
+            if (maf >= mafThreshold) {
+
+                add(genotypesProvider);
+
+                checkBuffer(
+                        genotypesProvider.getContig(),
+                        genotypesProvider.getBp()
+                );
+
+            } else {
+
+                System.out.println(genotypesProvider.getVariantID() + " excluded (maf = " + maf + ")");
+
+            }
         }
     }
 
@@ -202,14 +232,30 @@ public class BufferedGenotypesIterator {
 
                         }
 
-                        batch.parallelStream()
-                                .forEach(
+                        double[] batchMaf = batch.parallelStream()
+                                .peek(
                                         value -> value.parse()
-                                );
+                                )
+                                .mapToDouble(
+                                        value -> MafEstimator.getMaf(
+                                                value,
+                                                childToParentMap
+                                        )
+                                )
+                                .toArray();
 
-                        batch.forEach(
-                                value -> add(value)
-                        );
+                        for (int i = 0; i < batch.size(); i++) {
+
+                            if (batchMaf[i] >= mafThreshold) {
+
+                                add(batch.get(i));
+
+                            } else {
+
+                                System.out.println(batch.get(i).getVariantID() + " excluded (maf = " + batchMaf[i] + ")");
+
+                            }
+                        }
 
                         batch.clear();
 
@@ -342,4 +388,5 @@ public class BufferedGenotypesIterator {
                         GenotypesProvider[]::new
                 );
     }
+
 }
