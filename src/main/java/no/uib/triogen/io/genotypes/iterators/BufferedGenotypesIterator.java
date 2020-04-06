@@ -75,6 +75,10 @@ public class BufferedGenotypesIterator {
      * Placeholder for a batch of genotypes providers.
      */
     private final ArrayList<GenotypesProvider> batch;
+    /**
+     * Boolean indicating whethr the iterator is bufferring.
+     */
+    private boolean bufferring = false;
 
     /**
      * Constructor.
@@ -118,6 +122,16 @@ public class BufferedGenotypesIterator {
     public GenotypesProvider next() {
 
         if (currentQueue.isEmpty()) {
+            
+            if (bufferring) {
+                
+                bufferSemaphore.acquire();
+                
+                bufferSemaphore.release();
+                
+                return next();
+                
+            }
 
             return null;
 
@@ -201,8 +215,8 @@ public class BufferedGenotypesIterator {
                 bufferSemaphore.acquire();
 
                 if (bp + upStreamDistance > currentMaxBp.get(contig)) {
-
-                    System.out.println("Filling buffer to " + (bp + upStreamDistance) + "(bp " + bp + " max " + currentMaxBp.get(contig) + ")");
+                    
+                    bufferring = true;
 
                     while (bp + LOADING_FACTOR * upStreamDistance >= currentMaxBp.get(contig)) {
 
@@ -252,6 +266,8 @@ public class BufferedGenotypesIterator {
                         batch.clear();
 
                     }
+                    
+                    bufferring = false;
 
                     System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ")");
 
@@ -267,8 +283,6 @@ public class BufferedGenotypesIterator {
                 bufferSemaphore.acquire();
 
                 if (bp - LOADING_FACTOR * downStreamDistance > currentMinBp.get(contig)) {
-
-                    System.out.println("Trimming buffer to " + (bp - downStreamDistance) + "(bp " + bp + ")");
 
                     ConcurrentHashMap<Integer, ArrayList<GenotypesProvider>> contigMap = buffer.get(contig);
 
