@@ -177,10 +177,6 @@ public class BufferedGenotypesIterator {
                         genotypesProvider.getBp()
                 );
 
-            } else {
-
-                System.out.println(genotypesProvider.getVariantID() + " excluded (maf = " + maf + ")");
-
             }
         }
     }
@@ -249,10 +245,6 @@ public class BufferedGenotypesIterator {
                             if (batchMaf[i] >= mafThreshold) {
 
                                 add(batch.get(i));
-
-                            } else {
-
-                                System.out.println(batch.get(i).getVariantID() + " excluded (maf = " + batchMaf[i] + ")");
 
                             }
                         }
