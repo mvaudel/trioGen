@@ -152,8 +152,6 @@ public class BufferedGenotypesIterator {
 
             if (!contig.equals(contigList.peekFirst())) {
 
-                System.out.println("Removing contig " + contigList.peekFirst());
-
                 buffer.remove(contigList.pollFirst());
 
             }
@@ -269,7 +267,7 @@ public class BufferedGenotypesIterator {
                     
                     bufferring = false;
 
-                    System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ")");
+                    System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in buffer).");
 
                 }
 
@@ -296,7 +294,7 @@ public class BufferedGenotypesIterator {
 
                     currentMinBp.put(contig, bp - downStreamDistance);
 
-                    System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ")");
+                    System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in buffer)");
 
                 }
 
