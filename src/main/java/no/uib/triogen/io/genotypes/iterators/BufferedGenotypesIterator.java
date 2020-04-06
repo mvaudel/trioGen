@@ -21,7 +21,7 @@ public class BufferedGenotypesIterator {
      * cache clean-up. With a loading factor of two, the buffer will be filled
      * twice what is needed.
      */
-    public static final double LOADING_FACTOR = 2.0;
+    public static final double LOADING_FACTOR = 1.5;
     /**
      * Highest BP in buffer for each contig.
      */
