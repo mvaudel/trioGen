@@ -76,7 +76,7 @@ public class BufferedGenotypesIterator {
      */
     private final ArrayList<GenotypesProvider> batch;
     /**
-     * Boolean indicating whethr the iterator is bufferring.
+     * Boolean indicating whether the iterator is bufferring.
      */
     private boolean bufferring = false;
 
@@ -122,15 +122,25 @@ public class BufferedGenotypesIterator {
     public GenotypesProvider next() {
 
         if (currentQueue.isEmpty()) {
-            
+
+            System.out.println("Empty buffer");
+
             if (bufferring) {
-                
+
                 bufferSemaphore.acquire();
-                
+
                 bufferSemaphore.release();
-                
+
                 return next();
-                
+
+            }
+
+            String nextVariant = init();
+
+            if (nextVariant != null) {
+
+                return next();
+
             }
 
             return null;
@@ -166,8 +176,10 @@ public class BufferedGenotypesIterator {
 
     /**
      * Sets up the iterator.
+     *
+     * @return Returns the id of the next variant, null if none found.
      */
-    private void init() {
+    private String init() {
 
         GenotypesProvider genotypesProvider;
 
@@ -189,8 +201,13 @@ public class BufferedGenotypesIterator {
                         genotypesProvider.getBp()
                 );
 
+                return genotypesProvider.getVariantID();
+
             }
         }
+
+        return null;
+
     }
 
     /**
@@ -213,7 +230,7 @@ public class BufferedGenotypesIterator {
                 bufferSemaphore.acquire();
 
                 if (bp + upStreamDistance > currentMaxBp.get(contig)) {
-                    
+
                     bufferring = true;
 
                     while (bp + LOADING_FACTOR * upStreamDistance >= currentMaxBp.get(contig)) {
@@ -264,7 +281,7 @@ public class BufferedGenotypesIterator {
                         batch.clear();
 
                     }
-                    
+
                     bufferring = false;
 
                     System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in buffer)");
@@ -293,7 +310,7 @@ public class BufferedGenotypesIterator {
                             );
 
                     currentMinBp.put(contig, bp - downStreamDistance);
-                    
+
                     System.gc();
 
                     System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in buffer)");

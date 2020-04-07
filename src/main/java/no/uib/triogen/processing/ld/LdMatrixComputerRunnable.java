@@ -89,6 +89,8 @@ public class LdMatrixComputerRunnable implements Runnable {
 
             GenotypesProvider genotypesProviderA;
             while ((genotypesProviderA = iterator.next()) != null) {
+                
+                System.out.println("Processing " + genotypesProviderA.getVariantID());
 
                 GenotypesProvider[] genotypesProviders = iterator.getGenotypesInRange(
                         genotypesProviderA.getContig(),
