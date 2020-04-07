@@ -89,8 +89,6 @@ public class LdMatrixComputerRunnable implements Runnable {
 
             GenotypesProvider genotypesProviderA;
             while ((genotypesProviderA = iterator.next()) != null) {
-                
-                System.out.println("Processing " + genotypesProviderA.getVariantID());
 
                 GenotypesProvider[] genotypesProviders = iterator.getGenotypesInRange(
                         genotypesProviderA.getContig(),
@@ -195,7 +193,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                 
                 if (!variantIds.isEmpty()) {
                 
-                System.err.println("Writing " + variantIdA + " in LD with " + variantIds.size());
+                System.err.println("Writing " + genotypesProviderA.getVariantID() + " in LD with " + variantIds.size() + " variants.");
                     
                     writer.addVariant(
                             variantIdA, 
