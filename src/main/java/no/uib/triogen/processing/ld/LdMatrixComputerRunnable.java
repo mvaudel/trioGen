@@ -192,12 +192,18 @@ public class LdMatrixComputerRunnable implements Runnable {
                 }
                 
                 if (!variantIds.isEmpty()) {
+                
+                System.err.println("Writing " + variantIdA + " in LD with " + variantIds.size());
                     
                     writer.addVariant(
                             variantIdA, 
                             variantIds, 
                             r2s
                     );
+                } else {
+                
+                System.err.println(variantIdA + " no LD ");
+                    
                 }
             }
 
