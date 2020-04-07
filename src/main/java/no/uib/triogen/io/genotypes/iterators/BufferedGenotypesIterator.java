@@ -21,7 +21,7 @@ public class BufferedGenotypesIterator {
      * cache clean-up. With a loading factor of two, the buffer will be filled
      * twice what is needed.
      */
-    public static final double LOADING_FACTOR = 1.5;
+    public static final double LOADING_FACTOR = 1.1;
     /**
      * Highest BP in buffer for each contig.
      */
@@ -267,7 +267,7 @@ public class BufferedGenotypesIterator {
                     
                     bufferring = false;
 
-                    System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in buffer).");
+                    System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in buffer)");
 
                 }
 
@@ -293,6 +293,8 @@ public class BufferedGenotypesIterator {
                             );
 
                     currentMinBp.put(contig, bp - downStreamDistance);
+                    
+                    System.gc();
 
                     System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in buffer)");
 
