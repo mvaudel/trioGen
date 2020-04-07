@@ -56,17 +56,27 @@ public class VcfIteratorTargets implements VariantIterator {
      * The maximum number of variants to process, ignored if negative.
      */
     public static int nLimit = -1;
+    /**
+     * Boolean indicating whether the genotypes provider should cache genotype
+     * values.
+     */
+    private final boolean useCache;
 
     /**
      * Constructor.
      *
-     * @param vcfFile the vcf file
-     * @param variantList the variants to process
+     * @param vcfFile The vcf file-
+     * @param variantList The ids of the variants to iterate.
+     * @param useCache Boolean indicating whether the genotypes provider should
+     * cache genotype values.
      */
     public VcfIteratorTargets(
             File vcfFile,
-            VariantList variantList
+            VariantList variantList,
+            boolean useCache
     ) {
+
+        this.useCache = useCache;
 
         File indexFile = getVcfIndexFile(vcfFile);
         fileName = vcfFile.getName();
@@ -81,7 +91,7 @@ public class VcfIteratorTargets implements VariantIterator {
         mutex.acquire();
 
         if (iterator == null || !iterator.hasNext()) {
-            
+
             variantListIndex++;
 
             if (variantListIndex >= variantList.variantId.length) {
@@ -100,14 +110,14 @@ public class VcfIteratorTargets implements VariantIterator {
         }
 
         VariantContext variantContext = iterator.next();
-        
+
         if (variantContext == null) {
 
             mutex.release();
             return next();
-            
+
         }
-        
+
         String vcfVariantId = variantContext.getID();
 
         if (vcfVariantId == null || !vcfVariantId.equals(variantList.variantId[variantListIndex])) {
@@ -125,7 +135,10 @@ public class VcfIteratorTargets implements VariantIterator {
 
         mutex.release();
 
-        return new VcfVariant(variantContext);
+        return new VcfVariant(
+                variantContext,
+                useCache
+        );
 
     }
 

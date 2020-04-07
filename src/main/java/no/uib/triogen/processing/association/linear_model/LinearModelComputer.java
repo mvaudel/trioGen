@@ -181,7 +181,8 @@ public class LinearModelComputer {
         VariantIterator iterator = GenotypesFileType.getVariantIterator(
                 genotypesFile,
                 genotypesFileType,
-                variantList
+                variantList,
+                false
         );
         IndexedGzWriter outputWriter = new IndexedGzWriter(
                 destinationFile

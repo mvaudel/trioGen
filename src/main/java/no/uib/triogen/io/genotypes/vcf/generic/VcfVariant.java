@@ -3,6 +3,7 @@ package no.uib.triogen.io.genotypes.vcf.generic;
 import htsjdk.variant.variantcontext.Allele;
 import htsjdk.variant.variantcontext.Genotype;
 import htsjdk.variant.variantcontext.VariantContext;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
@@ -32,15 +33,34 @@ public class VcfVariant implements GenotypesProvider {
      * The alternative allele.
      */
     private Allele altAllele;
+    /**
+     * Boolean indicating whether the genotypes provider should cache genotype
+     * values.
+     */
+    private final boolean useCache;
+    /**
+     * Cache for the dosages.
+     */
+    private final HashMap<String, float[]> dosagesCache = new HashMap<>(0);
+    /**
+     * Cache for the hard calls.
+     */
+    private final HashMap<String, Short> hardCallsCache = new HashMap<>(0);
     
     /**
      * Constructor.
      * 
-     * @param variantContext the variant context
+     * @param variantContext The variant context.
+     * @param useCache Boolean indicating whether the genotypes provider should
+     * cache genotype values.
      */
-    public VcfVariant(VariantContext variantContext) {
+    public VcfVariant(
+            VariantContext variantContext,
+            boolean useCache
+    ) {
         
         this.variantContext = variantContext;
+        this.useCache = useCache;
         
     }
 
@@ -108,6 +128,17 @@ public class VcfVariant implements GenotypesProvider {
 
     @Override
     public short getGenotype(String sampleId) {
+
+        if (useCache) {
+
+            Short genotype = hardCallsCache.get(sampleId);
+
+            if (genotype != null) {
+
+                return genotype;
+
+            }
+        }
         
         Genotype genotype = variantContext.getGenotype(sampleId);
         
@@ -124,19 +155,51 @@ public class VcfVariant implements GenotypesProvider {
 
         if (!allele11 && !allele21) {
 
-            return 0;
+            short result = 0;
+
+            if (useCache) {
+
+                hardCallsCache.put(sampleId, result);
+
+            }
+
+            return result;
 
         } else if (allele11 && !allele21) {
 
-            return 1;
+            short result = 1;
+
+            if (useCache) {
+
+                hardCallsCache.put(sampleId, result);
+
+            }
+
+            return result;
 
         } else if (!allele11 && allele21) {
 
-            return 2;
+            short result = 2;
+
+            if (useCache) {
+
+                hardCallsCache.put(sampleId, result);
+
+            }
+
+            return result;
 
         } else {
 
-            return 3;
+            short result = 3;
+
+            if (useCache) {
+
+                hardCallsCache.put(sampleId, result);
+
+            }
+
+            return result;
 
         }
     }
@@ -168,6 +231,17 @@ public class VcfVariant implements GenotypesProvider {
 
     @Override
     public float[] getDosages(String sampleId) {
+
+        if (useCache) {
+
+            float[] dosages = dosagesCache.get(sampleId);
+
+            if (dosages != null) {
+
+                return dosages;
+
+            }
+        }
         
         String attribute = variantContext.getAttributeAsString(DOSAGE_KEY, sampleId);
         
@@ -189,6 +263,12 @@ public class VcfVariant implements GenotypesProvider {
             
         }
         
+        if (useCache) {
+            
+            dosagesCache.put(sampleId, dosages);
+            
+        }
+
         return dosages;
         
     }

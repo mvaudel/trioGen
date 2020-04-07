@@ -54,15 +54,25 @@ public class CustomVcfIterator implements VariantIterator {
      * The maximum number of variants to process, ignored if negative.
      */
     public static int nLimit = -1;
+    /**
+     * Boolean indicating whether the genotypes provider should cache genotype
+     * values.
+     */
+    private final boolean useCache;
 
     /**
      * Constructor.
      *
-     * @param file the file.
+     * @param file The file to iterate.
+     * @param useCache Boolean indicating whether the genotypes provider should
+     * cache genotype values.
      */
     public CustomVcfIterator(
-            File file
+            File file,
+            boolean useCache
     ) {
+        
+        this.useCache = useCache;
 
         // Set up reader
         fileName = file.getName();
@@ -120,7 +130,8 @@ public class CustomVcfIterator implements VariantIterator {
         return line == null ? null
                 : new VcfLine(
                         this,
-                        line
+                        line,
+                        useCache
                 );
 
     }

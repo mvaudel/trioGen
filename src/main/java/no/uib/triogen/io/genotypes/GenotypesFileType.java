@@ -70,20 +70,24 @@ public enum GenotypesFileType {
      *
      * @param genotypesFile The file containing the genotypes.
      * @param genotypesFileType The genotypes file type.
+     * @param useCache Boolean indicating whether the genotypes provider should
+     * cache genotype values.
      *
      * @return An iterator for the variants.
      */
     public static VariantIterator getVariantIterator(
             File genotypesFile,
-            GenotypesFileType genotypesFileType
+            GenotypesFileType genotypesFileType,
+            boolean useCache
     ) {
-        
+
         return getVariantIterator(
-                genotypesFile, 
+                genotypesFile,
                 genotypesFileType,
-                null
+                null,
+                useCache
         );
-        
+
     }
 
     /**
@@ -92,19 +96,23 @@ public enum GenotypesFileType {
      * @param genotypesFile The file containing the genotypes.
      * @param genotypesFileType The genotypes file type.
      * @param variantList The variants to process.
+     * @param useCache Boolean indicating whether the genotypes provider should
+     * cache genotype values.
      *
      * @return An iterator for the variants.
      */
     public static VariantIterator getVariantIterator(
             File genotypesFile,
             GenotypesFileType genotypesFileType,
-            VariantList variantList
+            VariantList variantList,
+            boolean useCache
     ) {
 
         if (variantList != null) {
             return new VcfIteratorTargets(
                     genotypesFile,
-                    variantList
+                    variantList,
+                    useCache
             );
 
         }
@@ -112,11 +120,13 @@ public enum GenotypesFileType {
         switch (genotypesFileType) {
             case sangerVCF:
                 return new CustomVcfIterator(
-                        genotypesFile
+                        genotypesFile,
+                        useCache
                 );
             case vcf:
                 return new VcfIterator(
-                        genotypesFile
+                        genotypesFile,
+                        useCache
                 );
         }
 

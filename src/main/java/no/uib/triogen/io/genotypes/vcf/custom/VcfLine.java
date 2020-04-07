@@ -1,5 +1,6 @@
 package no.uib.triogen.io.genotypes.vcf.custom;
 
+import java.util.HashMap;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.model.family.ChildToParentMap;
 
@@ -52,20 +53,37 @@ public class VcfLine implements GenotypesProvider {
      * Boolean indicating whether the marker was genotyped.
      */
     private boolean typed;
+    /**
+     * Boolean indicating whether the genotypes provider should cache genotype
+     * values.
+     */
+    private final boolean useCache;
+    /**
+     * Cache for the dosages.
+     */
+    private final HashMap<String, float[]> dosagesCache = new HashMap<>(0);
+    /**
+     * Cache for the hard calls.
+     */
+    private final HashMap<String, Short> hardCallsCache = new HashMap<>(0);
 
     /**
      * Constructor.
      *
-     * @param vcfIterator the iterator used to parse the file
-     * @param line the line as read from the file
+     * @param vcfIterator The iterator used to parse the file.
+     * @param line The line as read from the file.
+     * @param useCache Boolean indicating whether the genotypes provider should
+     * cache genotype values.
      */
     public VcfLine(
             CustomVcfIterator vcfIterator,
-            String line
+            String line,
+            boolean useCache
     ) {
 
         this.vcfIterator = vcfIterator;
         this.line = line;
+        this.useCache = useCache;
 
     }
 
@@ -100,30 +118,30 @@ public class VcfLine implements GenotypesProvider {
                     index1 = index;
 
                 } else if (nSeparators == 3) {
-                    
+
                     variantId = line.substring(index1 + 1, index);
                     index1 = index;
-                
+
                 } else if (nSeparators == 4) {
-                    
+
                     ref = line.substring(index1 + 1, index);
                     index1 = index;
-                
+
                 } else if (nSeparators == 5) {
-                    
+
                     alt = line.substring(index1 + 1, index);
                     index1 = index;
-                
+
                 } else if (nSeparators == 7) {
-                    
+
                     index1 = index;
-                
+
                 } else if (nSeparators == 8) {
-                    
+
                     String info = line.substring(index1 + 1, index);
                     typed = info.startsWith(TYPED);
                     index1 = index;
-                
+
                 }
             }
         }
@@ -138,43 +156,54 @@ public class VcfLine implements GenotypesProvider {
 
     @Override
     public String getContig() {
-        
+
         return contig;
-        
+
     }
 
     @Override
     public int getBp() {
-        
+
         return bp;
-        
+
     }
 
     @Override
     public String getRef() {
-        
+
         return ref;
-        
+
     }
 
     @Override
     public String getAlt() {
-        
+
         return alt;
-        
+
     }
 
     @Override
     public boolean genotyped() {
-        
+
         return typed;
-        
+
     }
 
     @Override
     public short getGenotype(
             String sampleId
     ) {
+
+        if (useCache) {
+
+            Short genotype = hardCallsCache.get(sampleId);
+
+            if (genotype != null) {
+
+                return genotype;
+
+            }
+        }
 
         int sampleIndex = vcfIterator.getSampleIndex(sampleId);
         int index1 = indexes[sampleIndex] + 1;
@@ -187,7 +216,7 @@ public class VcfLine implements GenotypesProvider {
         if (separator != '|' && separator != '/' && separator != ':') {
 
             throw new IllegalArgumentException(
-                    "Unexpected separator in genotype " + line.substring(index1, index2 + 1) + " for variant " + getVariantID()+ " in sample " + sampleId + "."
+                    "Unexpected separator in genotype " + line.substring(index1, index2 + 1) + " for variant " + getVariantID() + " in sample " + sampleId + "."
             );
 
         }
@@ -211,23 +240,55 @@ public class VcfLine implements GenotypesProvider {
 
         if (!allele11 && !allele21) {
 
-            return 0;
+            short result = 0;
+
+            if (useCache) {
+
+                hardCallsCache.put(sampleId, result);
+
+            }
+
+            return result;
 
         } else if (allele11 && !allele21) {
 
-            return 1;
+            short result = 1;
+
+            if (useCache) {
+
+                hardCallsCache.put(sampleId, result);
+
+            }
+
+            return result;
 
         } else if (!allele11 && allele21) {
 
-            return 2;
+            short result = 2;
+
+            if (useCache) {
+
+                hardCallsCache.put(sampleId, result);
+
+            }
+
+            return result;
 
         } else {
 
-            return 3;
+            short result = 3;
+
+            if (useCache) {
+
+                hardCallsCache.put(sampleId, result);
+
+            }
+
+            return result;
 
         }
     }
-    
+
     @Override
     public short[] getH(
             ChildToParentMap childToParentMap,
@@ -256,30 +317,47 @@ public class VcfLine implements GenotypesProvider {
     @Override
     public float[] getDosages(String sampleId) {
 
+        if (useCache) {
+
+            float[] dosages = dosagesCache.get(sampleId);
+
+            if (dosages != null) {
+
+                return dosages;
+
+            }
+        }
+
         int sampleIndex = vcfIterator.getSampleIndex(sampleId);
         int index1 = indexes[sampleIndex] + 1;
         int index2 = sampleIndex == indexes.length - 1 ? line.length() : indexes[sampleIndex + 1];
-        
+
         String sampleData = line.substring(index1, index2);
         String[] split = sampleData.split(":");
         String[] dosagesString = split[split.length - 1].split(",");
-        
+
         if (dosagesString.length != 3) {
-            
+
             throw new IllegalArgumentException(
                     dosagesString.length + " dosages found where 3 expected."
             );
         }
-        
-        float[] result = new float[3];
-        
-        for (int i = 0 ; i < 3 ; i++) {
-            
-            result[i] = Float.parseFloat(dosagesString[i]);
-            
+
+        float[] dosages = new float[3];
+
+        for (int i = 0; i < 3; i++) {
+
+            dosages[i] = Float.parseFloat(dosagesString[i]);
+
         }
         
-        return result;
-        
+        if (useCache) {
+            
+            dosagesCache.put(sampleId, dosages);
+            
+        }
+
+        return dosages;
+
     }
 }

@@ -16,7 +16,10 @@ public class VcfParsingTest extends TestCase {
 
         File vcfFile = new File("src/test/resources/vcf/example/test.vcf");
 
-        CustomVcfIterator iterator = new CustomVcfIterator(vcfFile);
+        CustomVcfIterator iterator = new CustomVcfIterator(
+                vcfFile,
+                false
+        );
 
         int nLines = 0;
 
@@ -32,7 +35,7 @@ public class VcfParsingTest extends TestCase {
 
                 String contig = vcfLine.getContig();
                 Assert.assertTrue(contig.equals("1"));
-                
+
                 int bp = vcfLine.getBp();
                 Assert.assertTrue(bp == 123);
 
@@ -76,7 +79,6 @@ public class VcfParsingTest extends TestCase {
                 }
 
             } else if (nLines == 1) {
-                
 
                 vcfLine.parse();
 
@@ -85,7 +87,7 @@ public class VcfParsingTest extends TestCase {
 
                 String contig = vcfLine.getContig();
                 Assert.assertTrue(contig.equals("2"));
-                
+
                 int bp = vcfLine.getBp();
                 Assert.assertTrue(bp == 234);
 
