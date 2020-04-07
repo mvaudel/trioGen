@@ -192,18 +192,12 @@ public class LdMatrixComputerRunnable implements Runnable {
                 }
                 
                 if (!variantIds.isEmpty()) {
-                
-                System.err.println("Writing " + genotypesProviderA.getVariantID() + " in LD with " + variantIds.size() + " variants.");
                     
                     writer.addVariant(
                             variantIdA, 
                             variantIds, 
                             r2s
                     );
-                } else {
-                
-                System.err.println(variantIdA + " no LD ");
-                    
                 }
             }
 
