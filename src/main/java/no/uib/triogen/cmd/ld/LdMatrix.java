@@ -102,6 +102,8 @@ public class LdMatrix {
                 bean.maf,
                 bean.hardCalls, 
                 bean.nVariants, 
+                bean.downstreamLoadingFactor,
+                bean.upstreamLoadingFactor,
                 logger
         );
 

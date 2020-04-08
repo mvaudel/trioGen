@@ -21,7 +21,13 @@ public class BufferedGenotypesIterator {
      * cache clean-up. With a loading factor of two, the buffer will be filled
      * twice what is needed.
      */
-    public static final double LOADING_FACTOR = 1.1;
+    private final double downstreamLoadingFactor;
+    /**
+     * The loading factor can be used to reduce the frequency of buffering and
+     * cache clean-up. With a loading factor of two, the buffer will be filled
+     * twice what is needed.
+     */
+    private final double upstreamLoadingFactor;
     /**
      * Highest BP in buffer for each contig.
      */
@@ -76,9 +82,9 @@ public class BufferedGenotypesIterator {
      */
     private final ArrayList<GenotypesProvider> batch;
     /**
-     * Boolean indicating whether the iterator is bufferring.
+     * Boolean indicating whether the iterator is buffering.
      */
-    private boolean bufferring = false;
+    private boolean buffering = false;
 
     /**
      * Constructor.
@@ -92,6 +98,8 @@ public class BufferedGenotypesIterator {
      * @param mafThreshold The maf threshold. maf is computed in parents and
      * values lower than threshold are not included (inclusive).
      * @param nVariants The number of variants to process in batch.
+     * @param downstreamLoadingFactor The loading factor to use when trimming the buffer.
+     * @param upstreamLoadingFactor The loading factor to use when buffering.
      */
     public BufferedGenotypesIterator(
             VariantIterator iterator,
@@ -99,7 +107,9 @@ public class BufferedGenotypesIterator {
             int upStreamDistance,
             int downStreamDistance,
             double mafThreshold,
-            int nVariants
+            int nVariants,
+            double downstreamLoadingFactor,
+            double upstreamLoadingFactor
     ) {
 
         this.iterator = iterator;
@@ -109,6 +119,9 @@ public class BufferedGenotypesIterator {
         this.mafThreshold = mafThreshold;
         this.nVariants = nVariants;
         this.batch = new ArrayList<>(nVariants);
+        this.downstreamLoadingFactor = downstreamLoadingFactor;
+        this.upstreamLoadingFactor = upstreamLoadingFactor;
+        
 
         init();
 
@@ -125,7 +138,7 @@ public class BufferedGenotypesIterator {
 
             System.out.println("Empty buffer");
 
-            if (bufferring) {
+            if (buffering) {
 
                 bufferSemaphore.acquire();
 
@@ -231,9 +244,9 @@ public class BufferedGenotypesIterator {
 
                 if (bp + upStreamDistance > currentMaxBp.get(contig)) {
 
-                    bufferring = true;
+                    buffering = true;
 
-                    while (bp + LOADING_FACTOR * upStreamDistance >= currentMaxBp.get(contig)) {
+                    while (bp + upstreamLoadingFactor * upStreamDistance >= currentMaxBp.get(contig)) {
 
                         GenotypesProvider genotypesProvider;
 
@@ -282,7 +295,7 @@ public class BufferedGenotypesIterator {
 
                     }
 
-                    bufferring = false;
+                    buffering = false;
 
                     System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in buffer)");
 
@@ -293,11 +306,11 @@ public class BufferedGenotypesIterator {
             }
 
             // Remove variants outside range
-            if (bp - LOADING_FACTOR * downStreamDistance > currentMinBp.get(contig)) {
+            if (bp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
 
                 bufferSemaphore.acquire();
 
-                if (bp - LOADING_FACTOR * downStreamDistance > currentMinBp.get(contig)) {
+                if (bp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
 
                     ConcurrentHashMap<Integer, ArrayList<GenotypesProvider>> contigMap = buffer.get(contig);
 

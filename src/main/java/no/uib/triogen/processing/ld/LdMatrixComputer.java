@@ -25,6 +25,18 @@ import no.uib.triogen.model.geno.VariantIndex;
 public class LdMatrixComputer {
 
     /**
+     * The loading factor can be used to reduce the frequency of buffering and
+     * cache clean-up. With a loading factor of two, the buffer will be filled
+     * twice what is needed.
+     */
+    private final double downstreamLoadingFactor;
+    /**
+     * The loading factor can be used to reduce the frequency of buffering and
+     * cache clean-up. With a loading factor of two, the buffer will be filled
+     * twice what is needed.
+     */
+    private final double upstreamLoadingFactor;
+    /**
      * Loading factor used to make sure that the buffer contains the ld range. A loading factor of 2 for a sliding window of 10 bp results in buffering 20 pb.
      */
     public static final double LOADING_FACTOR = 2.0;
@@ -82,6 +94,8 @@ public class LdMatrixComputer {
      * threshold are not included (inclusive).
      * @param hardCalls Boolean indicating whether hard calls should be used instead of dosages.
      * @param nVariants The number of variants to process in parallel.
+     * @param downstreamLoadingFactor The loading factor to use when trimming the buffer.
+     * @param upstreamLoadingFactor The loading factor to use when buffering.
      * @param logger The logger.
      */
     public LdMatrixComputer(
@@ -93,6 +107,8 @@ public class LdMatrixComputer {
             double mafThreshold,
             boolean hardCalls,
             int nVariants,
+            double downstreamLoadingFactor,
+            double upstreamLoadingFactor,
             Logger logger
     ) {
 
@@ -104,6 +120,8 @@ public class LdMatrixComputer {
         this.mafThreshold = mafThreshold;
         this.hardCalls = hardCalls;
         this.nVariants = nVariants;
+        this.downstreamLoadingFactor = downstreamLoadingFactor;
+        this.upstreamLoadingFactor = upstreamLoadingFactor;
         this.logger = logger;
 
     }
@@ -146,7 +164,9 @@ public class LdMatrixComputer {
                 (int) LOADING_FACTOR * maxDistance, 
                 (int) LOADING_FACTOR * maxDistance,
                 mafThreshold,
-                nVariants
+                nVariants,
+                downstreamLoadingFactor,
+                upstreamLoadingFactor
         );
         
         LdMatrixWriter writer = new LdMatrixWriter(

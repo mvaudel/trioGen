@@ -62,10 +62,6 @@ public class VcfLine implements GenotypesProvider {
      * Cache for the dosages.
      */
     private final HashMap<String, float[]> dosagesCache = new HashMap<>(0);
-    /**
-     * Cache for the hard calls.
-     */
-    private final HashMap<String, Short> hardCallsCache = new HashMap<>(0);
 
     /**
      * Constructor.
@@ -194,17 +190,6 @@ public class VcfLine implements GenotypesProvider {
             String sampleId
     ) {
 
-        if (useCache) {
-
-            Short genotype = hardCallsCache.get(sampleId);
-
-            if (genotype != null) {
-
-                return genotype;
-
-            }
-        }
-
         int sampleIndex = vcfIterator.getSampleIndex(sampleId);
         int index1 = indexes[sampleIndex] + 1;
         int indexSeparator = index1 + 1;
@@ -240,51 +225,19 @@ public class VcfLine implements GenotypesProvider {
 
         if (!allele11 && !allele21) {
 
-            short result = 0;
-
-            if (useCache) {
-
-                hardCallsCache.put(sampleId, result);
-
-            }
-
-            return result;
+            return 0;
 
         } else if (allele11 && !allele21) {
 
-            short result = 1;
-
-            if (useCache) {
-
-                hardCallsCache.put(sampleId, result);
-
-            }
-
-            return result;
+            return 1;
 
         } else if (!allele11 && allele21) {
 
-            short result = 2;
-
-            if (useCache) {
-
-                hardCallsCache.put(sampleId, result);
-
-            }
-
-            return result;
+            return 2;
 
         } else {
 
-            short result = 3;
-
-            if (useCache) {
-
-                hardCallsCache.put(sampleId, result);
-
-            }
-
-            return result;
+            return 3;
 
         }
     }

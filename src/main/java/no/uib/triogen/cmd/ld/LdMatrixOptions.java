@@ -20,6 +20,8 @@ public enum LdMatrixOptions {
     hardCalls("hc", "hard_calls", "Use hard calls instead of dosages. Default: false.", false, false),
     out("o", "out", "The file where to write the matrix. The extension '.tld' will be added if not present.", true, true),
     nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is the number of cores on the machine.", false, true),
+    downstreamLoadingFactor("dlf", "downstreamLoadingFactor", "The downstream loading factor, see documentation for details. Default: 1.1.", false, true),
+    upstreamLoadingFactor("ulf", "pustreamLoadingFactor", "The upstream loading factor, see documentation for details. Default: 1.2.", false, true),
     timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true),
     test("t", "test", "If present, runs only othe first 1000 variants.", false, false);
 

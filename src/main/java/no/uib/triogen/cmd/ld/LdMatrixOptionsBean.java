@@ -43,7 +43,14 @@ public class LdMatrixOptionsBean {
      * The number of variants to process simultaneously.
      */
     public int nVariants = Runtime.getRuntime().availableProcessors();
-    ;
+    /**
+     * The downstream loading factor.
+     */
+    public double downstreamLoadingFactor = 1.1;
+    /**
+     * The upstream loading factor.
+     */
+    public double upstreamLoadingFactor = 1.2;
     /**
      * The number of days before timeout.
      */
@@ -191,7 +198,7 @@ public class LdMatrixOptionsBean {
 
                 nVariants = Integer.parseInt(argString);
 
-                if (timeOut <= 0) {
+                if (nVariants <= 0) {
 
                     throw new IllegalArgumentException(
                             "Input for number of variants must be a strictly positive number."
@@ -207,6 +214,60 @@ public class LdMatrixOptionsBean {
                         "Input for number of variants could not be parsed as a number: " + argString + "."
                 );
 
+            }
+        }
+
+        // The downstream loading factor
+        if (aLine.hasOption(LdMatrixOptions.downstreamLoadingFactor.opt)) {
+
+            String argString = aLine.getOptionValue(LdMatrixOptions.downstreamLoadingFactor.opt);
+
+            try {
+
+                downstreamLoadingFactor = Double.parseDouble(argString);
+
+                if (downstreamLoadingFactor < 1) {
+
+                    throw new IllegalArgumentException(
+                            "Input for downstream loading factor must be higher or equal to one."
+                    );
+
+                }
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                throw new IllegalArgumentException(
+                        "Input for downstream loading factor could not be parsed as a number: " + argString + "."
+                );
+            }
+        }
+
+        // The upstream loading factor
+        if (aLine.hasOption(LdMatrixOptions.upstreamLoadingFactor.opt)) {
+
+            String argString = aLine.getOptionValue(LdMatrixOptions.upstreamLoadingFactor.opt);
+
+            try {
+
+                upstreamLoadingFactor = Double.parseDouble(argString);
+
+                if (upstreamLoadingFactor < 1) {
+
+                    throw new IllegalArgumentException(
+                            "Input for upstream loading factor must be higher or equal to one."
+                    );
+
+                }
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                throw new IllegalArgumentException(
+                        "Input for upstream loading factor could not be parsed as a number: " + argString + "."
+                );
             }
         }
 
