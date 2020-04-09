@@ -357,8 +357,6 @@ public class BufferedGenotypesIterator {
         String contig = genotypesProvider.getContig();
         int bp = genotypesProvider.getBp();
 
-        registerMinBp(contig, bp - downStreamDistance);
-
         currentQueue.add(genotypesProvider);
 
         currentMaxBp.put(contig, bp);
@@ -375,6 +373,8 @@ public class BufferedGenotypesIterator {
             minBps.put(contig, new TreeMap<>());
 
         }
+
+        registerMinBp(contig, bp - downStreamDistance);
 
         ArrayList<GenotypesProvider> bpMap = contigMap.get(bp);
 
@@ -457,12 +457,6 @@ public class BufferedGenotypesIterator {
         minBpSemaphore.acquire();
         
         TreeMap<Integer, Integer> currentMap = minBps.get(contig);
-        
-        if (currentMap == null) {
-            
-            throw new IllegalArgumentException("No mapping for contig " + contig + " (available: " + minBps.keySet().toString() + ")");
-            
-        }
 
         Integer nThreads = currentMap.get(minBp);
 
