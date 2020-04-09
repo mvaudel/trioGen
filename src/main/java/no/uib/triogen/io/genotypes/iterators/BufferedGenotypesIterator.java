@@ -460,7 +460,7 @@ public class BufferedGenotypesIterator {
         
         if (currentMap == null) {
             
-            throw new IllegalArgumentException("No mapping for contig " + contig + " (available: " + currentMap.keySet().toString() + ")");
+            throw new IllegalArgumentException("No mapping for contig " + contig + " (available: " + minBps.keySet().toString() + ")");
             
         }
 
