@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -371,13 +372,13 @@ public class BufferedGenotypesIterator {
             contigList.add(contig);
 
             currentMinBp.put(contig, 0);
-            
+
             minBpSemaphore.acquire();
-            
+
             minBps.put(contig, new TreeMap<>());
 
             minBpSemaphore.release();
-            
+
         }
 
         registerMinBp(contig, bp - downStreamDistance);
@@ -460,13 +461,13 @@ public class BufferedGenotypesIterator {
             int minBp
     ) {
 
+        boolean removed = false;
+
         minBpSemaphore.acquire();
 
         TreeMap<Integer, Integer> currentMap = minBps.get(contig);
 
         Integer nThreads = currentMap.get(minBp);
-                
-                System.out.println("Register " + minBp + " - current " + nThreads);
 
         if (nThreads == null) {
 
@@ -484,13 +485,18 @@ public class BufferedGenotypesIterator {
 
                 currentMap.remove(minBp);
 
-                trimBuffer(contig);
+                removed = true;
 
             }
         }
 
         minBpSemaphore.release();
 
+        if (removed) {
+
+            trimBuffer(contig);
+
+        }
     }
 
     /**
@@ -504,13 +510,15 @@ public class BufferedGenotypesIterator {
             int minBp
     ) {
 
+        boolean removed = false;
+
         minBpSemaphore.acquire();
 
         TreeMap<Integer, Integer> currentMap = minBps.get(contig);
 
         Integer nThreads = currentMap.get(minBp);
-                
-                System.out.println("Release " + minBp + " - current " + nThreads);
+
+        System.out.println("Release " + minBp + " - current " + nThreads);
 
         if (nThreads == null) {
 
@@ -524,7 +532,10 @@ public class BufferedGenotypesIterator {
 
                 currentMap.remove(minBp);
 
-                trimBuffer(contig);
+                removed = true;
+
+                Entry<Integer, Integer> entry = currentMap.firstEntry();
+                System.out.println("Removed " + minBp + " - current min " + entry.getKey() + " | " + entry.getValue());
 
             } else {
 
@@ -535,6 +546,11 @@ public class BufferedGenotypesIterator {
 
         minBpSemaphore.release();
 
+        if (removed) {
+
+            trimBuffer(contig);
+
+        }
     }
 
 }
