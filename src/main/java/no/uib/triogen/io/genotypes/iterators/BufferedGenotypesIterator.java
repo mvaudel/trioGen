@@ -371,8 +371,13 @@ public class BufferedGenotypesIterator {
             contigList.add(contig);
 
             currentMinBp.put(contig, 0);
+            
+            minBpSemaphore.acquire();
+            
             minBps.put(contig, new TreeMap<>());
 
+            minBpSemaphore.release();
+            
         }
 
         registerMinBp(contig, bp - downStreamDistance);
@@ -476,6 +481,8 @@ public class BufferedGenotypesIterator {
             } else {
 
                 currentMap.remove(minBp);
+
+                trimBuffer(contig);
 
             }
         }
