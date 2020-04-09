@@ -465,6 +465,8 @@ public class BufferedGenotypesIterator {
         TreeMap<Integer, Integer> currentMap = minBps.get(contig);
 
         Integer nThreads = currentMap.get(minBp);
+                
+                System.out.println("Register " + minBp + " - current " + nThreads);
 
         if (nThreads == null) {
 
@@ -481,8 +483,6 @@ public class BufferedGenotypesIterator {
             } else {
 
                 currentMap.remove(minBp);
-                
-                System.out.println("Empty " + minBp + " - min " + currentMap.firstKey());
 
                 trimBuffer(contig);
 
@@ -509,6 +509,8 @@ public class BufferedGenotypesIterator {
         TreeMap<Integer, Integer> currentMap = minBps.get(contig);
 
         Integer nThreads = currentMap.get(minBp);
+                
+                System.out.println("Release " + minBp + " - current " + nThreads);
 
         if (nThreads == null) {
 
@@ -521,8 +523,6 @@ public class BufferedGenotypesIterator {
             if (newValue == 0) {
 
                 currentMap.remove(minBp);
-                
-                System.out.println("Empty " + minBp + " - min " + currentMap.firstKey());
 
                 trimBuffer(contig);
 
