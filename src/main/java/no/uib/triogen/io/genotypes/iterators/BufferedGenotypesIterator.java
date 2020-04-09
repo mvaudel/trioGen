@@ -158,7 +158,7 @@ public class BufferedGenotypesIterator {
         }
 
         GenotypesProvider nextElement = currentQueue.pollFirst();
-        
+
         registerMinBp(nextElement.getBp() - downStreamDistance);
 
         String contig = nextElement.getContig();
@@ -305,34 +305,37 @@ public class BufferedGenotypesIterator {
             }
 
             // Remove variants outside range
-            int minBp = minBps.firstKey();
+            if (!minBps.isEmpty()) {
 
-            if (minBp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
+                int minBp = minBps.firstKey();
 
-                bufferSemaphore.acquire();
+                if (minBp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
 
-                if (!iterator.isFinished() && minBp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
+                    bufferSemaphore.acquire();
 
-                    bufferChanged = true;
+                    if (!iterator.isFinished() && minBp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
 
-                    ConcurrentHashMap<Integer, ArrayList<GenotypesProvider>> contigMap = buffer.get(contig);
+                        bufferChanged = true;
 
-                    contigMap.keySet().stream()
-                            .filter(
-                                    tempBp -> tempBp < minBp - downStreamDistance
-                            )
-                            .forEach(
-                                    tempBp -> contigMap.remove(tempBp)
-                            );
+                        ConcurrentHashMap<Integer, ArrayList<GenotypesProvider>> contigMap = buffer.get(contig);
 
-                    currentMinBp.put(contig, minBp - downStreamDistance);
+                        contigMap.keySet().stream()
+                                .filter(
+                                        tempBp -> tempBp < minBp - downStreamDistance
+                                )
+                                .forEach(
+                                        tempBp -> contigMap.remove(tempBp)
+                                );
 
-                    System.gc();
+                        currentMinBp.put(contig, minBp - downStreamDistance);
+
+                        System.gc();
+
+                    }
+
+                    bufferSemaphore.release();
 
                 }
-
-                bufferSemaphore.release();
-
             }
         }
 
