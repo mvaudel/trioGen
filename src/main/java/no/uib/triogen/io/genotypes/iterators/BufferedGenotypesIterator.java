@@ -518,8 +518,6 @@ public class BufferedGenotypesIterator {
 
         Integer nThreads = currentMap.get(minBp);
 
-        System.out.println("Release " + minBp + " - current " + nThreads);
-
         if (nThreads == null) {
 
             currentMap.put(minBp, -1);
@@ -535,7 +533,6 @@ public class BufferedGenotypesIterator {
                 removed = true;
 
                 Entry<Integer, Integer> entry = currentMap.firstEntry();
-                System.out.println("Removed " + minBp + " - current min " + entry.getKey() + " | " + entry.getValue());
 
             } else {
 
