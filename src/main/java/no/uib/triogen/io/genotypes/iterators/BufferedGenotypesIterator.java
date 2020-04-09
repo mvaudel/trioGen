@@ -381,7 +381,7 @@ public class BufferedGenotypesIterator {
 
         }
 
-        registerMinBp(contig, bp - downStreamDistance);
+        registerMinBp(contig, bp);
 
         ArrayList<GenotypesProvider> bpMap = contigMap.get(bp);
 

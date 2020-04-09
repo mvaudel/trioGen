@@ -200,7 +200,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                     }
                 }
 
-                iterator.releaseMinBp(genotypesProviderA.getContig(), genotypesProviderA.getBp() - maxDistance);
+                iterator.releaseMinBp(genotypesProviderA.getContig(), genotypesProviderA.getBp());
 
                 if (!variantIds.isEmpty()) {
 
