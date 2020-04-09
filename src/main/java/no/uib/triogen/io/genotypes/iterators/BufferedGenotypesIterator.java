@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
@@ -441,6 +440,11 @@ public class BufferedGenotypesIterator {
                 );
     }
 
+    /**
+     * Register a lower-bound for the sliding window.
+     * 
+     * @param minBp The new lower-bound for the sliding window.
+     */
     public void registerMinBp(
             int minBp
     ) {
@@ -472,6 +476,11 @@ public class BufferedGenotypesIterator {
 
     }
 
+    /**
+     * Release a lower-bound for the sliding window.
+     * 
+     * @param minBp The lower-bound to release for the sliding window.
+     */
     public void releaseMinBp(
             int minBp
     ) {
