@@ -293,11 +293,13 @@ public class BufferedGenotypesIterator {
             }
 
             // Remove variants outside range
-            if (bp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
+            int lastBp = currentQueue.peekFirst().getBp();
+            
+            if (lastBp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
 
                 bufferSemaphore.acquire();
 
-                if (!iterator.isFinished() && bp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
+                if (!iterator.isFinished() && lastBp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
 
                     bufferChanged = true;
 
@@ -305,13 +307,13 @@ public class BufferedGenotypesIterator {
 
                     contigMap.keySet().stream()
                             .filter(
-                                    tempBp -> tempBp < bp - downStreamDistance
+                                    tempBp -> tempBp < lastBp - downStreamDistance
                             )
                             .forEach(
                                     tempBp -> contigMap.remove(tempBp)
                             );
 
-                    currentMinBp.put(contig, bp - downStreamDistance);
+                    currentMinBp.put(contig, lastBp - downStreamDistance);
 
                     System.gc();
 
@@ -402,7 +404,10 @@ public class BufferedGenotypesIterator {
 
         if (endBp > currentMaxBp.get(contig)) {
 
-            throw new IllegalArgumentException("Sliding window end (" + endBp + ") out of range (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ").");
+            bufferSemaphore.acquire();
+            bufferSemaphore.release();
+            
+            return getGenotypesInRange(contig, startBp, endBp);
 
         }
 
