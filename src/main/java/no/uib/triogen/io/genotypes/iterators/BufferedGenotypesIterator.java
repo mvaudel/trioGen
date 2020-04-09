@@ -356,9 +356,9 @@ public class BufferedGenotypesIterator {
         String contig = genotypesProvider.getContig();
         int bp = genotypesProvider.getBp();
 
-        currentQueue.add(genotypesProvider);
-
         registerMinBp(bp - downStreamDistance);
+
+        currentQueue.add(genotypesProvider);
 
         currentMaxBp.put(contig, bp);
 
@@ -422,8 +422,11 @@ public class BufferedGenotypesIterator {
             bufferSemaphore.acquire();
             bufferSemaphore.release();
 
-            return getGenotypesInRange(contig, startBp, endBp);
+            if (!iterator.isFinished() && contigList.getLast().equals(contig)) {
 
+                return getGenotypesInRange(contig, startBp, endBp);
+
+            }
         }
 
         return contigMap.entrySet().stream()
@@ -452,17 +455,8 @@ public class BufferedGenotypesIterator {
 
         } else {
 
-            int newValue = nThreads + 1;
+            minBps.put(minBp, nThreads + 1);
 
-            if (newValue != 0) {
-
-                minBps.put(minBp, newValue);
-
-            } else {
-
-                minBps.remove(minBp);
-
-            }
         }
 
         minBpSemaphore.release();
@@ -475,25 +469,16 @@ public class BufferedGenotypesIterator {
 
         minBpSemaphore.acquire();
 
-        Integer nThreads = minBps.get(minBp);
+        int nThreads = minBps.get(minBp);
 
-        if (nThreads == null) {
+        if (nThreads == 1) {
 
-            minBps.put(minBp, -1);
+            minBps.remove(minBp);
 
         } else {
 
-            int newValue = nThreads - 1;
+            minBps.put(minBp, nThreads - 1);
 
-            if (newValue == 0) {
-
-                minBps.remove(minBp);
-
-            } else {
-
-                minBps.put(minBp, newValue);
-
-            }
         }
 
         minBpSemaphore.release();
