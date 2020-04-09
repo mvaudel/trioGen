@@ -204,6 +204,7 @@ public class LdMatrixComputer {
 
         } finally {
 
+            writer.close();
             iterator.close();
 
         }
