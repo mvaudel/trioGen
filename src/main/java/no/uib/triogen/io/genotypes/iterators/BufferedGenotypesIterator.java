@@ -159,8 +159,6 @@ public class BufferedGenotypesIterator {
 
         GenotypesProvider nextElement = currentQueue.pollFirst();
 
-        registerMinBp(nextElement.getBp() - downStreamDistance);
-
         String contig = nextElement.getContig();
 
         checkBuffer(
@@ -360,6 +358,8 @@ public class BufferedGenotypesIterator {
 
         currentQueue.add(genotypesProvider);
 
+        registerMinBp(bp - downStreamDistance);
+
         currentMaxBp.put(contig, bp);
 
         ConcurrentHashMap<Integer, ArrayList<GenotypesProvider>> contigMap = buffer.get(contig);
@@ -452,8 +452,17 @@ public class BufferedGenotypesIterator {
 
         } else {
 
-            minBps.put(minBp, nThreads + 1);
+            int newValue = nThreads + 1;
 
+            if (newValue != 0) {
+
+                minBps.put(minBp, newValue);
+
+            } else {
+
+                minBps.remove(minBp);
+
+            }
         }
 
         minBpSemaphore.release();
@@ -466,16 +475,25 @@ public class BufferedGenotypesIterator {
 
         minBpSemaphore.acquire();
 
-        int nThreads = minBps.get(minBp);
+        Integer nThreads = minBps.get(minBp);
 
-        if (nThreads == 1) {
+        if (nThreads == null) {
 
-            minBps.remove(minBp);
+            minBps.put(minBp, -1);
 
         } else {
 
-            minBps.put(minBp, nThreads - 1);
+            int newValue = nThreads - 1;
 
+            if (newValue == 0) {
+
+                minBps.remove(minBp);
+
+            } else {
+
+                minBps.put(minBp, newValue);
+
+            }
         }
 
         minBpSemaphore.release();
