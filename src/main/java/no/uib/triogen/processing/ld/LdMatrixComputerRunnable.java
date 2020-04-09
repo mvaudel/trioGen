@@ -103,7 +103,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                 ArrayList<Integer> variantIds = new ArrayList<>(genotypesProviders.length);
                 ArrayList<Double> r2s = new ArrayList<>(genotypesProviders.length);
 
-                if (testIteration) {
+                if (!testIteration) {
 
                     for (GenotypesProvider genotypesProviderB : genotypesProviders) {
 
