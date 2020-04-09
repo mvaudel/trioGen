@@ -192,4 +192,11 @@ public class VcfIteratorTargets implements VariantIterator {
 
     }
 
+    @Override
+    public boolean isFinished() {
+        
+        return variantListIndex >= variantList.variantId.length;
+        
+    }
+
 }

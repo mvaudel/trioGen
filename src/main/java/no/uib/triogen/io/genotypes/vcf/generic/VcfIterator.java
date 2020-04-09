@@ -163,4 +163,11 @@ public class VcfIterator implements VariantIterator {
 
     }
 
+    @Override
+    public boolean isFinished() {
+        
+        return !iterator.hasNext();
+        
+    }
+
 }

@@ -27,5 +27,12 @@ public interface VariantIterator {
      * Closes the iterator.
      */
     public void close();
+    
+    /**
+     * Returns a boolean indicating whether the iteration is finished. 
+     * 
+     * @return A boolean indicating whether the iteration is finished.
+     */
+    public boolean isFinished();
 
 }

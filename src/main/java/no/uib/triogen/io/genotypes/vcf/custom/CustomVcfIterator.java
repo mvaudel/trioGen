@@ -184,4 +184,11 @@ public class CustomVcfIterator implements VariantIterator {
         reader.close();
 
     }
+
+    @Override
+    public boolean isFinished() {
+        
+        return endOfFile;
+        
+    }
 }

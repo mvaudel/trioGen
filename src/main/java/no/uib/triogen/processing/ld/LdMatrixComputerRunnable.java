@@ -51,6 +51,8 @@ public class LdMatrixComputerRunnable implements Runnable {
      */
     private static boolean canceled = false;
 
+    private boolean testIteration = true;
+
     /**
      * Constructor.
      *
@@ -58,7 +60,8 @@ public class LdMatrixComputerRunnable implements Runnable {
      * @param iterator The variant iterator.
      * @param childToParentMap The map of trios.
      * @param maxDistance The maximal number of bp to allow between variants.
-     * @param hardCalls Boolean indicating whether hard calls should be used instead of dosages.
+     * @param hardCalls Boolean indicating whether hard calls should be used
+     * instead of dosages.
      * @param variantIndex The index to use for the variants.
      * @param logger The logger.
      */
@@ -96,108 +99,111 @@ public class LdMatrixComputerRunnable implements Runnable {
                         genotypesProviderA.getBp() + maxDistance
                 );
 
-                int variantIdA = variantIndex.getIndex(genotypesProviderA.getVariantID());
-                ArrayList<Integer> variantIds = new ArrayList<>(genotypesProviders.length);
-                ArrayList<Double> r2s = new ArrayList<>(genotypesProviders.length);
+                if (testIteration) {
 
-                for (GenotypesProvider genotypesProviderB : genotypesProviders) {
+                    int variantIdA = variantIndex.getIndex(genotypesProviderA.getVariantID());
+                    ArrayList<Integer> variantIds = new ArrayList<>(genotypesProviders.length);
+                    ArrayList<Double> r2s = new ArrayList<>(genotypesProviders.length);
 
-                    int variantIdB = variantIndex.getIndex(genotypesProviderB.getVariantID());
+                    for (GenotypesProvider genotypesProviderB : genotypesProviders) {
 
-                    if (variantIdA != variantIdB) {
+                        int variantIdB = variantIndex.getIndex(genotypesProviderB.getVariantID());
 
-                        double nAB = 0.0;
-                        double nA = 0.0;
-                        double nB = 0.0;
-                        double n = 2 * childToParentMap.children.length;
+                        if (variantIdA != variantIdB) {
 
-                        for (String childId : childToParentMap.children) {
+                            double nAB = 0.0;
+                            double nA = 0.0;
+                            double nB = 0.0;
+                            double n = 2 * childToParentMap.children.length;
 
-                            if (!hardCalls) {
-                                
-                                String motherId = childToParentMap.getMother(childId);
-                                
-                                float[] dosagesA = genotypesProviderA.getDosages(motherId);
-                                float[] dosagesB = genotypesProviderA.getDosages(motherId);
-                                
-                                float pA0 = dosagesA[0];
-                                float pB0 = dosagesB[0];
-                                
-                                nA += pA0;
-                                nB += pB0;
-                                nAB += pA0 * pB0;
-                                
-                                String fatherId = childToParentMap.getFather(childId);
-                                
-                                dosagesA = genotypesProviderA.getDosages(fatherId);
-                                dosagesB = genotypesProviderA.getDosages(fatherId);
-                                
-                                pA0 = dosagesA[0];
-                                pB0 = dosagesB[0];
-                                
-                                nA += pA0;
-                                nB += pB0;
-                                nAB += pA0 * pB0;
+                            for (String childId : childToParentMap.children) {
 
-                            } else {
+                                if (!hardCalls) {
 
-                                short[] hA = genotypesProviderA.getH(childToParentMap, childId);
-                                short[] hB = genotypesProviderB.getH(childToParentMap, childId);
+                                    String motherId = childToParentMap.getMother(childId);
 
-                                boolean a = hA[0] == 0 && hA[1] == 0;
-                                boolean b = hB[0] == 0 && hB[1] == 0;
+                                    float[] dosagesA = genotypesProviderA.getDosages(motherId);
+                                    float[] dosagesB = genotypesProviderA.getDosages(motherId);
 
-                                if (a) {
-                                    nA++;
-                                    if (b) {
-                                        nAB++;
+                                    float pA0 = dosagesA[0];
+                                    float pB0 = dosagesB[0];
+
+                                    nA += pA0;
+                                    nB += pB0;
+                                    nAB += pA0 * pB0;
+
+                                    String fatherId = childToParentMap.getFather(childId);
+
+                                    dosagesA = genotypesProviderA.getDosages(fatherId);
+                                    dosagesB = genotypesProviderA.getDosages(fatherId);
+
+                                    pA0 = dosagesA[0];
+                                    pB0 = dosagesB[0];
+
+                                    nA += pA0;
+                                    nB += pB0;
+                                    nAB += pA0 * pB0;
+
+                                } else {
+
+                                    short[] hA = genotypesProviderA.getH(childToParentMap, childId);
+                                    short[] hB = genotypesProviderB.getH(childToParentMap, childId);
+
+                                    boolean a = hA[0] == 0 && hA[1] == 0;
+                                    boolean b = hB[0] == 0 && hB[1] == 0;
+
+                                    if (a) {
+                                        nA++;
+                                        if (b) {
+                                            nAB++;
+                                        }
                                     }
-                                }
 
-                                if (b) {
-                                    nB++;
-                                }
-
-                                a = hA[2] == 0 && hA[3] == 0;
-                                b = hB[2] == 0 && hB[3] == 0;
-
-                                if (a) {
-                                    nA++;
                                     if (b) {
-                                        nAB++;
+                                        nB++;
                                     }
-                                }
 
-                                if (b) {
-                                    nB++;
+                                    a = hA[2] == 0 && hA[3] == 0;
+                                    b = hB[2] == 0 && hB[3] == 0;
+
+                                    if (a) {
+                                        nA++;
+                                        if (b) {
+                                            nAB++;
+                                        }
+                                    }
+
+                                    if (b) {
+                                        nB++;
+                                    }
                                 }
                             }
-                        }
 
-                        if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
+                            if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
 
-                            double pAB = nAB / n;
-                            double pA = nA / n;
-                            double pB = nB / n;
+                                double pAB = nAB / n;
+                                double pA = nA / n;
+                                double pB = nB / n;
 
-                            double d = pAB - (pA * pB);
+                                double d = pAB - (pA * pB);
 
-                            double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
+                                double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
 
-                            variantIds.add(variantIdB);
-                            r2s.add(r2);
+                                variantIds.add(variantIdB);
+                                r2s.add(r2);
 
+                            }
                         }
                     }
-                }
-                
-                if (!variantIds.isEmpty()) {
-                    
-                    writer.addVariant(
-                            variantIdA, 
-                            variantIds, 
-                            r2s
-                    );
+
+                    if (!variantIds.isEmpty()) {
+
+                        writer.addVariant(
+                                variantIdA,
+                                variantIds,
+                                r2s
+                        );
+                    }
                 }
             }
 

@@ -1,5 +1,6 @@
 package no.uib.triogen.io.genotypes.iterators;
 
+import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
@@ -81,10 +82,6 @@ public class BufferedGenotypesIterator {
      * Placeholder for a batch of genotypes providers.
      */
     private final ArrayList<GenotypesProvider> batch;
-    /**
-     * Boolean indicating whether the iterator is buffering.
-     */
-    private boolean buffering = false;
 
     /**
      * Constructor.
@@ -98,7 +95,8 @@ public class BufferedGenotypesIterator {
      * @param mafThreshold The maf threshold. maf is computed in parents and
      * values lower than threshold are not included (inclusive).
      * @param nVariants The number of variants to process in batch.
-     * @param downstreamLoadingFactor The loading factor to use when trimming the buffer.
+     * @param downstreamLoadingFactor The loading factor to use when trimming
+     * the buffer.
      * @param upstreamLoadingFactor The loading factor to use when buffering.
      */
     public BufferedGenotypesIterator(
@@ -121,7 +119,6 @@ public class BufferedGenotypesIterator {
         this.batch = new ArrayList<>(nVariants);
         this.downstreamLoadingFactor = downstreamLoadingFactor;
         this.upstreamLoadingFactor = upstreamLoadingFactor;
-        
 
         init();
 
@@ -136,21 +133,11 @@ public class BufferedGenotypesIterator {
 
         if (currentQueue.isEmpty()) {
 
-            System.out.println("Empty buffer");
+            bufferSemaphore.acquire();
 
-            if (buffering) {
+            bufferSemaphore.release();
 
-                bufferSemaphore.acquire();
-
-                bufferSemaphore.release();
-
-                return next();
-
-            }
-
-            String nextVariant = init();
-
-            if (nextVariant != null) {
+            if (!iterator.isFinished()) {
 
                 return next();
 
@@ -235,18 +222,18 @@ public class BufferedGenotypesIterator {
             int bp
     ) {
 
-        if (contigList.getLast().equals(contig)) {
+        boolean bufferChanged = false;
+
+        if (!iterator.isFinished() && contigList.getLast().equals(contig)) {
 
             // Load until enough variants are in buffer
             if (bp + upStreamDistance > currentMaxBp.get(contig)) {
 
                 bufferSemaphore.acquire();
 
-                if (bp + upStreamDistance > currentMaxBp.get(contig)) {
+                if (!iterator.isFinished() && bp + upStreamDistance > currentMaxBp.get(contig)) {
 
-                    buffering = true;
-
-                    while (bp + upstreamLoadingFactor * upStreamDistance >= currentMaxBp.get(contig)) {
+                    while (!iterator.isFinished() && bp + upstreamLoadingFactor * upStreamDistance >= currentMaxBp.get(contig)) {
 
                         GenotypesProvider genotypesProvider;
 
@@ -282,23 +269,23 @@ public class BufferedGenotypesIterator {
                                 )
                                 .toArray();
 
-                        for (int i = 0; i < batch.size(); i++) {
+                        if (!batch.isEmpty()) {
 
-                            if (batchMaf[i] >= mafThreshold) {
+                            bufferChanged = true;
 
-                                add(batch.get(i));
+                            for (int i = 0; i < batch.size(); i++) {
 
+                                if (batchMaf[i] >= mafThreshold) {
+
+                                    add(batch.get(i));
+
+                                }
                             }
+
+                            batch.clear();
+
                         }
-
-                        batch.clear();
-
                     }
-
-                    buffering = false;
-
-                    System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in buffer)");
-
                 }
 
                 bufferSemaphore.release();
@@ -310,7 +297,9 @@ public class BufferedGenotypesIterator {
 
                 bufferSemaphore.acquire();
 
-                if (bp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
+                if (!iterator.isFinished() && bp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
+
+                    bufferChanged = true;
 
                     ConcurrentHashMap<Integer, ArrayList<GenotypesProvider>> contigMap = buffer.get(contig);
 
@@ -326,13 +315,17 @@ public class BufferedGenotypesIterator {
 
                     System.gc();
 
-                    System.out.println("New window: " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in buffer)");
-
                 }
 
                 bufferSemaphore.release();
 
             }
+        }
+
+        if (bufferChanged) {
+
+            System.out.println("    " + Instant.now() + " - " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in window)");
+
         }
     }
 
