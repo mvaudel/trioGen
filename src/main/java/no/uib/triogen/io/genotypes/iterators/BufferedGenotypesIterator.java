@@ -3,6 +3,7 @@ package no.uib.triogen.io.genotypes.iterators;
 import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -78,7 +79,7 @@ public class BufferedGenotypesIterator {
     /**
      * Map of the number of threads per minimal bp needed.
      */
-    private final TreeMap<Integer, Integer> minBps = new TreeMap<>();
+    private final HashMap<String, TreeMap<Integer, Integer>> minBps = new HashMap<>();
     /**
      * Semaphore for the min bp.
      */
@@ -160,7 +161,7 @@ public class BufferedGenotypesIterator {
 
         String contig = nextElement.getContig();
 
-        checkBuffer(
+        buffer(
                 contig,
                 nextElement.getBp()
         );
@@ -205,7 +206,7 @@ public class BufferedGenotypesIterator {
 
                 add(genotypesProvider);
 
-                checkBuffer(
+                buffer(
                         genotypesProvider.getContig(),
                         genotypesProvider.getBp()
                 );
@@ -226,12 +227,10 @@ public class BufferedGenotypesIterator {
      * @param contig The contig to buffer.
      * @param bp The current bp.
      */
-    private void checkBuffer(
+    private void buffer(
             String contig,
             int bp
     ) {
-
-        boolean bufferChanged = false;
 
         if (!iterator.isFinished() && contigList.getLast().equals(contig)) {
 
@@ -280,8 +279,6 @@ public class BufferedGenotypesIterator {
 
                         if (!batch.isEmpty()) {
 
-                            bufferChanged = true;
-
                             for (int i = 0; i < batch.size(); i++) {
 
                                 if (batchMaf[i] >= mafThreshold) {
@@ -299,47 +296,52 @@ public class BufferedGenotypesIterator {
 
                 bufferSemaphore.release();
 
-            }
+                System.out.println("    " + Instant.now() + " - " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in window)");
 
-            // Remove variants outside range
-            if (!minBps.isEmpty()) {
-
-                int minBp = minBps.firstKey();
-
-                if (minBp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
-
-                    bufferSemaphore.acquire();
-
-                    if (!iterator.isFinished() && minBp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
-
-                        bufferChanged = true;
-
-                        ConcurrentHashMap<Integer, ArrayList<GenotypesProvider>> contigMap = buffer.get(contig);
-
-                        contigMap.keySet().stream()
-                                .filter(
-                                        tempBp -> tempBp < minBp - downStreamDistance
-                                )
-                                .forEach(
-                                        tempBp -> contigMap.remove(tempBp)
-                                );
-
-                        currentMinBp.put(contig, minBp - downStreamDistance);
-
-                        System.gc();
-
-                    }
-
-                    bufferSemaphore.release();
-
-                }
             }
         }
+    }
 
-        if (bufferChanged) {
+    /**
+     * Removes data not needed anymore from the buffer.
+     *
+     * @param contig The contig.
+     */
+    private void trimBuffer(
+            String contig
+    ) {
 
-            System.out.println("    " + Instant.now() + " - " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in window)");
+        TreeMap<Integer, Integer> currentMap = minBps.get(contig);
 
+        if (!currentMap.isEmpty()) {
+
+            int minBp = currentMap.firstKey();
+
+            if (minBp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
+
+                bufferSemaphore.acquire();
+
+                if (!iterator.isFinished() && minBp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
+
+                    ConcurrentHashMap<Integer, ArrayList<GenotypesProvider>> contigMap = buffer.get(contig);
+
+                    contigMap.keySet().stream()
+                            .filter(
+                                    tempBp -> tempBp < minBp - downStreamDistance
+                            )
+                            .forEach(
+                                    tempBp -> contigMap.remove(tempBp)
+                            );
+
+                    currentMinBp.put(contig, minBp - downStreamDistance);
+
+                    System.gc();
+
+                }
+
+                bufferSemaphore.release();
+
+            }
         }
     }
 
@@ -355,7 +357,7 @@ public class BufferedGenotypesIterator {
         String contig = genotypesProvider.getContig();
         int bp = genotypesProvider.getBp();
 
-        registerMinBp(bp - downStreamDistance);
+        registerMinBp(contig, bp - downStreamDistance);
 
         currentQueue.add(genotypesProvider);
 
@@ -370,6 +372,7 @@ public class BufferedGenotypesIterator {
             contigList.add(contig);
 
             currentMinBp.put(contig, 0);
+            minBps.put(contig, new TreeMap<>());
 
         }
 
@@ -442,20 +445,24 @@ public class BufferedGenotypesIterator {
 
     /**
      * Register a lower-bound for the sliding window.
-     * 
+     *
+     * @param contig The contig.
      * @param minBp The new lower-bound for the sliding window.
      */
     public void registerMinBp(
+            String contig,
             int minBp
     ) {
 
         minBpSemaphore.acquire();
+        
+        TreeMap<Integer, Integer> currentMap = minBps.get(contig);
 
-        Integer nThreads = minBps.get(minBp);
+        Integer nThreads = currentMap.get(minBp);
 
         if (nThreads == null) {
 
-            minBps.put(minBp, 1);
+            currentMap.put(minBp, 1);
 
         } else {
 
@@ -463,11 +470,11 @@ public class BufferedGenotypesIterator {
 
             if (newValue != 0) {
 
-                minBps.put(minBp, newValue);
+                currentMap.put(minBp, newValue);
 
             } else {
 
-                minBps.remove(minBp);
+                currentMap.remove(minBp);
 
             }
         }
@@ -478,20 +485,24 @@ public class BufferedGenotypesIterator {
 
     /**
      * Release a lower-bound for the sliding window.
-     * 
+     *
+     * @param contig The contig.
      * @param minBp The lower-bound to release for the sliding window.
      */
     public void releaseMinBp(
+            String contig,
             int minBp
     ) {
 
         minBpSemaphore.acquire();
+        
+        TreeMap<Integer, Integer> currentMap = minBps.get(contig);
 
-        Integer nThreads = minBps.get(minBp);
+        Integer nThreads = currentMap.get(minBp);
 
         if (nThreads == null) {
 
-            minBps.put(minBp, -1);
+            currentMap.put(minBp, -1);
 
         } else {
 
@@ -499,11 +510,13 @@ public class BufferedGenotypesIterator {
 
             if (newValue == 0) {
 
-                minBps.remove(minBp);
+                currentMap.remove(minBp);
+                
+                trimBuffer(contig);
 
             } else {
 
-                minBps.put(minBp, newValue);
+                currentMap.put(minBp, newValue);
 
             }
         }
