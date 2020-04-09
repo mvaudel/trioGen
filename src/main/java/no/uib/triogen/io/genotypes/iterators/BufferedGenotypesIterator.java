@@ -292,11 +292,12 @@ public class BufferedGenotypesIterator {
 
                         }
                     }
+
+                    System.out.println("    " + Instant.now() + " - " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in window)");
+
                 }
 
                 bufferSemaphore.release();
-
-                System.out.println("    " + Instant.now() + " - " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in window)");
 
             }
         }
@@ -455,7 +456,7 @@ public class BufferedGenotypesIterator {
     ) {
 
         minBpSemaphore.acquire();
-        
+
         TreeMap<Integer, Integer> currentMap = minBps.get(contig);
 
         Integer nThreads = currentMap.get(minBp);
@@ -495,7 +496,7 @@ public class BufferedGenotypesIterator {
     ) {
 
         minBpSemaphore.acquire();
-        
+
         TreeMap<Integer, Integer> currentMap = minBps.get(contig);
 
         Integer nThreads = currentMap.get(minBp);
@@ -511,7 +512,7 @@ public class BufferedGenotypesIterator {
             if (newValue == 0) {
 
                 currentMap.remove(minBp);
-                
+
                 trimBuffer(contig);
 
             } else {
