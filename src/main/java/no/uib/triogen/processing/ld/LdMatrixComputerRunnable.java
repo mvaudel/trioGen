@@ -54,7 +54,7 @@ public class LdMatrixComputerRunnable implements Runnable {
      * Boolean indicating whether the runnable should only iterate through the
      * variants and not compute LD calculations.
      */
-    private final boolean testIteration = true;
+    private final boolean testIteration = false;
 
     /**
      * Constructor.
