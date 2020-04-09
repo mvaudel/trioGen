@@ -3,6 +3,8 @@ package no.uib.triogen.io.genotypes.iterators;
 import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
@@ -71,9 +73,17 @@ public class BufferedGenotypesIterator {
      */
     private final double mafThreshold;
     /**
-     * The distance in bp to keep after the current bp.
+     * Queue of the genotype providers being iterated.
      */
     private final ConcurrentLinkedDeque<GenotypesProvider> currentQueue = new ConcurrentLinkedDeque();
+    /**
+     * Map of the number of threads per minimal bp needed.
+     */
+    private final TreeMap<Integer, Integer> minBps = new TreeMap<>();
+    /**
+     * Semaphore for the min bp.
+     */
+    private final SimpleSemaphore minBpSemaphore = new SimpleSemaphore(1);
     /**
      * The number of variants to process in batch.
      */
@@ -148,6 +158,8 @@ public class BufferedGenotypesIterator {
         }
 
         GenotypesProvider nextElement = currentQueue.pollFirst();
+        
+        registerMinBp(nextElement.getBp() - downStreamDistance);
 
         String contig = nextElement.getContig();
 
@@ -293,13 +305,13 @@ public class BufferedGenotypesIterator {
             }
 
             // Remove variants outside range
-            int lastBp = currentQueue.peekFirst().getBp();
-            
-            if (lastBp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
+            int minBp = minBps.firstKey();
+
+            if (minBp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
 
                 bufferSemaphore.acquire();
 
-                if (!iterator.isFinished() && lastBp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
+                if (!iterator.isFinished() && minBp - downstreamLoadingFactor * downStreamDistance > currentMinBp.get(contig)) {
 
                     bufferChanged = true;
 
@@ -307,13 +319,13 @@ public class BufferedGenotypesIterator {
 
                     contigMap.keySet().stream()
                             .filter(
-                                    tempBp -> tempBp < lastBp - downStreamDistance
+                                    tempBp -> tempBp < minBp - downStreamDistance
                             )
                             .forEach(
                                     tempBp -> contigMap.remove(tempBp)
                             );
 
-                    currentMinBp.put(contig, lastBp - downStreamDistance);
+                    currentMinBp.put(contig, minBp - downStreamDistance);
 
                     System.gc();
 
@@ -406,7 +418,7 @@ public class BufferedGenotypesIterator {
 
             bufferSemaphore.acquire();
             bufferSemaphore.release();
-            
+
             return getGenotypesInRange(contig, startBp, endBp);
 
         }
@@ -421,6 +433,50 @@ public class BufferedGenotypesIterator {
                 .toArray(
                         GenotypesProvider[]::new
                 );
+    }
+
+    public void registerMinBp(
+            int minBp
+    ) {
+
+        minBpSemaphore.acquire();
+
+        Integer nThreads = minBps.get(minBp);
+
+        if (nThreads == null) {
+
+            minBps.put(minBp, 1);
+
+        } else {
+
+            minBps.put(minBp, nThreads + 1);
+
+        }
+
+        minBpSemaphore.release();
+
+    }
+
+    public void releaseMinBp(
+            int minBp
+    ) {
+
+        minBpSemaphore.acquire();
+
+        int nThreads = minBps.get(minBp);
+
+        if (nThreads == 1) {
+
+            minBps.remove(minBp);
+
+        } else {
+
+            minBps.put(minBp, nThreads - 1);
+
+        }
+
+        minBpSemaphore.release();
+
     }
 
 }

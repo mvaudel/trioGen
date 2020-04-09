@@ -99,11 +99,11 @@ public class LdMatrixComputerRunnable implements Runnable {
                         genotypesProviderA.getBp() + maxDistance
                 );
 
-                if (testIteration) {
+                int variantIdA = variantIndex.getIndex(genotypesProviderA.getVariantID());
+                ArrayList<Integer> variantIds = new ArrayList<>(genotypesProviders.length);
+                ArrayList<Double> r2s = new ArrayList<>(genotypesProviders.length);
 
-                    int variantIdA = variantIndex.getIndex(genotypesProviderA.getVariantID());
-                    ArrayList<Integer> variantIds = new ArrayList<>(genotypesProviders.length);
-                    ArrayList<Double> r2s = new ArrayList<>(genotypesProviders.length);
+                if (testIteration) {
 
                     for (GenotypesProvider genotypesProviderB : genotypesProviders) {
 
@@ -195,15 +195,17 @@ public class LdMatrixComputerRunnable implements Runnable {
                             }
                         }
                     }
+                }
 
-                    if (!variantIds.isEmpty()) {
+                iterator.releaseMinBp(genotypesProviderA.getBp() - maxDistance);
 
-                        writer.addVariant(
-                                variantIdA,
-                                variantIds,
-                                r2s
-                        );
-                    }
+                if (!variantIds.isEmpty()) {
+
+                    writer.addVariant(
+                            variantIdA,
+                            variantIds,
+                            r2s
+                    );
                 }
             }
 
