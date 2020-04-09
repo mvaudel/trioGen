@@ -457,6 +457,12 @@ public class BufferedGenotypesIterator {
         minBpSemaphore.acquire();
         
         TreeMap<Integer, Integer> currentMap = minBps.get(contig);
+        
+        if (currentMap == null) {
+            
+            throw new IllegalArgumentException("No mapping for contig " + contig + " (available: " + currentMap.keySet().toString() + ")");
+            
+        }
 
         Integer nThreads = currentMap.get(minBp);
 
