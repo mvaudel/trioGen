@@ -519,6 +519,8 @@ public class BufferedGenotypesIterator {
             if (newValue == 0) {
 
                 currentMap.remove(minBp);
+                
+                System.out.println("Empty " + minBp + " - min " + currentMap.firstKey());
 
                 trimBuffer(contig);
 
