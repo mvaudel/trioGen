@@ -37,7 +37,9 @@ public class LdMatrixComputer {
      */
     private final double upstreamLoadingFactor;
     /**
-     * Loading factor used to make sure that the buffer contains the ld range. A loading factor of 2 for a sliding window of 10 bp results in buffering 20 pb.
+     * Loading factor used to make sure that the buffer contains the ld range. A
+     * loading factor of 2 for a sliding window of 10 bp results in buffering 20
+     * pb.
      */
     public static final double LOADING_FACTOR = 2.0;
     /**
@@ -53,7 +55,8 @@ public class LdMatrixComputer {
      */
     private final ChildToParentMap childToParentMap;
     /**
-     * The bp distance used to compute the ld in sliding windows. A max distance of 10 bp means a sliding window of 20 bp.
+     * The bp distance used to compute the ld in sliding windows. A max distance
+     * of 10 bp means a sliding window of 20 bp.
      */
     private final int maxDistance;
     /**
@@ -78,6 +81,10 @@ public class LdMatrixComputer {
      */
     private final int nVariants;
     /**
+     * The minimal ld r2 to report (inclusive).
+     */
+    private final double minR2;
+    /**
      * The logger.
      */
     private final Logger logger;
@@ -90,11 +97,14 @@ public class LdMatrixComputer {
      * @param childToParentMap The map of trios.
      * @param destinationFile File to write to.
      * @param maxDistance The maximal number of bp to allow between variants.
-     * @param mafThreshold The maf threshold. maf is computed in parents and values lower than
-     * threshold are not included (inclusive).
-     * @param hardCalls Boolean indicating whether hard calls should be used instead of dosages.
+     * @param minR2 The minimal ld r2 to report (inclusive).
+     * @param mafThreshold The maf threshold. maf is computed in parents and
+     * values lower than threshold are not included (inclusive).
+     * @param hardCalls Boolean indicating whether hard calls should be used
+     * instead of dosages.
      * @param nVariants The number of variants to process in parallel.
-     * @param downstreamLoadingFactor The loading factor to use when trimming the buffer.
+     * @param downstreamLoadingFactor The loading factor to use when trimming
+     * the buffer.
      * @param upstreamLoadingFactor The loading factor to use when buffering.
      * @param logger The logger.
      */
@@ -104,6 +114,7 @@ public class LdMatrixComputer {
             ChildToParentMap childToParentMap,
             File destinationFile,
             int maxDistance,
+            double minR2,
             double mafThreshold,
             boolean hardCalls,
             int nVariants,
@@ -117,6 +128,7 @@ public class LdMatrixComputer {
         this.childToParentMap = childToParentMap;
         this.destinationFile = destinationFile;
         this.maxDistance = maxDistance;
+        this.minR2 = minR2;
         this.mafThreshold = mafThreshold;
         this.hardCalls = hardCalls;
         this.nVariants = nVariants;
@@ -130,6 +142,7 @@ public class LdMatrixComputer {
      * Runs the matrix export.
      *
      * @param timeOutDays The time out time in days.
+     * @param testIteration In testIteration mode LD calculations will not be computed.
      * @param test In test mode only a few variants will be processed.
      *
      * @throws InterruptedException exception thrown if the process was
@@ -139,6 +152,7 @@ public class LdMatrixComputer {
      */
     public void run(
             int timeOutDays,
+            boolean testIteration,
             boolean test
     ) throws InterruptedException, TimeoutException, IOException {
 
@@ -157,18 +171,18 @@ public class LdMatrixComputer {
                 genotypesFileType,
                 true
         );
-        
+
         BufferedGenotypesIterator bufferedIterator = new BufferedGenotypesIterator(
-                iterator, 
+                iterator,
                 childToParentMap,
-                (int) LOADING_FACTOR * maxDistance, 
+                (int) LOADING_FACTOR * maxDistance,
                 (int) LOADING_FACTOR * maxDistance,
                 mafThreshold,
                 nVariants,
                 downstreamLoadingFactor,
                 upstreamLoadingFactor
         );
-        
+
         LdMatrixWriter writer = new LdMatrixWriter(
                 variantIndex,
                 destinationFile
@@ -183,10 +197,12 @@ public class LdMatrixComputer {
                             i -> new LdMatrixComputerRunnable(
                                     writer,
                                     bufferedIterator,
-                                    childToParentMap, 
-                                    maxDistance, 
+                                    childToParentMap,
+                                    maxDistance,
+                                    minR2,
                                     hardCalls,
-                                    variantIndex, 
+                                    variantIndex,
+                                    testIteration,
                                     logger
                             )
                     )

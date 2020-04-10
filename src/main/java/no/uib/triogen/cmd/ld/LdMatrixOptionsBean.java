@@ -28,6 +28,10 @@ public class LdMatrixOptionsBean {
      */
     public int maxDistance = 500000;
     /**
+     * The minimal ld r2 to report (inclusive).
+     */
+    public double minR2 = 1e-6;
+    /**
      * The maf threshold.
      */
     public double maf = 0.05;
@@ -59,6 +63,10 @@ public class LdMatrixOptionsBean {
      * Test mode.
      */
     public final boolean test;
+    /**
+     * Iteration test mode.
+     */
+    public final boolean testIteration;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -158,7 +166,34 @@ public class LdMatrixOptionsBean {
                 e.printStackTrace();
 
                 throw new IllegalArgumentException(
-                        "Input for timeout could not be parsed as a number: " + option + "."
+                        "Input for maf could not be parsed as a number: " + option + "."
+                );
+
+            }
+        }
+
+        // The minimal R2
+        if (aLine.hasOption(LdMatrixOptions.minR2.opt)) {
+            
+            String option = aLine.getOptionValue(LdMatrixOptions.minR2.opt);
+
+            try {
+
+                minR2 = Double.parseDouble(option);
+
+                if (minR2 <= 0.0 || minR2 >= 1.0) {
+
+                    throw new IllegalArgumentException(
+                            "Input for maf (" + option + ") must be a number between 0 and 1 (both excluded)."
+                    );
+                }
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                throw new IllegalArgumentException(
+                        "Input for minR2 could not be parsed as a number: " + option + "."
                 );
 
             }
@@ -301,6 +336,9 @@ public class LdMatrixOptionsBean {
 
         // Test
         test = aLine.hasOption(LdMatrixOptions.test.opt);
+
+        // Test iteration
+        testIteration = aLine.hasOption(LdMatrixOptions.testIteration.opt);
 
     }
 }

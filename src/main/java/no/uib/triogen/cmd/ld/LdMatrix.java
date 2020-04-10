@@ -99,6 +99,7 @@ public class LdMatrix {
                 childToParentMap, 
                 outputFile, 
                 bean.maxDistance, 
+                bean.minR2,
                 bean.maf,
                 bean.hardCalls, 
                 bean.nVariants, 
@@ -111,6 +112,7 @@ public class LdMatrix {
 
             computer.run(
                     bean.timeOut,
+                    bean.testIteration,
                     bean.test
             );
 

@@ -54,7 +54,11 @@ public class LdMatrixComputerRunnable implements Runnable {
      * Boolean indicating whether the runnable should only iterate through the
      * variants and not compute LD calculations.
      */
-    private final boolean testIteration = false;
+    private final boolean testIteration;
+    /**
+     * The minimal ld r2 to report (inclusive).
+     */
+    private final double minR2;
 
     /**
      * Constructor.
@@ -63,9 +67,12 @@ public class LdMatrixComputerRunnable implements Runnable {
      * @param iterator The variant iterator.
      * @param childToParentMap The map of trios.
      * @param maxDistance The maximal number of bp to allow between variants.
+     * @param minR2 The minimal ld r2 to report (inclusive).
      * @param hardCalls Boolean indicating whether hard calls should be used
      * instead of dosages.
      * @param variantIndex The index to use for the variants.
+     * @param testIteration Boolean indicating whether the runnable should only
+     * iterate through the variants and not compute LD calculations.
      * @param logger The logger.
      */
     public LdMatrixComputerRunnable(
@@ -73,8 +80,10 @@ public class LdMatrixComputerRunnable implements Runnable {
             BufferedGenotypesIterator iterator,
             ChildToParentMap childToParentMap,
             int maxDistance,
+            double minR2,
             boolean hardCalls,
             VariantIndex variantIndex,
+            boolean testIteration,
             Logger logger
     ) {
 
@@ -82,8 +91,10 @@ public class LdMatrixComputerRunnable implements Runnable {
         this.iterator = iterator;
         this.childToParentMap = childToParentMap;
         this.maxDistance = maxDistance;
+        this.minR2 = minR2;
         this.hardCalls = hardCalls;
         this.variantIndex = variantIndex;
+        this.testIteration = testIteration;
         this.logger = logger;
 
     }
@@ -94,7 +105,7 @@ public class LdMatrixComputerRunnable implements Runnable {
         try {
 
             GenotypesProvider genotypesProviderA;
-            while ((genotypesProviderA = iterator.next()) != null) {
+            while ((genotypesProviderA = iterator.next()) != null && !canceled) {
 
                 GenotypesProvider[] genotypesProviders = iterator.getGenotypesInRange(
                         genotypesProviderA.getContig(),
@@ -192,9 +203,12 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                                 double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
 
-                                variantIds.add(variantIdB);
-                                r2s.add(r2);
+                                if (r2 > minR2) {
 
+                                    variantIds.add(variantIdB);
+                                    r2s.add(r2);
+
+                                }
                             }
                         }
                     }
