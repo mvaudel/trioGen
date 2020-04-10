@@ -106,7 +106,7 @@ public class VariantIndex {
      */
     public String[] getVariants() {
 
-        return idList.toArray(String[]::new);
+        return idList.stream().toArray(String[]::new);
 
     }
 
