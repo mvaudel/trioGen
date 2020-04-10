@@ -109,7 +109,7 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                 GenotypesProvider[] genotypesProviders = iterator.getGenotypesInRange(
                         genotypesProviderA.getContig(),
-                        genotypesProviderA.getBp() - maxDistance,
+                        Math.max(genotypesProviderA.getBp() - maxDistance, 0),
                         genotypesProviderA.getBp() + maxDistance
                 );
 
