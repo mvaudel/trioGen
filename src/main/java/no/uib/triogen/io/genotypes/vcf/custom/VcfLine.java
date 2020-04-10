@@ -300,14 +300,25 @@ public class VcfLine implements GenotypesProvider {
 
         for (int i = 0; i < 3; i++) {
 
-            dosages[i] = Float.parseFloat(dosagesString[i]);
+            try {
+
+                dosages[i] = Float.parseFloat(dosagesString[i]);
+
+            } catch (Throwable t) {
+
+                throw new IllegalArgumentException(
+                        "Could not parse dosage as number (Sample: '" + sampleId + "' value: '" + dosagesString[i] + "')",
+                        t
+                );
+
+            }
 
         }
-        
+
         if (useCache) {
-            
+
             dosagesCache.put(sampleId, dosages);
-            
+
         }
 
         return dosages;

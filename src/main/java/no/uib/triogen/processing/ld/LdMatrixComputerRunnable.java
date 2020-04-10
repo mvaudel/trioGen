@@ -207,6 +207,12 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                                     variantIds.add(variantIdB);
                                     r2s.add(r2);
+                                    
+                                    if (genotypesProviderA.getVariantID().equals("rs79847867")) {
+                                        
+                                        System.out.println("r2 " + r2);
+                                        
+                                    }
 
                                 }
                             }

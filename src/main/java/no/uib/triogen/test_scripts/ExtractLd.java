@@ -25,23 +25,25 @@ public class ExtractLd {
 
             File ldFile = new File("docs/tmp/chr_22.tld");
             LdMatrixReader ldMatrixReader = new LdMatrixReader(ldFile);
-            
+
             String[] variantIds = ldMatrixReader.variantIds;
-            
+
             for (String variantId : variantIds) {
-                
+
                 HashMap<String, Double> variantLdMap = ldMatrixReader.getR2(variantId);
-                
-                for (Entry<String, Double> entry : variantLdMap.entrySet()) {
-                    
-                    int debug = 1;
-                    
+
+                if (variantLdMap != null) {
+
+                    for (Entry<String, Double> entry : variantLdMap.entrySet()) {
+
+                        int debug = 1;
+
+                    }
                 }
-                
             }
-            
-            int debug =1;
-    
+
+            int debug = 1;
+
         } catch (Throwable t) {
             t.printStackTrace();
         }
