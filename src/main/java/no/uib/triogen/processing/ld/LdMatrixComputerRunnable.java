@@ -137,7 +137,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                                     String motherId = childToParentMap.getMother(childId);
 
                                     float[] dosagesA = genotypesProviderA.getDosages(motherId);
-                                    float[] dosagesB = genotypesProviderA.getDosages(motherId);
+                                    float[] dosagesB = genotypesProviderB.getDosages(motherId);
 
                                     float pA0 = dosagesA[0];
                                     float pB0 = dosagesB[0];
@@ -149,7 +149,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                                     String fatherId = childToParentMap.getFather(childId);
 
                                     dosagesA = genotypesProviderA.getDosages(fatherId);
-                                    dosagesB = genotypesProviderA.getDosages(fatherId);
+                                    dosagesB = genotypesProviderB.getDosages(fatherId);
 
                                     pA0 = dosagesA[0];
                                     pB0 = dosagesB[0];
