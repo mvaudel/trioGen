@@ -47,7 +47,7 @@ public class LdMatrixWriter implements AutoCloseable {
     /**
      * List of the index in the file.
      */
-    private final ArrayList<Integer> indexesInFile = new ArrayList<>();
+    private final ArrayList<Long> indexesInFile = new ArrayList<>();
     /**
      * Semaphore to synchronize threads writing to the file.
      */
@@ -107,15 +107,9 @@ public class LdMatrixWriter implements AutoCloseable {
         semaphore.acquire();
 
         long index = raf.getFilePointer() - HEADER_LENGTH;
-
-        if (index > Integer.MAX_VALUE) {
-
-            throw new IOException("File exceeds memory mapped reader max buffer size.");
-
-        }
         
         variantIndexes.add(variantIndex);
-        indexesInFile.add((int) index);
+        indexesInFile.add(index);
         
         raf.writeInt(nVariants);
         raf.writeInt(compressedData.length);
@@ -211,7 +205,7 @@ public class LdMatrixWriter implements AutoCloseable {
 
         byte[] titleBytes = variantIdsString.getBytes(IoUtils.ENCODING);
         
-        ByteBuffer buffer = ByteBuffer.allocate(2 * Integer.BYTES + titleBytes.length + 2 * indexesInFile.size() * Integer.BYTES);
+        ByteBuffer buffer = ByteBuffer.allocate(2 * Integer.BYTES + titleBytes.length + indexesInFile.size() * Integer.BYTES + indexesInFile.size() * Long.BYTES);
         
         buffer
                 .putInt(titleBytes.length)
@@ -223,8 +217,8 @@ public class LdMatrixWriter implements AutoCloseable {
             int variantI = variantIndexes.get(i);
             buffer.putInt(variantI);
             
-            int index = indexesInFile.get(i);
-            buffer.putInt(index);
+            long index = indexesInFile.get(i);
+            buffer.putLong(index);
             
         }
         
