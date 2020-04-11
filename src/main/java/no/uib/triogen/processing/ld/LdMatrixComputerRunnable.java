@@ -125,47 +125,38 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                         if (variantIdA != variantIdB) {
 
-                            double nA = genotypesProviderA.getParentP0(
-                                    childToParentMap.children,
-                                    childToParentMap
-                            );
-                            double nB = genotypesProviderB.getParentP0(
-                                    childToParentMap.children,
-                                    childToParentMap
-                            );
+                            double nA = genotypesProviderA.getParentP0();
+                            double nB = genotypesProviderB.getParentP0();
                             double n = 2 * childToParentMap.children.length;
 
-                            float[] p0sA = genotypesProviderA.getParentP0s(
-                                    childToParentMap.children,
-                                    childToParentMap
-                            );
-                            float[] p0sB = genotypesProviderB.getParentP0s(
-                                    childToParentMap.children,
-                                    childToParentMap
-                            );
-                            double nAB = 0.0;
+                            if (nA < n || nB < n) {
 
-                            for (int i = 0; i < p0sA.length; i++) {
+                                float[] p0sA = genotypesProviderA.getParentP0s();
+                                float[] p0sB = genotypesProviderB.getParentP0s();
+                                double nAB = 0.0;
 
-                                nAB += p0sA[i] * p0sB[i];
+                                for (int i = 0; i < p0sA.length; i++) {
 
-                            }
+                                    nAB += p0sA[i] * p0sB[i];
 
-                            if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
+                                }
 
-                                double pAB = nAB / n;
-                                double pA = nA / n;
-                                double pB = nB / n;
+                                if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
 
-                                double d = pAB - (pA * pB);
+                                    double pAB = nAB / n;
+                                    double pA = nA / n;
+                                    double pB = nB / n;
 
-                                double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
+                                    double d = pAB - (pA * pB);
 
-                                if (r2 > minR2) {
+                                    double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
 
-                                    variantIds.add(variantIdB);
-                                    r2s.add(r2);
+                                    if (r2 > minR2) {
 
+                                        variantIds.add(variantIdB);
+                                        r2s.add(r2);
+
+                                    }
                                 }
                             }
                         }

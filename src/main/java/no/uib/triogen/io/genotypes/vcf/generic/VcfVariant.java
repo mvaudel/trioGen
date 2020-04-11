@@ -16,7 +16,7 @@ import no.uib.triogen.model.family.ChildToParentMap;
  * @author Marc Vaudel
  */
 public class VcfVariant implements GenotypesProvider {
-    
+
     /**
      * Vcf key for the genotyping floag.
      */
@@ -25,7 +25,7 @@ public class VcfVariant implements GenotypesProvider {
      * Vcf key for the dosages.
      */
     public final static String DOSAGE_KEY = "GP";
-    
+
     /**
      * The variant context.
      */
@@ -55,10 +55,10 @@ public class VcfVariant implements GenotypesProvider {
      * Cache for p0.
      */
     private double parentsP0Cache = Double.NaN;
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param variantContext The variant context.
      * @param useCache Boolean indicating whether the genotypes provider should
      * cache genotype values.
@@ -67,58 +67,58 @@ public class VcfVariant implements GenotypesProvider {
             VariantContext variantContext,
             boolean useCache
     ) {
-        
+
         this.variantContext = variantContext;
         this.useCache = useCache;
-        
+
     }
 
     @Override
     public void parse() {
-        
+
         List<Allele> altAlleles = variantContext.getAlternateAlleles();
-        
+
         if (altAlleles.size() != 1) {
-            
-            throw new IllegalArgumentException(altAlleles.size() + " alternative alleles found for variant " +  variantContext.getID() + ", only one supported.");
-            
+
+            throw new IllegalArgumentException(altAlleles.size() + " alternative alleles found for variant " + variantContext.getID() + ", only one supported.");
+
         }
-        
+
         altAllele = altAlleles.get(0);
-    
+
     }
 
     @Override
     public String getVariantID() {
-        
+
         return variantContext.getID();
-        
+
     }
 
     @Override
     public String getContig() {
-        
+
         return variantContext.getContig();
-        
+
     }
 
     @Override
     public int getBp() {
-        
+
         return variantContext.getStart();
-        
+
     }
 
     @Override
     public String getRef() {
-        
+
         return variantContext.getReference().getBaseString();
-        
+
     }
 
     @Override
     public String getAlt() {
-        
+
         return variantContext.getAlternateAlleles().stream()
                 .map(
                         allele -> allele.getBaseString()
@@ -130,9 +130,9 @@ public class VcfVariant implements GenotypesProvider {
 
     @Override
     public boolean genotyped() {
-        
+
         return variantContext.hasAttribute(TYPED);
-        
+
     }
 
     @Override
@@ -148,15 +148,15 @@ public class VcfVariant implements GenotypesProvider {
 
             }
         }
-        
+
         Genotype genotype = variantContext.getGenotype(sampleId);
-        
+
         List<Allele> alleles = genotype.getAlleles();
-        
+
         if (alleles.size() != 2) {
-            
-            throw new IllegalArgumentException(alleles.size() + " alleles found for variant " +  variantContext.getID() + " in sample " + sampleId + ", only one supported.");
-            
+
+            throw new IllegalArgumentException(alleles.size() + " alleles found for variant " + variantContext.getID() + " in sample " + sampleId + ", only one supported.");
+
         }
 
         boolean allele11 = alleles.get(0).compareTo(altAllele) == 0;
@@ -212,7 +212,7 @@ public class VcfVariant implements GenotypesProvider {
 
         }
     }
-    
+
     @Override
     public short[] getH(
             ChildToParentMap childToParentMap,
@@ -251,86 +251,79 @@ public class VcfVariant implements GenotypesProvider {
 
             }
         }
-        
+
         String attribute = variantContext.getAttributeAsString(DOSAGE_KEY, sampleId);
-        
+
         if (attribute == null) {
-            
+
             throw new IllegalArgumentException(
                     "Attribute for dosages (" + DOSAGE_KEY + ") not found."
             );
-            
+
         }
-        
+
         String[] split = attribute.split(",");
-        
+
         float[] dosages = new float[3];
-        
-        for (int i = 0 ; i < 3 ; i++) {
-            
+
+        for (int i = 0; i < 3; i++) {
+
             dosages[i] = Float.parseFloat(split[i]);
-            
+
         }
-        
+
         if (useCache) {
-            
+
             dosagesCache.put(sampleId, dosages);
-            
+
         }
 
         return dosages;
-        
+
     }
 
     @Override
-    public float[] getParentP0s(
-            String[] childIds, 
+    public void setParentP0s(
+            String[] childIds,
             ChildToParentMap childToParentMap
     ) {
 
-        if (parentsP0sCache == null) {
+        float[] results = new float[2 * childIds.length];
+        double sum = 0.0;
 
-            float[] results = new float[2 * childIds.length];
+        for (int i = 0; i < childIds.length; i++) {
 
-            for (int i = 0; i < childIds.length; i++) {
+            String childId = childIds[i];
 
-                String childId = childIds[i];
-                
-                String motherId = childToParentMap.getMother(childId);
-                results[i] = getDosages(motherId)[0];
-                
-                String fatherId = childToParentMap.getMother(childId);
-                results[i + childIds.length] = getDosages(fatherId)[0];
+            String motherId = childToParentMap.getMother(childId);
+            float value = getDosages(motherId)[0];
+            results[i] = value;
+            sum += value;
 
-            }
-            
-            parentsP0sCache = results;
+            String fatherId = childToParentMap.getMother(childId);
+            value = getDosages(fatherId)[0];
+            results[i + childIds.length] = value;
+            sum += value;
 
         }
-        
+
+        parentsP0sCache = results;
+        parentsP0Cache = sum;
+
+    }
+
+    @Override
+    public float[] getParentP0s() {
+
         return parentsP0sCache;
 
     }
 
     @Override
-    public double getParentP0(String[] childIds, ChildToParentMap childToParentMap) {
-        
-        if (parentsP0Cache == Double.NaN) {
+    public double getParentP0() {
 
-            double result = 0.0;
-
-            for (float value : parentsP0sCache) {
-
-                result += value;
-
-            }
-            
-            parentsP0Cache = result;
-            
-        }
-        
         return parentsP0Cache;
-        
+
     }
 
 }

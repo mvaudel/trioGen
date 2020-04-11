@@ -92,17 +92,22 @@ public interface GenotypesProvider {
     public boolean genotyped();
     
     /**
-     * Returns the p0s for all parents of the given child ids.
+     * Sets the p0s for all parents of the given child ids.
      * 
      * @param childIds The ids of the children.
      * @param childToParentMap The child to parent map.
-     * 
-     * @return The p0s in an array.
      */
-    public float[] getParentP0s(
+    public void setParentP0s(
             String[] childIds,
             ChildToParentMap childToParentMap
     );
+    
+    /**
+     * Returns the p0s for all parents of the given child ids. Mothers first and then fathers, in the order of the child ids.
+     * 
+     * @return The p0s in an array.
+     */
+    public float[] getParentP0s();
     
     /**
      * Returns the sum of p0s for all parents of the given child ids.
@@ -112,9 +117,6 @@ public interface GenotypesProvider {
      * 
      * @return The sum of p0s.
      */
-    public double getParentP0(
-            String[] childIds,
-            ChildToParentMap childToParentMap
-    );
+    public double getParentP0();
 
 }

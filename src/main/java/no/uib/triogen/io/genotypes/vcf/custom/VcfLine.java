@@ -335,51 +335,44 @@ public class VcfLine implements GenotypesProvider {
     }
 
     @Override
-    public float[] getParentP0s(
+    public void setParentP0s(
             String[] childIds,
             ChildToParentMap childToParentMap
     ) {
 
-        if (parentsP0sCache == null) {
+        float[] results = new float[2 * childIds.length];
+        double sum = 0.0;
 
-            float[] results = new float[2 * childIds.length];
+        for (int i = 0; i < childIds.length; i++) {
 
-            for (int i = 0; i < childIds.length; i++) {
+            String childId = childIds[i];
 
-                String childId = childIds[i];
+            String motherId = childToParentMap.getMother(childId);
+            float value = getDosages(motherId)[0];
+            results[i] = value;
+            sum += value;
 
-                String motherId = childToParentMap.getMother(childId);
-                results[i] = getDosages(motherId)[0];
-
-                String fatherId = childToParentMap.getMother(childId);
-                results[i + childIds.length] = getDosages(fatherId)[0];
-
-            }
-
-            parentsP0sCache = results;
+            String fatherId = childToParentMap.getMother(childId);
+            value = getDosages(fatherId)[0];
+            results[i + childIds.length] = value;
+            sum += value;
 
         }
+
+        parentsP0sCache = results;
+        parentsP0Cache = sum;
+
+    }
+
+    @Override
+    public float[] getParentP0s() {
 
         return parentsP0sCache;
 
     }
 
     @Override
-    public double getParentP0(String[] childIds, ChildToParentMap childToParentMap) {
-
-        if (parentsP0Cache == Double.NaN) {
-
-            double result = 0.0;
-
-            for (float value : parentsP0sCache) {
-
-                result += value;
-
-            }
-            
-            parentsP0Cache = result;
-            
-        }
+    public double getParentP0() {
 
         return parentsP0Cache;
 

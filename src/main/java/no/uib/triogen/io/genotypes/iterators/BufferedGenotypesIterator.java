@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.stream.IntStream;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.maf.MafEstimator;
@@ -93,6 +94,10 @@ public class BufferedGenotypesIterator {
      * Placeholder for a batch of genotypes providers.
      */
     private final ArrayList<GenotypesProvider> batch;
+    /**
+     * Boolean indicating whether p0s should be buffered upon loading.
+     */
+    private final boolean bufferP0s;
 
     /**
      * Constructor.
@@ -109,6 +114,8 @@ public class BufferedGenotypesIterator {
      * @param downstreamLoadingFactor The loading factor to use when trimming
      * the buffer.
      * @param upstreamLoadingFactor The loading factor to use when buffering.
+     * @param bufferP0s Boolean indicating whether p0s should be buffered upon
+     * loading.
      */
     public BufferedGenotypesIterator(
             VariantIterator iterator,
@@ -118,7 +125,8 @@ public class BufferedGenotypesIterator {
             double mafThreshold,
             int nVariants,
             double downstreamLoadingFactor,
-            double upstreamLoadingFactor
+            double upstreamLoadingFactor,
+            boolean bufferP0s
     ) {
 
         this.iterator = iterator;
@@ -130,6 +138,7 @@ public class BufferedGenotypesIterator {
         this.batch = new ArrayList<>(nVariants);
         this.downstreamLoadingFactor = downstreamLoadingFactor;
         this.upstreamLoadingFactor = upstreamLoadingFactor;
+        this.bufferP0s = bufferP0s;
 
         init();
 
@@ -244,11 +253,9 @@ public class BufferedGenotypesIterator {
 
                     while (!iterator.isFinished() && bp + upstreamLoadingFactor * upStreamDistance >= currentMaxBp.get(contig)) {
 
-                        GenotypesProvider genotypesProvider;
+                        for (int i = 0; i < 10 * nVariants; i++) {
 
-                        for (int i = 0; i < nVariants; i++) {
-
-                            genotypesProvider = iterator.next();
+                            GenotypesProvider genotypesProvider = iterator.next();
 
                             if (genotypesProvider == null) {
 
@@ -280,14 +287,23 @@ public class BufferedGenotypesIterator {
 
                         if (!batch.isEmpty()) {
 
-                            for (int i = 0; i < batch.size(); i++) {
-
-                                if (batchMaf[i] >= mafThreshold) {
-
-                                    add(batch.get(i));
-
-                                }
-                            }
+                            IntStream.range(0, batch.size())
+                                    .parallel()
+                                    .filter(
+                                            i -> batchMaf[i] >= mafThreshold
+                                    )
+                                    .mapToObj(
+                                            i -> batch.get(i)
+                                    )
+                                    .forEach(
+                                            genotypesProvider -> {
+                                                genotypesProvider.setParentP0s(
+                                                        childToParentMap.children,
+                                                        childToParentMap
+                                                );
+                                                add(genotypesProvider);
+                                            }
+                                    );
 
                             batch.clear();
 
@@ -352,7 +368,7 @@ public class BufferedGenotypesIterator {
      *
      * @param genotypesProvider The genotypes provider for this variant.
      */
-    private void add(
+    private synchronized void add(
             GenotypesProvider genotypesProvider
     ) {
 

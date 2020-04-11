@@ -180,7 +180,8 @@ public class LdMatrixComputer {
                 mafThreshold,
                 nVariants,
                 downstreamLoadingFactor,
-                upstreamLoadingFactor
+                upstreamLoadingFactor,
+                true
         );
 
         LdMatrixWriter writer = new LdMatrixWriter(
