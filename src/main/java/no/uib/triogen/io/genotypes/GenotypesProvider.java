@@ -112,9 +112,6 @@ public interface GenotypesProvider {
     /**
      * Returns the sum of p0s for all parents of the given child ids.
      * 
-     * @param childIds The ids of the children.
-     * @param childToParentMap The child to parent map.
-     * 
      * @return The sum of p0s.
      */
     public double getParentP0();

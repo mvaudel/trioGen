@@ -1,6 +1,5 @@
 package no.uib.triogen.io.genotypes.vcf.custom;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.model.family.ChildToParentMap;

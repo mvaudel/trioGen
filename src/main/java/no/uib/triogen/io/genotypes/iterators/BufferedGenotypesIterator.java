@@ -213,6 +213,8 @@ public class BufferedGenotypesIterator {
             );
 
             if (maf >= mafThreshold) {
+                
+                genotypesProvider.setParentP0s(childToParentMap.children, childToParentMap);
 
                 add(genotypesProvider);
 
