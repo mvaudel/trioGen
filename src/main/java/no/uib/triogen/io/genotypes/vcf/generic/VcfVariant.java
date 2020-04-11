@@ -3,6 +3,7 @@ package no.uib.triogen.io.genotypes.vcf.generic;
 import htsjdk.variant.variantcontext.Allele;
 import htsjdk.variant.variantcontext.Genotype;
 import htsjdk.variant.variantcontext.VariantContext;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +47,14 @@ public class VcfVariant implements GenotypesProvider {
      * Cache for the hard calls.
      */
     private final HashMap<String, Short> hardCallsCache = new HashMap<>(0);
+    /**
+     * Cache for individual p0s.
+     */
+    private float[] parentsP0sCache = null;
+    /**
+     * Cache for p0.
+     */
+    private double parentsP0Cache = Double.NaN;
     
     /**
      * Constructor.
@@ -270,6 +279,57 @@ public class VcfVariant implements GenotypesProvider {
         }
 
         return dosages;
+        
+    }
+
+    @Override
+    public float[] getParentP0s(
+            String[] childIds, 
+            ChildToParentMap childToParentMap
+    ) {
+
+        if (parentsP0sCache == null) {
+
+            float[] results = new float[2 * childIds.length];
+
+            for (int i = 0; i < childIds.length; i++) {
+
+                String childId = childIds[i];
+                
+                String motherId = childToParentMap.getMother(childId);
+                results[i] = getDosages(motherId)[0];
+                
+                String fatherId = childToParentMap.getMother(childId);
+                results[i + childIds.length] = getDosages(fatherId)[0];
+
+            }
+            
+            parentsP0sCache = results;
+
+        }
+        
+        return parentsP0sCache;
+
+    }
+
+    @Override
+    public double getParentP0(String[] childIds, ChildToParentMap childToParentMap) {
+        
+        if (parentsP0Cache == Double.NaN) {
+
+            double result = 0.0;
+
+            for (float value : parentsP0sCache) {
+
+                result += value;
+
+            }
+            
+            parentsP0Cache = result;
+            
+        }
+        
+        return parentsP0Cache;
         
     }
 

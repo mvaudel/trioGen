@@ -1,5 +1,6 @@
 package no.uib.triogen.io.genotypes.vcf.custom;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.model.family.ChildToParentMap;
@@ -62,6 +63,14 @@ public class VcfLine implements GenotypesProvider {
      * Cache for the dosages.
      */
     private final HashMap<String, float[]> dosagesCache = new HashMap<>(0);
+    /**
+     * Cache for individual p0s.
+     */
+    private float[] parentsP0sCache = null;
+    /**
+     * Cache for p0.
+     */
+    private double parentsP0Cache = Double.NaN;
 
     /**
      * Constructor.
@@ -322,6 +331,57 @@ public class VcfLine implements GenotypesProvider {
         }
 
         return dosages;
+
+    }
+
+    @Override
+    public float[] getParentP0s(
+            String[] childIds,
+            ChildToParentMap childToParentMap
+    ) {
+
+        if (parentsP0sCache == null) {
+
+            float[] results = new float[2 * childIds.length];
+
+            for (int i = 0; i < childIds.length; i++) {
+
+                String childId = childIds[i];
+
+                String motherId = childToParentMap.getMother(childId);
+                results[i] = getDosages(motherId)[0];
+
+                String fatherId = childToParentMap.getMother(childId);
+                results[i + childIds.length] = getDosages(fatherId)[0];
+
+            }
+
+            parentsP0sCache = results;
+
+        }
+
+        return parentsP0sCache;
+
+    }
+
+    @Override
+    public double getParentP0(String[] childIds, ChildToParentMap childToParentMap) {
+
+        if (parentsP0Cache == Double.NaN) {
+
+            double result = 0.0;
+
+            for (float value : parentsP0sCache) {
+
+                result += value;
+
+            }
+            
+            parentsP0Cache = result;
+            
+        }
+
+        return parentsP0Cache;
 
     }
 }

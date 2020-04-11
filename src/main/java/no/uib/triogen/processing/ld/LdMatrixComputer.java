@@ -169,7 +169,7 @@ public class LdMatrixComputer {
         VariantIterator iterator = GenotypesFileType.getVariantIterator(
                 genotypesFile,
                 genotypesFileType,
-                true
+                false
         );
 
         BufferedGenotypesIterator bufferedIterator = new BufferedGenotypesIterator(

@@ -125,72 +125,30 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                         if (variantIdA != variantIdB) {
 
-                            double nAB = 0.0;
-                            double nA = 0.0;
-                            double nB = 0.0;
+                            double nA = genotypesProviderA.getParentP0(
+                                    childToParentMap.children,
+                                    childToParentMap
+                            );
+                            double nB = genotypesProviderB.getParentP0(
+                                    childToParentMap.children,
+                                    childToParentMap
+                            );
                             double n = 2 * childToParentMap.children.length;
 
-                            for (String childId : childToParentMap.children) {
+                            float[] p0sA = genotypesProviderA.getParentP0s(
+                                    childToParentMap.children,
+                                    childToParentMap
+                            );
+                            float[] p0sB = genotypesProviderB.getParentP0s(
+                                    childToParentMap.children,
+                                    childToParentMap
+                            );
+                            double nAB = 0.0;
 
-                                if (!hardCalls) {
+                            for (int i = 0; i < p0sA.length; i++) {
 
-                                    String motherId = childToParentMap.getMother(childId);
+                                nAB += p0sA[i] * p0sB[i];
 
-                                    float[] dosagesA = genotypesProviderA.getDosages(motherId);
-                                    float[] dosagesB = genotypesProviderB.getDosages(motherId);
-
-                                    float pA0 = dosagesA[0];
-                                    float pB0 = dosagesB[0];
-
-                                    nA += pA0;
-                                    nB += pB0;
-                                    nAB += pA0 * pB0;
-
-                                    String fatherId = childToParentMap.getFather(childId);
-
-                                    dosagesA = genotypesProviderA.getDosages(fatherId);
-                                    dosagesB = genotypesProviderB.getDosages(fatherId);
-
-                                    pA0 = dosagesA[0];
-                                    pB0 = dosagesB[0];
-
-                                    nA += pA0;
-                                    nB += pB0;
-                                    nAB += pA0 * pB0;
-
-                                } else {
-
-                                    short[] hA = genotypesProviderA.getH(childToParentMap, childId);
-                                    short[] hB = genotypesProviderB.getH(childToParentMap, childId);
-
-                                    boolean a = hA[0] == 0 && hA[1] == 0;
-                                    boolean b = hB[0] == 0 && hB[1] == 0;
-
-                                    if (a) {
-                                        nA++;
-                                        if (b) {
-                                            nAB++;
-                                        }
-                                    }
-
-                                    if (b) {
-                                        nB++;
-                                    }
-
-                                    a = hA[2] == 0 && hA[3] == 0;
-                                    b = hB[2] == 0 && hB[3] == 0;
-
-                                    if (a) {
-                                        nA++;
-                                        if (b) {
-                                            nAB++;
-                                        }
-                                    }
-
-                                    if (b) {
-                                        nB++;
-                                    }
-                                }
                             }
 
                             if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {

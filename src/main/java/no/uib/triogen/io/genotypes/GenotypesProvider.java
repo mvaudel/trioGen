@@ -90,5 +90,31 @@ public interface GenotypesProvider {
      * @return A boolean indicating whether the marker is genotyped.
      */
     public boolean genotyped();
+    
+    /**
+     * Returns the p0s for all parents of the given child ids.
+     * 
+     * @param childIds The ids of the children.
+     * @param childToParentMap The child to parent map.
+     * 
+     * @return The p0s in an array.
+     */
+    public float[] getParentP0s(
+            String[] childIds,
+            ChildToParentMap childToParentMap
+    );
+    
+    /**
+     * Returns the sum of p0s for all parents of the given child ids.
+     * 
+     * @param childIds The ids of the children.
+     * @param childToParentMap The child to parent map.
+     * 
+     * @return The sum of p0s.
+     */
+    public double getParentP0(
+            String[] childIds,
+            ChildToParentMap childToParentMap
+    );
 
 }
