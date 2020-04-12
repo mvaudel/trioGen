@@ -189,11 +189,11 @@ public class ExtractionTest extends TestCase {
 
             String[] lineSplit = line.split(IoUtils.SEPARATOR);
 
-            String snpId = lineSplit[0];
+            String snpId = lineSplit[2];
 
             HashMap<String, Integer> snpMap = new HashMap<>(header.length - 1);
 
-            for (int i = 1; i < lineSplit.length; i++) {
+            for (int i = 5; i < lineSplit.length; i++) {
 
                 String id = header[i];
                 int h = Integer.parseInt(lineSplit[i]);
