@@ -411,11 +411,23 @@ public class LinearModelRunnable implements Runnable {
                         );
 
                 // Export
+                String genotyped = genotypesProvider.genotyped() ? "1" : "0";
+                
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder
                         .append(phenoName)
                         .append(IoUtils.SEPARATOR)
+                        .append(genotypesProvider.getContig())
+                        .append(IoUtils.SEPARATOR)
+                        .append(genotypesProvider.getBp())
+                        .append(IoUtils.SEPARATOR)
                         .append(genotypesProvider.getVariantID())
+                        .append(IoUtils.SEPARATOR)
+                        .append(genotypesProvider.getRef())
+                        .append(IoUtils.SEPARATOR)
+                        .append(genotypesProvider.getAlt())
+                        .append(IoUtils.SEPARATOR)
+                        .append(genotyped)
                         .append(IoUtils.SEPARATOR)
                         .append(nValidValues)
                         .append(IoUtils.SEPARATOR)
@@ -437,6 +449,8 @@ public class LinearModelRunnable implements Runnable {
                 IndexedGzCoordinates coordinates = outputWriter.append(line);
 
                 resultsIndex.writeLine(
+                        genotypesProvider.getContig(),
+                        Integer.toString(genotypesProvider.getBp()),
                         genotypesProvider.getVariantID(),
                         phenoName,
                         Integer.toString(coordinates.compressedLength),

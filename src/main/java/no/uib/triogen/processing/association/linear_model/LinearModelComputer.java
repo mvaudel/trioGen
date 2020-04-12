@@ -191,10 +191,12 @@ public class LinearModelComputer {
         File indexFile = getIndexFile(destinationFile);
         SimpleFileWriter index = new SimpleFileWriter(indexFile, true);
         index.writeLine(
-                "VariantId",
-                "Phenotype",
-                "CompressedLength",
-                "UncompressedLength"
+                "contig",
+                "position",
+                "variantId",
+                "phenotype",
+                "compressedLength",
+                "uncompressedLength"
         );
 
         IndexedGzCoordinates coordinates = outputWriter.append("# TrioGen version: " + TrioGen.getVersion() + IoUtils.LINE_SEPARATOR);
@@ -209,7 +211,12 @@ public class LinearModelComputer {
         stringBuilder.append(
                 String.join(IoUtils.SEPARATOR,
                         "phenotype",
+                        "contig",
+                        "position",
                         "variantId",
+                        "refAllele",
+                        "altAllele",
+                        "typed",
                         "n",
                         "nAlt",
                         "nH"
@@ -230,7 +237,7 @@ public class LinearModelComputer {
                 Integer.toString(coordinates.compressedLength),
                 Integer.toString(coordinates.uncompressedLength)
         );
-        
+
         SimpleSemaphore gzIndexMutex = new SimpleSemaphore(1);
 
         try {
