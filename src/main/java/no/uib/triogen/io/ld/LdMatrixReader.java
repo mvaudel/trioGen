@@ -5,23 +5,25 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.ENCODING;
-import no.uib.triogen.utils.SimpleSemaphore;
+import no.uib.triogen.io.flat.mapping.MemoryMappedFile;
 
 /**
  * Reader for an ld matrix.
  *
  * @author Marc Vaudel
  */
-public class LdMatrixReader {
+public class LdMatrixReader implements AutoCloseable {
 
+    /**
+     * The block size to use for the memory mapped file.
+     */
+    public static final int BLOCK_SIZE = 64 * 1024 * 1024;
     /**
      * The ids of the variants.
      */
@@ -29,23 +31,11 @@ public class LdMatrixReader {
     /**
      * The index of the variants.
      */
-    private final HashMap<String, Integer> indexMap;
+    private final HashMap<String, Long> indexMap;
     /**
-     * Semaphore to synchronize threads.
+     * The memory mapped file.
      */
-    private final SimpleSemaphore semaphore = new SimpleSemaphore(1);
-    /**
-     * The random access file.
-     */
-    private final RandomAccessFile raf;
-    /**
-     * The channel to the file.
-     */
-    private final FileChannel fc;
-    /**
-     * The mapped byte buffer.
-     */
-    private final MappedByteBuffer mappedByteBuffer;
+    private final MemoryMappedFile memoryMappedFile;
 
     /**
      * Constructor.
@@ -60,7 +50,7 @@ public class LdMatrixReader {
             File file
     ) throws FileNotFoundException, IOException {
 
-        raf = new RandomAccessFile(file, "r");
+        RandomAccessFile raf = new RandomAccessFile(file, "r");
 
         try {
 
@@ -77,10 +67,10 @@ public class LdMatrixReader {
             long footerPosition = raf.readLong();
 
             raf.seek(footerPosition);
-            int length = raf.readInt();
+            int compressedLength = raf.readInt();
             int uncompressedLength = raf.readInt();
 
-            byte[] compressedFooter = new byte[length];
+            byte[] compressedFooter = new byte[compressedLength];
             raf.read(compressedFooter);
 
             byte[] footer = uncompress(compressedFooter, uncompressedLength);
@@ -100,19 +90,19 @@ public class LdMatrixReader {
 
                 int variantI = byteBuffer.getInt();
                 String variantId = variantIds[variantI];
-                int index = byteBuffer.getInt();
+                long index = byteBuffer.getLong();
                 indexMap.put(variantId, index);
 
             }
 
-            fc = raf.getChannel();
+            long offset = LdMatrixWriter.HEADER_LENGTH;
+            long length = footerPosition - offset;
 
-            long size = footerPosition - LdMatrixWriter.HEADER_LENGTH;
-
-            mappedByteBuffer = fc.map(
-                    FileChannel.MapMode.READ_ONLY, 
-                    LdMatrixWriter.HEADER_LENGTH, 
-                    size
+            this.memoryMappedFile = new MemoryMappedFile(
+                    file,
+                    offset,
+                    length,
+                    BLOCK_SIZE
             );
 
         } finally {
@@ -174,7 +164,7 @@ public class LdMatrixReader {
             String variantA
     ) {
 
-        Integer index = indexMap.get(variantA);
+        Long index = indexMap.get(variantA);
 
         if (index == null) {
 
@@ -182,16 +172,17 @@ public class LdMatrixReader {
 
         }
 
-        semaphore.acquire();
+        int nVariants;
+        byte[] compressedData;
 
-        mappedByteBuffer.position(index);
+        try ( MemoryMappedFile.MiniBuffer buffer = memoryMappedFile.getBuffer(index)) {
 
-        int nVariants = mappedByteBuffer.getInt();
-        int compressedLength = mappedByteBuffer.getInt();
-        byte[] compressedData = new byte[compressedLength];
-        mappedByteBuffer.get(compressedData);
+            nVariants = buffer.getInt();
+            int compressedLength = buffer.getInt();
+            compressedData = new byte[compressedLength];
+            buffer.get(compressedData);
 
-        semaphore.release();
+        }
 
         int uncompressedLength = nVariants * Integer.BYTES + nVariants * Double.BYTES;
 
@@ -214,4 +205,10 @@ public class LdMatrixReader {
 
     }
 
+    @Override
+    public void close() throws Exception {
+        
+        memoryMappedFile.close();
+        
+    }
 }

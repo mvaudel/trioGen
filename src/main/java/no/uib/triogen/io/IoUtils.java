@@ -41,23 +41,23 @@ public class IoUtils {
      * Attempts at closing a buffer to avoid memory issues. Adapted from
      * https://stackoverflow.com/questions/2972986/how-to-unmap-a-file-from-memory-mapped-using-filechannel-in-java.
      *
-     * @param buffer The buffer to close.
+     * @param mappedByteBuffer The buffer to close.
      */
     public static void closeBuffer(
-            MappedByteBuffer buffer
+            MappedByteBuffer mappedByteBuffer
     ) {
 
-        if (buffer == null || !buffer.isDirect()) {
+        if (mappedByteBuffer == null || !mappedByteBuffer.isDirect()) {
             return;
         }
 
         try {
 
-            Method cleaner = buffer.getClass().getMethod("cleaner");
+            Method cleaner = mappedByteBuffer.getClass().getMethod("cleaner");
             cleaner.setAccessible(true);
             Method clean = Class.forName("sun.misc.Cleaner").getMethod("clean");
             clean.setAccessible(true);
-            clean.invoke(cleaner.invoke(buffer));
+            clean.invoke(cleaner.invoke(mappedByteBuffer));
 
         } catch (Exception ex) {
         }
