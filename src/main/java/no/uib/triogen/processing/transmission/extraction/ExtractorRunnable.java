@@ -84,32 +84,54 @@ public class ExtractorRunnable implements Runnable {
                 genotypesProvider.parse();
 
                 String[] genotypes = extractHs(genotypesProvider);
+                
+                String genotyped = genotypesProvider.genotyped() ? "1" : "0";
 
                 h1Writer.writeLine(
                         String.join(
                                 "\t",
+                                genotypesProvider.getContig(),
+                                Integer.toString(genotypesProvider.getBp()),
                                 genotypesProvider.getVariantID(),
+                                genotypesProvider.getRef(),
+                                genotypesProvider.getAlt(),
+                                genotyped,
                                 genotypes[0]
                         )
                 );
                 h2Writer.writeLine(
                         String.join(
                                 "\t",
+                                genotypesProvider.getContig(),
+                                Integer.toString(genotypesProvider.getBp()),
                                 genotypesProvider.getVariantID(),
+                                genotypesProvider.getRef(),
+                                genotypesProvider.getAlt(),
+                                genotyped,
                                 genotypes[1]
                         )
                 );
                 h3Writer.writeLine(
                         String.join(
                                 "\t",
+                                genotypesProvider.getContig(),
+                                Integer.toString(genotypesProvider.getBp()),
                                 genotypesProvider.getVariantID(),
+                                genotypesProvider.getRef(),
+                                genotypesProvider.getAlt(),
+                                genotyped,
                                 genotypes[2]
                         )
                 );
                 h4Writer.writeLine(
                         String.join(
                                 "\t",
+                                genotypesProvider.getContig(),
+                                Integer.toString(genotypesProvider.getBp()),
                                 genotypesProvider.getVariantID(),
+                                genotypesProvider.getRef(),
+                                genotypesProvider.getAlt(),
+                                genotyped,
                                 genotypes[3]
                         )
                 );

@@ -33,40 +33,40 @@ public enum Model {
             new String[0],
             new String[]{"Bc", "Bm", "Bf", "Bmt"}
     ),
-    cmf_mnt(
-            "child-mother-father_mother-transmitted",
-            "Regression against the number of alternative alleles of the child, mother, and father, and non-transmitted maternal allele.",
-            "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βmnt h2 + ε",
-            new String[0],
-            new String[]{"Bc", "Bm", "Bf", "Bmnt"}
-    ),
     cmf_ft(
             "child-mother-father_father-transmitted",
             "Regression against the number of alternative alleles of the child, mother, and father, and transmitted paternal allele.",
-            "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βft h1 + ε",
+            "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βft h3 + ε",
             new String[0],
             new String[]{"Bc", "Bm", "Bf", "Bft"}
-    ),
-    cmf_fnt(
-            "child-mother-father_father-transmitted",
-            "Regression against the number of alternative alleles of the child, mother, and father, and non-transmitted pmaternal allele.",
-            "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βfnt h2 + ε",
-            new String[0],
-            new String[]{"Bc", "Bm", "Bf", "Bfnt"}
     ),
     cm(
             "child-mother",
             "Regression against the number of alternative alleles of the child and mother.",
             "y = βm (h1 + h2) + βc (h2 + h3) + ε",
-            new String[]{"h", "cmf"},
+            new String[]{"h", "cmf", "cm_mt"},
             new String[]{"Bc", "Bm"}
+    ),
+    cm_mt(
+            "child-mother_mother-transmitted",
+            "Regression against the number of alternative alleles of the child and mother, and transmitted maternal allele.",
+            "y = βm (h1 + h2) + βc (h2 + h3) + βmt h1 + ε",
+            new String[]{"h", "cmf_mt"},
+            new String[]{"Bc", "Bm", "Bmt"}
     ),
     cf(
             "child-father",
             "Regression against the number of alternative alleles of the child and father.",
             "y = βc (h2 + h3) + βf (h3 + h4) + ε",
-            new String[]{"h", "cmf"},
+            new String[]{"h", "cmf", "cf_ft"},
             new String[]{"Bc", "Bf"}
+    ),
+    cf_ft(
+            "child-father_father-transmitted",
+            "Regression against the number of alternative alleles of the child and father, and transmitted paternal allele.",
+            "y = βc (h2 + h3) + βf (h3 + h4) + βft h3 + ε",
+            new String[]{"h", "cmf_ft"},
+            new String[]{"Bc", "Bf", "Bft"}
     ),
     mf(
             "mother-father",
@@ -82,19 +82,47 @@ public enum Model {
             new String[]{"h", "cmf", "cm", "cf"},
             new String[]{"Bc"}
     ),
+    c_mt(
+            "child_mother-transmitted",
+            "Regression against the number of alternative alleles of the child and transmitted maternal allele.",
+            "y = βc (h2 + h3) + βmt h1 + ε",
+            new String[]{"h", "cmf_mt", "cm_mt"},
+            new String[]{"Bc", "Bmt"}
+    ),
+    c_ft(
+            "child_father-transmitted",
+            "Regression against the number of alternative alleles of the child and transmitted paternal allele.",
+            "y = βc (h2 + h3) + βft h3 + ε",
+            new String[]{"h", "cmf_ft", "cf_ft"},
+            new String[]{"Bc", "Bft"}
+    ),
     m(
             "mother",
             "Regression against the number of alternative alleles of the mother.",
-            "y = βm (h2 + h3) + ε",
+            "y = βm (h1 + h2) + ε",
             new String[]{"h", "cmf", "cm", "mf"},
             new String[]{"Bm"}
+    ),
+    m_mt(
+            "mother_mother-transmitted",
+            "Regression against the number of alternative alleles of the mother and transmitted maternal allele.",
+            "y = βm (h1 + h2) + βmt h1 + ε",
+            new String[]{"h", "cmf_mt", "cm_mt"},
+            new String[]{"Bm", "Bmt"}
     ),
     f(
             "father",
             "Regression against the number of alternative alleles of the father.",
-            "y = βf (h2 + h3) + ε",
+            "y = βf (h3 + h4) + ε",
             new String[]{"h", "cmf", "cf", "mf"},
             new String[]{"Bf"}
+    ),
+    f_ft(
+            "father",
+            "Regression against the number of alternative alleles of the father.",
+            "y = βf (h3 + h4) + βft h3 + ε",
+            new String[]{"h", "cmf_ft", "cf_ft"},
+            new String[]{"Bf", "Bft"}
     );
 
     /**
@@ -220,13 +248,6 @@ public enum Model {
                 x[index][3] = h[0];
                 return;
 
-            case cmf_mnt:
-                x[index][0] = nAltChild;
-                x[index][1] = nAltMother;
-                x[index][2] = nAltFather;
-                x[index][3] = h[1];
-                return;
-
             case cmf_ft:
                 x[index][0] = nAltChild;
                 x[index][1] = nAltMother;
@@ -234,21 +255,26 @@ public enum Model {
                 x[index][3] = h[2];
                 return;
 
-            case cmf_fnt:
-                x[index][0] = nAltChild;
-                x[index][1] = nAltMother;
-                x[index][2] = nAltFather;
-                x[index][3] = h[3];
-                return;
-
             case cm:
                 x[index][0] = nAltChild;
                 x[index][1] = nAltMother;
                 return;
 
+            case cm_mt:
+                x[index][0] = nAltChild;
+                x[index][1] = nAltMother;
+                x[index][2] = h[0];
+                return;
+
             case cf:
                 x[index][0] = nAltChild;
                 x[index][1] = nAltFather;
+                return;
+
+            case cf_ft:
+                x[index][0] = nAltChild;
+                x[index][1] = nAltFather;
+                x[index][2] = h[2];
                 return;
 
             case mf:
@@ -260,12 +286,32 @@ public enum Model {
                 x[index][0] = nAltChild;
                 return;
 
+            case c_mt:
+                x[index][0] = nAltChild;
+                x[index][1] = h[0];
+                return;
+
+            case c_ft:
+                x[index][0] = nAltChild;
+                x[index][1] = h[2];
+                return;
+
             case m:
                 x[index][0] = nAltMother;
                 return;
 
+            case m_mt:
+                x[index][0] = nAltMother;
+                x[index][1] = h[0];
+                return;
+
             case f:
                 x[index][0] = nAltFather;
+                return;
+
+            case f_ft:
+                x[index][0] = nAltFather;
+                x[index][1] = h[2];
                 return;
 
             default:
@@ -308,27 +354,31 @@ public enum Model {
                 return childNotSingular && motherNotSingular && fatherNotSingular;
 
             case cmf_mt:
-            case cmf_mnt:
             case cmf_ft:
-            case cmf_fnt:
                 return childNotSingular && motherNotSingular && fatherNotSingular && hNotSingluar;
 
             case cm:
+            case cm_mt:
                 return childNotSingular && motherNotSingular;
 
             case cf:
+            case cf_ft:
                 return childNotSingular && fatherNotSingular;
 
             case mf:
                 return motherNotSingular && fatherNotSingular;
 
             case c:
+            case c_mt:
+            case c_ft:
                 return childNotSingular;
 
             case m:
+            case m_mt:
                 return motherNotSingular;
 
             case f:
+            case f_ft:
                 return fatherNotSingular;
 
             default:
