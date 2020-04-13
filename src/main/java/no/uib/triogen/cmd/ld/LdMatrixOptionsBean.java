@@ -26,7 +26,7 @@ public class LdMatrixOptionsBean {
     /**
      * the max distance.
      */
-    public int maxDistance = 500000;
+    public int maxDistance = 1000000;
     /**
      * The minimal ld r2 to report (inclusive).
      */

@@ -15,7 +15,7 @@ public enum LdMatrixOptions {
     geno("g", "geno", "The genotypes file.", true, true),
     genoFormat("gf", "genoFormat", "The genotypes file format. " + GenotypesFileType.getCommandLineOptions() + ". Default: " + GenotypesFileType.vcf.index + ".", false, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not. Consider including only unrelated samples and controling for admixture.", true, true),
-    maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Default: 500000.", false, true),
+    maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Default: 1000000.", false, true),
     minR2("r", "minR2", "The minimal ld r2 to report (inclusive). Default: 1e-6.", false, true),
     maf("maf", "mafThreshold", "Minor allele frequency threshold. 0.05 excludes all variants with a maf < 5% among all parents belonging to trios where a phenotype is available for the regression. Default: 0.05.", false, true),
     hardCalls("hc", "hard_calls", "Use hard calls instead of dosages. Default: false.", false, false),
