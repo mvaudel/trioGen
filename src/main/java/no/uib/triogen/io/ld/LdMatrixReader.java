@@ -12,6 +12,7 @@ import java.util.zip.Inflater;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.ENCODING;
 import no.uib.triogen.io.flat.mapping.MemoryMappedFile;
+import static no.uib.triogen.utils.CompressionUtils.uncompress;
 
 /**
  * Reader for an ld matrix.
@@ -107,48 +108,6 @@ public class LdMatrixReader implements AutoCloseable {
 
         } finally {
             raf.close();
-        }
-    }
-
-    /**
-     * Uncompresses the given byte array.
-     *
-     * @param compressedByteArray the compressed byte array
-     * @param uncompressedLength the uncompressed length
-     *
-     * @return the uncompressed array
-     */
-    public static byte[] uncompress(
-            byte[] compressedByteArray,
-            int uncompressedLength
-    ) {
-
-        try {
-
-            byte[] uncompressedByteAray = new byte[uncompressedLength];
-
-            Inflater inflater = new Inflater(true);
-
-            inflater.setInput(compressedByteArray);
-            int bytesUncompressed = inflater.inflate(uncompressedByteAray);
-
-            if (bytesUncompressed == 0) {
-
-                throw new IllegalArgumentException("Missing input or dictionary.");
-
-            } else if (bytesUncompressed != uncompressedLength) {
-
-//                String debug = new String(uncompressedByteAray, 0, uncompressedByteAray.length, encoding);
-                throw new IllegalArgumentException("Unexpected number of bytes uncompressed " + bytesUncompressed + " (expected: " + uncompressedLength + ")");
-
-            }
-
-            return uncompressedByteAray;
-
-        } catch (DataFormatException e) {
-
-            throw new RuntimeException(e);
-
         }
     }
 

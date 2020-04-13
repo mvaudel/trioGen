@@ -12,9 +12,10 @@ import java.util.stream.Collectors;
 import java.util.zip.Deflater;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.SEPARATOR;
-import no.uib.triogen.io.TempByteArray;
+import no.uib.triogen.utils.TempByteArray;
 import static no.uib.triogen.io.ld.LdMatrixUtils.MAGIC_NUMBER;
 import no.uib.triogen.model.geno.VariantIndex;
+import static no.uib.triogen.utils.CompressionUtils.compress;
 import no.uib.triogen.utils.SimpleSemaphore;
 import no.uib.triogen.utils.Utils;
 
@@ -34,10 +35,6 @@ public class LdMatrixWriter implements AutoCloseable {
      */
     private final RandomAccessFile raf;
     /**
-     * The deflater to compress parts of the file.
-     */
-    private final Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION, true);
-    /**
      * Index for the variants.
      */
     private final VariantIndex variantIndex;
@@ -53,9 +50,6 @@ public class LdMatrixWriter implements AutoCloseable {
      * Semaphore to synchronize threads writing to the file.
      */
     private final SimpleSemaphore semaphore = new SimpleSemaphore(1);
-
-    private static boolean debugZero = false;
-    private static boolean debugLength = false;
 
     /**
      * Constructor.
@@ -86,15 +80,16 @@ public class LdMatrixWriter implements AutoCloseable {
      * @param variantIndex The index of the variant.
      * @param variantIds The indexes of the other variants.
      * @param r2s The ld r2s between the variant and the other variants.
+     * @param deflater The deflater to compress parts of the file.
      *
      * @throws IOException Exception thrown if an error occurred while
      * attempting to write to output file.
      */
     public void addVariant(
             int variantIndex,
-            String variantId,
             ArrayList<Integer> variantIds,
-            ArrayList<Double> r2s
+            ArrayList<Double> r2s,
+            Deflater deflater
     ) throws IOException {
 
         int nVariants = variantIds.size();
@@ -108,53 +103,8 @@ public class LdMatrixWriter implements AutoCloseable {
         }
 
         byte[] uncompressedData = buffer.array();
-        TempByteArray compressedData = compress(uncompressedData);
-        byte[] compressedDataDebug = Arrays.copyOf(compressedData.array, compressedData.length);
-        byte[] uncompressedDataDebug = compressedData.length > 0 ? LdMatrixReader.uncompress(compressedDataDebug, nVariants * Integer.BYTES + nVariants * Double.BYTES) : new byte[0];
+        TempByteArray compressedData = compress(uncompressedData, deflater);
 
-        // DEBUG
-        if (variantId.equals("rs13294926")
-                || variantId.equals("rs7858717")
-                || variantId.equals("rs62531305")
-                || variantId.equals("rs7027913")
-                || variantId.equals("rs13289471")) {
-
-            System.out.println(variantId + " - " + compressedData.length + " " + uncompressedData.length + " " + uncompressedDataDebug.length);
-
-        }
-
-        if (compressedData.length == 0 && !debugZero) {
-
-            File debugFile = new File("tmp/debugZero");
-
-            RandomAccessFile debugRaf = new RandomAccessFile(debugFile, "rw");
-            debugRaf.write(uncompressedData);
-            debugRaf.close();
-
-            debugZero = true;
-
-        } else {
-
-            if (uncompressedDataDebug.length != uncompressedData.length && !debugLength) {
-
-                File debugFile = new File("tmp/debugLength");
-
-                RandomAccessFile debugRaf = new RandomAccessFile(debugFile, "rw");
-                debugRaf.write(uncompressedData);
-                debugRaf.close();
-
-                debugLength = true;
-
-            }
-        }
-
-        if (debugZero && debugLength) {
-
-            throw new IllegalArgumentException("Bug");
-
-        }
-
-        // DEBUG END
         semaphore.acquire();
 
         long index = raf.getFilePointer() - HEADER_LENGTH;
@@ -174,66 +124,21 @@ public class LdMatrixWriter implements AutoCloseable {
      * Compresses and writes the given byte array.
      *
      * @param uncompressedData The uncompressed data.
+     * @param deflater The deflater to compress parts of the file.
      *
      * @throws IOException Exception thrown if an error occurred while
      * attempting to write to output file.
      */
     private void compressAndWrite(
-            byte[] uncompressedData
+            byte[] uncompressedData,
+            Deflater deflater
     ) throws IOException {
 
-        TempByteArray compressedData = compress(uncompressedData);
+        TempByteArray compressedData = compress(uncompressedData, deflater);
 
         raf.writeInt(compressedData.length);
         raf.writeInt(uncompressedData.length);
         raf.write(compressedData.array, 0, compressedData.length);
-
-    }
-
-    /**
-     * Compresses the given byte array.
-     *
-     * @param uncompressedData The uncompressed data.
-     *
-     * @return The compressed data.
-     */
-    private TempByteArray compress(
-            byte[] uncompressedData
-    ) {
-
-        byte[] compressedData = new byte[uncompressedData.length];
-
-        int outputLength = compressedData.length;
-
-        deflater.setInput(uncompressedData);
-        int compressedByteLength = deflater.deflate(
-                compressedData,
-                0,
-                compressedData.length,
-                Deflater.FULL_FLUSH
-        );
-        int compressedDataLength = compressedByteLength;
-
-        while (compressedByteLength == outputLength) {
-
-            byte[] output2 = new byte[outputLength];
-            compressedByteLength = deflater.deflate(
-                    output2,
-                    0,
-                    outputLength,
-                    Deflater.FULL_FLUSH
-            );
-
-            compressedData = Utils.mergeArrays(
-                    compressedData,
-                    output2,
-                    compressedByteLength
-            );
-            compressedDataLength += compressedByteLength;
-
-        }
-
-        return new TempByteArray(compressedData, compressedDataLength);
 
     }
 
@@ -273,7 +178,8 @@ public class LdMatrixWriter implements AutoCloseable {
 
         }
 
-        compressAndWrite(buffer.array());
+        Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION, true);
+        compressAndWrite(buffer.array(), deflater);
 
         raf.seek(0);
         raf.write(MAGIC_NUMBER);
@@ -286,7 +192,6 @@ public class LdMatrixWriter implements AutoCloseable {
 
         writeHeaderAndFooter();
 
-        deflater.end();
         raf.close();
 
     }

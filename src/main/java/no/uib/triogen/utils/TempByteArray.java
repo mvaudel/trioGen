@@ -1,4 +1,4 @@
-package no.uib.triogen.io;
+package no.uib.triogen.utils;
 
 /**
  * Convenience class for storing an array buffer and a length.

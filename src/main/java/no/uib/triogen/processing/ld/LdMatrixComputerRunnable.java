@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import no.uib.triogen.io.genotypes.iterators.BufferedGenotypesIterator;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.zip.Deflater;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.ld.LdMatrixWriter;
 import no.uib.triogen.log.Logger;
@@ -15,7 +16,7 @@ import no.uib.triogen.model.geno.VariantIndex;
  *
  * @author Marc Vaudel
  */
-public class LdMatrixComputerRunnable implements Runnable {
+public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
 
     /**
      * The writer.
@@ -59,6 +60,10 @@ public class LdMatrixComputerRunnable implements Runnable {
      * The minimal ld r2 to report (inclusive).
      */
     private final double minR2;
+    /**
+     * The deflater to compress parts of the file.
+     */
+    private final Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION, true);
 
     /**
      * Constructor.
@@ -169,9 +174,9 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                     writer.addVariant(
                             variantIdA,
-                            genotypesProviderA.getVariantID(),
                             variantIds,
-                            r2s
+                            r2s,
+                            deflater
                     );
                 }
             }
@@ -191,5 +196,12 @@ public class LdMatrixComputerRunnable implements Runnable {
             t.printStackTrace();
 
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        
+        deflater.end();
+        
     }
 }

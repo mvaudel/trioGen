@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.zip.Deflater;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import no.uib.triogen.model.geno.VariantIndex;
@@ -18,6 +19,8 @@ import no.uib.triogen.io.ld.LdMatrixReader;
 public class LdMatrixTest extends TestCase {
 
     public void testParsing() {
+        
+        Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION, true);
 
         boolean success = false;
 
@@ -56,7 +59,7 @@ public class LdMatrixTest extends TestCase {
 
                 int variantAI = variantIndex.getIndex(variant);
 
-                writer.addVariant(variantAI, variant, variantBs, r2s);
+                writer.addVariant(variantAI, variantBs, r2s, deflater);
 
             }
 
