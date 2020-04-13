@@ -12,7 +12,8 @@ import no.uib.triogen.io.ld.LdMatrixWriter;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
- * This class maps a file to memory using evenly distributed blocks of the given block size. Threads accessing the file block by block.
+ * This class maps a file to memory using evenly distributed blocks of the given
+ * block size. Threads accessing the file block by block.
  *
  * @author Marc Vaudel
  */
@@ -41,14 +42,15 @@ public class MemoryMappedFile implements AutoCloseable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param file The file to map.
      * @param offset The start index of the section of the file to map.
      * @param length The length of the section of the file to map.
      * @param blockSize The block size to use in number of bytes.
-     * 
+     *
      * @throws FileNotFoundException Exception thrown if the file is not found.
-     * @throws IOException Exception thrown if an error occurred while reading the file.
+     * @throws IOException Exception thrown if an error occurred while reading
+     * the file.
      */
     public MemoryMappedFile(
             File file,
@@ -80,7 +82,7 @@ public class MemoryMappedFile implements AutoCloseable {
             for (int i = 0; i < nBuffers; i++) {
 
                 bufferSemaphores[i] = new SimpleSemaphore(1);
-                
+
                 long begin = i * blockSize + LdMatrixWriter.HEADER_LENGTH;
                 long bufferSizeI = i < nBuffers - 1 || rest == 0 ? blockSize : rest;
 
@@ -99,10 +101,11 @@ public class MemoryMappedFile implements AutoCloseable {
     }
 
     /**
-     * Returns a buffer at the given position in the section of the file mapped. 0 is the beginning of the mapped section.
-     * 
+     * Returns a buffer at the given position in the section of the file mapped.
+     * 0 is the beginning of the mapped section.
+     *
      * @param index The index at which to start the buffer.
-     * 
+     *
      * @return A buffer at the given position in the section of the file mapped.
      */
     public MiniBuffer getBuffer(long index) {
@@ -137,17 +140,19 @@ public class MemoryMappedFile implements AutoCloseable {
          */
         private MappedByteBuffer mappedByteBuffer;
         /**
-         * Placeholder for the array of bytes used to decode overlapping primitive data types.
+         * Placeholder for the array of bytes used to decode overlapping
+         * primitive data types.
          */
         private final byte[] tempArray = new byte[Double.BYTES];
         /**
-         * Placeholder for the byte buffer used to decode overlapping primitive data types.
+         * Placeholder for the byte buffer used to decode overlapping primitive
+         * data types.
          */
         private final ByteBuffer byteBuffer = ByteBuffer.allocate(Double.BYTES);
 
         /**
          * Constructor.
-         * 
+         *
          * @param index The index in the section of the file mapped to buffer.
          */
         private MiniBuffer(
@@ -168,7 +173,7 @@ public class MemoryMappedFile implements AutoCloseable {
 
         /**
          * Returns the integer at the current position in the file.
-         * 
+         *
          * @return The integer at the current position in the file.
          */
         public int getInt() {
@@ -203,7 +208,7 @@ public class MemoryMappedFile implements AutoCloseable {
 
         /**
          * Returns the long at the current position in the file.
-         * 
+         *
          * @return The long at the current position in the file.
          */
         public long getLong() {
@@ -238,7 +243,7 @@ public class MemoryMappedFile implements AutoCloseable {
 
         /**
          * Returns the float at the current position in the file.
-         * 
+         *
          * @return The float at the current position in the file.
          */
         public float getFloat() {
@@ -273,7 +278,7 @@ public class MemoryMappedFile implements AutoCloseable {
 
         /**
          * Returns the double at the current position in the file.
-         * 
+         *
          * @return The double at the current position in the file.
          */
         public double getDouble() {
@@ -306,12 +311,11 @@ public class MemoryMappedFile implements AutoCloseable {
             }
         }
 
-
         /**
          * Maps the bytes at the current position to the given array.
-         * 
+         *
          * @param bytes The byte array to fill.
-         * 
+         *
          * @return The current buffer.
          */
         public MiniBuffer get(byte[] bytes) {
@@ -344,14 +348,21 @@ public class MemoryMappedFile implements AutoCloseable {
                 int nBytes
         ) {
 
-            int lengthRemaining = mappedByteBuffer.remaining();
+            int loaded = mappedByteBuffer.remaining();
 
-            mappedByteBuffer.get(buffer, 0, lengthRemaining);
+            mappedByteBuffer.get(buffer, 0, loaded);
 
-            nextBlock();
+            while (loaded < nBytes) {
 
-            mappedByteBuffer.get(buffer, lengthRemaining, nBytes);
+                nextBlock();
 
+                int length = Math.min(nBytes - loaded, mappedByteBuffer.remaining());
+
+                mappedByteBuffer.get(buffer, loaded, length);
+
+                loaded += length;
+
+            }
         }
 
         /**

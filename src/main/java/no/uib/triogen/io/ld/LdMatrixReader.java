@@ -139,18 +139,9 @@ public class LdMatrixReader implements AutoCloseable {
         byte[] compressedData;
 
         try ( MemoryMappedFile.MiniBuffer buffer = memoryMappedFile.getBuffer(index)) {
-            
-            if (variantA.equals("rs13294926")) {
-                int debug = 1;
-            }
 
             nVariants = buffer.getInt();
             int compressedLength = buffer.getInt();
-            
-            if (compressedLength == 0) {
-                System.out.println(variantA);
-                return null;
-            }
             
             compressedData = new byte[compressedLength];
             buffer.get(compressedData);
@@ -159,13 +150,7 @@ public class LdMatrixReader implements AutoCloseable {
 
         int uncompressedLength = nVariants * Integer.BYTES + nVariants * Double.BYTES;
 
-        byte[] uncompressedData;
-        try {
-        uncompressedData = uncompress(compressedData, uncompressedLength);
-        } catch (Exception e) {
-            System.out.println(variantA);
-            return null;
-        }
+        byte[] uncompressedData = uncompress(compressedData, uncompressedLength);
         ByteBuffer byteBuffer = ByteBuffer.wrap(uncompressedData);
 
         HashMap<String, Double> result = new HashMap<>(nVariants);

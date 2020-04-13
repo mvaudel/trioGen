@@ -67,6 +67,12 @@ public class LdMatrixWriter implements AutoCloseable {
             File outputFile
     ) throws FileNotFoundException, IOException {
 
+        if (outputFile.exists()) {
+
+            outputFile.delete();
+
+        }
+
         this.variantIndex = variantIndex;
 
         raf = new RandomAccessFile(outputFile, "rw");
