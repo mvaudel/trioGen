@@ -122,10 +122,10 @@ public class Extract {
 
                     String[] lineSplit = indexLine.split(IoUtils.SEPARATOR);
 
-                    String variantId = lineSplit[0];
-                    String phenoName = lineSplit[1];
-                    int compressedLength = Integer.parseInt(lineSplit[2]);
-                    int uncompressedLength = Integer.parseInt(lineSplit[3]);
+                    String variantId = lineSplit[2];
+                    String phenoName = lineSplit[3];
+                    int compressedLength = Integer.parseInt(lineSplit[4]);
+                    int uncompressedLength = Integer.parseInt(lineSplit[5]);
 
                     if (phenoName.equals("Comment")) {
 
@@ -350,6 +350,8 @@ public class Extract {
             IndexedGzCoordinates coordinates = outputWriter.append(headerComment);
             outputIndexWriter.writeLine(
                     "Header",
+                    "Header",
+                    "Header",
                     "Comment",
                     Integer.toString(coordinates.compressedLength),
                     Integer.toString(coordinates.uncompressedLength)
@@ -359,6 +361,8 @@ public class Extract {
 
         IndexedGzCoordinates coordinates = outputWriter.append(headerLine);
         outputIndexWriter.writeLine(
+                    "Header",
+                    "Header",
                 "Header",
                 "Header",
                 Integer.toString(coordinates.compressedLength),
