@@ -53,7 +53,7 @@ public class LdMatrixWriter implements AutoCloseable {
      * Semaphore to synchronize threads writing to the file.
      */
     private final SimpleSemaphore semaphore = new SimpleSemaphore(1);
-    
+
     private static boolean debugZero = false;
     private static boolean debugLength = false;
 
@@ -72,21 +72,21 @@ public class LdMatrixWriter implements AutoCloseable {
             VariantIndex variantIndex,
             File outputFile
     ) throws FileNotFoundException, IOException {
-        
+
         this.variantIndex = variantIndex;
 
         raf = new RandomAccessFile(outputFile, "rw");
         raf.seek(HEADER_LENGTH);
 
     }
-    
+
     /**
      * Writes a variant to the file.
-     * 
+     *
      * @param variantIndex The index of the variant.
      * @param variantIds The indexes of the other variants.
      * @param r2s The ld r2s between the variant and the other variants.
-     * 
+     *
      * @throws IOException Exception thrown if an error occurred while
      * attempting to write to output file.
      */
@@ -99,74 +99,75 @@ public class LdMatrixWriter implements AutoCloseable {
 
         int nVariants = variantIds.size();
         ByteBuffer buffer = ByteBuffer.allocate(nVariants * Integer.BYTES + nVariants * Double.BYTES);
-        
-        for (int i = 0 ; i < nVariants ; i++) {
-            
+
+        for (int i = 0; i < nVariants; i++) {
+
             buffer.putInt(variantIds.get(i));
             buffer.putDouble(r2s.get(i));
-            
+
         }
-        
+
         byte[] uncompressedData = buffer.array();
         TempByteArray compressedData = compress(uncompressedData);
         byte[] compressedDataDebug = Arrays.copyOf(compressedData.array, compressedData.length);
-        byte[] uncompressedDataDebug = LdMatrixReader.uncompress(compressedDataDebug, nVariants * Integer.BYTES + nVariants * Double.BYTES);
-        
+        byte[] uncompressedDataDebug = compressedData.length > 0 ? LdMatrixReader.uncompress(compressedDataDebug, nVariants * Integer.BYTES + nVariants * Double.BYTES) : new byte[0];
+
         // DEBUG
-        
-        if (variantId.equals("rs13294926") 
-                || variantId.equals("rs7858717") 
+        if (variantId.equals("rs13294926")
+                || variantId.equals("rs7858717")
                 || variantId.equals("rs62531305")
-                || variantId.equals("rs7027913" )
+                || variantId.equals("rs7027913")
                 || variantId.equals("rs13289471")) {
-            
+
             System.out.println(variantId + " - " + compressedData.length + " " + uncompressedData.length + " " + uncompressedDataDebug.length);
-            
+
         }
-        
+
         if (compressedData.length == 0 && !debugZero) {
-            
+
             File debugFile = new File("tmp/debugZero");
-            
+
             RandomAccessFile debugRaf = new RandomAccessFile(debugFile, "rw");
             debugRaf.write(uncompressedData);
             debugRaf.close();
-            
+
             debugZero = true;
-            
-        } else if (uncompressedDataDebug.length != uncompressedData.length && !debugLength) {
-            
-            File debugFile = new File("tmp/debugLength");
-            
-            RandomAccessFile debugRaf = new RandomAccessFile(debugFile, "rw");
-            debugRaf.write(uncompressedData);
-            debugRaf.close();
-            
-            debugLength = true;
-            
+
+        } else {
+
+            if (uncompressedDataDebug.length != uncompressedData.length && !debugLength) {
+
+                File debugFile = new File("tmp/debugLength");
+
+                RandomAccessFile debugRaf = new RandomAccessFile(debugFile, "rw");
+                debugRaf.write(uncompressedData);
+                debugRaf.close();
+
+                debugLength = true;
+
+            }
         }
-        
+
         if (debugZero && debugLength) {
-            
+
             throw new IllegalArgumentException("Bug");
-            
+
         }
-        
+
         // DEBUG END
-        
         semaphore.acquire();
 
         long index = raf.getFilePointer() - HEADER_LENGTH;
-        
+
         variantIndexes.add(variantIndex);
         indexesInFile.add(index);
-        
+
         raf.writeInt(nVariants);
         raf.writeInt(compressedData.length);
         raf.write(compressedData.array, 0, compressedData.length);
-        
+
         semaphore.release();
-        
+
     }
 
     /**
@@ -206,9 +207,9 @@ public class LdMatrixWriter implements AutoCloseable {
 
         deflater.setInput(uncompressedData);
         int compressedByteLength = deflater.deflate(
-                compressedData, 
-                0, 
-                compressedData.length, 
+                compressedData,
+                0,
+                compressedData.length,
                 Deflater.FULL_FLUSH
         );
         int compressedDataLength = compressedByteLength;
@@ -217,15 +218,15 @@ public class LdMatrixWriter implements AutoCloseable {
 
             byte[] output2 = new byte[outputLength];
             compressedByteLength = deflater.deflate(
-                    output2, 
-                    0, 
-                    outputLength, 
+                    output2,
+                    0,
+                    outputLength,
                     Deflater.FULL_FLUSH
             );
 
             compressedData = Utils.mergeArrays(
-                    compressedData, 
-                    output2, 
+                    compressedData,
+                    output2,
                     compressedByteLength
             );
             compressedDataLength += compressedByteLength;
@@ -245,7 +246,7 @@ public class LdMatrixWriter implements AutoCloseable {
     private void writeHeaderAndFooter() throws IOException {
 
         long footerPosition = raf.getFilePointer();
-        
+
         String[] variantIds = variantIndex.getVariants();
 
         String variantIdsString = Arrays.stream(variantIds)
@@ -254,24 +255,24 @@ public class LdMatrixWriter implements AutoCloseable {
                 );
 
         byte[] titleBytes = variantIdsString.getBytes(IoUtils.ENCODING);
-        
+
         ByteBuffer buffer = ByteBuffer.allocate(2 * Integer.BYTES + titleBytes.length + indexesInFile.size() * Integer.BYTES + indexesInFile.size() * Long.BYTES);
-        
+
         buffer
                 .putInt(titleBytes.length)
                 .put(titleBytes)
                 .putInt(variantIndexes.size());
-        
-        for (int i = 0 ; i < variantIndexes.size() ; i++) {
-            
+
+        for (int i = 0; i < variantIndexes.size(); i++) {
+
             int variantI = variantIndexes.get(i);
             buffer.putInt(variantI);
-            
+
             long index = indexesInFile.get(i);
             buffer.putLong(index);
-            
+
         }
-        
+
         compressAndWrite(buffer.array());
 
         raf.seek(0);
@@ -289,7 +290,5 @@ public class LdMatrixWriter implements AutoCloseable {
         raf.close();
 
     }
-    
-    
 
 }
