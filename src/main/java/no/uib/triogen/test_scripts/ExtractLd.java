@@ -3,8 +3,6 @@ package no.uib.triogen.test_scripts;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.ld.LdMatrixReader;
 
 /**
@@ -23,7 +21,7 @@ public class ExtractLd {
 
         try {
 
-            File ldFile = new File("docs/tmp/chr_22.tld");
+            File ldFile = new File("docs/tmp/chr_9.tld");
             LdMatrixReader ldMatrixReader = new LdMatrixReader(ldFile);
 
             String[] variantIds = ldMatrixReader.variantIds;
@@ -36,8 +34,11 @@ public class ExtractLd {
 
                     for (Entry<String, Double> entry : variantLdMap.entrySet()) {
 
-                        int debug = 1;
-
+                        if (entry.getValue() < 0.0 || entry.getValue() > 1.0) {
+                            
+                            int debug = 1;
+                        
+                        }
                     }
                 }
             }

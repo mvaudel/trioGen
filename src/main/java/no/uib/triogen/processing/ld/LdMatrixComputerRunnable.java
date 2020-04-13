@@ -169,6 +169,7 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                     writer.addVariant(
                             variantIdA,
+                            genotypesProviderA.getVariantID(),
                             variantIds,
                             r2s
                     );

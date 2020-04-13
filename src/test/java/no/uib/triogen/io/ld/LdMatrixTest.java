@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import no.uib.triogen.model.geno.VariantIndex;
+import no.uib.triogen.io.ld.LdMatrixReader;
 
 /**
  * This class tests the ld matrix reading and writing.
@@ -55,7 +56,7 @@ public class LdMatrixTest extends TestCase {
 
                 int variantAI = variantIndex.getIndex(variant);
 
-                writer.addVariant(variantAI, variantBs, r2s);
+                writer.addVariant(variantAI, variant, variantBs, r2s);
 
             }
 

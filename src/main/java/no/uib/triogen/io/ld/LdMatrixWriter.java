@@ -2,6 +2,7 @@ package no.uib.triogen.io.ld;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -52,6 +53,9 @@ public class LdMatrixWriter implements AutoCloseable {
      * Semaphore to synchronize threads writing to the file.
      */
     private final SimpleSemaphore semaphore = new SimpleSemaphore(1);
+    
+    private static boolean debugZero = false;
+    private static boolean debugLength = false;
 
     /**
      * Constructor.
@@ -88,6 +92,7 @@ public class LdMatrixWriter implements AutoCloseable {
      */
     public void addVariant(
             int variantIndex,
+            String variantId,
             ArrayList<Integer> variantIds,
             ArrayList<Double> r2s
     ) throws IOException {
@@ -102,7 +107,52 @@ public class LdMatrixWriter implements AutoCloseable {
             
         }
         
-        TempByteArray compressedData = compress(buffer.array());
+        byte[] uncompressedData = buffer.array();
+        TempByteArray compressedData = compress(uncompressedData);
+        byte[] compressedDataDebug = Arrays.copyOf(compressedData.array, compressedData.length);
+        byte[] uncompressedDataDebug = LdMatrixReader.uncompress(compressedDataDebug, nVariants * Integer.BYTES + nVariants * Double.BYTES);
+        
+        // DEBUG
+        
+        if (variantId.equals("rs13294926") 
+                || variantId.equals("rs7858717") 
+                || variantId.equals("rs62531305")
+                || variantId.equals("rs7027913" )
+                || variantId.equals("rs13289471")) {
+            
+            System.out.println(variantId + " - " + compressedData.length + " " + uncompressedData.length + " " + uncompressedDataDebug.length);
+            
+        }
+        
+        if (compressedData.length == 0 && !debugZero) {
+            
+            File debugFile = new File("tmp/debugZero");
+            
+            RandomAccessFile debugRaf = new RandomAccessFile(debugFile, "rw");
+            debugRaf.write(uncompressedData);
+            debugRaf.close();
+            
+            debugZero = true;
+            
+        } else if (uncompressedDataDebug.length != uncompressedData.length && !debugLength) {
+            
+            File debugFile = new File("tmp/debugLength");
+            
+            RandomAccessFile debugRaf = new RandomAccessFile(debugFile, "rw");
+            debugRaf.write(uncompressedData);
+            debugRaf.close();
+            
+            debugLength = true;
+            
+        }
+        
+        if (debugZero && debugLength) {
+            
+            throw new IllegalArgumentException("Bug");
+            
+        }
+        
+        // DEBUG END
         
         semaphore.acquire();
 

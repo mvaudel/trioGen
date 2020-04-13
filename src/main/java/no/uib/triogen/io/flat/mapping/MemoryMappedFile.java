@@ -21,7 +21,7 @@ public class MemoryMappedFile implements AutoCloseable {
     /**
      * The size to use for the blocks.
      */
-    private final int blockSize;
+    private final long blockSize;
     /**
      * The random access file.
      */
@@ -54,7 +54,7 @@ public class MemoryMappedFile implements AutoCloseable {
             File file,
             long offset,
             long length,
-            int blockSize
+            long blockSize
     ) throws FileNotFoundException, IOException {
 
         this.blockSize = blockSize;
@@ -80,9 +80,9 @@ public class MemoryMappedFile implements AutoCloseable {
             for (int i = 0; i < nBuffers; i++) {
 
                 bufferSemaphores[i] = new SimpleSemaphore(1);
-
+                
                 long begin = i * blockSize + LdMatrixWriter.HEADER_LENGTH;
-                int bufferSizeI = i < nBuffers - 1 || rest == 0 ? blockSize : rest;
+                long bufferSizeI = i < nBuffers - 1 || rest == 0 ? blockSize : rest;
 
                 mappedByteBuffers[i] = fc.map(
                         FileChannel.MapMode.READ_ONLY,
