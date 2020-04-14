@@ -110,6 +110,12 @@ public class LdMatrixWriter implements AutoCloseable {
 
         byte[] uncompressedData = buffer.array();
         TempByteArray compressedData = compress(uncompressedData, deflater);
+        
+        if (compressedData.length == 0) {
+            
+            throw new IllegalArgumentException("Empty compressed data.");
+            
+        }
 
         semaphore.acquire();
 
