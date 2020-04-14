@@ -58,18 +58,6 @@ public class LocusZoomExtractor {
 
         try ( SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true)) {
 
-            writer.writeLine(
-                    "contig",
-                    "position",
-                    "variantId",
-                    "typed",
-                    "n",
-                    "ld",
-                    "model",
-                    "variable",
-                    "p"
-            );
-
             long position = IndexedGzWriter.HEADER_LENGTH;
 
             try ( IndexedGzReader gzReader = new IndexedGzReader(resultFile)) {
@@ -89,7 +77,7 @@ public class LocusZoomExtractor {
                         if (phenoName.equals("Comment")) {
 
                             String resultLine = gzReader.read(position, compressedLength, uncompressedLength);
-                            writer.writeLine(resultLine);
+                            writer.writeLine(resultLine.trim());
 
                         } else if (phenoName.equals("Header")) {
 
@@ -129,6 +117,18 @@ public class LocusZoomExtractor {
                             int bp = Integer.parseInt(lineSplit[1]);
 
                             if (variantId.equals(targetVariant)) {
+
+                                writer.writeLine(
+                                        "contig",
+                                        "position",
+                                        "variantId",
+                                        "typed",
+                                        "n",
+                                        "ld",
+                                        "model",
+                                        "variable",
+                                        "p"
+                                );
 
                                 targetContig = contig;
                                 targetBp = bp;
@@ -227,9 +227,9 @@ public class LocusZoomExtractor {
                                 }
                             }
                         }
-                        
+
                         position += compressedLength;
-                        
+
                     }
                 }
             }
