@@ -200,7 +200,7 @@ public enum Model {
      */
     public static String[] getDefaultOption() {
         
-        return new String[]{"h", "cmf_mt", "cmf_ft", "cmf"};
+        return new String[]{"h", "cmf_mt", "cmf_ft", "cmf", "cm", "cm_mt", "c", "c_mt", "m", "m_mt"};
         
     }
 
@@ -417,7 +417,7 @@ public enum Model {
 
         Arrays.stream(includedParentModels)
                 .map(
-                        parentModel -> String.join("_", name(), parentModel, "p")
+                        parentModel -> String.join(".", name(), parentModel, "p")
                 )
                 .forEach(
                         label -> stringBuilder
@@ -427,7 +427,7 @@ public enum Model {
 
         Arrays.stream(betaNames)
                 .map(
-                        betaName -> String.join("_", name(), betaName)
+                        betaName -> String.join(".", name(), betaName)
                 )
                 .forEach(
                         label -> stringBuilder
@@ -437,7 +437,7 @@ public enum Model {
 
         Arrays.stream(betaNames)
                 .map(
-                        betaName -> String.join("_", name(), betaName, "se")
+                        betaName -> String.join(".", name(), betaName, "se")
                 )
                 .forEach(
                         label -> stringBuilder
@@ -447,7 +447,7 @@ public enum Model {
 
         Arrays.stream(betaNames)
                 .map(
-                        betaName -> String.join("_", name(), betaName, "p")
+                        betaName -> String.join(".", name(), betaName, "p")
                 )
                 .forEach(
                         label -> stringBuilder

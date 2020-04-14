@@ -20,7 +20,7 @@ import no.uib.triogen.io.ld.LdMatrixReader;
 public class LocusZoomExtractor {
 
     public static void writeData(
-            String phenotype,
+            String targetPhenotype,
             String targetVariant,
             int maxDistance,
             File resultFile,
@@ -51,7 +51,7 @@ public class LocusZoomExtractor {
         ArrayList<Long> positions = new ArrayList<>();
         ArrayList<Integer> compressedLengths = new ArrayList<>();
         ArrayList<Integer> uncompressedLengths = new ArrayList<>();
-        HashMap<String, Double> ldMap = null;
+        HashMap<String, Double> ldMap = ldMatrixReader.getR2(targetVariant);
 
         String targetContig = null;
         int targetBp = -1;
@@ -123,7 +123,7 @@ public class LocusZoomExtractor {
 
                                 }
                             }
-                        } else {
+                        } else if (phenoName.equals(targetPhenotype)) {
 
                             String contig = lineSplit[0];
                             int bp = Integer.parseInt(lineSplit[1]);
@@ -132,8 +132,6 @@ public class LocusZoomExtractor {
 
                                 targetContig = contig;
                                 targetBp = bp;
-
-                                ldMap = ldMatrixReader.getR2(targetVariant);
 
                                 for (int i = 0; i < contigs.size(); i++) {
 
@@ -229,6 +227,9 @@ public class LocusZoomExtractor {
                                 }
                             }
                         }
+                        
+                        position += compressedLength;
+                        
                     }
                 }
             }

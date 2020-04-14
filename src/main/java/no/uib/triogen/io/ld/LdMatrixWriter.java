@@ -113,6 +113,10 @@ public class LdMatrixWriter implements AutoCloseable {
         
         if (compressedData.length == 0) {
             
+            RandomAccessFile debugRaf = new RandomAccessFile("debugZero", "rw");
+            debugRaf.write(uncompressedData);
+            debugRaf.close();
+            
             throw new IllegalArgumentException("Empty compressed data.");
             
         }
