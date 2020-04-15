@@ -18,7 +18,7 @@ public enum LdMatrixOptions {
     maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Default: 1000000.", false, true),
     minR2("r", "minR2", "The minimal ld r2 to report (inclusive). Default: 1e-6.", false, true),
     maf("maf", "mafThreshold", "Minor allele frequency threshold. 0.05 excludes all variants with a maf < 5% among all parents belonging to trios where a phenotype is available for the regression. Default: 0.05.", false, true),
-    hardCalls("hc", "hard_calls", "Use hard calls instead of dosages. Default: true.", false, false),
+    hardCalls("hc", "hard_calls", "If present, use hard calls instead of dosages.", false, false),
     out("o", "out", "The file where to write the matrix. The extension '.tld' will be added if not present.", true, true),
     nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is the number of cores on the machine.", false, true),
     downstreamLoadingFactor("dlf", "downstreamLoadingFactor", "The downstream loading factor, see documentation for details. Default: 1.1.", false, true),
