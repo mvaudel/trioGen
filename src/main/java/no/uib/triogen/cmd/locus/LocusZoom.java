@@ -1,7 +1,9 @@
 package no.uib.triogen.cmd.locus;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import no.uib.triogen.TrioGen;
+import no.uib.triogen.export.LocusZoomExtractor;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -50,9 +52,8 @@ public class LocusZoom {
             LocusZoomOptionsBean bean = new LocusZoomOptionsBean(commandLine);
 
             run(
-                    bean,
-                    String.join(" ", args)
-                    );
+                    bean
+            );
 
         } catch (Throwable e) {
 
@@ -63,53 +64,26 @@ public class LocusZoom {
     /**
      * Runs the command.
      *
-     * @param bean the bean of command line parameters
+     * @param bean The bean of command line parameters.
+     *
+     * @throws IOException Exception thrown if an error occurred while reading
+     * or writing a file.
      */
     private static void run(
-            LocusZoomOptionsBean bean,
-            String command
-    ) {
-//
-//        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
-//
-//        File logFile = new File(bean.destinationFilePath + ".log.gz");
-//        Logger logger = new Logger(logFile, null);
-//        logger.writeComment("Software", "TrioGen");
-//        logger.writeComment("Version", TrioGen.getVersion());
-//        logger.writeComment("Command", "LinearModel");
-//        logger.writeComment("Arguments", command);
-//        logger.writeHeaders();
-//        
-//        File outputFile = new File(bean.destinationFilePath + ".tld");
-//
-//        LdMatrixComputer computer = new LdMatrixComputer(
-//                bean.genotypesFile, 
-//                bean.genotypesFileType, 
-//                childToParentMap, 
-//                outputFile, 
-//                bean.maxDistance, 
-//                bean.minR2,
-//                bean.maf,
-//                bean.hardCalls, 
-//                bean.nVariants, 
-//                bean.downstreamLoadingFactor,
-//                bean.upstreamLoadingFactor,
-//                logger
-//        );
-//
-//        try {
-//
-//            computer.run(
-//                    bean.timeOut,
-//                    bean.testIteration,
-//                    bean.test
-//            );
-//
-//        } catch (Throwable e) {
-//
-//            e.printStackTrace();
-//
-//        }
+            LocusZoomOptionsBean bean
+    ) throws IOException {
+
+        LocusZoomExtractor.writeData(
+                bean.targetPhenotype,
+                bean.targetVariant,
+                bean.maxDistance,
+                bean.buildNumber,
+                bean.resultsFile,
+                bean.ldMatrixFile,
+                bean.outputFile,
+                bean.geneCoordinatesFile
+        );
+
     }
 
     /**
@@ -117,7 +91,7 @@ public class LocusZoom {
      */
     private static void printHelp() {
 
-        try (PrintWriter lPrintWriter = new PrintWriter(System.out)) {
+        try ( PrintWriter lPrintWriter = new PrintWriter(System.out)) {
             lPrintWriter.print(LINE_SEPARATOR);
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print("              trioGen             " + LINE_SEPARATOR);

@@ -22,10 +22,25 @@ import no.uib.triogen.model.annotation.GeneCoordinates;
  */
 public class LocusZoomExtractor {
 
+    /**
+     * Writes the data needed for the given locus zoom.
+     * 
+     * @param targetPhenotype The phenotype of interest.
+     * @param targetVariant The id of the variant of interest.
+     * @param maxDistance The maximum distance from the variant in bp.
+     * @param buildNumber The number of the build, e.g. 38 for GRCh38.
+     * @param resultFile The file containing the results of the linear association.
+     * @param ldFile The file containing the ld matrix.
+     * @param destinationFile The file where to write the locus zoom data.
+     * @param genesFile The file where to write the gene mapping.
+     * 
+     * @throws IOException Exception thrown if an error occurred while reading or writing a file.
+     */
     public static void writeData(
             String targetPhenotype,
             String targetVariant,
             int maxDistance,
+            int buildNumber,
             File resultFile,
             File ldFile,
             File destinationFile,
@@ -272,7 +287,7 @@ public class LocusZoomExtractor {
 
             try ( SimpleFileWriter writer = new SimpleFileWriter(genesFile, true)) {
 
-                String ensemblVersion = EnsemblAPI.getEnsemblVersion();
+                String ensemblVersion = EnsemblAPI.getEnsemblVersion(buildNumber);
 
                 writer.writeLine("# Ensembl version: " + ensemblVersion);
                 writer.writeLine("biotype", "name", "start", "end");
@@ -283,7 +298,12 @@ public class LocusZoomExtractor {
 
                 }
 
-                ArrayList<GeneCoordinates> geneCoordinatesList = EnsemblAPI.getGeneCoordinates(targetContig, targetBp - maxDistance, targetBp + maxDistance);
+                ArrayList<GeneCoordinates> geneCoordinatesList = EnsemblAPI.getGeneCoordinates(
+                        targetContig, 
+                        targetBp - maxDistance, 
+                        targetBp + maxDistance,
+                        buildNumber
+                );
 
                 for (GeneCoordinates geneCoordinates : geneCoordinatesList) {
 

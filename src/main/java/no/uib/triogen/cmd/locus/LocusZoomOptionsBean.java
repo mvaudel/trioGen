@@ -13,6 +13,22 @@ import org.apache.commons.cli.CommandLine;
 public class LocusZoomOptionsBean {
 
     /**
+     * The phenotype of interest.
+     */
+    public final String targetPhenotype;
+    /**
+     * The id of the variant of interest.
+     */
+    public final String targetVariant;
+    /**
+     * The maximum distance from the variant in bp.
+     */
+    public int maxDistance = 1000000;
+    /**
+     * The number of the build, e.g. 38 for GRCh38.
+     */
+    public int buildNumber = 38;
+    /**
      * The ld matrix file.
      */
     public final File ldMatrixFile;
@@ -24,6 +40,10 @@ public class LocusZoomOptionsBean {
      * The output file.
      */
     public final File outputFile;
+    /**
+     * The gene coordinates file.
+     */
+    public File geneCoordinatesFile = null;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -45,6 +65,40 @@ public class LocusZoomOptionsBean {
             }
         }
 
+        // The phenotype
+        targetPhenotype = aLine.getOptionValue(LocusZoomOptions.phenoName.opt);
+
+        // The variant id
+        targetVariant = aLine.getOptionValue(LocusZoomOptions.variantId.opt);
+
+        // The max distance
+        if (aLine.hasOption(LocusZoomOptions.maxDistance.opt)) {
+
+            String stringValue = aLine.getOptionValue(LocusZoomOptions.maxDistance.opt);
+
+            maxDistance = Integer.parseInt(stringValue);
+
+            if (maxDistance <= 0) {
+
+                throw new IllegalArgumentException("Distance (" + maxDistance + ") must be a stricly positive integer.");
+
+            }
+        }
+
+        // The build number
+        if (aLine.hasOption(LocusZoomOptions.buildNumber.opt)) {
+
+            String stringValue = aLine.getOptionValue(LocusZoomOptions.buildNumber.opt);
+
+            buildNumber = Integer.parseInt(stringValue);
+
+            if (buildNumber != 37 && buildNumber != 38) {
+
+                throw new IllegalArgumentException("Build (" + buildNumber + ") not supported, must be 37 or 38.");
+
+            }
+        }
+
         // The ld matrix file
         String filePath = aLine.getOptionValue(LocusZoomOptions.ldMatrix.opt);
 
@@ -56,8 +110,8 @@ public class LocusZoomOptionsBean {
 
         }
 
-        // The ld matrix file
-         filePath = aLine.getOptionValue(LocusZoomOptions.results.opt);
+        // The association results file
+        filePath = aLine.getOptionValue(LocusZoomOptions.results.opt);
 
         resultsFile = new File(filePath);
 
@@ -68,15 +122,28 @@ public class LocusZoomOptionsBean {
         }
 
         // The output file
-         filePath = aLine.getOptionValue(LocusZoomOptions.out.opt);
+        filePath = aLine.getOptionValue(LocusZoomOptions.out.opt);
 
         outputFile = new File(filePath);
 
-        if (!outputFile.exists()) {
+        if (!outputFile.getParentFile().exists()) {
 
-            throw new IllegalArgumentException("Output file (" + outputFile + ") not found.");
+            throw new IllegalArgumentException("Output folder (" + outputFile.getParentFile() + ") not found.");
 
         }
 
+        // The gene coordinates file
+        if (aLine.hasOption(LocusZoomOptions.geneCoordinates.opt)) {
+
+            filePath = aLine.getOptionValue(LocusZoomOptions.geneCoordinates.opt);
+
+            geneCoordinatesFile = new File(filePath);
+
+            if (!geneCoordinatesFile.getParentFile().exists()) {
+
+                throw new IllegalArgumentException("Gene coordinates folder (" + geneCoordinatesFile.getParentFile() + ") not found.");
+
+            }
+        }
     }
 }

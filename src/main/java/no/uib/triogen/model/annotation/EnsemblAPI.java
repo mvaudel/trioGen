@@ -18,9 +18,38 @@ import org.json.JSONObject;
 public class EnsemblAPI {
 
     /**
-     * The server url.
+     * The server url for the GRCh38 build.
      */
-    public final static String SERVER = "https://rest.ensembl.org";
+    public final static String SERVER_GRCh38 = "https://rest.ensembl.org";
+    /**
+     * The server url for the GRCh37 build.
+     */
+    public final static String SERVER_GRCh37 = "http://grch37.rest.ensembl.org";
+
+    /**
+     * Returns the url of the server to use for the given build.
+     * 
+     * @param buildNumber The number of the build, e.g. 38 for GRCh38.
+     * 
+     * @return The url of the server to use for the given build.
+     */
+    public static String getServer(
+            int buildNumber
+    ) {
+        if (buildNumber == 37) {
+
+            return SERVER_GRCh37;
+
+        } else if (buildNumber == 38) {
+
+            return SERVER_GRCh38;
+
+        } else {
+
+            throw new UnsupportedOperationException("Build " + buildNumber + " not supported.");
+
+        }
+    }
 
     /**
      * Returns the coordinates of the features found within the given genomic
@@ -29,6 +58,7 @@ public class EnsemblAPI {
      * @param contig The contig.
      * @param minBp The minimum of the bp window.
      * @param maxBp The maximum of the bp window.
+     * @param buildNumber The number of the build, e.g. 38 for GRCh38.
      *
      * @return The coordinates of the features found within the given genomic
      * region.
@@ -36,13 +66,14 @@ public class EnsemblAPI {
     public static ArrayList<GeneCoordinates> getGeneCoordinates(
             String contig,
             int minBp,
-            int maxBp
+            int maxBp,
+            int buildNumber
     ) {
 
         String ext = String.join("",
                 "/overlap/region/human/", contig, ":", Integer.toString(minBp), "-", Integer.toString(maxBp), "?feature=gene"
         );
-        GetRequest request = Unirest.get(SERVER + ext);
+        GetRequest request = Unirest.get(getServer(buildNumber) + ext);
         request.header("Content-Type", "application/json");
 
         try {
@@ -63,7 +94,7 @@ public class EnsemblAPI {
                         jsonObject.getInt("start"),
                         jsonObject.getInt("end")
                 );
-                
+
                 result.add(geneCoordinates);
 
             }
@@ -79,15 +110,19 @@ public class EnsemblAPI {
 
     /**
      * Returns the Ensembl version as string.
+     * 
+     * @param buildNumber The number of the build, e.g. 38 for GRCh38.
      *
      * @return The Ensembl version as string.
      */
-    public static String getEnsemblVersion() {
+    public static String getEnsemblVersion(
+            int buildNumber
+    ) {
 
         String ext = String.join("",
                 "/info/data"
         );
-        GetRequest request = Unirest.get(SERVER + ext);
+        GetRequest request = Unirest.get(getServer(buildNumber) + ext);
         request.header("Content-Type", "application/json");
 
         try {

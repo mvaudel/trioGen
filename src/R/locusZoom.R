@@ -258,7 +258,7 @@ ldThreshold <- 0.05
 xMargin <- 0.4
 
 panelRefHeight <- 300
-geneRefHeight <- 100
+geneRefHeight <- 120
 
 
 # Load TrioGen results and recombination rates

@@ -130,39 +130,82 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
 
                         if (variantIdA != variantIdB) {
 
-                            double nA = genotypesProviderA.getParentP0();
-                            double nB = genotypesProviderB.getParentP0();
-                            double n = 2 * childToParentMap.children.length;
+                            if (!hardCalls) {
 
-                            if (nA < n || nB < n) {
+                                double nA = genotypesProviderA.getParentP0();
+                                double nB = genotypesProviderB.getParentP0();
+                                double n = 2 * childToParentMap.children.length;
 
-                                float[] p0sA = genotypesProviderA.getParentP0s();
-                                float[] p0sB = genotypesProviderB.getParentP0s();
-                                double nAB = 0.0;
+                                if (nA < n || nB < n) {
 
-                                for (int i = 0; i < p0sA.length; i++) {
+                                    float[] p0sA = genotypesProviderA.getParentP0s();
+                                    float[] p0sB = genotypesProviderB.getParentP0s();
+                                    double nAB = 0.0;
 
-                                    nAB += p0sA[i] * p0sB[i];
+                                    for (int i = 0; i < p0sA.length; i++) {
 
-                                }
-
-                                if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
-
-                                    double pAB = nAB / n;
-                                    double pA = nA / n;
-                                    double pB = nB / n;
-
-                                    double d = pAB - (pA * pB);
-
-                                    double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
-
-                                    if (r2 > minR2) {
-
-                                        variantIds.add(variantIdB);
-                                        r2s.add(r2);
+                                        nAB += p0sA[i] * p0sB[i];
 
                                     }
+
+                                    if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
+
+                                        double pAB = nAB / n;
+                                        double pA = nA / n;
+                                        double pB = nB / n;
+
+                                        double d = pAB - (pA * pB);
+
+                                        double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
+
+                                        if (r2 > minR2) {
+
+                                            variantIds.add(variantIdB);
+                                            r2s.add(r2);
+
+                                        }
+                                    }
                                 }
+                            } else {
+
+                                double nA = genotypesProviderA.getParentP0HC();
+                                double nB = genotypesProviderB.getParentP0HC();
+                                double n = 2 * childToParentMap.children.length;
+
+                                if (nA < n && nA > 0 || nB < n && nB > 0) {
+
+                                    boolean[] p0sA = genotypesProviderA.getParentP0sHC();
+                                    boolean[] p0sB = genotypesProviderB.getParentP0sHC();
+                                    double nAB = 0.0;
+
+                                    for (int i = 0; i < p0sA.length; i++) {
+
+                                        if (p0sA[i] && p0sB[i]) {
+
+                                            nAB += 1.0;
+
+                                        }
+                                    }
+
+                                    if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
+
+                                        double pAB = nAB / n;
+                                        double pA = nA / n;
+                                        double pB = nB / n;
+
+                                        double d = pAB - (pA * pB);
+
+                                        double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
+
+                                        if (r2 > minR2) {
+
+                                            variantIds.add(variantIdB);
+                                            r2s.add(r2);
+
+                                        }
+                                    }
+                                }
+
                             }
                         }
                     }
@@ -200,8 +243,8 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        
+
         deflater.end();
-        
+
     }
 }

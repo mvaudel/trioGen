@@ -55,6 +55,14 @@ public class VcfVariant implements GenotypesProvider {
      * Cache for p0.
      */
     private double parentsP0Cache = Double.NaN;
+    /**
+     * Cache for individual p0s.
+     */
+    private boolean[] parentsP0sHCCache = null;
+    /**
+     * Cache for p0.
+     */
+    private int parentsP0HCCache = -1;
 
     /**
      * Constructor.
@@ -290,6 +298,8 @@ public class VcfVariant implements GenotypesProvider {
 
         float[] results = new float[2 * childIds.length];
         double sum = 0.0;
+        boolean[] resultsHC = new boolean[2 * childIds.length];
+        int sumHC = 0;
 
         for (int i = 0; i < childIds.length; i++) {
 
@@ -299,16 +309,30 @@ public class VcfVariant implements GenotypesProvider {
             float value = getDosages(motherId)[0];
             results[i] = value;
             sum += value;
+            int genotype = getGenotype(motherId);
+            resultsHC[i] = genotype == 0;
 
-            String fatherId = childToParentMap.getMother(childId);
+            if (genotype == 0) {
+                sumHC++;
+            }
+
+            String fatherId = childToParentMap.getFather(childId);
             value = getDosages(fatherId)[0];
             results[i + childIds.length] = value;
             sum += value;
+            genotype = getGenotype(fatherId);
+            resultsHC[i + childIds.length] = genotype == 0;
 
+            if (genotype == 0) {
+                sumHC++;
+            }
         }
 
         parentsP0sCache = results;
         parentsP0Cache = sum;
+        
+        parentsP0sHCCache = resultsHC;
+        parentsP0HCCache = sumHC;
 
     }
 
@@ -324,6 +348,20 @@ public class VcfVariant implements GenotypesProvider {
 
         return parentsP0Cache;
 
+    }
+
+    @Override
+    public boolean[] getParentP0sHC() {
+        
+        return parentsP0sHCCache;
+        
+    }
+
+    @Override
+    public int getParentP0HC() {
+        
+        return parentsP0HCCache;
+        
     }
 
 }
