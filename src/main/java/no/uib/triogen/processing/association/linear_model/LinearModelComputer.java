@@ -18,9 +18,9 @@ import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.iterators.VariantIterator;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
-import no.uib.triogen.model.geno.Model;
-import no.uib.triogen.model.geno.VariantList;
-import no.uib.triogen.model.pheno.PhenotypesHandler;
+import no.uib.triogen.model.trio_genotypes.Model;
+import no.uib.triogen.model.trio_genotypes.VariantList;
+import no.uib.triogen.model.phenotypes.PhenotypesHandler;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**

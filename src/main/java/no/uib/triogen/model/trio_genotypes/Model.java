@@ -1,4 +1,4 @@
-package no.uib.triogen.model.geno;
+package no.uib.triogen.model.trio_genotypes;
 
 import java.util.Arrays;
 import java.util.HashSet;

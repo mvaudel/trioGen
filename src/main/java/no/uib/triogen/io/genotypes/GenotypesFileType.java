@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.io.genotypes.vcf.generic.VcfIterator;
 import no.uib.triogen.io.genotypes.vcf.generic.VcfIteratorTargets;
-import no.uib.triogen.model.geno.VariantList;
+import no.uib.triogen.model.trio_genotypes.VariantList;
 
 /**
  * Enum of the implemented variant iterators.

@@ -14,7 +14,7 @@ import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.SEPARATOR;
 import no.uib.triogen.utils.TempByteArray;
 import static no.uib.triogen.io.ld.LdMatrixUtils.MAGIC_NUMBER;
-import no.uib.triogen.model.geno.VariantIndex;
+import no.uib.triogen.model.trio_genotypes.VariantIndex;
 import static no.uib.triogen.utils.CompressionUtils.compress;
 import no.uib.triogen.utils.SimpleSemaphore;
 import no.uib.triogen.utils.Utils;

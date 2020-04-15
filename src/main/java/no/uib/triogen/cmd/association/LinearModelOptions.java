@@ -3,7 +3,7 @@ package no.uib.triogen.cmd.association;
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
-import no.uib.triogen.model.geno.Model;
+import no.uib.triogen.model.trio_genotypes.Model;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 
 /**

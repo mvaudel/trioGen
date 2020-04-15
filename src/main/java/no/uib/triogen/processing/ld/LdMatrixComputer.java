@@ -14,7 +14,7 @@ import no.uib.triogen.io.genotypes.iterators.VariantIterator;
 import no.uib.triogen.io.ld.LdMatrixWriter;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
-import no.uib.triogen.model.geno.VariantIndex;
+import no.uib.triogen.model.trio_genotypes.VariantIndex;
 
 /**
  * This class iterates through genotypes and writes a matrix of ld between

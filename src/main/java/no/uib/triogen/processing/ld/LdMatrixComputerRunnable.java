@@ -9,7 +9,7 @@ import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.ld.LdMatrixWriter;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
-import no.uib.triogen.model.geno.VariantIndex;
+import no.uib.triogen.model.trio_genotypes.VariantIndex;
 
 /**
  * Runnable for the LD matrix writer.

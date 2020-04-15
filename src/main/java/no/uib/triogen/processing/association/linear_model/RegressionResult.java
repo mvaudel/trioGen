@@ -3,7 +3,7 @@ package no.uib.triogen.processing.association.linear_model;
 import java.util.Arrays;
 import java.util.HashMap;
 import no.uib.triogen.io.IoUtils;
-import no.uib.triogen.model.geno.Model;
+import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.utils.Utils;
 import org.apache.commons.math3.distribution.FDistribution;
 import org.apache.commons.math3.special.Beta;

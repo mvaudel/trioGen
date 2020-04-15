@@ -5,12 +5,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.flat.indexed.IndexedGzReader;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import no.uib.triogen.io.ld.LdMatrixReader;
+import no.uib.triogen.model.annotation.EnsemblAPI;
+import no.uib.triogen.model.annotation.GeneCoordinates;
 
 /**
  * This class extracts the data necessary to build locus zoom plots.
@@ -25,7 +28,8 @@ public class LocusZoomExtractor {
             int maxDistance,
             File resultFile,
             File ldFile,
-            File destinationFile
+            File destinationFile,
+            File genesFile
     ) throws IOException {
 
         File indexFile = IoUtils.getIndexFile(resultFile);
@@ -181,6 +185,35 @@ public class LocusZoomExtractor {
                                         }
                                     }
                                 }
+
+                                String resultLine = gzReader.read(position, compressedLength, uncompressedLength);
+
+                                lineSplit = resultLine
+                                        .trim()
+                                        .split(IoUtils.SEPARATOR);
+
+                                String typed = lineSplit[typedColumn];
+                                String n = lineSplit[nColumn];
+
+                                for (int j = 0; j < pValuesIndexes.size(); j++) {
+
+                                    double pValue = Double.parseDouble(lineSplit[pValuesIndexes.get(j)]);
+                                    String model = models.get(j);
+                                    String variable = variables.get(j);
+
+                                    writer.writeLine(
+                                            targetContig,
+                                            Integer.toString(targetBp),
+                                            targetVariant,
+                                            typed,
+                                            n,
+                                            Double.toString(1.0),
+                                            model,
+                                            variable,
+                                            Double.toString(pValue)
+                                    );
+                                }
+
                             } else if (targetContig == null) {
 
                                 contigs.add(contig);
@@ -231,6 +264,35 @@ public class LocusZoomExtractor {
                         position += compressedLength;
 
                     }
+                }
+            }
+        }
+
+        if (genesFile != null && targetContig != null) {
+
+            try ( SimpleFileWriter writer = new SimpleFileWriter(genesFile, true)) {
+
+                String ensemblVersion = EnsemblAPI.getEnsemblVersion();
+
+                writer.writeLine("# Ensembl version: " + ensemblVersion);
+                writer.writeLine("biotype", "name", "start", "end");
+
+                if (maxDistance > 2.5e6) {
+
+                    throw new IllegalArgumentException("Maximal window size for gene coordinates is 5e6.");
+
+                }
+
+                ArrayList<GeneCoordinates> geneCoordinatesList = EnsemblAPI.getGeneCoordinates(targetContig, targetBp - maxDistance, targetBp + maxDistance);
+
+                for (GeneCoordinates geneCoordinates : geneCoordinatesList) {
+
+                    writer.writeLine(
+                            geneCoordinates.biotype,
+                            geneCoordinates.name,
+                            Integer.toString(geneCoordinates.start),
+                            Integer.toString(geneCoordinates.end)
+                    );
                 }
             }
         }

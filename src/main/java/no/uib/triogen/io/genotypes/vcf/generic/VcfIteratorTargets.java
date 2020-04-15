@@ -6,7 +6,7 @@ import htsjdk.variant.vcf.VCFFileReader;
 import java.io.File;
 import java.time.Instant;
 import no.uib.triogen.io.genotypes.iterators.VariantIterator;
-import no.uib.triogen.model.geno.VariantList;
+import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**

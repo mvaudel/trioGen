@@ -13,7 +13,7 @@ import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.iterators.VariantIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
-import no.uib.triogen.model.geno.VariantList;
+import no.uib.triogen.model.trio_genotypes.VariantList;
 
 /**
  * This class iterates a vcf file and extracts transmitted alleles.

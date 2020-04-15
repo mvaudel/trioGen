@@ -1,4 +1,4 @@
-package no.uib.triogen.model.pheno;
+package no.uib.triogen.model.phenotypes;
 
 import java.io.File;
 import java.util.Arrays;
