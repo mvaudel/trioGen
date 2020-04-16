@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.flat.SimpleFileWriter;
@@ -111,7 +110,7 @@ public class LocusZoomExtractor {
 
                                     String temp = lineSplit[i];
                                     temp = temp.substring(0, temp.length() - 2);
-                                    String[] subSplit = temp.split(".");
+                                    String[] subSplit = temp.split("\\.");
 
                                     String model = subSplit[0];
                                     String variable = subSplit[1];

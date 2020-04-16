@@ -64,6 +64,7 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
      * The deflater to compress parts of the file.
      */
     private final Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION, true);
+    private static boolean debug = false;
 
     /**
      * Constructor.
@@ -167,6 +168,11 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                                     }
                                 }
                             } else {
+
+                                if (!debug) {
+                                    System.out.println("Hard calls");
+                                    debug = true;
+                                }
 
                                 double nA = genotypesProviderA.getParentP0HC();
                                 double nB = genotypesProviderB.getParentP0HC();
