@@ -23,8 +23,8 @@ public class ExtractLines {
 
         try {
 
-            File gzFile = new File("C:\\Projects\\TrioGen\\vcf\\ALL.chr22.integrated_phase1_v3.20101123.snps_indels_svs.genotypes.2.vcf.gz");
-            File outFile = new File("C:\\Projects\\TrioGen\\vcf\\test.txt");
+            File gzFile = new File("docs/tmp/chr_7.gz");
+            File outFile = new File("docs/tmp/test.txt");
     
             try (SimpleFileReader reader = SimpleFileReader.getFileReader(gzFile)) {
                 

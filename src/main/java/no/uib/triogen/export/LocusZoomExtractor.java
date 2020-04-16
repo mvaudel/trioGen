@@ -107,14 +107,14 @@ public class LocusZoomExtractor {
 
                             for (int i = 0; i < lineSplit.length; i++) {
 
-                                if (lineSplit[i].endsWith("_p")) {
+                                if (lineSplit[i].endsWith(".p")) {
 
                                     String temp = lineSplit[i];
                                     temp = temp.substring(0, temp.length() - 2);
-                                    int sep = temp.lastIndexOf('_');
+                                    String[] subSplit = temp.split(".");
 
-                                    String model = temp.substring(0, sep);
-                                    String variable = temp.substring(sep + 1);
+                                    String model = subSplit[0];
+                                    String variable = subSplit[1];
 
                                     pValuesIndexes.add(i);
                                     models.add(model);

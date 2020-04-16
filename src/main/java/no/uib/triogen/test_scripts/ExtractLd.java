@@ -23,7 +23,7 @@ public class ExtractLd {
 
         try {
 
-            File ldFile = new File("docs/tmp/chr_7.tld");
+            File ldFile = new File("docs/tmp/dos_chr_7.tld");
             LdMatrixReader ldMatrixReader = new LdMatrixReader(ldFile);
 
             String[] variantIds = ldMatrixReader.variantIds;

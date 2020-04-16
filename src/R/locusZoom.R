@@ -146,24 +146,24 @@ getLocusZoom <- function(
         ) +
         scale_color_manual(
             name = expression(r^2),
-            values = scico(
-                n = 5,
-                palette = "bilbao",
+            values = c(scico(
+                n = 4,
+                palette = locusPalette,
                 direction = -1,
-                begin = 0.2
-            ),
+                end = 0.9
+            ), "grey"),
             breaks = rev(ldLevels),
             labels = rev(ldLevels),
             drop = F
         ) +
         scale_fill_manual(
             name = expression(r^2),
-            values = scico(
-                n = 5,
-                palette = "bilbao",
+            values = c(scico(
+                n = 4,
+                palette = locusPalette,
                 direction = -1,
-                begin = 0.2
-            ),
+                end = 0.9
+            ), "grey"),
             breaks = rev(ldLevels),
             labels = rev(ldLevels),
             drop = F
@@ -206,6 +206,7 @@ getLocusZoom <- function(
             values = scico(
                 n = length(biotypes),
                 palette = "batlow",
+                direction = -1,
                 begin = 0,
                 end = 0.8
             )
@@ -215,6 +216,7 @@ getLocusZoom <- function(
             values = scico(
                 n = length(biotypes),
                 palette = "batlow",
+                direction = -1,
                 begin = 0,
                 end = 0.8
             )
@@ -259,6 +261,8 @@ xMargin <- 0.4
 
 panelRefHeight <- 300
 geneRefHeight <- 120
+
+locusPalette <- "hawaii"
 
 
 # Load TrioGen results and recombination rates
@@ -392,7 +396,7 @@ for (targetModel in models) {
     
     png(
         filename = paste0(outputStem, ".", targetModel, ".png"),
-        height = length(variables) * panelRefHeight + nGenes * geneRefHeight,
+        height = nVariables * panelRefHeight + nGenes * geneRefHeight,
         width = 1000
     )
     grid.draw(plotGrob)
