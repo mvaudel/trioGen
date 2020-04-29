@@ -130,10 +130,10 @@ public class RegressionResult {
     ) {
 
         modelSignificance = getModelSignificance(
-                rss,
-                model.betaNames.length + 1,
                 rss0,
                 1,
+                rss,
+                model.betaNames.length + 1,
                 nValidValues
         );
 
