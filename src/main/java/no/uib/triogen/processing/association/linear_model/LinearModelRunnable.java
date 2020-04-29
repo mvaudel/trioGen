@@ -86,7 +86,8 @@ public class LinearModelRunnable implements Runnable {
      * @param phenotypesHandler The phenotypes handler.
      * @param outputWriter The output writer.
      * @param resultsIndex The writer for the index of the results file.
-     * @param gzIndexSemaphore The semaphore to keep gz file and index synchronized.
+     * @param gzIndexSemaphore The semaphore to keep gz file and index
+     * synchronized.
      * @param logger The logger.
      */
     public LinearModelRunnable(
@@ -181,12 +182,15 @@ public class LinearModelRunnable implements Runnable {
         boolean h3_1 = false;
         boolean h4_0 = false;
         boolean h4_1 = false;
+        double sumPhenos = 0.0;
 
         for (int i = 0; i < childToParentMap.children.length; i++) {
 
             double y = phenotypes[i];
 
             if (!Double.isNaN(y) && !Double.isInfinite(y)) {
+
+                sumPhenos += y;
 
                 String childId = childToParentMap.children[i];
                 short[] h = genotypesProvider.getH(childToParentMap, childId);
@@ -215,6 +219,9 @@ public class LinearModelRunnable implements Runnable {
 
                 // Gather the input to use for the models
                 double[] phenoY = new double[nValidValues];
+                
+                double phenoMean = sumPhenos / nValidValues;
+                double rss0 = 0.0;
 
                 ArrayList<double[][]> modelsX = new ArrayList<>(models.length);
                 ArrayList<RegressionResult> regressionResults = new ArrayList<>(models.length);
@@ -247,6 +254,10 @@ public class LinearModelRunnable implements Runnable {
                     int index = indexes[i];
 
                     double y = phenotypes[index];
+                    
+                    double distY = y - phenoMean;
+                    rss0 += distY * distY;
+
                     String childId = childToParentMap.children[index];
 
                     short[] h = genotypesProvider.getH(childToParentMap, childId);
@@ -391,6 +402,7 @@ public class LinearModelRunnable implements Runnable {
                             regressionResult.betaResiduals = Arrays.copyOfRange(betaResiduals, 1, betaResiduals.length);
 
                             regressionResult.computeRSS();
+                            regressionResult.computeModelSignificance(rss0, nValidValues);
                             regressionResult.computeBetaSignificance(nValidValues);
 
                             regressionRestultsMap.put(model.name(), regressionResult);
@@ -412,7 +424,7 @@ public class LinearModelRunnable implements Runnable {
 
                 // Export
                 String genotyped = genotypesProvider.genotyped() ? "1" : "0";
-                
+
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder
                         .append(phenoName)

@@ -9,7 +9,6 @@ import java.util.zip.Deflater;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import no.uib.triogen.model.trio_genotypes.VariantIndex;
-import no.uib.triogen.io.ld.LdMatrixReader;
 
 /**
  * This class tests the ld matrix reading and writing.

@@ -45,19 +45,23 @@ public class RegressionResult {
      */
     public double rss = Double.NaN;
     /**
+     * Model significance relatively to an intercept.
+     */
+    public double modelSignificance;
+    /**
      * Model significance relatively to included parent models.
      */
-    public final double[] modelSignificance;
+    public final double[] modelRelativeSignificance;
 
     /**
      * Constructor.
-     * 
+     *
      * @param model the model of this regression.
      */
     public RegressionResult(
             Model model
     ) {
-        
+
         this.model = model;
 
         switch (model.betaNames.length) {
@@ -94,9 +98,9 @@ public class RegressionResult {
                 throw new IllegalArgumentException("Only 4 betas implemented.");
 
         }
-        
-        modelSignificance = new double[model.includedParentModels.length];
-        Arrays.fill(modelSignificance, Double.NaN);
+
+        modelRelativeSignificance = new double[model.includedParentModels.length];
+        Arrays.fill(modelRelativeSignificance, Double.NaN);
 
     }
 
@@ -114,6 +118,28 @@ public class RegressionResult {
     }
 
     /**
+     * Computes the significance of the model relative to an intercept.
+     *
+     * @param rss0 The residual sum of squares for the intercept.
+     * @param nValidValues The number of phenotypic values included in the
+     * regression.
+     */
+    public void computeModelSignificance(
+            double rss0,
+            int nValidValues
+    ) {
+
+        modelSignificance = getModelSignificance(
+                rss,
+                model.betaNames.length + 1,
+                rss0,
+                1,
+                nValidValues
+        );
+
+    }
+
+    /**
      * Computes the significance the beta estimates.
      *
      * @param nValidValues the number of valid values
@@ -125,9 +151,9 @@ public class RegressionResult {
         int degreesOfFreedom = nValidValues - beta.length - 1;
 
         if (degreesOfFreedom > 1) {
-            
+
             betaSignificance = Arrays.copyOf(betaSignificance, betaSignificance.length);
-            
+
             for (int i = 0; i < beta.length; i++) {
 
                 double betaEstimate = beta[i];
@@ -165,8 +191,9 @@ public class RegressionResult {
     /**
      * Computes the model significance against available parent models.
      *
-     * @param regressionRestultsMap map of the regression results
-     * @param nValidValues the number of valid values
+     * @param regressionRestultsMap Map of the regression results.
+     * @param nValidValues The number of phenotypic values included in the
+     * regression.
      */
     public void computeModelSignificance(
             HashMap<String, RegressionResult> regressionRestultsMap,
@@ -180,7 +207,13 @@ public class RegressionResult {
             if (regressionRestultsMap.containsKey(model2)) {
 
                 RegressionResult regressionResult2 = regressionRestultsMap.get(model2);
-                modelSignificance[i] = getModelSignificance(rss, model.betaNames.length + 1, regressionResult2.rss, regressionResult2.model.betaNames.length + 1, nValidValues);
+                modelRelativeSignificance[i] = getModelSignificance(
+                        rss,
+                        model.betaNames.length + 1,
+                        regressionResult2.rss,
+                        regressionResult2.model.betaNames.length + 1,
+                        nValidValues
+                );
 
             }
         }
@@ -234,7 +267,11 @@ public class RegressionResult {
             StringBuilder stringBuilder
     ) {
 
-        Arrays.stream(modelSignificance)
+        stringBuilder
+                .append(IoUtils.SEPARATOR)
+                .append(modelSignificance);
+
+        Arrays.stream(modelRelativeSignificance)
                 .forEach(
                         value -> stringBuilder
                                 .append(IoUtils.SEPARATOR)

@@ -192,16 +192,16 @@ public enum Model {
                 );
 
     }
-    
+
     /**
      * Returns the models to run by default.
-     * 
+     *
      * @return the models to run by default
      */
     public static String[] getDefaultOption() {
-        
+
         return new String[]{"h", "cmf_mt", "cmf_ft", "cmf", "cm", "cm_mt", "c", "c_mt", "m", "m_mt"};
-        
+
     }
 
     /**
@@ -407,13 +407,20 @@ public enum Model {
     }
 
     /**
-     * Appends the header for the results corresponding to this model to the given string builder.
-     * 
+     * Appends the header for the results corresponding to this model to the
+     * given string builder.
+     *
      * @param stringBuilder the string builder where to append the header
      */
     public void getHeader(
             StringBuilder stringBuilder
     ) {
+
+        stringBuilder
+                .append(IoUtils.SEPARATOR)
+                .append(
+                        String.join(".", name(), "intercept", "p")
+                );
 
         Arrays.stream(includedParentModels)
                 .map(

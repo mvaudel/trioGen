@@ -17,11 +17,11 @@
 # args <- commandArgs(TRUE)
 
 args <- c(
-    "docs/tmp/rs287621_zBMI3_locusZoomData.gz",
-    "docs/tmp/rs287621_zBMI3_locusZoomGenes.gz",
+    "docs/tmp/dos_rs287621_zBMI3_locusZoomData.gz",
+    "docs/tmp/dos_rs287621_zBMI3_locusZoomGenes.gz",
     "rs287621",
     "zbmi_3",
-    "docs/tmp/rs287621_zBMI3_locusZoom",
+    "docs/tmp/dos_rs287621_zBMI3_locusZoom",
     NULL
 )
 
@@ -34,7 +34,7 @@ outputStem <- args[5]
 
 # Libraries
 
-lib <- args[6]
+lib <- NULL
 
 library(scales, lib.loc = lib)
 library(backports, lib.loc = lib)

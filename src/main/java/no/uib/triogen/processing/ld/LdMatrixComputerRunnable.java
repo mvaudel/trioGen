@@ -129,89 +129,85 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
 
                         int variantIdB = variantIndex.getIndex(genotypesProviderB.getVariantID());
 
-                        if (variantIdA != variantIdB) {
+                        if (!hardCalls) {
 
-                            if (!hardCalls) {
+                            double nA = genotypesProviderA.getParentP0();
+                            double nB = genotypesProviderB.getParentP0();
+                            double n = 2 * childToParentMap.children.length;
 
-                                double nA = genotypesProviderA.getParentP0();
-                                double nB = genotypesProviderB.getParentP0();
-                                double n = 2 * childToParentMap.children.length;
+                            if (nA < n || nB < n) {
 
-                                if (nA < n || nB < n) {
+                                float[] p0sA = genotypesProviderA.getParentP0s();
+                                float[] p0sB = genotypesProviderB.getParentP0s();
+                                double nAB = 0.0;
 
-                                    float[] p0sA = genotypesProviderA.getParentP0s();
-                                    float[] p0sB = genotypesProviderB.getParentP0s();
-                                    double nAB = 0.0;
+                                for (int i = 0; i < p0sA.length; i++) {
 
-                                    for (int i = 0; i < p0sA.length; i++) {
+                                    nAB += p0sA[i] * p0sB[i];
 
-                                        nAB += p0sA[i] * p0sB[i];
-
-                                    }
-
-                                    if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
-
-                                        double pAB = nAB / n;
-                                        double pA = nA / n;
-                                        double pB = nB / n;
-
-                                        double d = pAB - (pA * pB);
-
-                                        double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
-
-                                        if (r2 > minR2) {
-
-                                            variantIds.add(variantIdB);
-                                            r2s.add(r2);
-
-                                        }
-                                    }
-                                }
-                            } else {
-
-                                if (!debug) {
-                                    System.out.println("Hard calls");
-                                    debug = true;
                                 }
 
-                                double nA = genotypesProviderA.getParentP0HC();
-                                double nB = genotypesProviderB.getParentP0HC();
-                                double n = 2 * childToParentMap.children.length;
+                                if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
 
-                                if (nA < n && nA > 0 || nB < n && nB > 0) {
+                                    double pAB = nAB / n;
+                                    double pA = nA / n;
+                                    double pB = nB / n;
 
-                                    boolean[] p0sA = genotypesProviderA.getParentP0sHC();
-                                    boolean[] p0sB = genotypesProviderB.getParentP0sHC();
-                                    double nAB = 0.0;
+                                    double d = pAB - (pA * pB);
 
-                                    for (int i = 0; i < p0sA.length; i++) {
+                                    double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
 
-                                        if (p0sA[i] && p0sB[i]) {
+                                    if (r2 > minR2) {
 
-                                            nAB += 1.0;
+                                        variantIds.add(variantIdB);
+                                        r2s.add(r2);
 
-                                        }
                                     }
+                                }
+                            }
+                        } else {
 
-                                    if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
+                            if (!debug) {
+                                System.out.println("Hard calls");
+                                debug = true;
+                            }
 
-                                        double pAB = nAB / n;
-                                        double pA = nA / n;
-                                        double pB = nB / n;
+                            double nA = genotypesProviderA.getParentP0HC();
+                            double nB = genotypesProviderB.getParentP0HC();
+                            double n = 2 * childToParentMap.children.length;
 
-                                        double d = pAB - (pA * pB);
+                            if (nA < n && nA > 0 || nB < n && nB > 0) {
 
-                                        double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
+                                boolean[] p0sA = genotypesProviderA.getParentP0sHC();
+                                boolean[] p0sB = genotypesProviderB.getParentP0sHC();
+                                double nAB = 0.0;
 
-                                        if (r2 > minR2) {
+                                for (int i = 0; i < p0sA.length; i++) {
 
-                                            variantIds.add(variantIdB);
-                                            r2s.add(r2);
+                                    if (p0sA[i] && p0sB[i]) {
 
-                                        }
+                                        nAB += 1.0;
+
                                     }
                                 }
 
+                                if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
+
+                                    double pAB = nAB / n;
+                                    double pA = nA / n;
+                                    double pB = nB / n;
+
+                                    double d = pAB - (pA * pB);
+
+                                    double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
+
+                                    if (r2 > minR2) {
+
+                                        variantIds.add(variantIdB);
+                                        r2s.add(r2);
+
+                                    }
+                                }
                             }
                         }
                     }
