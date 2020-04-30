@@ -48,6 +48,10 @@ public class LinearModelComputer {
      */
     private final double mafThreshold;
     /**
+     * If true, dosages will be used where possible, hard calls otherwise.
+     */
+    private final boolean useDosages;
+    /**
      * The file containing the phenotypes.
      */
     private final File phenotypesFile;
@@ -87,6 +91,8 @@ public class LinearModelComputer {
      * @param genotypesFileType The type of genotypes file.
      * @param variantList The variants to process.
      * @param mafThreshold The maf threshold.
+     * @param useDosages If true, dosages will be used when possible, hard calls
+     * otherwise.
      * @param childToParentMap The map of trios.
      * @param phenotypesFile The file containing the phenotypes.
      * @param phenoNames The names of the phenotypes to use.
@@ -101,6 +107,7 @@ public class LinearModelComputer {
             GenotypesFileType genotypesFileType,
             VariantList variantList,
             double mafThreshold,
+            boolean useDosages,
             ChildToParentMap childToParentMap,
             File phenotypesFile,
             String[] phenoNames,
@@ -115,6 +122,7 @@ public class LinearModelComputer {
         this.genotypesFileType = genotypesFileType;
         this.variantList = variantList;
         this.mafThreshold = mafThreshold;
+        this.useDosages = useDosages;
         this.childToParentMap = childToParentMap;
         this.phenotypesFile = phenotypesFile;
         this.phenoNames = phenoNames;
@@ -253,6 +261,7 @@ public class LinearModelComputer {
                             i -> new LinearModelRunnable(
                                     iterator,
                                     mafThreshold,
+                                    useDosages,
                                     childToParentMap,
                                     models,
                                     phenotypesHandler,

@@ -46,6 +46,10 @@ public class LinearModelRunnable implements Runnable {
      */
     private final double mafThreshold;
     /**
+     * If true, dosages will be used where possible, hard calls otherwise.
+     */
+    private final boolean useDosages;
+    /**
      * List of models to use.
      */
     public Model[] models;
@@ -81,6 +85,8 @@ public class LinearModelRunnable implements Runnable {
      * @param mafThreshold The maf threshold. maf is computed in parents for
      * trios where a phenotype is available and values lower than threshold are
      * not included (inclusive).
+     * @param useDosages If true, dosages will be used when possible, hard calls
+     * otherwise.
      * @param childToParentMap The child to parent map.
      * @param models The list of the names of the models to use.
      * @param phenotypesHandler The phenotypes handler.
@@ -93,6 +99,7 @@ public class LinearModelRunnable implements Runnable {
     public LinearModelRunnable(
             VariantIterator iterator,
             double mafThreshold,
+            boolean useDosages,
             ChildToParentMap childToParentMap,
             Model[] models,
             PhenotypesHandler phenotypesHandler,
@@ -106,6 +113,7 @@ public class LinearModelRunnable implements Runnable {
         this.childToParentMap = childToParentMap;
         this.models = models;
         this.mafThreshold = mafThreshold;
+        this.useDosages = useDosages;
         this.phenotypesHandler = phenotypesHandler;
         this.outputWriter = outputWriter;
         this.resultsIndex = resultsIndex;
@@ -259,8 +267,14 @@ public class LinearModelRunnable implements Runnable {
                     rss0 += distY * distY;
 
                     String childId = childToParentMap.children[index];
+                    String motherId = childToParentMap.getMother(childId);
+                    String fatherId = childToParentMap.getFather(childId);
 
-                    short[] h = genotypesProvider.getH(childToParentMap, childId);
+                    short[] h = genotypesProvider.getH(
+                            childId, 
+                            motherId, 
+                            fatherId
+                    );
 
                     for (int j = 0; j < 4; j++) {
 
@@ -330,11 +344,12 @@ public class LinearModelRunnable implements Runnable {
                         Model.fillX(
                                 x,
                                 model,
-                                i,
-                                h,
-                                nAltChild,
-                                nAltMother,
-                                nAltFather
+                                i, 
+                                childId, 
+                                motherId, 
+                                fatherId, 
+                                genotypesProvider, 
+                                canceled
                         );
 
                     }

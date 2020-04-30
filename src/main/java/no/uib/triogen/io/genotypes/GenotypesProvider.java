@@ -48,6 +48,21 @@ public interface GenotypesProvider {
             ChildToParentMap childToParentMap,
             String sampleId
     );
+    
+    /**
+     * Returns the hs for a trio according to the nomenclature of Chen et al. (https://doi.org/10.1101/737106).
+     *
+     * @param childId The id of the child.
+     * @param motherId The id of the mother.
+     * @param fatherId The id of the father.
+     *
+     * @return An array containing the hs.
+     */
+    public short[] getH(
+            String childId,
+            String motherId,
+            String fatherId
+    );
 
     /**
      * Returns the id of the variant.

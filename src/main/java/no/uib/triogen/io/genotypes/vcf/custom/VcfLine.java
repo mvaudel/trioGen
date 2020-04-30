@@ -266,6 +266,21 @@ public class VcfLine implements GenotypesProvider {
 
         String motherId = childToParentMap.getMother(childId);
         String fatherId = childToParentMap.getFather(childId);
+        
+        return getH(
+                childId, 
+                motherId, 
+                fatherId
+        );
+
+    }
+
+    @Override
+    public short[] getH(
+            String childId, 
+            String motherId, 
+            String fatherId
+    ) {
 
         short genotypeChild = getGenotype(childId);
         short genotypeMother = getGenotype(motherId);
@@ -280,7 +295,7 @@ public class VcfLine implements GenotypesProvider {
         short h4 = (short) (nAltFather - h3);
 
         return new short[]{h1, h2, h3, h4};
-
+        
     }
 
     @Override

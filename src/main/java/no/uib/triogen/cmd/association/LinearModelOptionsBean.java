@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.stream.Collectors;
+import no.uib.triogen.cmd.ld.LdMatrixOptions;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
@@ -49,6 +50,10 @@ public class LinearModelOptionsBean {
      * The maf threshold.
      */
     public double maf = 0.05;
+    /**
+     * If true, dosages will be used where possible, hard calls otherwise.
+     */
+    public boolean useDosages = false;
     /**
      * List of the names of the models to use.
      */
@@ -165,6 +170,12 @@ public class LinearModelOptionsBean {
                 );
 
             }
+        }
+
+        // Dosages
+        if (aLine.hasOption(LinearModelOptions.dosages.opt)) {
+
+            useDosages = true;
         }
 
         // the trio file

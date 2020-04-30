@@ -230,6 +230,21 @@ public class VcfVariant implements GenotypesProvider {
         String motherId = childToParentMap.getMother(childId);
         String fatherId = childToParentMap.getFather(childId);
 
+        return getH(
+                childId,
+                motherId,
+                fatherId
+        );
+
+    }
+
+    @Override
+    public short[] getH(
+            String childId,
+            String motherId,
+            String fatherId
+    ) {
+
         short genotypeKid = getGenotype(childId);
         short genotypeMother = getGenotype(motherId);
         short genotypeFather = getGenotype(fatherId);
@@ -330,7 +345,7 @@ public class VcfVariant implements GenotypesProvider {
 
         parentsP0sCache = results;
         parentsP0Cache = sum;
-        
+
         parentsP0sHCCache = resultsHC;
         parentsP0HCCache = sumHC;
 
@@ -352,16 +367,16 @@ public class VcfVariant implements GenotypesProvider {
 
     @Override
     public boolean[] getParentP0sHC() {
-        
+
         return parentsP0sHCCache;
-        
+
     }
 
     @Override
     public int getParentP0HC() {
-        
+
         return parentsP0HCCache;
-        
+
     }
 
 }

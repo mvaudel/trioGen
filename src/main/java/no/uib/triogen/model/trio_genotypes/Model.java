@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
+import no.uib.triogen.io.genotypes.GenotypesProvider;
 
 /**
  * Enum of the linear regression models implemented.
@@ -207,23 +208,59 @@ public enum Model {
     /**
      * Fills the given x matrix based on the model.
      *
-     * @param x the x matrix
-     * @param model the model
-     * @param index the index where to fill the matrix
-     * @param h the array of hs
-     * @param nAltChild the number of alternative alleles of the child
-     * @param nAltMother the number of alternative alleles of the mother
-     * @param nAltFather the number of alternative alleles of the father
+     * @param x The x matrix.
+     * @param model The model.
+     * @param index The index where to fill the matrix.
+     * @param childId The id of the child.
+     * @param motherId The id of the mother.
+     * @param fatherId The id of the father.
+     * @param genotypesProvider The genotypes provider to use for this variant.
+     * @param useDosages If true, dosages will be used when possible, hard calls
+     * otherwise.
      */
     public static void fillX(
             double[][] x,
             Model model,
             int index,
-            short[] h,
-            int nAltChild,
-            int nAltMother,
-            int nAltFather
+            String childId,
+            String motherId,
+            String fatherId,
+            GenotypesProvider genotypesProvider,
+            boolean useDosages
     ) {
+        
+
+    }
+
+    /**
+     * Fills the given x matrix based on the model using hard calls.
+     *
+     * @param x The x matrix.
+     * @param model The model.
+     * @param index The index where to fill the matrix.
+     * @param childId The id of the child.
+     * @param motherId The id of the mother.
+     * @param fatherId The id of the father.
+     * @param genotypesProvider The genotypes provider to use for this variant.
+     */
+    public static void fillXHardCalls(
+            double[][] x,
+            Model model,
+            int index,
+            String childId,
+            String motherId,
+            String fatherId,
+            GenotypesProvider genotypesProvider
+    ) {
+
+        short[] h = genotypesProvider.getH(
+                childId,
+                motherId,
+                fatherId
+        );
+        short nAltChild = (short) (h[0] + h[2]);
+        short nAltMother = (short) (h[0] + h[1]);
+        short nAltFather = (short) (h[2] + h[3]);
 
         switch (model) {
 
@@ -307,6 +344,140 @@ public enum Model {
 
             case f:
                 x[index][0] = nAltFather;
+                return;
+
+            case f_ft:
+                x[index][0] = nAltFather;
+                x[index][1] = h[2];
+                return;
+
+            default:
+
+                throw new UnsupportedOperationException("X matrix not implemented for model " + model + ".");
+
+        }
+    }
+
+    /**
+     * Fills the given x matrix based on the model using dosages.
+     *
+     * @param x The x matrix.
+     * @param model The model.
+     * @param index The index where to fill the matrix.
+     * @param childId The id of the child.
+     * @param motherId The id of the mother.
+     * @param fatherId The id of the father.
+     * @param genotypesProvider The genotypes provider to use for this variant.
+     */
+    public static void fillXDosages(
+            double[][] x,
+            Model model,
+            int index,
+            String childId,
+            String motherId,
+            String fatherId,
+            GenotypesProvider genotypesProvider
+    ) {
+
+        short[] h = genotypesProvider.getH(
+                childId,
+                motherId,
+                fatherId
+        );
+        short nAltChild = (short) (h[0] + h[2]);
+        short nAltMother = (short) (h[0] + h[1]);
+        short nAltFather = (short) (h[2] + h[3]);
+        
+        float[] dosagesChild = genotypesProvider.getDosages(childId);
+        float[] dosagesMother = genotypesProvider.getDosages(motherId);
+        float[] dosagesFather = genotypesProvider.getDosages(fatherId);
+        
+        double dosageGenotypeChild = dosagesChild[1] + 2 * dosagesChild[2];
+        double dosageGenotypeMother = dosagesMother[1] + 2 * dosagesMother[2];
+        double dosageGenotypeFather = dosagesFather[1] + 2 * dosagesFather[2];
+
+        switch (model) {
+
+            case h:
+
+                x[index][0] = h[0];
+                x[index][1] = h[1];
+                x[index][2] = h[2];
+                x[index][3] = h[3];
+                return;
+
+            case cmf:
+                x[index][0] = dosageGenotypeChild;
+                x[index][1] = dosageGenotypeMother;
+                x[index][2] = dosageGenotypeFather;
+                return;
+
+            case cmf_mt:
+                x[index][0] = nAltChild;
+                x[index][1] = nAltMother;
+                x[index][2] = nAltFather;
+                x[index][3] = h[0];
+                return;
+
+            case cmf_ft:
+                x[index][0] = nAltChild;
+                x[index][1] = nAltMother;
+                x[index][2] = nAltFather;
+                x[index][3] = h[2];
+                return;
+
+            case cm:
+                x[index][0] = dosageGenotypeChild;
+                x[index][1] = dosageGenotypeMother;
+                return;
+
+            case cm_mt:
+                x[index][0] = nAltChild;
+                x[index][1] = nAltMother;
+                x[index][2] = h[0];
+                return;
+
+            case cf:
+                x[index][0] = dosageGenotypeChild;
+                x[index][1] = dosageGenotypeFather;
+                return;
+
+            case cf_ft:
+                x[index][0] = nAltChild;
+                x[index][1] = nAltFather;
+                x[index][2] = h[2];
+                return;
+
+            case mf:
+                x[index][0] = dosageGenotypeMother;
+                x[index][1] = dosageGenotypeFather;
+                return;
+
+            case c:
+                x[index][0] = dosageGenotypeChild;
+                return;
+
+            case c_mt:
+                x[index][0] = nAltChild;
+                x[index][1] = h[0];
+                return;
+
+            case c_ft:
+                x[index][0] = nAltChild;
+                x[index][1] = h[2];
+                return;
+
+            case m:
+                x[index][0] = dosageGenotypeMother;
+                return;
+
+            case m_mt:
+                x[index][0] = nAltMother;
+                x[index][1] = h[0];
+                return;
+
+            case f:
+                x[index][0] = dosageGenotypeFather;
                 return;
 
             case f_ft:
