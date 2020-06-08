@@ -7,12 +7,19 @@ Phenotypes version V10_1.0.0-190506, standardization using [GAMLSS](https://www.
 
 
 | Name | variable | Formula | Distribution | Normalization | n |
+
 | --------- | ------- | ------------ | ------------- | - |
+
 | Standardized Mother height | mother_height | `mother_height ~ fp(mother_age)` | `NO` | `centiles.pred` Z-scores | 10786 |
+
 | Standardized Father BMI | z_father_bmi | `father_bmi ~ fp(father_age)` | `LOGNO` | `centiles.pred` Z-scores | 9753 |
+
 | Pregnancy Duration | pregnancy_duration |  |  |  | 11127 |
+
 | Standardized Placenta Weight | z_placenta_weight | `placenta_weight ~ fp(pregnancy_duration)` per child sex | `BCT` | `centiles.pred` Z-scores | 10869 |
+
 | Standardized Umbilical Cord Length | z_umbilical_chord_length | `umbilical_chord_length ~ fp(pregnancy_duration)` per child sex | `BCT` | `centiles.pred` Z-scores | 10690 |
+
 | BMI at Birth | z_bmi0 | `z_bmi0 ~ fp(pregnancy_duration)` per child sex | `LOGNO` | `centiles.pred` Z-scores | 11078 |
 | BMI at 6 w | z_bmi1 | `z_bmi1 ~ fp(pregnancy_duration)` per child sex | `LOGNO` | `centiles.pred` Z-scores | 6915 |
 | BMI at 3 m | z_bmi2 | `z_bmi2 ~ fp(pregnancy_duration)` per child sex | `LOGNO` | `centiles.pred` Z-scores | 9391 |
