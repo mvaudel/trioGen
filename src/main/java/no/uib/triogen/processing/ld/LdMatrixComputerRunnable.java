@@ -1,10 +1,10 @@
 package no.uib.triogen.processing.ld;
 
 import java.util.ArrayList;
-import no.uib.triogen.io.genotypes.iterators.BufferedGenotypesIterator;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.zip.Deflater;
+import no.uib.triogen.io.genotypes.GenotypesIterator;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.ld.LdMatrixWriter;
 import no.uib.triogen.log.Logger;
@@ -25,7 +25,7 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
     /**
      * The buffer.
      */
-    private final BufferedGenotypesIterator iterator;
+    private final GenotypesIterator iterator;
     /**
      * The map of trios.
      */
@@ -64,7 +64,6 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
      * The deflater to compress parts of the file.
      */
     private final Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION, true);
-    private static boolean debug = false;
 
     /**
      * Constructor.
@@ -83,7 +82,7 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
      */
     public LdMatrixComputerRunnable(
             LdMatrixWriter writer,
-            BufferedGenotypesIterator iterator,
+            GenotypesIterator iterator,
             ChildToParentMap childToParentMap,
             int maxDistance,
             double minR2,
@@ -135,7 +134,7 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                             double nB = genotypesProviderB.getParentP0();
                             double n = 2 * childToParentMap.children.length;
 
-                            if (nA < n || nB < n) {
+                            if (nA > 0 && nA < n || nB > 0 && nB < n) {
 
                                 float[] p0sA = genotypesProviderA.getParentP0s();
                                 float[] p0sB = genotypesProviderB.getParentP0s();
@@ -147,7 +146,7 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
 
                                 }
 
-                                if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
+                                if (nAB * n != nA * nB) {
 
                                     double pAB = nAB / n;
                                     double pA = nA / n;
@@ -166,11 +165,6 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                                 }
                             }
                         } else {
-
-                            if (!debug) {
-                                System.out.println("Hard calls");
-                                debug = true;
-                            }
 
                             double nA = genotypesProviderA.getParentP0HC();
                             double nB = genotypesProviderB.getParentP0HC();

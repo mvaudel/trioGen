@@ -11,6 +11,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.triogen.log.Logger;
+import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.processing.ld.LdMatrixComputer;
 
 /**
@@ -53,17 +54,17 @@ public class LdMatrix {
             CommandLine commandLine = parser.parse(lOptions, args);
 
             LdMatrixOptionsBean bean = new LdMatrixOptionsBean(commandLine);
-            
+
             if (bean.test) {
-                
+
                 CustomVcfIterator.nLimit = 1000;
-                
+
             }
 
             run(
                     bean,
                     String.join(" ", args)
-                    );
+            );
 
         } catch (Throwable e) {
 
@@ -91,18 +92,19 @@ public class LdMatrix {
         logger.writeComment("Arguments", command);
         logger.writeHeaders();
         
-        File outputFile = new File(bean.destinationFilePath + ".tld");
+        VariantList variantList = bean.variantFile == null ? null : VariantList.getVariantList(bean.variantFile);
 
         LdMatrixComputer computer = new LdMatrixComputer(
-                bean.genotypesFile, 
-                bean.genotypesFileType, 
-                childToParentMap, 
-                outputFile, 
-                bean.maxDistance, 
+                bean.genotypesFile,
+                bean.genotypesFileType,
+                variantList,
+                childToParentMap,
+                bean.destinationFilePath,
+                bean.maxDistance,
                 bean.minR2,
                 bean.maf,
-                bean.hardCalls, 
-                bean.nVariants, 
+                bean.hardCalls,
+                bean.nVariants,
                 bean.downstreamLoadingFactor,
                 bean.upstreamLoadingFactor,
                 logger
@@ -128,7 +130,7 @@ public class LdMatrix {
      */
     private static void printHelp() {
 
-        try (PrintWriter lPrintWriter = new PrintWriter(System.out)) {
+        try ( PrintWriter lPrintWriter = new PrintWriter(System.out)) {
             lPrintWriter.print(LINE_SEPARATOR);
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print("              trioGen             " + LINE_SEPARATOR);

@@ -20,6 +20,10 @@ public class LdMatrixOptionsBean {
      */
     public GenotypesFileType genotypesFileType = GenotypesFileType.vcf;
     /**
+     * The file listing the variants to process.
+     */
+    public File variantFile = null;
+    /**
      * the trio file.
      */
     public final File trioFile;
@@ -118,6 +122,20 @@ public class LdMatrixOptionsBean {
 
             genotypesFileType = GenotypesFileType.getGenotypesFileType(genoFormat);
 
+        }
+
+        // The variant ids
+        if (aLine.hasOption(LdMatrixOptions.variantId.opt)) {
+
+            filePath = aLine.getOptionValue(LdMatrixOptions.variantId.opt);
+
+            variantFile = new File(filePath);
+
+            if (!variantFile.exists()) {
+
+                throw new IllegalArgumentException("Variant file (" + variantFile + ") not found.");
+
+            }
         }
 
         // The trio file

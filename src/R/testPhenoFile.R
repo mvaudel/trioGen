@@ -807,7 +807,7 @@ for (ageI in 0:11) {
     }
     formula <- paste0(variable, sigmaFormula)
     
-    write(x = paste0("| ", phenoName, " | ", variable, " | `", formula, "` per child sex | `LOGNO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF[[variable]])), " |"), file = docsFile, append = T)
+    write(x = paste0("| ", phenoName, " | ", variable, " | `", formula, "` per child sex | `LOGNO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF[[variable]])), " |\n"), file = docsFile, append = T)
     
 }
 write(x = paste0("| Breastmilk Duration | breastmilk_duration |  |  |  | ", sum(!is.na(phenoDF$breastmilk_duration)), " |\n"), file = docsFile, append = T)

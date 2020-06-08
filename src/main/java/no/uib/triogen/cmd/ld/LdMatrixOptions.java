@@ -13,7 +13,8 @@ import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 public enum LdMatrixOptions {
 
     geno("g", "geno", "The genotypes file.", true, true),
-    genoFormat("gf", "genoFormat", "The genotypes file format. " + GenotypesFileType.getCommandLineOptions() + ". Default: " + GenotypesFileType.vcf.index + ".", false, true),
+    genoFormat("gf", "genoFormat", "The genotypes file format to use when iterating the entire file. " + GenotypesFileType.getCommandLineOptions() + ". Default: " + GenotypesFileType.vcf.index + ".", false, true),
+    variantId("vi", "variantId", "File listing the variants to include in the analysis. Default: process all variants in the genotypes file.", false, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not. Consider including only unrelated samples and controling for admixture.", true, true),
     maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Default: 1000000.", false, true),
     minR2("r", "minR2", "The minimal ld r2 to report (inclusive). Default: 1e-6.", false, true),

@@ -70,6 +70,8 @@ public class LocusZoomExtractor {
         ArrayList<Integer> compressedLengths = new ArrayList<>();
         ArrayList<Integer> uncompressedLengths = new ArrayList<>();
         HashMap<String, Double> ldMap = ldMatrixReader.getR2(targetVariant);
+        
+        double ldTest = ldMap.getOrDefault("rs72226766", Double.NaN);
 
         String targetContig = null;
         int targetBp = -1;

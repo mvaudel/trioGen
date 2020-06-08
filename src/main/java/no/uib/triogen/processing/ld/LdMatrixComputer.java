@@ -3,6 +3,7 @@ package no.uib.triogen.processing.ld;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -10,11 +11,13 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.iterators.BufferedGenotypesIterator;
+import no.uib.triogen.io.genotypes.iterators.TargetGenotypesIterator;
 import no.uib.triogen.io.genotypes.iterators.VariantIterator;
 import no.uib.triogen.io.ld.LdMatrixWriter;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.trio_genotypes.VariantIndex;
+import no.uib.triogen.model.trio_genotypes.VariantList;
 
 /**
  * This class iterates through genotypes and writes a matrix of ld between
@@ -51,6 +54,10 @@ public class LdMatrixComputer {
      */
     private final GenotypesFileType genotypesFileType;
     /**
+     * The variants to process.
+     */
+    private final VariantList variantList;
+    /**
      * The map of trios.
      */
     private final ChildToParentMap childToParentMap;
@@ -73,9 +80,9 @@ public class LdMatrixComputer {
      */
     private final VariantIndex variantIndex = new VariantIndex();
     /**
-     * The file where to write the results.
+     * The stem of the path of the file where to write the results.
      */
-    private final File destinationFile;
+    private final String destinationStem;
     /**
      * The number of variants to process in parallel.
      */
@@ -94,8 +101,10 @@ public class LdMatrixComputer {
      *
      * @param genotypesFile The file containing the genotypes.
      * @param genotypesFileType The type of genotypes file.
+     * @param variantList The variants to process.
      * @param childToParentMap The map of trios.
-     * @param destinationFile File to write to.
+     * @param destinationStem The stem of the path of the file where to write
+     * the results.
      * @param maxDistance The maximal number of bp to allow between variants.
      * @param minR2 The minimal ld r2 to report (inclusive).
      * @param mafThreshold The maf threshold. maf is computed in parents and
@@ -111,8 +120,9 @@ public class LdMatrixComputer {
     public LdMatrixComputer(
             File genotypesFile,
             GenotypesFileType genotypesFileType,
+            VariantList variantList,
             ChildToParentMap childToParentMap,
-            File destinationFile,
+            String destinationStem,
             int maxDistance,
             double minR2,
             double mafThreshold,
@@ -125,8 +135,9 @@ public class LdMatrixComputer {
 
         this.genotypesFile = genotypesFile;
         this.genotypesFileType = genotypesFileType;
+        this.variantList = variantList;
         this.childToParentMap = childToParentMap;
-        this.destinationFile = destinationFile;
+        this.destinationStem = destinationStem;
         this.maxDistance = maxDistance;
         this.minR2 = minR2;
         this.mafThreshold = mafThreshold;
@@ -142,7 +153,8 @@ public class LdMatrixComputer {
      * Runs the matrix export.
      *
      * @param timeOutDays The time out time in days.
-     * @param testIteration In testIteration mode LD calculations will not be computed.
+     * @param testIteration In testIteration mode LD calculations will not be
+     * computed.
      * @param test In test mode only a few variants will be processed.
      *
      * @throws InterruptedException exception thrown if the process was
@@ -166,71 +178,150 @@ public class LdMatrixComputer {
 
         long start = Instant.now().getEpochSecond();
 
-        VariantIterator iterator = GenotypesFileType.getVariantIterator(
-                genotypesFile,
-                genotypesFileType,
-                false
-        );
+        if (variantList == null) {
 
-        BufferedGenotypesIterator bufferedIterator = new BufferedGenotypesIterator(
-                iterator,
-                childToParentMap,
-                (int) LOADING_FACTOR * maxDistance,
-                (int) LOADING_FACTOR * maxDistance,
-                mafThreshold,
-                nVariants,
-                downstreamLoadingFactor,
-                upstreamLoadingFactor,
-                true
-        );
+            VariantIterator iterator = GenotypesFileType.getVariantIterator(
+                    genotypesFile,
+                    genotypesFileType,
+                    false
+            );
 
-        LdMatrixWriter writer = new LdMatrixWriter(
-                variantIndex,
-                destinationFile
-        );
+            BufferedGenotypesIterator bufferedIterator = new BufferedGenotypesIterator(
+                    iterator,
+                    childToParentMap,
+                    (int) LOADING_FACTOR * maxDistance,
+                    (int) LOADING_FACTOR * maxDistance,
+                    mafThreshold,
+                    nVariants,
+                    downstreamLoadingFactor,
+                    upstreamLoadingFactor
+            );
 
-        try {
+            File destinationFile = new File(destinationStem + ".tld");
 
-            ExecutorService pool = Executors.newFixedThreadPool(nVariants);
+            LdMatrixWriter writer = new LdMatrixWriter(
+                    variantIndex,
+                    destinationFile
+            );
 
-            IntStream.range(0, nVariants)
-                    .mapToObj(
-                            i -> new LdMatrixComputerRunnable(
-                                    writer,
-                                    bufferedIterator,
-                                    childToParentMap,
-                                    maxDistance,
-                                    minR2,
-                                    hardCalls,
-                                    variantIndex,
-                                    testIteration,
-                                    logger
-                            )
-                    )
-                    .forEach(
-                            worker -> pool.submit(worker)
-                    );
+            try {
 
-            pool.shutdown();
+                ExecutorService pool = Executors.newFixedThreadPool(nVariants);
 
-            if (!pool.awaitTermination(timeOutDays, TimeUnit.DAYS)) {
+                IntStream.range(0, nVariants)
+                        .mapToObj(
+                                i -> new LdMatrixComputerRunnable(
+                                        writer,
+                                        bufferedIterator,
+                                        childToParentMap,
+                                        maxDistance,
+                                        minR2,
+                                        hardCalls,
+                                        variantIndex,
+                                        testIteration,
+                                        logger
+                                )
+                        )
+                        .forEach(
+                                worker -> pool.submit(worker)
+                        );
 
-                throw new TimeoutException("Analysis timed out (time out: " + timeOutDays + " days)");
+                pool.shutdown();
+
+                if (!pool.awaitTermination(timeOutDays, TimeUnit.DAYS)) {
+
+                    throw new TimeoutException("Analysis timed out (time out: " + timeOutDays + " days)");
+
+                }
+
+            } finally {
+
+                writer.close();
+                iterator.close();
 
             }
 
-        } finally {
+            long end = Instant.now().getEpochSecond();
+            long duration = end - start;
 
-            writer.close();
-            iterator.close();
+            logger.logMessage("Done (" + iterator.getnVariants() + " variants processed in " + duration + " seconds)");
+
+        } else {
+
+            int nVariants = variantList.variantId.length;
+
+            ArrayList<LdMatrixWriter> writers = new ArrayList<>();
+
+            try {
+
+                ExecutorService pool = Executors.newFixedThreadPool(nVariants);
+
+                for (int i = 0; i < nVariants; i++) {
+
+                    String variantId = variantList.variantId[i];
+
+                    TargetGenotypesIterator iterator = new TargetGenotypesIterator(
+                            genotypesFile,
+                            variantId,
+                            variantList.chromosome[i],
+                            variantList.start[i],
+                            variantList.end[i],
+                            maxDistance,
+                            maxDistance
+                    );
+
+                    File destinationFile = new File(destinationStem + "_" + variantId + ".tld");
+
+                    LdMatrixWriter writer = new LdMatrixWriter(
+                            variantIndex,
+                            destinationFile
+                    );
+                    writers.add(writer);
+
+                    LdMatrixComputerRunnable runnable = new LdMatrixComputerRunnable(
+                            writer,
+                            iterator,
+                            childToParentMap,
+                            maxDistance,
+                            minR2,
+                            hardCalls,
+                            variantIndex,
+                            testIteration,
+                            logger
+                    );
+
+                    pool.submit(runnable);
+
+                }
+
+                pool.shutdown();
+
+                if (!pool.awaitTermination(timeOutDays, TimeUnit.DAYS)) {
+
+                    throw new TimeoutException("Analysis timed out (time out: " + timeOutDays + " days)");
+
+                }
+
+            } finally {
+
+                writers.stream()
+                        .forEach(
+                                iterator -> {
+                                    try {
+                                        iterator.close();
+                                    } catch (Throwable t) {
+                                        t.printStackTrace();
+                                    }
+                                }
+                        );
+
+            }
+
+            long end = Instant.now().getEpochSecond();
+            long duration = end - start;
+
+            logger.logMessage("Done (" + nVariants + " variants processed in " + duration + " seconds)");
 
         }
-
-        long end = Instant.now().getEpochSecond();
-        long duration = end - start;
-
-        logger.logMessage("Done (" + iterator.getnVariants() + " variants processed in " + duration + " seconds)");
-
     }
-
 }

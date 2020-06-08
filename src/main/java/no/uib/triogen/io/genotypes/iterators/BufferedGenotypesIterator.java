@@ -1,6 +1,5 @@
 package no.uib.triogen.io.genotypes.iterators;
 
-import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +8,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.stream.IntStream;
+import no.uib.triogen.io.genotypes.GenotypesIterator;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.maf.MafEstimator;
@@ -19,7 +19,7 @@ import no.uib.triogen.utils.SimpleSemaphore;
  *
  * @author Marc Vaudel
  */
-public class BufferedGenotypesIterator {
+public class BufferedGenotypesIterator implements GenotypesIterator {
 
     /**
      * The loading factor can be used to reduce the frequency of buffering and
@@ -94,10 +94,6 @@ public class BufferedGenotypesIterator {
      * Placeholder for a batch of genotypes providers.
      */
     private final ArrayList<GenotypesProvider> batch;
-    /**
-     * Boolean indicating whether p0s should be buffered upon loading.
-     */
-    private final boolean bufferP0s;
 
     /**
      * Constructor.
@@ -125,8 +121,7 @@ public class BufferedGenotypesIterator {
             double mafThreshold,
             int nVariants,
             double downstreamLoadingFactor,
-            double upstreamLoadingFactor,
-            boolean bufferP0s
+            double upstreamLoadingFactor
     ) {
 
         this.iterator = iterator;
@@ -138,7 +133,6 @@ public class BufferedGenotypesIterator {
         this.batch = new ArrayList<>(nVariants);
         this.downstreamLoadingFactor = downstreamLoadingFactor;
         this.upstreamLoadingFactor = upstreamLoadingFactor;
-        this.bufferP0s = bufferP0s;
 
         init();
 
@@ -414,16 +408,7 @@ public class BufferedGenotypesIterator {
 
     }
 
-    /**
-     * Returns an array of the genotypes of the given contig in the given bp
-     * range.
-     *
-     * @param contig The contig.
-     * @param startBp The bp range start (inclusive).
-     * @param endBp The bp range end (inclusive).
-     *
-     * @return An array of the genotypes.
-     */
+    @Override
     public GenotypesProvider[] getGenotypesInRange(
             String contig,
             int startBp,
@@ -517,12 +502,8 @@ public class BufferedGenotypesIterator {
         }
     }
 
-    /**
-     * Release a lower-bound for the sliding window.
-     *
-     * @param contig The contig.
-     * @param minBp The lower-bound to release for the sliding window.
-     */
+    
+    @Override
     public void releaseMinBp(
             String contig,
             int minBp
