@@ -275,11 +275,15 @@ public class VcfVariant implements GenotypesProvider {
             }
         }
 
-        String attribute = variantContext.getAttributeAsString(DOSAGE_KEY, sampleId);
-        
-        System.out.println(attribute);
+        Object attribute = variantContext.getAttribute(DOSAGE_KEY);
 
         if (attribute == null) {
+
+            if (genotyped()) {
+
+                System.out.println("Genotyped");
+
+            }
 
             throw new IllegalArgumentException(
                     "Attribute for dosages (" + DOSAGE_KEY + ") not found."
@@ -287,7 +291,11 @@ public class VcfVariant implements GenotypesProvider {
 
         }
 
-        String[] split = attribute.split(",");
+        System.out.println(attribute);
+
+        String attributeAsString = attribute.toString();
+
+        String[] split = attributeAsString.split(",");
 
         float[] dosages = new float[3];
 
