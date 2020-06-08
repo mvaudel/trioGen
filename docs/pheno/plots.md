@@ -3,7 +3,7 @@
 Genotyped samples only, ADHD cases and ethnic outliers removed (N = 11161)
 
 
-Phenotypes version V10_1.0.0-190506, standardization using [GAMLSS](https://www.gamlss.com/).
+Phenotypes version V10_1.1.0-200422, standardization using [GAMLSS](https://www.gamlss.com/).
 
 
 | Name | variable | Formula | Distribution | Normalization | n |
@@ -33,6 +33,7 @@ Phenotypes version V10_1.0.0-190506, standardization using [GAMLSS](https://www.
 | BMI at 7 y | z_bmi10 | `z_bmi10 ~ pregnancy_duration` per child sex | `LOGNO` | `centiles.pred` Z-scores | 5466 |
 | BMI at 8 y | z_bmi11 | `z_bmi11 ~ pregnancy_duration` per child sex | `LOGNO` | `centiles.pred` Z-scores | 4174 |
 | Breastmilk Duration | breastmilk_duration |  |  |  | 9920 |
+
 | Formula Frequency at 6m | formula_freq_6m |  |  |  | 8904 |
 
 
