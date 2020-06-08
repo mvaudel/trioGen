@@ -10,7 +10,7 @@ import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
-import no.uib.triogen.io.genotypes.iterators.VariantIterator;
+import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.trio_genotypes.Model;

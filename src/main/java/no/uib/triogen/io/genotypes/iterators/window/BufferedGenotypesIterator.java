@@ -1,4 +1,4 @@
-package no.uib.triogen.io.genotypes.iterators;
+package no.uib.triogen.io.genotypes.iterators.window;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -8,18 +8,20 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.stream.IntStream;
-import no.uib.triogen.io.genotypes.GenotypesIterator;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.maf.MafEstimator;
 import no.uib.triogen.utils.SimpleSemaphore;
+import no.uib.triogen.io.genotypes.WindowGenotypesIterator;
+import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.io.genotypes.iterators.SimpleGenotypeIterator;
 
 /**
  * Buffered iterator for the genotypes of a file.
  *
  * @author Marc Vaudel
  */
-public class BufferedGenotypesIterator implements GenotypesIterator {
+public class BufferedGenotypesIterator implements WindowGenotypesIterator {
 
     /**
      * The loading factor can be used to reduce the frequency of buffering and
@@ -407,7 +409,7 @@ public class BufferedGenotypesIterator implements GenotypesIterator {
     }
 
     @Override
-    public GenotypesProvider[] getGenotypesInRange(
+    public VariantIterator getGenotypesInRange(
             String contig,
             int startBp,
             int endBp
@@ -439,7 +441,7 @@ public class BufferedGenotypesIterator implements GenotypesIterator {
             }
         }
 
-        return contigMap.entrySet().stream()
+        GenotypesProvider[] genotypes = contigMap.entrySet().stream()
                 .filter(
                         entry -> entry.getKey() >= startBp && entry.getKey() <= endBp
                 )
@@ -449,6 +451,9 @@ public class BufferedGenotypesIterator implements GenotypesIterator {
                 .toArray(
                         GenotypesProvider[]::new
                 );
+        
+        return new SimpleGenotypeIterator(genotypes);
+        
     }
 
     /**

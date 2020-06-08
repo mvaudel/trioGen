@@ -1,24 +1,26 @@
-package no.uib.triogen.io.genotypes.iterators;
+package no.uib.triogen.io.genotypes.iterators.window;
 
 import htsjdk.samtools.util.CloseableIterator;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.vcf.VCFFileReader;
 import java.io.File;
 import java.util.ArrayList;
-import no.uib.triogen.io.genotypes.GenotypesIterator;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
+import no.uib.triogen.io.genotypes.VariantIterator;
 import static no.uib.triogen.io.genotypes.vcf.generic.VcfIterator.getVcfIndexFile;
 import no.uib.triogen.io.genotypes.vcf.generic.VcfVariant;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.maf.MafEstimator;
 import no.uib.triogen.utils.SimpleSemaphore;
+import no.uib.triogen.io.genotypes.WindowGenotypesIterator;
+import no.uib.triogen.io.genotypes.iterators.VcfGenotypeIterator;
 
 /**
  * Iterator for a single SNP and the SNPs around in a given BP window.
  *
  * @author Marc Vaudel
  */
-public class TargetGenotypesIterator implements GenotypesIterator {
+public class TargetGenotypesIterator implements WindowGenotypesIterator {
 
     /**
      * The vcf file.
@@ -33,13 +35,13 @@ public class TargetGenotypesIterator implements GenotypesIterator {
      */
     public final String targetSnpId;
     /**
-     * Window start for the iterator.
+     * The bp start of the target snp.
      */
-    public final int windowStart;
+    public final int targetSnpBpStart;
     /**
-     * Window end for the iterator.
+     * The bp end of the target snp.
      */
-    public final int windowEnd;
+    public final int targetSnpBpEnd;
     /**
      * The map of trios.
      */
@@ -49,10 +51,6 @@ public class TargetGenotypesIterator implements GenotypesIterator {
      * threshold are not included (inclusive).
      */
     private final double mafThreshold;
-    /**
-     * Genotypes in the window.
-     */
-    private ArrayList<GenotypesProvider> window = new ArrayList<>();
     /**
      * Genotypes for the target snp.
      */
@@ -91,12 +89,12 @@ public class TargetGenotypesIterator implements GenotypesIterator {
         this.vcfFile = vcfFile;
         this.targetSnpContig = targetSnpContig;
         this.targetSnpId = targetSnpId;
-
-        windowStart = targetSnpBpStart - downStreamDistance;
-        windowEnd = targetSnpBpEnd + upStreamDistance;
-
+        this.targetSnpBpStart = targetSnpBpStart;
+        this.targetSnpBpEnd = targetSnpBpEnd;
         this.mafThreshold = mafThreshold;
         this.childToParentMap = childToParentMap;
+
+        init();
 
     }
 
@@ -105,44 +103,26 @@ public class TargetGenotypesIterator implements GenotypesIterator {
         File indexFile = getVcfIndexFile(vcfFile);
         VCFFileReader reader = new VCFFileReader(vcfFile, indexFile);
         CloseableIterator<VariantContext> iterator = reader.query(targetSnpContig,
-                windowStart,
-                windowEnd
+                targetSnpBpStart,
+                targetSnpBpEnd
         );
 
         VariantContext variantContext;
 
         while ((variantContext = iterator.next()) != null) {
 
-            GenotypesProvider tempGenotypesProvider = new VcfVariant(
-                    variantContext,
-                    false
-            );
+            String vcfVariantId = variantContext.getID();
 
-            tempGenotypesProvider.parse();
+            if (vcfVariantId.equals(targetSnpId)) {
 
-            double maf = MafEstimator.getMaf(tempGenotypesProvider,
-                    childToParentMap
-            );
+                genotypesProvider = new VcfVariant(variantContext, true);
+                genotypesProvider.setParentP0s(childToParentMap.children, childToParentMap);
 
-            if (maf >= mafThreshold) {
-
-                tempGenotypesProvider.setParentP0s(childToParentMap.children, childToParentMap);
-
-                window.add(tempGenotypesProvider);
-
-                String vcfVariantId = variantContext.getID();
-
-                if (vcfVariantId.equals(targetSnpId)) {
-
-                    genotypesProvider = new VcfVariant(
-                            variantContext,
-                            true
-                    );
-                }
             }
         }
 
         iterator.close();
+
         reader.close();
 
     }
@@ -165,31 +145,20 @@ public class TargetGenotypesIterator implements GenotypesIterator {
     }
 
     @Override
-    public GenotypesProvider[] getGenotypesInRange(
+    public VariantIterator getGenotypesInRange(
             String contig,
             int startBp,
             int endBp
     ) {
 
-        if (startBp < windowStart) {
-
-            throw new IndexOutOfBoundsException("window start (" + startBp + ") out of range (" + startBp + " - " + endBp + ").");
-
-        }
-
-        if (endBp < windowEnd) {
-
-            throw new IndexOutOfBoundsException("window start (" + startBp + ") out of range (" + startBp + " - " + endBp + ").");
-
-        }
-
-        return window.stream()
-                .filter(
-                        result -> result.getBp() >= startBp && result.getBp() <= endBp
-                )
-                .toArray(
-                        GenotypesProvider[]::new
-                );
+        return new VcfGenotypeIterator(
+                vcfFile,
+                contig,
+                startBp,
+                endBp,
+                mafThreshold,
+                childToParentMap
+        );
     }
 
     @Override

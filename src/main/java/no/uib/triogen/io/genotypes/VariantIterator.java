@@ -1,4 +1,4 @@
-package no.uib.triogen.io.genotypes.iterators;
+package no.uib.triogen.io.genotypes;
 
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 

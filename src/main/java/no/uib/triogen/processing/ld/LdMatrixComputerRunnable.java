@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.zip.Deflater;
-import no.uib.triogen.io.genotypes.GenotypesIterator;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
+import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.io.ld.LdMatrixWriter;
 import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.trio_genotypes.VariantIndex;
+import no.uib.triogen.io.genotypes.WindowGenotypesIterator;
 
 /**
  * Runnable for the LD matrix writer.
@@ -25,7 +26,7 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
     /**
      * The buffer.
      */
-    private final GenotypesIterator iterator;
+    private final WindowGenotypesIterator iteratorA;
     /**
      * The map of trios.
      */
@@ -82,7 +83,7 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
      */
     public LdMatrixComputerRunnable(
             LdMatrixWriter writer,
-            GenotypesIterator iterator,
+            WindowGenotypesIterator iterator,
             ChildToParentMap childToParentMap,
             int maxDistance,
             double minR2,
@@ -93,7 +94,7 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
     ) {
 
         this.writer = writer;
-        this.iterator = iterator;
+        this.iteratorA = iterator;
         this.childToParentMap = childToParentMap;
         this.maxDistance = maxDistance;
         this.minR2 = minR2;
@@ -110,21 +111,22 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
         try {
 
             GenotypesProvider genotypesProviderA;
-            while ((genotypesProviderA = iterator.next()) != null && !canceled) {
+            while ((genotypesProviderA = iteratorA.next()) != null && !canceled) {
 
-                GenotypesProvider[] genotypesProviders = iterator.getGenotypesInRange(
+                int variantIdA = variantIndex.getIndex(genotypesProviderA.getVariantID());
+                ArrayList<Integer> variantIds = new ArrayList<>();
+                ArrayList<Double> r2s = new ArrayList<>();
+
+                VariantIterator iteratorB = iteratorA.getGenotypesInRange(
                         genotypesProviderA.getContig(),
                         Math.max(genotypesProviderA.getBp() - maxDistance, 0),
                         genotypesProviderA.getBp() + maxDistance
                 );
 
-                int variantIdA = variantIndex.getIndex(genotypesProviderA.getVariantID());
-                ArrayList<Integer> variantIds = new ArrayList<>(genotypesProviders.length);
-                ArrayList<Double> r2s = new ArrayList<>(genotypesProviders.length);
-
                 if (!testIteration) {
 
-                    for (GenotypesProvider genotypesProviderB : genotypesProviders) {
+                    GenotypesProvider genotypesProviderB;
+                    while ((genotypesProviderB = iteratorB.next()) != null) {
 
                         int variantIdB = variantIndex.getIndex(genotypesProviderB.getVariantID());
 
@@ -227,7 +229,7 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                     }
                 }
 
-                iterator.releaseMinBp(genotypesProviderA.getContig(), genotypesProviderA.getBp());
+                iteratorA.releaseMinBp(genotypesProviderA.getContig(), genotypesProviderA.getBp());
 
                 if (!variantIds.isEmpty()) {
 

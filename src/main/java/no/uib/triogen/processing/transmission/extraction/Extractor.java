@@ -11,7 +11,7 @@ import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
-import no.uib.triogen.io.genotypes.iterators.VariantIterator;
+import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 

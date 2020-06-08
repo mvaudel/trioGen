@@ -1,11 +1,11 @@
 package no.uib.triogen.io.genotypes;
 
 /**
- * Iterator for genotypes.
+ * Iterator for genotypes with a window around the variant being iterated.
  *
  * Marc Vaudel
  */
-public interface GenotypesIterator {
+public interface WindowGenotypesIterator {
 
     /**
      * Returns a genotypes provider for the next variant in the iterator. Null if iteration is finished.
@@ -15,7 +15,7 @@ public interface GenotypesIterator {
     public GenotypesProvider next();
 
     /**
-     * Returns an array of the genotypes of the given contig in the given bp
+     * Returns an iterator over the genotypes of the given contig in the given bp
      * range.
      *
      * @param contig The contig.
@@ -24,7 +24,7 @@ public interface GenotypesIterator {
      *
      * @return An array of the genotypes.
      */
-    public GenotypesProvider[] getGenotypesInRange(
+    public VariantIterator getGenotypesInRange(
             String contig,
             int startBp,
             int endBp
