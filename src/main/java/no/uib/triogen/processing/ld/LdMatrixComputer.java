@@ -252,8 +252,6 @@ public class LdMatrixComputer {
 
             logger.logMessage("LD extraction (geno: " + genotypesFile.getAbsolutePath() + ", " + nVariants + " target variants) using " + nVariants + " threads.");
 
-            logger.logMessage("Parsing genotypes file (1/2).");
-
             ArrayList<LdMatrixWriter> writers = new ArrayList<>();
 
             try {
@@ -271,7 +269,9 @@ public class LdMatrixComputer {
                             variantList.start[i],
                             variantList.end[i],
                             maxDistance,
-                            maxDistance
+                            maxDistance,
+                            mafThreshold,
+                            childToParentMap
                     );
 
                     File destinationFile = new File(destinationStem + "_" + variantId + ".tld");
@@ -297,8 +297,6 @@ public class LdMatrixComputer {
                     pool.submit(runnable);
 
                 }
-
-                logger.logMessage("Extracting LD (2/2).");
 
                 pool.shutdown();
 

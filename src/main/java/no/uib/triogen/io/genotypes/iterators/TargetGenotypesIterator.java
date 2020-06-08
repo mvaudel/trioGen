@@ -9,6 +9,8 @@ import no.uib.triogen.io.genotypes.GenotypesIterator;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import static no.uib.triogen.io.genotypes.vcf.generic.VcfIterator.getVcfIndexFile;
 import no.uib.triogen.io.genotypes.vcf.generic.VcfVariant;
+import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.maf.MafEstimator;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
@@ -39,6 +41,15 @@ public class TargetGenotypesIterator implements GenotypesIterator {
      */
     public final int windowEnd;
     /**
+     * The map of trios.
+     */
+    private final ChildToParentMap childToParentMap;
+    /**
+     * The maf threshold. maf is computed in parents and values lower than
+     * threshold are not included (inclusive).
+     */
+    private final double mafThreshold;
+    /**
      * Genotypes in the window.
      */
     private ArrayList<GenotypesProvider> window = new ArrayList<>();
@@ -61,6 +72,9 @@ public class TargetGenotypesIterator implements GenotypesIterator {
      * @param targetSnpBpEnd The end bp of the target snp.
      * @param upStreamDistance The distance to load upstream the target snp.
      * @param downStreamDistance The distance to load downstream the target snp.
+     * @param mafThreshold The maf threshold. maf is computed in parents and
+     * values lower than threshold are not included (inclusive).
+     * @param childToParentMap The map of trios.
      */
     public TargetGenotypesIterator(
             File vcfFile,
@@ -69,20 +83,25 @@ public class TargetGenotypesIterator implements GenotypesIterator {
             int targetSnpBpStart,
             int targetSnpBpEnd,
             int upStreamDistance,
-            int downStreamDistance
+            int downStreamDistance,
+            double mafThreshold,
+            ChildToParentMap childToParentMap
     ) {
-        
+
         this.vcfFile = vcfFile;
         this.targetSnpContig = targetSnpContig;
         this.targetSnpId = targetSnpId;
 
         windowStart = targetSnpBpStart - downStreamDistance;
         windowEnd = targetSnpBpEnd + upStreamDistance;
-        
+
+        this.mafThreshold = mafThreshold;
+        this.childToParentMap = childToParentMap;
+
     }
-    
+
     private void init() {
-        
+
         File indexFile = getVcfIndexFile(vcfFile);
         VCFFileReader reader = new VCFFileReader(vcfFile, indexFile);
         CloseableIterator<VariantContext> iterator = reader.query(targetSnpContig,
@@ -94,32 +113,44 @@ public class TargetGenotypesIterator implements GenotypesIterator {
 
         while ((variantContext = iterator.next()) != null) {
 
-            window.add(
+            genotypesProvider.parse();
+
+            double maf = MafEstimator.getMaf(
+                    genotypesProvider,
+                    childToParentMap
+            );
+
+            if (maf >= mafThreshold) {
+
+                genotypesProvider.setParentP0s(childToParentMap.children, childToParentMap);
+
+                window.add(
+                        genotypesProvider = new VcfVariant(
+                                variantContext,
+                                true
+                        )
+                );
+
+                String vcfVariantId = variantContext.getID();
+
+                if (vcfVariantId.equals(targetSnpId)) {
+
                     genotypesProvider = new VcfVariant(
                             variantContext,
                             true
-                    )
-            );
-
-            String vcfVariantId = variantContext.getID();
-
-            if (vcfVariantId.equals(targetSnpId)) {
-
-                genotypesProvider = new VcfVariant(
-                        variantContext,
-                        true
-                );
+                    );
+                }
             }
         }
-        
+
         iterator.close();
         reader.close();
-        
+
     }
 
     @Override
     public GenotypesProvider next() {
-        
+
         init();
 
         semaphore.acquire();

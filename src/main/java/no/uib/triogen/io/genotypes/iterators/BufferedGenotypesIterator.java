@@ -110,8 +110,6 @@ public class BufferedGenotypesIterator implements GenotypesIterator {
      * @param downstreamLoadingFactor The loading factor to use when trimming
      * the buffer.
      * @param upstreamLoadingFactor The loading factor to use when buffering.
-     * @param bufferP0s Boolean indicating whether p0s should be buffered upon
-     * loading.
      */
     public BufferedGenotypesIterator(
             VariantIterator iterator,
