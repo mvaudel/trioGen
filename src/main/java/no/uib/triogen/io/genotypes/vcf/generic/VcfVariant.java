@@ -167,7 +167,7 @@ public class VcfVariant implements GenotypesProvider {
 
         if (alleles.size() != 2) {
 
-            throw new IllegalArgumentException(alleles.size() + " alleles found for variant " + variantContext.getID() + " in sample " + sampleId + ", only one supported.");
+            throw new IllegalArgumentException(alleles.size() + " alleles found for variant " + variantContext.getID() + " in sample " + sampleId + ", only two supported.");
 
         }
 
@@ -280,39 +280,60 @@ public class VcfVariant implements GenotypesProvider {
         }
 
         Genotype genotype = variantContext.getGenotype(sampleId);
-        GenotypeLikelihoods likelihoods = genotype.getLikelihoods();
-            
-            if (genotyped()) {
-                System.out.println("Genotyped");
+
+        Object dosagesObject = genotype.getAnyAttribute(DOSAGE_KEY);
+
+        if (dosagesObject == null) {
+
+            dosagesObject = genotype.getExtendedAttribute(DOSAGE_KEY);
+
+            if (dosagesObject == null) {
+
+                dosagesObject = genotype.getLikelihoodsString();
+
+                if (dosagesObject == null) {
+
+                    System.out.println("AD: " + genotype.getAD());
+                    System.out.println("Filters: " + genotype.getFilters());
+                    System.out.println("GenotypesString: " + genotype.getGenotypeString());
+                    System.out.println("LikelihoodsString: " + genotype.getLikelihoodsString());
+                    System.out.println("DP: " + genotype.getDP());
+                    System.out.println("GQ: " + genotype.getGQ());
+                    System.out.println("PL: " + genotype.getPL());
+                    System.out.println("Ploidy: " + genotype.getPloidy());
+                    System.out.println("Type: " + genotype.getType());
+
+                    throw new IllegalArgumentException("No likelihood found for variant " + variantContext.getID() + " in sample " + sampleId + ".");
+
+                }
             }
-        
-        if (likelihoods == null) {
-            
-            System.out.println("AD: " + genotype.getAD());
-            System.out.println("Filters: " + genotype.getFilters());
-            System.out.println("GenotypesString: " + genotype.getGenotypeString());
-            System.out.println("LikelihoodsString: " + genotype.getLikelihoodsString());
-            System.out.println("Attribute: " + genotype.getAnyAttribute(DOSAGE_KEY));
-            System.out.println("DP: " + genotype.getDP());
-            System.out.println("ExtendedAttribute: " + genotype.getExtendedAttribute(DOSAGE_KEY));
-            System.out.println("GQ: " + genotype.getGQ());
-            System.out.println("PL: " + genotype.getPL());
-            System.out.println("Ploidy: " + genotype.getPloidy());
-            System.out.println("Type: " + genotype.getType());
-            
-            throw new IllegalArgumentException("No likelihood found for variant " + variantContext.getID() + " in sample " + sampleId + ".");
-            
         }
-            
-                System.out.println("Dosages");
+        
+        String[] dosagesSplit = dosagesObject.toString().split(",");
 
-        EnumMap<GenotypeType, Double> dosageMap = likelihoods.getAsMap(false);
+        if (dosagesSplit.length != 3) {
 
+            throw new IllegalArgumentException(
+                    dosagesSplit.length + " dosages found where 3 expected."
+            );
+        }
+        
         float[] dosages = new float[3];
 
-        dosages[0] = dosageMap.get(GenotypeType.HOM_REF).floatValue();
-        dosages[1] = dosageMap.get(GenotypeType.HET).floatValue();
-        dosages[2] = dosageMap.get(GenotypeType.HOM_VAR).floatValue();
+        for (int i = 0; i < 3; i++) {
+
+            try {
+
+                dosages[i] = Float.parseFloat(dosagesSplit[i]);
+
+            } catch (Throwable t) {
+
+                throw new IllegalArgumentException(
+                        "Could not parse dosage as number (Sample: '" + sampleId + "' value: '" + dosagesSplit[i] + "')",
+                        t
+                );
+            }
+        }
 
         if (useCache) {
 

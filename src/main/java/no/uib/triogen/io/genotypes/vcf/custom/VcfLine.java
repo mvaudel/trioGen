@@ -341,9 +341,7 @@ public class VcfLine implements GenotypesProvider {
                         "Could not parse dosage as number (Sample: '" + sampleId + "' value: '" + dosagesString[i] + "')",
                         t
                 );
-
             }
-
         }
 
         if (useCache) {
