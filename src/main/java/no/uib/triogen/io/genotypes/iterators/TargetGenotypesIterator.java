@@ -113,23 +113,22 @@ public class TargetGenotypesIterator implements GenotypesIterator {
 
         while ((variantContext = iterator.next()) != null) {
 
-            genotypesProvider.parse();
+            GenotypesProvider tempGenotypesProvider = new VcfVariant(
+                    variantContext,
+                    false
+            );
 
-            double maf = MafEstimator.getMaf(
-                    genotypesProvider,
+            tempGenotypesProvider.parse();
+
+            double maf = MafEstimator.getMaf(tempGenotypesProvider,
                     childToParentMap
             );
 
             if (maf >= mafThreshold) {
 
-                genotypesProvider.setParentP0s(childToParentMap.children, childToParentMap);
+                tempGenotypesProvider.setParentP0s(childToParentMap.children, childToParentMap);
 
-                window.add(
-                        genotypesProvider = new VcfVariant(
-                                variantContext,
-                                true
-                        )
-                );
+                window.add(tempGenotypesProvider);
 
                 String vcfVariantId = variantContext.getID();
 
