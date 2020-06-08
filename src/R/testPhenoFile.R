@@ -189,7 +189,7 @@ theme_set(theme_bw(base_size = 13))
 
 # Paths
 
-phenoFolder <- "/mnt/archive/moba/pheno/v10/V10_1.0.0-190506"
+phenoFolder <- "/mnt/archive/moba/pheno/v10/V10_1.1.0-200422"
 adhdCasesFile <- "/mnt/archive/TED/ted-aux/connections/PDB1382_toDECODE_Iceland_adhd_cases.csv"
 adhdBridgeFile <- "/mnt/archive/TED/ted-aux/connections/321-FinalDelJan2017-5410PNs-Sample_Map.txt"
 pcaFile <- "/mnt/archive/MOBAGENETICS/genotypes-base/aux/pca/mobagen-total/mobagen-total-proj-pc"
@@ -209,7 +209,7 @@ idDF <- read.table(
     stringsAsFactors = F
 ) %>%
     filter(
-        !is.na(child_SentrixID)
+        !is.na(child_SentrixID) & child_core
     ) %>%
     mutate(
         sex_number = as.numeric(factor(sex, levels = c("Boy", "Girl"))),
