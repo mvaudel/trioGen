@@ -276,6 +276,8 @@ public class VcfVariant implements GenotypesProvider {
         }
 
         String attribute = variantContext.getAttributeAsString(DOSAGE_KEY, sampleId);
+        
+        System.out.println(attribute);
 
         if (attribute == null) {
 
