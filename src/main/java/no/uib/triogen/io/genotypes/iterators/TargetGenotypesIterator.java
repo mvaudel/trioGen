@@ -19,6 +19,14 @@ import no.uib.triogen.utils.SimpleSemaphore;
 public class TargetGenotypesIterator implements GenotypesIterator {
 
     /**
+     * The vcf file.
+     */
+    public final File vcfFile;
+    /**
+     * The contig of the target snp.
+     */
+    public final String targetSnpContig;
+    /**
      * The id of the target snp.
      */
     public final String targetSnpId;
@@ -47,7 +55,7 @@ public class TargetGenotypesIterator implements GenotypesIterator {
      * Constructor.
      *
      * @param vcfFile The vcf file to get the genotypes from.
-     * @param targetSnp The id of target snp.
+     * @param targetSnpId The id of target snp.
      * @param targetSnpContig The contig of the target snp.
      * @param targetSnpBpStart The start bp of the target snp.
      * @param targetSnpBpEnd The end bp of the target snp.
@@ -56,7 +64,7 @@ public class TargetGenotypesIterator implements GenotypesIterator {
      */
     public TargetGenotypesIterator(
             File vcfFile,
-            String targetSnp,
+            String targetSnpId,
             String targetSnpContig,
             int targetSnpBpStart,
             int targetSnpBpEnd,
@@ -64,11 +72,17 @@ public class TargetGenotypesIterator implements GenotypesIterator {
             int downStreamDistance
     ) {
         
-        this.targetSnpId = targetSnp;
+        this.vcfFile = vcfFile;
+        this.targetSnpContig = targetSnpContig;
+        this.targetSnpId = targetSnpId;
 
         windowStart = targetSnpBpStart - downStreamDistance;
         windowEnd = targetSnpBpEnd + upStreamDistance;
-
+        
+    }
+    
+    private void init() {
+        
         File indexFile = getVcfIndexFile(vcfFile);
         VCFFileReader reader = new VCFFileReader(vcfFile, indexFile);
         CloseableIterator<VariantContext> iterator = reader.query(targetSnpContig,
@@ -89,7 +103,7 @@ public class TargetGenotypesIterator implements GenotypesIterator {
 
             String vcfVariantId = variantContext.getID();
 
-            if (vcfVariantId.equals(targetSnp)) {
+            if (vcfVariantId.equals(targetSnpId)) {
 
                 genotypesProvider = new VcfVariant(
                         variantContext,
@@ -105,6 +119,8 @@ public class TargetGenotypesIterator implements GenotypesIterator {
 
     @Override
     public GenotypesProvider next() {
+        
+        init();
 
         semaphore.acquire();
 
