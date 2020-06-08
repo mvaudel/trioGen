@@ -2,7 +2,6 @@ package no.uib.triogen.io.ld;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -17,7 +16,6 @@ import static no.uib.triogen.io.ld.LdMatrixUtils.MAGIC_NUMBER;
 import no.uib.triogen.model.trio_genotypes.VariantIndex;
 import static no.uib.triogen.utils.CompressionUtils.compress;
 import no.uib.triogen.utils.SimpleSemaphore;
-import no.uib.triogen.utils.Utils;
 
 /**
  * Writer for an ld matrix.
