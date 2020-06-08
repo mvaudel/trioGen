@@ -2,8 +2,12 @@ package no.uib.triogen.io.genotypes.vcf.generic;
 
 import htsjdk.variant.variantcontext.Allele;
 import htsjdk.variant.variantcontext.Genotype;
+import htsjdk.variant.variantcontext.GenotypeLikelihoods;
+import htsjdk.variant.variantcontext.GenotypeType;
+import htsjdk.variant.variantcontext.GenotypesContext;
 import htsjdk.variant.variantcontext.VariantContext;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -275,35 +279,16 @@ public class VcfVariant implements GenotypesProvider {
             }
         }
 
-        Object attribute = variantContext.getAttribute(DOSAGE_KEY);
+        Genotype attribute = variantContext.getGenotype(sampleId);
+        GenotypeLikelihoods likelihoods = attribute.getLikelihoods();
 
-        if (attribute == null) {
-
-            if (genotyped()) {
-
-                System.out.println("Genotyped");
-
-            }
-
-            throw new IllegalArgumentException(
-                    "Attribute for dosages (" + DOSAGE_KEY + ") not found."
-            );
-
-        }
-
-        System.out.println(attribute);
-
-        String attributeAsString = attribute.toString();
-
-        String[] split = attributeAsString.split(",");
+        EnumMap<GenotypeType, Double> dosageMap = likelihoods.getAsMap(false);
 
         float[] dosages = new float[3];
 
-        for (int i = 0; i < 3; i++) {
-
-            dosages[i] = Float.parseFloat(split[i]);
-
-        }
+        dosages[0] = dosageMap.get(GenotypeType.HOM_REF).floatValue();
+        dosages[1] = dosageMap.get(GenotypeType.HET).floatValue();
+        dosages[2] = dosageMap.get(GenotypeType.HOM_VAR).floatValue();
 
         if (useCache) {
 
