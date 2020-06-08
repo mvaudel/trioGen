@@ -40,7 +40,7 @@ public class IndexedGzWriter implements AutoCloseable {
      * (c) 1996, 2013, Oracle and/or its affiliates. No copyright infringement
      * intended.
      */
-    private CRC32 crc = new CRC32();
+    private final CRC32 crc = new CRC32();
     /**
      * The deflater used to compress data.
      */
@@ -48,7 +48,7 @@ public class IndexedGzWriter implements AutoCloseable {
     /**
      * The random access file used to write data.
      */
-    private final RandomAccessFile bw;
+    private final RandomAccessFile raf;
     /**
      * A mutex to synchronize the writing.
      */
@@ -67,7 +67,7 @@ public class IndexedGzWriter implements AutoCloseable {
             int compressionLevel
     ) throws IOException {
 
-        bw = new RandomAccessFile(file, "rw");
+        raf = new RandomAccessFile(file, "rw");
 
         writeHeader();
         crc.reset();
@@ -100,7 +100,7 @@ public class IndexedGzWriter implements AutoCloseable {
      */
     private void writeHeader() throws IOException {
 
-        bw.write(
+        raf.write(
                 new byte[]{
                     (byte) GZIP_MAGIC, // Magic number (short)
                     (byte) (GZIP_MAGIC >> 8), // Magic number (short)
@@ -112,7 +112,8 @@ public class IndexedGzWriter implements AutoCloseable {
                     0, // Modification time MTIME (int)
                     0, // Extra flags (XFLG)
                     0 // Operating system (OS)
-                });
+                }
+        );
     }
 
     /**
@@ -152,7 +153,7 @@ public class IndexedGzWriter implements AutoCloseable {
 
             if (compressedDataLength > 0) {
 
-                bw.write(output, 0, compressedDataLength);
+                raf.write(output, 0, compressedDataLength);
 
             }
 
@@ -201,7 +202,7 @@ public class IndexedGzWriter implements AutoCloseable {
 
                 if (compressedDataLength > 0) {
 
-                    bw.write(output, 0, compressedDataLength);
+                    raf.write(output, 0, compressedDataLength);
 
                 }
             }
@@ -214,8 +215,8 @@ public class IndexedGzWriter implements AutoCloseable {
             writeInt(crcValue, trailer, 0); // CRC-32 of uncompr. data
             writeInt(deflaterInput, trailer, 4); // Number of uncompr. bytes
 
-            bw.write(trailer);
-            bw.close();
+            raf.write(trailer);
+            raf.close();
 
         } catch (Exception e) {
 

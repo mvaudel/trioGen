@@ -43,7 +43,7 @@ timePoints <- c("Birth", "6 w", "3 m", "6 m", "8 m", "1 y", "1.5 y", "2 y", "3 y
 print("Loading")
 
 targets3DF <- read.table(
-    file = "docs/lm_test/lm_targets_3",
+    file = "docs/tmp/targets/lm_targets_3.gz",
     header = T,
     quote = "",
     stringsAsFactors = F
@@ -56,6 +56,8 @@ targets3DF %>%
     mutate(
         phenotype = factor(phenotype, levels = paste0("z_bmi", 0:11))
     ) -> targets3DF
+
+
 
 
 # Export p-value profiles
