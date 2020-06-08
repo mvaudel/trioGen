@@ -7,7 +7,7 @@
 
 # Paths
 vcfFolder=~/mnt/archive/MOBAGENETICS/genotypes-base/imputed/all/vcf
-trioFile=~/mnt/archive/helgeland/helgeland2020/sensitive/fulltriads-n24280-180919
+trioFile=~/mnt/work2/helgeland/helgeland2020/sensitive/290520/full-triads-sentrixids-n23706-290520
 outputFolder=~/mnt/work/marc/moba/test_TrioGen/ld
 
 # Variables
