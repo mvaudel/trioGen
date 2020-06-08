@@ -279,14 +279,26 @@ public class VcfVariant implements GenotypesProvider {
             }
         }
 
-        Genotype attribute = variantContext.getGenotype(sampleId);
-        GenotypeLikelihoods likelihoods = attribute.getLikelihoods();
+        Genotype genotype = variantContext.getGenotype(sampleId);
+        GenotypeLikelihoods likelihoods = genotype.getLikelihoods();
             
             if (genotyped()) {
                 System.out.println("Genotyped");
             }
         
         if (likelihoods == null) {
+            
+            System.out.println("AD: " + genotype.getAD());
+            System.out.println("Filters: " + genotype.getFilters());
+            System.out.println("GenotypesString: " + genotype.getGenotypeString());
+            System.out.println("LikelihoodsString: " + genotype.getLikelihoodsString());
+            System.out.println("Attribute: " + genotype.getAnyAttribute(DOSAGE_KEY));
+            System.out.println("DP: " + genotype.getDP());
+            System.out.println("ExtendedAttribute: " + genotype.getExtendedAttribute(DOSAGE_KEY));
+            System.out.println("GQ: " + genotype.getGQ());
+            System.out.println("PL: " + genotype.getPL());
+            System.out.println("Ploidy: " + genotype.getPloidy());
+            System.out.println("Type: " + genotype.getType());
             
             throw new IllegalArgumentException("No likelihood found for variant " + variantContext.getID() + " in sample " + sampleId + ".");
             
