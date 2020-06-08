@@ -19,6 +19,9 @@ import no.uib.triogen.utils.SimpleSemaphore;
  */
 public class VcfGenotypeIterator implements VariantIterator {
 
+    /**
+     * The iterator for the vcf file.
+     */
     private final CloseableIterator<VariantContext> iterator;
     /**
      * The map of trios.

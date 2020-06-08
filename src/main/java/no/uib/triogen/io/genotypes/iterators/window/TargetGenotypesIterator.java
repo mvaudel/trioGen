@@ -4,13 +4,11 @@ import htsjdk.samtools.util.CloseableIterator;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.vcf.VCFFileReader;
 import java.io.File;
-import java.util.ArrayList;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import static no.uib.triogen.io.genotypes.vcf.generic.VcfIterator.getVcfIndexFile;
 import no.uib.triogen.io.genotypes.vcf.generic.VcfVariant;
 import no.uib.triogen.model.family.ChildToParentMap;
-import no.uib.triogen.model.maf.MafEstimator;
 import no.uib.triogen.utils.SimpleSemaphore;
 import no.uib.triogen.io.genotypes.WindowGenotypesIterator;
 import no.uib.triogen.io.genotypes.iterators.VcfGenotypeIterator;
@@ -116,6 +114,7 @@ public class TargetGenotypesIterator implements WindowGenotypesIterator {
             if (vcfVariantId.equals(targetSnpId)) {
 
                 genotypesProvider = new VcfVariant(variantContext, true);
+                genotypesProvider.parse();
                 genotypesProvider.setParentP0s(childToParentMap.children, childToParentMap);
 
             }
