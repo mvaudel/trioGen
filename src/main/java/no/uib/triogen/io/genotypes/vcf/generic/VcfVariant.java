@@ -281,6 +281,18 @@ public class VcfVariant implements GenotypesProvider {
 
         Genotype attribute = variantContext.getGenotype(sampleId);
         GenotypeLikelihoods likelihoods = attribute.getLikelihoods();
+            
+            if (genotyped()) {
+                System.out.println("Genotyped");
+            }
+        
+        if (likelihoods == null) {
+            
+            throw new IllegalArgumentException("No likelihood found for variant " + variantContext.getID() + " in sample " + sampleId + ".");
+            
+        }
+            
+                System.out.println("Dosages");
 
         EnumMap<GenotypeType, Double> dosageMap = likelihoods.getAsMap(false);
 
