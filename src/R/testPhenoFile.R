@@ -209,7 +209,7 @@ idDF <- read.table(
     stringsAsFactors = F
 ) %>%
     filter(
-        !is.na(child_SentrixID) # TODO: & child_core
+        !is.na(child_SentrixID)
     ) %>%
     mutate(
         sex_number = as.numeric(factor(sex, levels = c("Boy", "Girl"))),
@@ -786,7 +786,7 @@ print(paste0(Sys.time(), "    Writing docs"))
 write(x = "# TrioGen test phenotypes\n", file = docsFile, append = F)
 write(x = paste0("Genotyped samples only, ADHD cases and ethnic outliers removed (N = ", nrow(phenoDF), ")\n\n"), file = docsFile, append = T)
 
-write(x = paste0("Phenotypes version V10_1.0.0-190506, standardization using [GAMLSS](https://www.gamlss.com/).\n\n"), file = docsFile, append = T)
+write(x = paste0("Phenotypes version V10_1.1.0-200422, standardization using [GAMLSS](https://www.gamlss.com/).\n\n"), file = docsFile, append = T)
 write(x = paste0("| Name | variable | Formula | Distribution | Normalization | n |\n"), file = docsFile, append = T)
 write(x = paste0("| --------- | ------- | ------------ | ------------- | - |\n"), file = docsFile, append = T)
 write(x = paste0("| Standardized Mother height | mother_height | `mother_height ~ fp(mother_age)` | `NO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF$z_mother_height)), " |\n"), file = docsFile, append = T)
@@ -810,7 +810,7 @@ for (ageI in 0:11) {
     write(x = paste0("| ", phenoName, " | ", variable, " | `", formula, "` per child sex | `LOGNO` | `centiles.pred` Z-scores | ", sum(!is.na(phenoDF[[variable]])), " |"), file = docsFile, append = T)
     
 }
-write(x = paste0("| Breastmilk Duration | breastmilk_duration |  |  |  | ", sum(!is.na(phenoDF$breastmilk_duration)), " |"), file = docsFile, append = T)
+write(x = paste0("| Breastmilk Duration | breastmilk_duration |  |  |  | ", sum(!is.na(phenoDF$breastmilk_duration)), " |\n"), file = docsFile, append = T)
 write(x = paste0("| Formula Frequency at 6m | formula_freq_6m |  |  |  | ", sum(!is.na(phenoDF$formula_freq_6m)), " |\n\n"), file = docsFile, append = T)
 
 
