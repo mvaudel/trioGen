@@ -129,8 +129,6 @@ public class TargetGenotypesIterator implements WindowGenotypesIterator {
     @Override
     public GenotypesProvider next() {
 
-        init();
-
         semaphore.acquire();
 
         GenotypesProvider result = genotypesProvider;

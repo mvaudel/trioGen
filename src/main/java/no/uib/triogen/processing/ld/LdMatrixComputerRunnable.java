@@ -123,8 +123,6 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                         genotypesProviderA.getBp() + maxDistance
                 );
 
-                System.out.println("Variant A: " + genotypesProviderA.getVariantID());
-
                 if (!testIteration) {
 
                     GenotypesProvider genotypesProviderB;
@@ -132,11 +130,7 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
 
                         int variantIdB = variantIndex.getIndex(genotypesProviderB.getVariantID());
 
-                        double progress = 100.0 * (genotypesProviderB.getBp() - Math.max(genotypesProviderA.getBp() - maxDistance, 0)) / (2 * maxDistance);
-
-                        System.out.println("Variant B: " + genotypesProviderB.getVariantID() + " (" + genotypesProviderB.getBp() + " / " + genotypesProviderA.getBp() + " - " + progress + "%)");
-
-                        boolean debug = genotypesProviderA.getVariantID().equals("rs287621") && genotypesProviderA.getVariantID().equals("rs10260148");
+                        boolean debug = genotypesProviderA.getVariantID().equals("rs287621") && genotypesProviderB.getVariantID().equals("rs10260148");
 
                         if (!hardCalls) {
 
@@ -198,6 +192,12 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                             double nB = genotypesProviderB.getParentP0HC();
                             double n = 2 * childToParentMap.children.length;
 
+                            if (debug) {
+                                System.out.println("n: " + n);
+                                System.out.println("nA: " + nA);
+                                System.out.println("nB: " + nB);
+                            }
+
                             if (nA < n && nA > 0 || nB < n && nB > 0) {
 
                                 boolean[] p0sA = genotypesProviderA.getParentP0sHC();
@@ -213,6 +213,10 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                                     }
                                 }
 
+                                if (debug) {
+                                    System.out.println("nAB: " + nAB);
+                                }
+
                                 if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
 
                                     double pAB = nAB / n;
@@ -222,6 +226,14 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                                     double d = pAB - (pA * pB);
 
                                     double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
+
+                                    if (debug) {
+                                        System.out.println("pAB: " + pAB);
+                                        System.out.println("pA: " + pA);
+                                        System.out.println("pB: " + pB);
+                                        System.out.println("d: " + d);
+                                        System.out.println("r2: " + r2);
+                                    }
 
                                     if (r2 > minR2) {
 
