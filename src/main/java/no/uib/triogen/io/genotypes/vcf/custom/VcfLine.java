@@ -396,14 +396,14 @@ public class VcfLine implements GenotypesProvider {
 
             String fatherId = childToParentMap.getFather(childId);
             dosages = getDosages(fatherId);
-            dosageHomRef[i] = dosages[0];
-            dosageHomAlt[i] = dosages[2];
+            dosageHomRef[i + childIds.length] = dosages[0];
+            dosageHomAlt[i + childIds.length] = dosages[2];
             sumDosageHomRef += dosages[0];
             sumDosageHomAlt += dosages[2];
             
             genotype = getGenotype(fatherId);
-            genotypeHomRef[i] = genotype == 0;
-            genotypeHomAlt[i] = genotype == 3;
+            genotypeHomRef[i + childIds.length] = genotype == 0;
+            genotypeHomAlt[i + childIds.length] = genotype == 3;
 
             if (genotype == 0) {
                 
