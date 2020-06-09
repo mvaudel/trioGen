@@ -37,6 +37,14 @@ public class VcfGenotypeIterator implements VariantIterator {
      */
     private int nVariants = 0;
     /**
+     * The coordinate of the start of the iteration.
+     */
+    private final int bpStart;
+    /**
+     * The coordinate of the end of the iteration.
+     */
+    private final int bpEnd;
+    /**
      * Boolean indicating whether the iteration is finished.
      */
     private boolean finished = false;
@@ -47,7 +55,7 @@ public class VcfGenotypeIterator implements VariantIterator {
 
     /**
      * Constructor.
-     * 
+     *
      * @param vcfFile The vcf file to iterate.
      * @param contig The contig to iterate.
      * @param bpStart The start bp.
@@ -66,6 +74,8 @@ public class VcfGenotypeIterator implements VariantIterator {
 
         this.mafThreshold = mafThreshold;
         this.childToParentMap = childToParentMap;
+        this.bpStart = bpStart;
+        this.bpEnd = bpEnd;
 
         File indexFile = getVcfIndexFile(vcfFile);
         VCFFileReader reader = new VCFFileReader(vcfFile, indexFile);
@@ -86,27 +96,36 @@ public class VcfGenotypeIterator implements VariantIterator {
 
         while ((variantContext = iterator.next()) != null) {
 
-            GenotypesProvider genotypesProvider = new VcfVariant(
-                    variantContext,
-                    false
-            );
+            if (variantContext.getEnd() > bpEnd) {
 
-            genotypesProvider.parse();
+                break;
 
-            double maf = MafEstimator.getMaf(genotypesProvider,
-                    childToParentMap
-            );
+            }
 
-            if (maf >= mafThreshold) {
+            if (variantContext.getStart() >= bpStart) {
 
-                genotypesProvider.setParentP0s(childToParentMap.children, childToParentMap);
+                GenotypesProvider genotypesProvider = new VcfVariant(
+                        variantContext,
+                        false
+                );
 
-                nVariants++;
+                genotypesProvider.parse();
 
-                semaphore.release();
+                double maf = MafEstimator.getMaf(genotypesProvider,
+                        childToParentMap
+                );
 
-                return genotypesProvider;
+                if (maf >= mafThreshold) {
 
+                    genotypesProvider.setParentP0s(childToParentMap.children, childToParentMap);
+
+                    nVariants++;
+
+                    semaphore.release();
+
+                    return genotypesProvider;
+
+                }
             }
         }
 
