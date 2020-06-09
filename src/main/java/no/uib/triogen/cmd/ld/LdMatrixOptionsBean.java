@@ -42,7 +42,7 @@ public class LdMatrixOptionsBean {
     /**
      * Boolean indicating whether hard calls should be used.
      */
-    public boolean hardCalls = true;
+    public boolean hardCalls = false;
     /**
      * File where to write the output.
      */
