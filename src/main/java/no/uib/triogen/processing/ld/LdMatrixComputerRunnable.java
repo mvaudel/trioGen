@@ -132,7 +132,7 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
 
                         int variantIdB = variantIndex.getIndex(genotypesProviderB.getVariantID());
 
-                        double progress = 100.0 * (genotypesProviderB.getBp() - Math.max(genotypesProviderA.getBp() - maxDistance, 0)) / 2 * maxDistance;
+                        double progress = 100.0 * (genotypesProviderB.getBp() - Math.max(genotypesProviderA.getBp() - maxDistance, 0)) / (2 * maxDistance);
 
                         System.out.println("Variant B: " + genotypesProviderB.getVariantID() + " (" + genotypesProviderB.getBp() + " / " + genotypesProviderA.getBp() + " - " + progress + "%)");
 
