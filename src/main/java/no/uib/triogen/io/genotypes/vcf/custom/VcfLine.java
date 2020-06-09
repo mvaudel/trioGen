@@ -416,8 +416,8 @@ public class VcfLine implements GenotypesProvider {
             }
         }
 
-        parentsDosageP0sCache = sumDosageHomRef >= sumDosageHomRef ? dosageHomRef : dosageHomAlt;
-        parentsDosageP0Cache = sumDosageHomRef >= sumDosageHomRef ? sumDosageHomRef : sumDosageHomRef;
+        parentsDosageP0sCache = sumDosageHomRef >= sumDosageHomAlt ? dosageHomRef : dosageHomAlt;
+        parentsDosageP0Cache = sumDosageHomRef >= sumDosageHomAlt ? sumDosageHomRef : sumDosageHomAlt;
         
         parentsGenotypeP0sCache = sumGenotypeHomRef >= sumGenotypeHomAlt ? genotypeHomRef : genotypeHomAlt;
         parentsGenotypeP0Cache = sumGenotypeHomRef >= sumGenotypeHomAlt ? sumGenotypeHomRef : sumGenotypeHomAlt;
