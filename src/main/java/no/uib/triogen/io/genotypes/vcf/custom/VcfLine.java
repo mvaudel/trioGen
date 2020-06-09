@@ -382,7 +382,7 @@ public class VcfLine implements GenotypesProvider {
             
             int genotype = getGenotype(motherId);
             genotypeHomRef[i] = genotype == 0;
-            genotypeHomRef[i] = genotype == 3;
+            genotypeHomAlt[i] = genotype == 3;
 
             if (genotype == 0) {
                 
@@ -403,7 +403,7 @@ public class VcfLine implements GenotypesProvider {
             
             genotype = getGenotype(fatherId);
             genotypeHomRef[i] = genotype == 0;
-            genotypeHomRef[i] = genotype == 3;
+            genotypeHomAlt[i] = genotype == 3;
 
             if (genotype == 0) {
                 

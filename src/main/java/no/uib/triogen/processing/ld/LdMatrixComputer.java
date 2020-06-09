@@ -175,10 +175,12 @@ public class LdMatrixComputer {
         }
 
         long start = Instant.now().getEpochSecond();
+        
+        String readout = hardCalls ? "genotypes" : "dosages"; 
 
         if (variantList == null) {
 
-            logger.logMessage("LD extraction (geno: " + genotypesFile.getAbsolutePath() + ") using " + nVariants + " threads.");
+            logger.logMessage("LD extraction (geno: " + genotypesFile.getAbsolutePath() + ") on " + readout + " using " + nVariants + " threads.");
 
             VariantIterator iterator = GenotypesFileType.getVariantIterator(
                     genotypesFile,
@@ -250,7 +252,7 @@ public class LdMatrixComputer {
 
             int nVariants = variantList.variantId.length;
 
-            logger.logMessage("LD extraction (geno: " + genotypesFile.getAbsolutePath() + ", " + nVariants + " target variants) using " + nVariants + " threads.");
+            logger.logMessage("LD extraction (geno: " + genotypesFile.getAbsolutePath() + ", " + nVariants + " target variants) on " + readout + " using " + nVariants + " threads.");
 
             ArrayList<LdMatrixWriter> writers = new ArrayList<>();
 
