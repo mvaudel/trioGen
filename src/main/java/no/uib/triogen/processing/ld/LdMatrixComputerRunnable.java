@@ -122,6 +122,8 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                         Math.max(genotypesProviderA.getBp() - maxDistance, 0),
                         genotypesProviderA.getBp() + maxDistance
                 );
+                
+                System.out.println("Variant A: " + genotypesProviderA.getVariantID());
 
                 if (!testIteration) {
 
@@ -129,6 +131,8 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                     while ((genotypesProviderB = iteratorB.next()) != null) {
 
                         int variantIdB = variantIndex.getIndex(genotypesProviderB.getVariantID());
+                
+                System.out.println("Variant B: " + genotypesProviderB.getVariantID() + " (" + genotypesProviderB.getBp() + " / " + (genotypesProviderA.getBp() + maxDistance) + ")");
 
                         boolean debug = genotypesProviderA.getVariantID().equals("rs287621") && genotypesProviderA.getVariantID().equals("rs10260148");
 

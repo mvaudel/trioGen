@@ -32,10 +32,29 @@ public class VcfGenotypeIterator implements VariantIterator {
      * threshold are not included (inclusive).
      */
     private final double mafThreshold;
+    /**
+     * The number of variants iterated.
+     */
     private int nVariants = 0;
+    /**
+     * Boolean indicating whether the iteration is finished.
+     */
     private boolean finished = false;
+    /**
+     * Semaphore for the next method.
+     */
     private final SimpleSemaphore semaphore = new SimpleSemaphore(1);
 
+    /**
+     * Constructor.
+     * 
+     * @param vcfFile The vcf file to iterate.
+     * @param contig The contig to iterate.
+     * @param bpStart The start bp.
+     * @param bpEnd The end bp.
+     * @param mafThreshold The maf threshold to use.
+     * @param childToParentMap The child to parent map to use.
+     */
     public VcfGenotypeIterator(
             File vcfFile,
             String contig,
