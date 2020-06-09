@@ -134,8 +134,8 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
 
                         if (!hardCalls) {
 
-                            double nA = genotypesProviderA.getParentP0();
-                            double nB = genotypesProviderB.getParentP0();
+                            double nA = genotypesProviderA.getParentsDosageP0Cache();
+                            double nB = genotypesProviderB.getParentsDosageP0Cache();
                             double n = 2 * childToParentMap.children.length;
 
                             if (debug) {
@@ -146,8 +146,8 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
 
                             if (nA > 0 && nA < n || nB > 0 && nB < n) {
 
-                                float[] p0sA = genotypesProviderA.getParentP0s();
-                                float[] p0sB = genotypesProviderB.getParentP0s();
+                                float[] p0sA = genotypesProviderA.getParentsDosageP0sCache();
+                                float[] p0sB = genotypesProviderB.getParentsDosageP0sCache();
                                 double nAB = 0.0;
 
                                 for (int i = 0; i < p0sA.length; i++) {
@@ -188,8 +188,8 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                             }
                         } else {
 
-                            double nA = genotypesProviderA.getParentP0HC();
-                            double nB = genotypesProviderB.getParentP0HC();
+                            double nA = genotypesProviderA.getParentsGenotypeP0Cache();
+                            double nB = genotypesProviderB.getParentsGenotypeP0Cache();
                             double n = 2 * childToParentMap.children.length;
 
                             if (debug) {
@@ -200,8 +200,8 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
 
                             if (nA < n && nA > 0 || nB < n && nB > 0) {
 
-                                boolean[] p0sA = genotypesProviderA.getParentP0sHC();
-                                boolean[] p0sB = genotypesProviderB.getParentP0sHC();
+                                boolean[] p0sA = genotypesProviderA.getParentsGenotypeP0sCache();
+                                boolean[] p0sB = genotypesProviderB.getParentsGenotypeP0sCache();
                                 double nAB = 0.0;
 
                                 for (int i = 0; i < p0sA.length; i++) {

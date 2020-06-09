@@ -425,28 +425,28 @@ public class VcfLine implements GenotypesProvider {
     }
 
     @Override
-    public float[] getParentP0s() {
+    public float[] getParentsDosageP0sCache() {
 
         return parentsDosageP0sCache;
 
     }
 
     @Override
-    public double getParentP0() {
+    public double getParentsDosageP0Cache() {
 
         return parentsDosageP0Cache;
 
     }
 
     @Override
-    public boolean[] getParentP0sHC() {
+    public boolean[] getParentsGenotypeP0sCache() {
         
         return parentsGenotypeP0sCache;
         
     }
 
     @Override
-    public int getParentP0HC() {
+    public int getParentsGenotypeP0Cache() {
         
         return parentsGenotypeP0Cache;
         

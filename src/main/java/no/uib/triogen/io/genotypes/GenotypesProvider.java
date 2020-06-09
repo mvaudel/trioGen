@@ -122,27 +122,27 @@ public interface GenotypesProvider {
      * 
      * @return The p0s in an array.
      */
-    public float[] getParentP0s();
+    public float[] getParentsDosageP0sCache();
     
     /**
      * Returns the sum of p0s for all parents of the given child ids.
      * 
      * @return The sum of p0s.
      */
-    public double getParentP0();
+    public double getParentsDosageP0Cache();
     
     /**
      * Returns the p0s for all parents of the given child ids. Mothers first and then fathers, in the order of the child ids.
      * 
      * @return The p0s in an array.
      */
-    public boolean[] getParentP0sHC();
+    public boolean[] getParentsGenotypeP0sCache();
     
     /**
      * Returns the sum of p0s for all parents of the given child ids.
      * 
      * @return The sum of p0s.
      */
-    public int getParentP0HC();
+    public int getParentsGenotypeP0Cache();
 
 }

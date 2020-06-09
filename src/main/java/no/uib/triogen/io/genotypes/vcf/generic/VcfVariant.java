@@ -54,19 +54,19 @@ public class VcfVariant implements GenotypesProvider {
     /**
      * Cache for individual p0s.
      */
-    private float[] parentsP0sCache = null;
+    private float[] parentsDosageP0sCache = null;
     /**
      * Cache for p0.
      */
-    private double parentsP0Cache = Double.NaN;
+    private double parentsDosageP0Cache = Double.NaN;
     /**
      * Cache for individual p0s.
      */
-    private boolean[] parentsP0sHCCache = null;
+    private boolean[] parentsGenotypeP0sCache = null;
     /**
      * Cache for p0.
      */
-    private int parentsP0HCCache = -1;
+    private int parentsGenotypeP0Cache = -1;
 
     /**
      * Constructor.
@@ -351,71 +351,95 @@ public class VcfVariant implements GenotypesProvider {
             ChildToParentMap childToParentMap
     ) {
 
-        float[] results = new float[2 * childIds.length];
-        double sum = 0.0;
-        boolean[] resultsHC = new boolean[2 * childIds.length];
-        int sumHC = 0;
+        float[] dosageHomRef = new float[2 * childIds.length];
+        float[] dosageHomAlt = new float[2 * childIds.length];
+        double sumDosageHomRef = 0.0;
+        double sumDosageHomAlt = 0.0;
+        boolean[] genotypeHomRef = new boolean[2 * childIds.length];
+        boolean[] genotypeHomAlt = new boolean[2 * childIds.length];
+        int sumGenotypeHomRef = 0;
+        int sumGenotypeHomAlt = 0;
 
         for (int i = 0; i < childIds.length; i++) {
 
             String childId = childIds[i];
 
             String motherId = childToParentMap.getMother(childId);
-            float value = getDosages(motherId)[0];
-            results[i] = value;
-            sum += value;
+            float[] dosages = getDosages(motherId);
+            dosageHomRef[i] = dosages[0];
+            dosageHomAlt[i] = dosages[2];
+            sumDosageHomRef += dosages[0];
+            sumDosageHomAlt += dosages[2];
+            
             int genotype = getGenotype(motherId);
-            resultsHC[i] = genotype == 0;
+            genotypeHomRef[i] = genotype == 0;
+            genotypeHomRef[i] = genotype == 3;
 
             if (genotype == 0) {
-                sumHC++;
+                
+                sumGenotypeHomRef++;
+            
+            } else if (genotype == 3) {
+                
+                sumGenotypeHomAlt++;
+            
             }
 
             String fatherId = childToParentMap.getFather(childId);
-            value = getDosages(fatherId)[0];
-            results[i + childIds.length] = value;
-            sum += value;
+            dosages = getDosages(fatherId);
+            dosageHomRef[i] = dosages[0];
+            dosageHomAlt[i] = dosages[2];
+            sumDosageHomRef += dosages[0];
+            sumDosageHomAlt += dosages[2];
+            
             genotype = getGenotype(fatherId);
-            resultsHC[i + childIds.length] = genotype == 0;
+            genotypeHomRef[i] = genotype == 0;
+            genotypeHomRef[i] = genotype == 3;
 
             if (genotype == 0) {
-                sumHC++;
+                
+                sumGenotypeHomRef++;
+            
+            } else if (genotype == 3) {
+                
+                sumGenotypeHomAlt++;
+            
             }
         }
 
-        parentsP0sCache = results;
-        parentsP0Cache = sum;
-
-        parentsP0sHCCache = resultsHC;
-        parentsP0HCCache = sumHC;
-
-    }
-
-    @Override
-    public float[] getParentP0s() {
-
-        return parentsP0sCache;
+        parentsDosageP0sCache = sumDosageHomRef >= sumDosageHomAlt ? dosageHomRef : dosageHomAlt;
+        parentsDosageP0Cache = sumDosageHomRef >= sumDosageHomAlt ? sumDosageHomRef : sumDosageHomAlt;
+        
+        parentsGenotypeP0sCache = sumGenotypeHomRef >= sumGenotypeHomAlt ? genotypeHomRef : genotypeHomAlt;
+        parentsGenotypeP0Cache = sumGenotypeHomRef >= sumGenotypeHomAlt ? sumGenotypeHomRef : sumGenotypeHomAlt;
 
     }
 
     @Override
-    public double getParentP0() {
+    public float[] getParentsDosageP0sCache() {
 
-        return parentsP0Cache;
-
-    }
-
-    @Override
-    public boolean[] getParentP0sHC() {
-
-        return parentsP0sHCCache;
+        return parentsDosageP0sCache;
 
     }
 
     @Override
-    public int getParentP0HC() {
+    public double getParentsDosageP0Cache() {
 
-        return parentsP0HCCache;
+        return parentsDosageP0Cache;
+
+    }
+
+    @Override
+    public boolean[] getParentsGenotypeP0sCache() {
+
+        return parentsGenotypeP0sCache;
+
+    }
+
+    @Override
+    public int getParentsGenotypeP0Cache() {
+
+        return parentsGenotypeP0Cache;
 
     }
 
