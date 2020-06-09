@@ -11,12 +11,23 @@ import no.uib.triogen.utils.SimpleSemaphore;
  */
 public class SimpleGenotypeIterator implements VariantIterator {
     
+    /**
+     * The array to iterate.
+     */
     private final GenotypesProvider[] array;
-    
+    /**
+     * The current iteration index.
+     */
     private int currentIndex = 0;
-    
+    /**
+     * Semaphore for currentIndex.
+     */
     private final SimpleSemaphore semaphore = new SimpleSemaphore(1);
-    
+    /**
+     * Constructor.
+     * 
+     * @param array The array to iterate.
+     */
     public SimpleGenotypeIterator(
             GenotypesProvider[] array
     ) {
@@ -29,6 +40,12 @@ public class SimpleGenotypeIterator implements VariantIterator {
     public GenotypesProvider next() {
         
         semaphore.acquire();
+        
+        if (currentIndex >= array.length) {
+            
+            return null;
+            
+        }
         
         GenotypesProvider result = array[currentIndex];
         
