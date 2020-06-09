@@ -96,6 +96,9 @@ public class TargetGenotypesIterator implements WindowGenotypesIterator {
 
     }
 
+    /**
+     * Sets up the iterator.
+     */
     private void init() {
 
         File indexFile = getVcfIndexFile(vcfFile);

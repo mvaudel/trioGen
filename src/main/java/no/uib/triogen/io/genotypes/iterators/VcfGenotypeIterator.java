@@ -111,7 +111,8 @@ public class VcfGenotypeIterator implements VariantIterator {
 
                 genotypesProvider.parse();
 
-                double maf = MafEstimator.getMaf(genotypesProvider,
+                double maf = MafEstimator.getMaf(
+                        genotypesProvider,
                         childToParentMap
                 );
 

@@ -41,6 +41,12 @@ public class MafEstimator {
         
         double maf = nAlt / nAlleles;
         
+        if (maf > 0.5) {
+            
+            maf = 1.0 - maf;
+            
+        }
+        
         return maf;
         
     }
