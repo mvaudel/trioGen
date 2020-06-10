@@ -50,6 +50,8 @@ public class LinearModel {
         }
 
         try {
+            
+            System.out.println(Arrays.stream(args).collect(Collectors.joining(" ")));
 
             Options lOptions = new Options();
             LinearModelOptions.createOptionsCLI(lOptions);
