@@ -84,6 +84,7 @@ public enum GenotypesFileType {
                 genotypesFile,
                 genotypesFileType,
                 null,
+                -1,
                 useCache
         );
 
@@ -107,10 +108,40 @@ public enum GenotypesFileType {
             boolean useCache
     ) {
 
+        return getVariantIterator(
+                genotypesFile,
+                genotypesFileType,
+                variantList,
+                0,
+                useCache
+        );
+    }
+
+    /**
+     * Returns a variant iterator for the given file and file type.
+     *
+     * @param genotypesFile The file containing the genotypes.
+     * @param genotypesFileType The genotypes file type.
+     * @param variantList The variants to process.
+     * @param maxDistance The maximal number of bp to allow between variants.
+     * @param useCache Boolean indicating whether the genotypes provider should
+     * cache genotype values.
+     *
+     * @return An iterator for the variants.
+     */
+    public static VariantIterator getVariantIterator(
+            File genotypesFile,
+            GenotypesFileType genotypesFileType,
+            VariantList variantList,
+            int maxDistance,
+            boolean useCache
+    ) {
+
         if (variantList != null) {
             return new VcfIteratorTargets(
                     genotypesFile,
                     variantList,
+                    maxDistance,
                     useCache
             );
 

@@ -46,6 +46,10 @@ public class LinearModelOptionsBean {
      */
     public File variantFile = null;
     /**
+     * The max distance to allow between snps for ld computation.
+     */
+    public int maxDistance = 500000;
+    /**
      * The maf threshold.
      */
     public double maf = 0.05;
@@ -140,6 +144,20 @@ public class LinearModelOptionsBean {
             if (!variantFile.exists()) {
 
                 throw new IllegalArgumentException("Variant file (" + variantFile + ") not found.");
+
+            }
+        }
+
+        // The max distance
+        if (aLine.hasOption(LinearModelOptions.maxDistance.opt)) {
+
+            String stringValue = aLine.getOptionValue(LinearModelOptions.maxDistance.opt);
+
+            maxDistance = Integer.parseInt(stringValue);
+
+            if (maxDistance <= 0) {
+
+                throw new IllegalArgumentException("Distance (" + maxDistance + ") must be a stricly positive integer.");
 
             }
         }

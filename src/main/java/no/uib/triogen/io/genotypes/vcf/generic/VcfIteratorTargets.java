@@ -25,6 +25,11 @@ public class VcfIteratorTargets implements VariantIterator {
      */
     private final VariantList variantList;
     /**
+     * Variants with a distance to a target variant lower than maxDistance will
+     * be included in the computation.
+     */
+    private final int maxDistance;
+    /**
      * The file reader.
      */
     private final VCFFileReader reader;
@@ -65,7 +70,8 @@ public class VcfIteratorTargets implements VariantIterator {
     /**
      * Constructor.
      *
-     * @param vcfFile The vcf file-
+     * @param vcfFile The vcf file.
+     * @param maxDistance The maximal number of bp to allow between variants.
      * @param variantList The ids of the variants to iterate.
      * @param useCache Boolean indicating whether the genotypes provider should
      * cache genotype values.
@@ -73,6 +79,7 @@ public class VcfIteratorTargets implements VariantIterator {
     public VcfIteratorTargets(
             File vcfFile,
             VariantList variantList,
+            int maxDistance,
             boolean useCache
     ) {
 
@@ -82,6 +89,7 @@ public class VcfIteratorTargets implements VariantIterator {
         fileName = vcfFile.getName();
         reader = new VCFFileReader(vcfFile, indexFile);
         this.variantList = variantList;
+        this.maxDistance = maxDistance;
 
     }
 
@@ -91,6 +99,14 @@ public class VcfIteratorTargets implements VariantIterator {
         mutex.acquire();
 
         if (iterator == null || !iterator.hasNext()) {
+
+            if (!iterator.hasNext()) {
+
+                System.out.println(
+                        Instant.now() + " - " + variantList.variantId[variantListIndex] + " (" + (variantListIndex + 1) + " of " + variantList.variantId.length + ")"
+                );
+
+            }
 
             variantListIndex++;
 
@@ -103,8 +119,8 @@ public class VcfIteratorTargets implements VariantIterator {
 
             iterator = reader.query(
                     variantList.chromosome[variantListIndex],
-                    variantList.start[variantListIndex],
-                    variantList.end[variantListIndex]
+                    variantList.start[variantListIndex] - maxDistance,
+                    variantList.end[variantListIndex] + maxDistance
             );
 
         }
@@ -118,18 +134,17 @@ public class VcfIteratorTargets implements VariantIterator {
 
         }
 
-        String vcfVariantId = variantContext.getID();
+        String variantId = variantContext.getID();
+        int variantBpStart = variantContext.getStart();
+        int variantBpEnd = variantContext.getEnd();
 
-        if (vcfVariantId == null || !vcfVariantId.equals(variantList.variantId[variantListIndex])) {
+        if (maxDistance == 0 && !variantId.equals(variantList.variantId[variantListIndex])
+                || variantBpStart < variantList.start[variantListIndex] - maxDistance || variantBpEnd > variantList.end[variantListIndex] + maxDistance) {
 
             mutex.release();
             return next();
 
         }
-
-        System.out.println(
-                Instant.now() + " - " + variantList.variantId[variantListIndex] + " (" + (variantListIndex + 1) + " of " + variantList.variantId.length + ")"
-        );
 
         nVariants++;
 
@@ -194,9 +209,9 @@ public class VcfIteratorTargets implements VariantIterator {
 
     @Override
     public boolean isFinished() {
-        
+
         return variantListIndex >= variantList.variantId.length;
-        
+
     }
 
 }

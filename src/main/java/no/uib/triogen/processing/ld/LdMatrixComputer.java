@@ -62,8 +62,8 @@ public class LdMatrixComputer {
      */
     private final ChildToParentMap childToParentMap;
     /**
-     * The bp distance used to compute the ld in sliding windows. A max distance
-     * of 10 bp means a sliding window of 20 bp.
+     * The maximal bp distance used to compute the ld between variants. A max distance
+     * of 10 bp means a window of 20 bp.
      */
     private final int maxDistance;
     /**

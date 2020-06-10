@@ -16,6 +16,7 @@ public enum LinearModelOptions {
     geno("g", "geno", "The genotypes file.", true, true),
     genoFormat("gf", "genoFormat", "The genotypes file format to use when iterating the entire file. " + GenotypesFileType.getCommandLineOptions() + ". Default: " + GenotypesFileType.vcf.index + ".", false, true),
     variantId("vi", "variantId", "File listing the variants to include in the analysis. Default: process all variants in the genotypes file.", false, true),
+    maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Default: 500000.", false, true),
     maf("maf", "mafThreshold", "Minor allele frequency threshold. 0.05 excludes all variants with a maf < 5% among all parents belonging to trios where a phenotype is available for the regression. Default: 0.05.", false, true),
     dosages("d", "dosages", "If present, use dosages where possible, hard calls otherwise.", false, false),
     phenoFile("p", "phenoFile", "The phenotypes file.", true, true),

@@ -115,6 +115,7 @@ public class LinearModel {
                 bean.genotypesFile,
                 bean.genotypesFileType,
                 variantList,
+                bean.maxDistance,
                 bean.maf,
                 bean.useDosages,
                 childToParentMap,

@@ -24,13 +24,13 @@ public class LdMatrixOptionsBean {
      */
     public File variantFile = null;
     /**
-     * the trio file.
+     * The max distance between the snp and the target snp.
+     */
+    public int maxDistance = 500000;
+    /**
+     * The trio file.
      */
     public final File trioFile;
-    /**
-     * the max distance.
-     */
-    public int maxDistance = 1000000;
     /**
      * The minimal ld r2 to report (inclusive).
      */

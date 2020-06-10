@@ -43,6 +43,10 @@ public class LinearModelComputer {
      */
     private final VariantList variantList;
     /**
+     * Variants with a distance to a target variant lower than maxDistance will be included in the computation.
+     */
+    private final int maxDistance;
+    /**
      * The maf threshold. maf is computed in parents and values lower than
      * threshold are not included.
      */
@@ -90,6 +94,7 @@ public class LinearModelComputer {
      * @param genotypesFile The file containing the genotypes.
      * @param genotypesFileType The type of genotypes file.
      * @param variantList The variants to process.
+     * @param maxDistance The maximal number of bp to allow between variants.
      * @param mafThreshold The maf threshold.
      * @param useDosages If true, dosages will be used when possible, hard calls
      * otherwise.
@@ -106,6 +111,7 @@ public class LinearModelComputer {
             File genotypesFile,
             GenotypesFileType genotypesFileType,
             VariantList variantList,
+            int maxDistance,
             double mafThreshold,
             boolean useDosages,
             ChildToParentMap childToParentMap,
@@ -121,6 +127,7 @@ public class LinearModelComputer {
         this.genotypesFile = genotypesFile;
         this.genotypesFileType = genotypesFileType;
         this.variantList = variantList;
+        this.maxDistance = maxDistance;
         this.mafThreshold = mafThreshold;
         this.useDosages = useDosages;
         this.childToParentMap = childToParentMap;
@@ -190,6 +197,7 @@ public class LinearModelComputer {
                 genotypesFile,
                 genotypesFileType,
                 variantList,
+                maxDistance,
                 false
         );
         IndexedGzWriter outputWriter = new IndexedGzWriter(
