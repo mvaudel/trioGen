@@ -14,7 +14,7 @@ outputFolder=/mnt/work/marc/moba/test_TrioGen/targets
 # Variables
 
 # Commands
-for chr in 7 10 9 6 5 3 2 1
+for chr in 7 # 10 9 6 5 3 2 1
 do
 
     echo "Processing targets in chromosome $chr"
