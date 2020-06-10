@@ -15,6 +15,7 @@ import no.uib.triogen.log.Logger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
+import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.utils.SimpleSemaphore;
 import org.apache.commons.math3.linear.SingularMatrixException;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
@@ -77,11 +78,16 @@ public class LinearModelRunnable implements Runnable {
      * Boolean indicating whether the runnable has been canceled.
      */
     private static boolean canceled = false;
+    /**
+     * The variants to process.
+     */
+    private final VariantList variantList;
 
     /**
      * Constructor.
      *
      * @param iterator The variants iterator.
+     * @param variantList The variants to process.
      * @param mafThreshold The maf threshold. maf is computed in parents for
      * trios where a phenotype is available and values lower than threshold are
      * not included (inclusive).
@@ -98,6 +104,7 @@ public class LinearModelRunnable implements Runnable {
      */
     public LinearModelRunnable(
             VariantIterator iterator,
+            VariantList variantList,
             double mafThreshold,
             boolean useDosages,
             ChildToParentMap childToParentMap,
@@ -110,6 +117,7 @@ public class LinearModelRunnable implements Runnable {
     ) {
 
         this.iterator = iterator;
+        this.variantList = variantList;
         this.childToParentMap = childToParentMap;
         this.models = models;
         this.mafThreshold = mafThreshold;
@@ -220,8 +228,14 @@ public class LinearModelRunnable implements Runnable {
         }
 
         double maf = ((double) nAltParent) / (4 * nValidValues);
+        
+        if (maf > 0.5) {
+            
+            maf = 1.0 - maf;
+            
+        }
 
-        if (maf > mafThreshold) {
+        if (maf >= mafThreshold || variantList != null && variantList.contains(genotypesProvider.getVariantID())) {
 
             if (!x0 || h1_0 && h1_1 && h2_0 && h2_1 && h3_0 && h3_1 && h4_0 && h4_1) {
 

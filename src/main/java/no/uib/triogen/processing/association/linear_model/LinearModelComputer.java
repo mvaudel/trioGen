@@ -268,6 +268,7 @@ public class LinearModelComputer {
                     .mapToObj(
                             i -> new LinearModelRunnable(
                                     iterator,
+                                    variantList,
                                     mafThreshold,
                                     useDosages,
                                     childToParentMap,

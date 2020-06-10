@@ -2,6 +2,9 @@ package no.uib.triogen.model.trio_genotypes;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 
@@ -28,6 +31,10 @@ public class VariantList {
      * The position were to stop looking for.
      */
     public final int[] end;
+    /**
+     * Set of the ids of the variants in the list.
+     */
+    private final HashSet<String> variantIds;
 
     /**
      * Constructor.
@@ -47,6 +54,12 @@ public class VariantList {
         this.chromosome = chromosome;
         this.start = start;
         this.end = end;
+
+        variantIds = Arrays.stream(variantId)
+                .collect(
+                        Collectors.toCollection(HashSet::new)
+                );
+        
     }
 
     /**
@@ -68,7 +81,7 @@ public class VariantList {
 
         int lineNumber = 0;
 
-        try (SimpleFileReader phenoReader = SimpleFileReader.getFileReader(variantFile)) {
+        try ( SimpleFileReader phenoReader = SimpleFileReader.getFileReader(variantFile)) {
 
             String line;
             while ((line = phenoReader.readLine()) != null
@@ -79,7 +92,7 @@ public class VariantList {
             }
 
             while ((line = phenoReader.readLine()) != null) {
-                
+
                 line = line.trim();
 
                 if (line.length() > 0) {
@@ -149,5 +162,18 @@ public class VariantList {
                         .mapToInt(a -> a)
                         .toArray()
         );
+    }
+    
+    /**
+     * Returns a boolean indicating whether the variant id is in the list.
+     * 
+     * @param variantId The id of the variant of interest.
+     * 
+     * @return A boolean indicating whether the variant id is in the list.
+     */
+    public boolean contains(String variantId) {
+        
+        return variantIds.contains(variantId);
+        
     }
 }
