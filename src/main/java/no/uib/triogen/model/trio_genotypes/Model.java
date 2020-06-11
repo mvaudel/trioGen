@@ -229,6 +229,7 @@ public enum Model {
             boolean useDosages
     ) {
         
+        fillXHardCalls(x, model, index, childId, motherId, fatherId, genotypesProvider);
 
     }
 
