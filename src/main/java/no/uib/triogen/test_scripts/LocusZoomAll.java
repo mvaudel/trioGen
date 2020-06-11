@@ -33,7 +33,8 @@ public class LocusZoomAll {
 
                 System.out.println("  " + Instant.now() + " Building locus zoom plots.");
 
-                int[] targetChr = new int[]{1, 10, 2, 3, 5, 6, 7, 9};
+//                int[] targetChr = new int[]{1, 10, 2, 3, 5, 6, 7, 9};
+                int[] targetChr = new int[]{3};
                 String[] phenos = new String[]{"z_bmi0", "z_bmi1", "z_bmi2", "z_bmi3", "z_bmi4", "z_bmi5", "z_bmi6", "z_bmi7", "z_bmi8", "z_bmi9", "z_bmi10", "z_bmi11"};
 
                 for (int chr : targetChr) {
@@ -64,16 +65,16 @@ public class LocusZoomAll {
 
                                     System.out.println("      " + Instant.now() + " Extracting data for locus zoom of " + variantId + " " + phenoName + ".");
 
-//                                    LocusZoomExtractor.writeData(
-//                                            phenoName,
-//                                            variantId,
-//                                            1000000,
-//                                            37,
-//                                            resultFile,
-//                                            ldFile,
-//                                            outputFile,
-//                                            genesFile
-//                                    );
+                                    LocusZoomExtractor.writeData(
+                                            phenoName,
+                                            variantId,
+                                            1000000,
+                                            37,
+                                            resultFile,
+                                            ldFile,
+                                            outputFile,
+                                            genesFile
+                                    );
 
                                     writer.writeLine("Rscript src/R/locusZoom.R " + outputPath + " " + genesPath + " " + variantId + " " + phenoName + " docs/lz/plots/" + variantId + "_" + phenoName + "_locusZoom ~/R");
 
