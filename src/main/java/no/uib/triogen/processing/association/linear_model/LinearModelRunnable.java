@@ -239,7 +239,7 @@ public class LinearModelRunnable implements Runnable {
 
             if (!x0 || h1_0 && h1_1 && h2_0 && h2_1 && h3_0 && h3_1 && h4_0 && h4_1) {
 
-                // Gather the input to use for the models
+                // Gather the input to use for the models, gather values for the histograms
                 double[] phenoY = new double[nValidValues];
 
                 double phenoMean = sumPhenos / nValidValues;
@@ -440,14 +440,34 @@ public class LinearModelRunnable implements Runnable {
 
                             logger.logVariant(
                                     genotypesProvider.getVariantID(),
-                                    String.join(" ", model.name(), phenoName, "Singular")
+                                    String.join(" ",
+                                            model.name(),
+                                            phenoName,
+                                            "Singularity detected",
+                                            getSingularityDebugReport(
+                                                    hNotSingluar,
+                                                    childNotSingular,
+                                                    motherNotSingular,
+                                                    fatherNotSingular
+                                            )
+                                    )
                             );
                         }
                     } else {
 
                         logger.logVariant(
                                 genotypesProvider.getVariantID(),
-                                String.join(" ", model.name(), phenoName, "Singular")
+                                String.join(" ",
+                                        model.name(),
+                                        phenoName,
+                                        "Singularity anticipated",
+                                        getSingularityDebugReport(
+                                                hNotSingluar,
+                                                childNotSingular,
+                                                motherNotSingular,
+                                                fatherNotSingular
+                                        )
+                                )
                         );
                     }
                 }
@@ -548,5 +568,58 @@ public class LinearModelRunnable implements Runnable {
                 .collect(
                         Collectors.joining(",")
                 );
+    }
+
+    /**
+     * Returns a summary of the anticipated singularities.
+     *
+     * @param hNotSingluar Boolean indicating whether h genotypes are expected
+     * yield a singularity.
+     * @param childNotSingular Boolean indicating whether child genotypes are
+     * expected yield a singularity.
+     * @param motherNotSingular Boolean indicating whether mother genotypes are
+     * expected yield a singularity.
+     * @param fatherNotSingular Boolean indicating whether father genotypes are
+     * expected yield a singularity.
+     *
+     * @return Returns a summary of the anticipated singularities.
+     */
+    private String getSingularityDebugReport(
+            boolean hNotSingluar,
+            boolean childNotSingular,
+            boolean motherNotSingular,
+            boolean fatherNotSingular
+    ) {
+
+        StringBuilder report = new StringBuilder();
+        report.append("(");
+        if (!hNotSingluar) {
+            report.append("h singular");
+        }
+        if (!childNotSingular) {
+            if (report.length() > 1) {
+                report.append(", ");
+            }
+            report.append("child singular");
+        }
+        if (!motherNotSingular) {
+            if (report.length() > 1) {
+                report.append(", ");
+            }
+            report.append("mother singular");
+        }
+        if (!fatherNotSingular) {
+            if (report.length() > 1) {
+                report.append(", ");
+            }
+            report.append("father singular");
+        }
+        if (report.length() == 1) {
+            report.append("no singularity anticipated");
+        }
+        report.append(")");
+
+        return report.toString();
+
     }
 }

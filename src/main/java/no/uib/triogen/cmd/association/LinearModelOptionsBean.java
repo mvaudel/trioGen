@@ -155,9 +155,9 @@ public class LinearModelOptionsBean {
 
             maxDistance = Integer.parseInt(stringValue);
 
-            if (maxDistance <= 0) {
+            if (maxDistance < 0) {
 
-                throw new IllegalArgumentException("Distance (" + maxDistance + ") must be a stricly positive integer.");
+                throw new IllegalArgumentException("Distance (" + maxDistance + ") must be a positive integer.");
 
             }
         }
