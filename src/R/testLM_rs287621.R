@@ -406,7 +406,6 @@ betaPlot <- ggplot(
             hjust = 1,
             vjust = 1
         ),
-        legend.title = element_blank(),
         panel.grid.minor.x = element_blank()
     )
 
