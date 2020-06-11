@@ -16,11 +16,11 @@ phenoName=breastmilk_duration,formula_freq_6m,pregnancy_duration,z_umbilical_cho
 covariates=harvest,rotterdam1,rotterdam2,normentMay16,normentMay18,ted,PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10
 
 # Commands
-for chr in 7 10 9 6 5 3 2 1
+for chr in 3 # 7 10 9 6 5 3 2 1
 do
 
     echo "Processing targets in chromosome $chr"
 
-    java -Xmx64G -cp bin/triogen-0.4.0-beta/triogen-0.4.0-beta.jar no.uib.triogen.cmd.association.LinearModel -g $vcfFolder/$chr.vcf.gz -gf 1 -vi resources/targets_chr$chr -maf 0.05 -f $trioFile -p $phenoFile -pn $phenoName -cv $covariates -o $outputFolder/$chr.lm_target.gz -nv 2 -d 1000000
+    java -Xmx64G -cp bin/triogen-0.4.0-beta/triogen-0.4.0-beta.jar no.uib.triogen.cmd.association.LinearModel -g $vcfFolder/$chr.vcf.gz -gf 1 -vi resources/targets_chr$chr -maf 0.05 -f $trioFile -p $phenoFile -pn $phenoName -cv $covariates -o $outputFolder/$chr.lm_target.gz -nv 2 -d 500000
 
 done

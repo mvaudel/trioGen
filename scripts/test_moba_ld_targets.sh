@@ -13,11 +13,11 @@ outputFolder=/mnt/work/marc/moba/test_TrioGen/ld
 # Variables
 
 # Commands
-for chr in 7 10 9 6 5 3 2 1
+for chr in 3 # 7 10 9 6 5 3 2 1
 do
 
     echo "Processing chromosome $chr"
 
-    java -Xmx100G -cp bin/triogen-0.4.0-beta/triogen-0.4.0-beta.jar no.uib.triogen.cmd.ld.LdMatrix -g $vcfFolder/$chr.vcf.gz -gf 1 -vi resources/targets_chr$chr -f $trioFile -o $outputFolder/dos_chr_$chr -nv 2 -d 2000000
+    java -Xmx100G -cp bin/triogen-0.4.0-beta/triogen-0.4.0-beta.jar no.uib.triogen.cmd.ld.LdMatrix -g $vcfFolder/$chr.vcf.gz -gf 1 -vi resources/targets_chr$chr -f $trioFile -o $outputFolder/dos_chr_$chr -nv 2 -d 500000
 
 done
