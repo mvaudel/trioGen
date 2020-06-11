@@ -24,7 +24,7 @@ public enum LinearModelOptions {
     phenoName("pn", "phenoName", "List of the names of the phenotypes to include in the analysis. Example: pheno1,pheno2.", true, true),
     covariate("cv", "covariate", "List of the names of the covariates columns in the phenotypes file. Example: pc1,pc2,pc3,pc4,pc5,pc6.", false, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not.", true, true),
-    model("m", "model", "List of the names of the models to use. Default: h,cmf_mt,cmf_ft,cmf. Available: " + Model.getCommandLineOptions() + ".", false, true),
+    model("m", "model", "List of the names of the models to use. Default: h,cmf_mt,cmf. Available: " + Model.getCommandLineOptions() + ".", false, true),
     x0("x0", "x0", "If present the association results will only be reported when multiple values of x are available for the regression.", false, false),
     out("o", "out", "The file where to write the results.", true, true),
     nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is 8.", false, true),

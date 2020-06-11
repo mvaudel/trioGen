@@ -201,7 +201,7 @@ public enum Model {
      */
     public static String[] getDefaultOption() {
 
-        return new String[]{"h", "cmf_mt", "cmf_ft", "cmf", "cm", "cm_mt", "c", "c_mt", "m", "m_mt"};
+        return new String[]{"h", "cmf_mt", "cmf"};
 
     }
 
