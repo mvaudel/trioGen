@@ -1,5 +1,6 @@
 package no.uib.triogen.processing.association.linear_model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,6 +28,10 @@ import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
  */
 public class LinearModelRunnable implements Runnable {
 
+    /**
+     * If true, matrices yielding singularities will be exported.
+     */
+    private static final boolean debugSingularities = true;
     /**
      * Boolean indicating whether regression results should only be reported
      * when more than one value of x is available.
@@ -469,6 +474,17 @@ public class LinearModelRunnable implements Runnable {
                                                     )
                                             )
                                     );
+
+                                    if (debugSingularities) {
+
+                                        writeSingularityDebugReport(
+                                                genotypesProvider.getVariantID(),
+                                                phenoName,
+                                                model.name(),
+                                                x,
+                                                phenoY
+                                        );
+                                    }
                                 }
                             } else {
 
@@ -652,5 +668,52 @@ public class LinearModelRunnable implements Runnable {
 
         return report.toString();
 
+    }
+
+    private void writeSingularityDebugReport(
+            String variantId,
+            String phenoName,
+            String modelName,
+            double[][] x,
+            double[] y
+    ) {
+
+        String debugFileName = String.join("_", variantId, phenoName, modelName, "debug_singularity_x");
+        File singularityDebugFile = new File(outputWriter.getFile().getParentFile(), debugFileName);
+
+        try ( SimpleFileWriter writer = new SimpleFileWriter(singularityDebugFile, true)) {
+
+            for (int xi = 0; xi < x.length; xi++) {
+
+                StringBuilder sb = new StringBuilder();
+
+                for (int xj = 0; xj < x[0].length; xj++) {
+
+                    if (xj > 0) {
+
+                        sb.append("\t");
+
+                    }
+
+                    sb.append(x[xi][xj]);
+
+                }
+
+                writer.writeLine(sb.toString());
+
+            }
+        }
+
+        debugFileName = String.join("_", variantId, phenoName, modelName, "debug_singularity_y");
+        singularityDebugFile = new File(outputWriter.getFile().getParentFile(), debugFileName);
+
+        try ( SimpleFileWriter writer = new SimpleFileWriter(singularityDebugFile, true)) {
+
+            for (int yi = 0; yi < y.length; yi++) {
+
+                writer.writeLine(Double.toString(y[yi]));
+
+            }
+        }
     }
 }

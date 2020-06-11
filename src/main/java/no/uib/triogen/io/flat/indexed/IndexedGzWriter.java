@@ -46,6 +46,10 @@ public class IndexedGzWriter implements AutoCloseable {
      */
     private final Deflater deflater;
     /**
+     * The file being written.
+     */
+    private final File file;
+    /**
      * The random access file used to write data.
      */
     private final RandomAccessFile raf;
@@ -66,6 +70,8 @@ public class IndexedGzWriter implements AutoCloseable {
             File file,
             int compressionLevel
     ) throws IOException {
+        
+        this.file = file;
 
         raf = new RandomAccessFile(file, "rw");
 
@@ -262,5 +268,14 @@ public class IndexedGzWriter implements AutoCloseable {
         buf[offset] = (byte) (s & 0xff);
         buf[offset + 1] = (byte) ((s >> 8) & 0xff);
 
+    }
+
+    /**
+     * Returns the file being written.
+     * 
+     * @return The file being written.
+     */
+    public File getFile() {
+        return file;
     }
 }
