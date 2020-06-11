@@ -17,11 +17,11 @@
 # args <- commandArgs(TRUE)
 
 args <- c(
-    "docs/tmp/dos_rs287621_zBMI3_locusZoomData.gz",
-    "docs/tmp/dos_rs287621_zBMI3_locusZoomGenes.gz",
+    "docs/lz/data/rs287621_z_bmi3_locusZoomData.gz",
+    "docs/lz/data/rs287621_z_bmi3_locusZoomGenes.gz",
     "rs287621",
     "zbmi_3",
-    "docs/tmp/dos_rs287621_zBMI3_locusZoom",
+    "docs/lz/plots/rs287621_z_bmi3_locusZoom",
     NULL
 )
 
@@ -177,78 +177,86 @@ getLocusZoom <- function(
         guides(
             fill = guide_legend(
                 override.aes = list(size = 8)
-                )
             )
-    
-    genesPlot <- ggplot() +
-        geom_rect(
-            data = genesPlotDF,
-            mapping = aes(
-                xmin = start,
-                xmax = end,
-                ymin = y - 0.2,
-                ymax = y + 0.2,
-                fill = biotype,
-                col = biotype
-            ),
-            alpha = 0.2
-        ) +
-        scale_x_continuous(
-            limits = c(minBp, maxBp)
-        ) +
-        scale_y_continuous(
-            breaks = 1:length(genes),
-            labels = genes,
-            limits = c(0, length(genes) + 1)
-        ) +
-        scale_color_manual(
-            name = NULL,
-            values = scico(
-                n = length(biotypes),
-                palette = "batlow",
-                direction = -1,
-                begin = 0,
-                end = 0.8
-            )
-        ) +
-        scale_fill_manual(
-            name = NULL,
-            values = scico(
-                n = length(biotypes),
-                palette = "batlow",
-                direction = -1,
-                begin = 0,
-                end = 0.8
-            )
-        ) +
-        theme(
-            axis.text.x = element_blank(),
-            panel.grid.major.x = element_blank(),
-            panel.grid.minor.x = element_blank(),
-            panel.grid.minor.y = element_blank()
         )
     
     locusZoomGrob <- ggplotGrob(locusPlot)
-    genesGrob <- ggplotGrob(genesPlot)
     
-    genesGrob <- gtable_add_cols(
-        x = genesGrob, 
-        widths = unit(1, "null"),
-        pos = 7
+    if (nrow(genesPlotDF) > 0) {
+        
+        genesPlot <- ggplot() +
+            geom_rect(
+                data = genesPlotDF,
+                mapping = aes(
+                    xmin = start,
+                    xmax = end,
+                    ymin = y - 0.2,
+                    ymax = y + 0.2,
+                    fill = biotype,
+                    col = biotype
+                ),
+                alpha = 0.2
+            ) +
+            scale_x_continuous(
+                limits = c(minBp, maxBp)
+            ) +
+            scale_y_continuous(
+                breaks = 1:length(genes),
+                labels = genes,
+                limits = c(0, length(genes) + 1)
+            ) +
+            scale_color_manual(
+                name = NULL,
+                values = scico(
+                    n = length(biotypes),
+                    palette = "batlow",
+                    direction = -1,
+                    begin = 0,
+                    end = 0.8
+                )
+            ) +
+            scale_fill_manual(
+                name = NULL,
+                values = scico(
+                    n = length(biotypes),
+                    palette = "batlow",
+                    direction = -1,
+                    begin = 0,
+                    end = 0.8
+                )
+            ) +
+            theme(
+                axis.text.x = element_blank(),
+                panel.grid.major.x = element_blank(),
+                panel.grid.minor.x = element_blank(),
+                panel.grid.minor.y = element_blank()
+            )
+        
+        genesGrob <- ggplotGrob(genesPlot)
+        
+        genesGrob <- gtable_add_cols(
+            x = genesGrob, 
+            widths = unit(1, "null"),
+            pos = 7
         )
-    
-    resultGrob <- rbind(locusZoomGrob[1:(nrow(locusZoomGrob) - 5), ], genesGrob[7, ], locusZoomGrob[(nrow(locusZoomGrob) - 4):nrow(locusZoomGrob), ])
-    
-    
-    nVariables <- length(unique(resultsPlotDF$variable))
-    nGenes <- nrow(genesPlotDF)
-    
-    relativeSize <- nGenes / (nGenes + nVariables * panelRefHeight / geneRefHeight)
-    
-    resultGrob$heights[14] <- unit(relativeSize, "null")
-    
-    return(resultGrob)
-    
+        
+        resultGrob <- rbind(locusZoomGrob[1:(nrow(locusZoomGrob) - 5), ], genesGrob[7, ], locusZoomGrob[(nrow(locusZoomGrob) - 4):nrow(locusZoomGrob), ])
+        
+        
+        nVariables <- length(unique(resultsPlotDF$variable))
+        nGenes <- nrow(genesPlotDF)
+        
+        relativeSize <- nGenes / (nGenes + nVariables * panelRefHeight / geneRefHeight)
+        
+        resultGrob$heights[14] <- unit(relativeSize, "null")
+        
+        return(resultGrob)
+        
+    } else {
+        
+        return(locusZoomGrob)
+        
+    }
 }
 
 
@@ -325,7 +333,7 @@ for (targetModel in models) {
     
     resultsPlotDF <- resultsDF %>%
         filter(
-            model == targetModel & position >= minBp & position <= maxBp & p > 0 & variantId != variant
+            model == targetModel & position >= minBp & position <= maxBp & !is.na(p) & p > 0 & variantId != variant
         ) %>%
         mutate(
             position = position / 1e6,
@@ -341,65 +349,69 @@ for (targetModel in models) {
             typed,
             ld
         )
-    targetDF <- resultsDF %>%
-        filter(
-            model == targetModel & variantId == variant
-        ) %>%
-        mutate(
-            position = position / 1e6,
-            logP = -log10(p),
-            variable = factor(variable)
+    
+    if (nrow(resultsPlotDF) > 0) {
+        
+        targetDF <- resultsDF %>%
+            filter(
+                model == targetModel & variantId == variant
+            ) %>%
+            mutate(
+                position = position / 1e6,
+                logP = -log10(p),
+                variable = factor(variable)
+            )
+        
+        
+        recombinationRatesPlotDF <- recombinationRatesDF %>%
+            filter(
+                position >= minBp & position <= maxBp
+            ) %>%
+            mutate(
+                position = position / 1e6,
+                scaledY = rate / 100 * 1.1 * max(resultsPlotDF$logP, -log10(5e-8))
+            )
+        
+        genesPlotDF <- genesDF %>%
+            filter(
+                start < maxBp & end > minBp
+            ) %>%
+            mutate(
+                start = ifelse(start < minBp, minBp, start),
+                end = ifelse(end > maxBp, maxBp, end),
+                start = start / 1e6,
+                end = end / 1e6,
+                biotype = factor(biotype)
+            ) %>%
+            arrange(
+                biotype,
+                start,
+                end
+            ) %>%
+            mutate(
+                y = row_number()
+            )
+        
+        # Make plot
+        
+        plotGrob <- getLocusZoom(
+            resultsPlotDF = resultsPlotDF, 
+            genesPlotDF = genesPlotDF,
+            recombinationRatesPlotDF = recombinationRatesPlotDF,
+            minBp = minBp / 1e6,
+            maxBp = maxBp / 1e6
         )
-    
-    
-    recombinationRatesPlotDF <- recombinationRatesDF %>%
-        filter(
-            position >= minBp & position <= maxBp
-        ) %>%
-        mutate(
-            position = position / 1e6,
-            scaledY = rate / 100 * 1.1 * max(resultsPlotDF$logP, -log10(5e-8))
+        
+        nVariables <- length(unique(resultsPlotDF$variable))
+        nGenes <- nrow(genesPlotDF)
+        
+        png(
+            filename = paste0(outputStem, ".", targetModel, ".png"),
+            height = nVariables * panelRefHeight + nGenes * geneRefHeight,
+            width = 1000
         )
-    
-    genesPlotDF <- genesDF %>%
-        filter(
-            start < maxBp & end > minBp
-        ) %>%
-        mutate(
-            start = ifelse(start < minBp, minBp, start),
-            end = ifelse(end > maxBp, maxBp, end),
-            start = start / 1e6,
-            end = end / 1e6,
-            biotype = factor(biotype)
-        ) %>%
-        arrange(
-            biotype,
-            start,
-            end
-        ) %>%
-        mutate(
-            y = row_number()
-        )
-    
-    # Make plot
-    
-    plotGrob <- getLocusZoom(
-        resultsPlotDF = resultsPlotDF, 
-        genesPlotDF = genesPlotDF,
-        recombinationRatesPlotDF = recombinationRatesPlotDF,
-        minBp = minBp / 1e6,
-        maxBp = maxBp / 1e6
-    )
-    
-    nVariables <- length(unique(resultsPlotDF$variable))
-    nGenes <- nrow(genesPlotDF)
-    
-    png(
-        filename = paste0(outputStem, ".", targetModel, ".png"),
-        height = nVariables * panelRefHeight + nGenes * geneRefHeight,
-        width = 1000
-    )
-    grid.draw(plotGrob)
-    dummy <- dev.off()
-    
+        grid.draw(plotGrob)
+        dummy <- dev.off()
+        
+    }
 }

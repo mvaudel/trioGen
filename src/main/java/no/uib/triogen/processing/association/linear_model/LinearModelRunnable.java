@@ -185,7 +185,7 @@ public class LinearModelRunnable implements Runnable {
             int nValidValues
     ) {
 
-        // Gether valid values, check maf and transmission
+        // Gather valid values, check maf and transmission
         int[] indexes = new int[nValidValues];
 
         int cpt = 0;
@@ -228,11 +228,11 @@ public class LinearModelRunnable implements Runnable {
         }
 
         double maf = ((double) nAltParent) / (4 * nValidValues);
-        
+
         if (maf > 0.5) {
-            
+
             maf = 1.0 - maf;
-            
+
         }
 
         if (maf >= mafThreshold || variantList != null && variantList.contains(genotypesProvider.getVariantID())) {
@@ -241,7 +241,7 @@ public class LinearModelRunnable implements Runnable {
 
                 // Gather the input to use for the models
                 double[] phenoY = new double[nValidValues];
-                
+
                 double phenoMean = sumPhenos / nValidValues;
                 double rss0 = 0.0;
 
@@ -276,7 +276,7 @@ public class LinearModelRunnable implements Runnable {
                     int index = indexes[i];
 
                     double y = phenotypes[index];
-                    
+
                     double distY = y - phenoMean;
                     rss0 += distY * distY;
 
@@ -285,8 +285,8 @@ public class LinearModelRunnable implements Runnable {
                     String fatherId = childToParentMap.getFather(childId);
 
                     short[] h = genotypesProvider.getH(
-                            childId, 
-                            motherId, 
+                            childId,
+                            motherId,
                             fatherId
                     );
 
@@ -358,11 +358,11 @@ public class LinearModelRunnable implements Runnable {
                         Model.fillX(
                                 x,
                                 model,
-                                i, 
-                                childId, 
-                                motherId, 
-                                fatherId, 
-                                genotypesProvider, 
+                                i,
+                                childId,
+                                motherId,
+                                fatherId,
+                                genotypesProvider,
                                 canceled
                         );
 
@@ -438,7 +438,17 @@ public class LinearModelRunnable implements Runnable {
 
                         } catch (SingularMatrixException singularMatrixException) {
 
+                            logger.logVariant(
+                                    genotypesProvider.getVariantID(),
+                                    String.join(" ", model.name(), phenoName, "Singular")
+                            );
                         }
+                    } else {
+
+                        logger.logVariant(
+                                genotypesProvider.getVariantID(),
+                                String.join(" ", model.name(), phenoName, "Singular")
+                        );
                     }
                 }
 

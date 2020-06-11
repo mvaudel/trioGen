@@ -214,7 +214,7 @@ public class RegressionResult {
                         regressionResult2.model.betaNames.length + 1,
                         nValidValues
                 );
-
+                
             }
         }
     }

@@ -23,8 +23,8 @@ public class ExtractLines {
 
         try {
 
-            File gzFile = new File("docs/tmp/chr_7.gz");
-            File outFile = new File("docs/tmp/test.txt");
+            File gzFile = new File("docs/tmp/7.lm_target.gz");
+            File outFile = new File("docs/tmp/7.lm_target");
     
             try (SimpleFileReader reader = SimpleFileReader.getFileReader(gzFile)) {
                 
