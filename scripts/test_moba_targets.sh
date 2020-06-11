@@ -21,6 +21,6 @@ do
 
     echo "Processing targets in chromosome $chr"
 
-    java -Xmx64G -cp bin/triogen-0.4.0-beta/triogen-0.4.0-beta.jar no.uib.triogen.cmd.association.LinearModel -g $vcfFolder/$chr.vcf.gz -gf 1 -vi resources/targets_chr$chr -maf 0.05 -f $trioFile -p $phenoFile -pn $phenoName -cv $covariates -o $outputFolder/$chr.lm_target.gz -nv 2 -d 10000
+    java -Xmx64G -cp bin/triogen-0.4.0-beta/triogen-0.4.0-beta.jar no.uib.triogen.cmd.association.LinearModel -g $vcfFolder/$chr.vcf.gz -gf 1 -vi resources/targets_chr$chr -maf 0.05 -f $trioFile -p $phenoFile -pn $phenoName -cv $covariates -o $outputFolder/$chr.lm_target.gz -nv 2 -d 1000000
 
 done
