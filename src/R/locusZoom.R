@@ -14,16 +14,16 @@
 
 # Command line arguments
 
-# args <- commandArgs(TRUE)
+args <- commandArgs(TRUE)
 
-args <- c(
-    "docs/lz/data/rs287621_z_bmi3_locusZoomData.gz",
-    "docs/lz/data/rs287621_z_bmi3_locusZoomGenes.gz",
-    "rs287621",
-    "zbmi_3",
-    "docs/lz/plots/rs287621_z_bmi3_locusZoom",
-    NULL
-)
+# args <- c(
+#     "docs/lz/data/rs287621_z_bmi3_locusZoomData.gz",
+#     "docs/lz/data/rs287621_z_bmi3_locusZoomGenes.gz",
+#     "rs287621",
+#     "zbmi_3",
+#     "docs/lz/plots/rs287621_z_bmi3_locusZoom",
+#     NULL
+# )
 
 resultsFile <- args[1]
 genesFile <- args[2]
@@ -34,7 +34,7 @@ outputStem <- args[5]
 
 # Libraries
 
-lib <- NULL
+lib <- args[6]
 
 library(scales, lib.loc = lib)
 library(backports, lib.loc = lib)
@@ -129,7 +129,7 @@ getLocusZoom <- function(
             ),
             shape = 18,
             col = "red3",
-            size = 4
+            size = 8
         ) +
         scale_x_continuous(
             name = paste0("Chromosome ", contig, " [Mbp]"),
@@ -145,24 +145,26 @@ getLocusZoom <- function(
             labels = yLabels
         ) +
         scale_color_manual(
-            name = expression(r^2),
+            name = paste0(targetDF$variantId[1], " [r²]"),
             values = c(scico(
                 n = 4,
                 palette = locusPalette,
                 direction = -1,
-                end = 0.9
+                begin = 0.65,
+                end = 1
             ), "grey"),
             breaks = rev(ldLevels),
             labels = rev(ldLevels),
             drop = F
         ) +
         scale_fill_manual(
-            name = expression(r^2),
+            name = paste0(targetDF$variantId[1], " [r²]"),
             values = c(scico(
                 n = 4,
                 palette = locusPalette,
                 direction = -1,
-                end = 0.9
+                begin = 0.65,
+                end = 1
             ), "grey"),
             breaks = rev(ldLevels),
             labels = rev(ldLevels),
@@ -270,7 +272,7 @@ xMargin <- 0.4
 panelRefHeight <- 300
 geneRefHeight <- 120
 
-locusPalette <- "hawaii"
+locusPalette <- "romaO"
 
 
 # Load TrioGen results and recombination rates

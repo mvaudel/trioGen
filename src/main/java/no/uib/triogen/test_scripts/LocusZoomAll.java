@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.Instant;
 import no.uib.triogen.export.LocusZoomExtractor;
 import no.uib.triogen.io.flat.SimpleFileReader;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 
 /**
  * Extracts locus zoom data.
@@ -21,60 +22,73 @@ public class LocusZoomAll {
 
         try {
 
-            long start = Instant.now().getEpochSecond();
+            File shFile = new File("scripts/test_moba_lz.sh");
 
-            System.out.println("  " + Instant.now() + " Building locus zoom plots.");
+            try ( SimpleFileWriter writer = new SimpleFileWriter(shFile, false)) {
 
-            int[] targetChr = new int[]{1, 10, 2, 3, 5, 6, 7, 9};
-            String[] phenos = new String[]{"z_bmi0", "z_bmi1", "z_bmi2", "z_bmi3", "z_bmi4", "z_bmi5", "z_bmi6", "z_bmi7", "z_bmi8", "z_bmi9", "z_bmi10", "z_bmi11"};
+                writer.writeLine("#!/usr/bin/env bash");
+                writer.newLine();
 
-            for (int chr : targetChr) {
+                long start = Instant.now().getEpochSecond();
 
-                File targetFile = new File("resources/targets_chr" + chr);
-                File resultFile = new File("docs/lm_test/target/" + chr + ".lm_target.gz");
+                System.out.println("  " + Instant.now() + " Building locus zoom plots.");
 
-                try ( SimpleFileReader reader = SimpleFileReader.getFileReader(targetFile)) {
+                int[] targetChr = new int[]{1, 10, 2, 3, 5, 6, 7, 9};
+                String[] phenos = new String[]{"z_bmi0", "z_bmi1", "z_bmi2", "z_bmi3", "z_bmi4", "z_bmi5", "z_bmi6", "z_bmi7", "z_bmi8", "z_bmi9", "z_bmi10", "z_bmi11"};
 
-                    String targetLine;
-                    while ((targetLine = reader.readLine()) != null) {
+                for (int chr : targetChr) {
 
-                        if (!targetLine.startsWith("#") && !targetLine.startsWith("id")) {
+                    File targetFile = new File("resources/targets_chr" + chr);
+                    File resultFile = new File("docs/lm_test/target/" + chr + ".lm_target.gz");
 
-                            String[] lineSplit = targetLine.split("\t");
+                    try ( SimpleFileReader reader = SimpleFileReader.getFileReader(targetFile)) {
 
-                            String variantId = lineSplit[0];
+                        String targetLine;
+                        while ((targetLine = reader.readLine()) != null) {
 
-                            File ldFile = new File("docs/ld_matrix_test/dos_chr_" + chr + "_" + variantId + ".tld");
+                            if (!targetLine.startsWith("#") && !targetLine.startsWith("id")) {
 
-                            for (String phenoName : phenos) {
+                                String[] lineSplit = targetLine.split("\t");
 
-                                File outputFile = new File("docs/lz/data/" + variantId + "_" + phenoName + "_locusZoomData.gz");
-                                File genesFile = new File("docs/lz/data/" + variantId + "_" + phenoName + "_locusZoomGenes.gz");
+                                String variantId = lineSplit[0];
 
-                                System.out.println("      " + Instant.now() + " Extracting data for locus zoom of " + variantId + " " + phenoName + ".");
+                                File ldFile = new File("docs/ld_matrix_test/dos_chr_" + chr + "_" + variantId + ".tld");
 
-                                LocusZoomExtractor.writeData(
-                                        phenoName,
-                                        variantId,
-                                        1000000,
-                                        37,
-                                        resultFile,
-                                        ldFile,
-                                        outputFile,
-                                        genesFile
-                                );
+                                for (String phenoName : phenos) {
 
+                                    String outputPath = "docs/lz/data/" + variantId + "_" + phenoName + "_locusZoomData.gz";
+                                    File outputFile = new File(outputPath);
+
+                                    String genesPath = "docs/lz/data/" + variantId + "_" + phenoName + "_locusZoomGenes.gz";
+                                    File genesFile = new File(genesPath);
+
+                                    System.out.println("      " + Instant.now() + " Extracting data for locus zoom of " + variantId + " " + phenoName + ".");
+
+//                                    LocusZoomExtractor.writeData(
+//                                            phenoName,
+//                                            variantId,
+//                                            1000000,
+//                                            37,
+//                                            resultFile,
+//                                            ldFile,
+//                                            outputFile,
+//                                            genesFile
+//                                    );
+
+                                    writer.writeLine("Rscript src/R/locusZoom.R " + outputPath + " " + genesPath + " " + variantId + " " + phenoName + " docs/lz/plots/" + variantId + "_" + phenoName + "_locusZoom ~/R");
+
+                                }
                             }
                         }
                     }
                 }
+
+                long end = Instant.now().getEpochSecond();
+                long duration = end - start;
+
+                System.out.println("  " + Instant.now() + " Building locus zoom plots completed (" + duration + " s).");
+
             }
-
-            long end = Instant.now().getEpochSecond();
-            long duration = end - start;
-
-            System.out.println("  " + Instant.now() + " Building locus zoom plots completed (" + duration + " s).");
-
         } catch (Throwable t) {
             t.printStackTrace();
         }
