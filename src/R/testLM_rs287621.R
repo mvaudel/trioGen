@@ -43,7 +43,7 @@ timePoints <- c("Birth", "6 w", "3 m", "6 m", "8 m", "1 y", "1.5 y", "2 y", "3 y
 print("Loading")
 
 targetsDF <- read.table(
-    file = "docs/lm_test/example_bmi.txt",
+    file = "docs/lm_test/target/7.lm_target.gz",
     header = T,
     quote = "",
     stringsAsFactors = F
@@ -252,10 +252,10 @@ dummy <- dev.off()
 
 targetsDF %>%
     select(
-        phenotype, cmf_mt_Bc_p, cmf_mt_Bm_p, cmf_mt_Bf_p, cmf_mt_Bmt_p
+        phenotype, cmf_mt.Bc.p, cmf_mt.Bm.p, cmf_mt.Bf.p, cmf_mt.Bmt.p
     ) %>%
     gather(
-        cmf_mt_Bc_p, cmf_mt_Bm_p, cmf_mt_Bf_p, cmf_mt_Bmt_p,
+        cmf_mt.Bc.p, cmf_mt.Bm.p, cmf_mt.Bf.p, cmf_mt.Bmt.p,
         key = "individual",
         value = "p"
     ) %>%
@@ -315,37 +315,40 @@ dummy <- dev.off()
 
 targetsDF %>%
     select(
-        phenotype, cmf_mt_Bc, cmf_mt_Bm, cmf_mt_Bf, cmf_mt_Bmt
+        phenotype, cmf_mt.Bc, cmf_mt.Bm, cmf_mt.Bf, cmf_mt.Bmt
     ) %>%
     gather(
-        cmf_mt_Bc, cmf_mt_Bm, cmf_mt_Bf, cmf_mt_Bmt,
+        cmf_mt.Bc, cmf_mt.Bm, cmf_mt.Bf, cmf_mt.Bmt,
         key = "individual",
         value = "beta"
     ) %>%
     mutate(
         individual = factor(individual)
     ) -> betaDF
-levels(betaDF$individual) <- c("Child", "Father", "Mother", "Mother T")
+levels(betaDF$individual) <- c("Child", "Mother", "Father", "Mother T")
 
 targetsDF %>%
     select(
-        phenotype, cmf_mt_Bc_se, cmf_mt_Bm_se, cmf_mt_Bf_se, cmf_mt_Bmt_se
+        phenotype, cmf_mt.Bc.se, cmf_mt.Bm.se, cmf_mt.Bf.se, cmf_mt.Bmt.se
     ) %>%
     gather(
-        cmf_mt_Bc_se, cmf_mt_Bm_se, cmf_mt_Bf_se, cmf_mt_Bmt_se,
+        cmf_mt.Bc.se, cmf_mt.Bm.se, cmf_mt.Bf.se, cmf_mt.Bmt.se,
         key = "individual",
         value = "se"
     ) %>%
     mutate(
         individual = factor(individual)
     ) -> seDF
-levels(seDF$individual) <- c("Child", "Father", "Mother", "Mother T")
+levels(seDF$individual) <- c("Child", "Mother", "Father", "Mother T")
 
 betaSeDF <- merge(betaDF, seDF, by = c("phenotype", "individual"), all = T)
 
 betaPlot <- ggplot(
     data = betaSeDF
 ) +
+    theme_bw(
+        base_size = 24
+    ) +
     geom_ribbon(
         mapping = aes(
             x = as.numeric(phenotype),
@@ -354,15 +357,6 @@ betaPlot <- ggplot(
             fill = individual
         ),
         alpha = 0.2
-    ) +
-    geom_point(
-        mapping = aes(
-            x = as.numeric(phenotype),
-            y = beta,
-            col = individual
-        ),
-        size = 2,
-        alpha = 0.8
     ) +
     geom_line(
         mapping = aes(
@@ -375,11 +369,35 @@ betaPlot <- ggplot(
         alpha = 0.5
     ) +
     scale_y_continuous(
-        name = "cmf mt\nBeta ± se"
+        name = "Beta [Z-score]"
     ) +
     scale_x_continuous(
         breaks = 1:12,
         labels = timePoints
+    ) +
+    scale_color_manual(
+        name = "rs287621",
+        values = c(
+            scico(
+                n = 3, 
+                  palette = "hawai",
+                  begin = 0.1,
+                  end = 0.8
+                ),
+            "black"
+        )
+    ) +
+    scale_fill_manual(
+        name = "rs287621",
+        values = c(
+            scico(
+                n = 3, 
+                  palette = "hawai",
+                  begin = 0.1,
+                  end = 0.8
+                ),
+            "black"
+        )
     ) +
     theme(
         axis.title.x = element_blank(),
@@ -388,10 +406,11 @@ betaPlot <- ggplot(
             hjust = 1,
             vjust = 1
         ),
-        legend.title = element_blank()
+        legend.title = element_blank(),
+        panel.grid.minor.x = element_blank()
     )
 
-png("docs/lm_test/lm_targets_7_cmf_mt_beta.png", width = 450, height = 300)
+png("docs/lm_test/poe.png", width = 900, height = 600)
 betaPlot
 dummy <- dev.off()
 
