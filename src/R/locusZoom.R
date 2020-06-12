@@ -16,14 +16,14 @@
 
 args <- commandArgs(TRUE)
 
-# args <- c(
-#     "docs/lz/data/rs287621_z_bmi3_locusZoomData.gz",
-#     "docs/lz/data/rs287621_z_bmi3_locusZoomGenes.gz",
-#     "rs287621",
-#     "zbmi_3",
-#     "docs/lz/plots/rs287621_z_bmi3_locusZoom",
-#     NULL
-# )
+args <- c(
+    "docs/lz/data/rs11708067_z_bmi0_locusZoomData.gz",
+    "docs/lz/data/rs11708067_z_bmi0_locusZoomGenes.gz",
+    "rs11708067",
+    "zbmi_0",
+    "docs/lz/plots/rs11708067_z_bmi0_locusZoom",
+    NULL
+)
 
 resultsFile <- args[1]
 genesFile <- args[2]
@@ -76,6 +76,16 @@ getLocusZoom <- function(
     maxBp
 ) {
     
+    resultsPlotDF %>%
+        arrange(
+            ld
+        ) %>%
+        mutate(
+            typed = factor(typed, levels = c(1, 0))
+        ) -> resultsPlotDF
+    
+    levels(resultsPlotDF$typed) <- c("Genotyped", "Imputed")
+    
     genes <- unique(genesPlotDF$name)
     biotypes <- levels(genesPlotDF$biotype)
     
@@ -101,25 +111,14 @@ getLocusZoom <- function(
             size = 0.3
         ) +
         geom_point(
-            data = resultsPlotDF %>%
-                filter(typed == 0),
+            data = resultsPlotDF,
             mapping = aes(
                 x = position,
                 y = logP,
-                col = ldBinned
-            ),
-            size = 4
-        ) +
-        geom_point(
-            data = resultsPlotDF %>%
-                filter(typed == 1),
-            mapping = aes(
-                x = position,
-                y = logP,
-                fill = ldBinned
+                fill = ldBinned,
+            col = typed
             ),
             shape = 21,
-            col = "black",
             size = 4
         ) +
         geom_point(
@@ -140,22 +139,14 @@ getLocusZoom <- function(
             name = "p-value [-log10]",
             limits = c(0, 1.1 * max(resultsPlotDF$logP, -log10(5e-8))),
             expand = expansion(
-                mult = 0.02
+                mult = 0.05
             ),
             breaks = yBreaks,
             labels = yLabels
         ) +
         scale_color_manual(
-            name = paste0(targetDF$variantId[1], " [r²]"),
-            values = c(scico(
-                n = 4,
-                palette = locusPalette,
-                direction = -1,
-                begin = 0.65,
-                end = 1
-            ), "grey"),
-            breaks = rev(ldLevels),
-            labels = rev(ldLevels),
+            name = NULL,
+            values = c("black", "grey"),
             drop = F
         ) +
         scale_fill_manual(
@@ -251,7 +242,7 @@ getLocusZoom <- function(
         
         relativeSize <- nGenes / (nGenes + nVariables * panelRefHeight / geneRefHeight)
         
-        resultGrob$heights[14] <- unit(relativeSize, "null")
+        # resultGrob$heights[nrow(locusZoomGrob) - 5] <- unit(relativeSize, "null")
         
         return(resultGrob)
         
@@ -270,8 +261,8 @@ theme_set(theme_bw(base_size = 24))
 ldThreshold <- 0.05
 xMargin <- 0.4
 
-panelRefHeight <- 300
-geneRefHeight <- 120
+panelRefHeight <- 100
+geneRefHeight <- 75
 
 locusPalette <- "romaO"
 
@@ -336,7 +327,7 @@ for (targetModel in models) {
     
     resultsPlotDF <- resultsDF %>%
         filter(
-            model == targetModel & position >= minBp & position <= maxBp & !is.na(p) & p > 0 & variantId != variant
+            model == targetModel & position >= minBp & position <= maxBp & !is.na(p) & p > 0 & variantId != variant & variable != "cmf_mt"
         ) %>%
         mutate(
             position = position / 1e6,
@@ -357,7 +348,7 @@ for (targetModel in models) {
         
         targetDF <- resultsDF %>%
             filter(
-                model == targetModel & variantId == variant
+                model == targetModel & variantId == variant & variable != "cmf_mt"
             ) %>%
             mutate(
                 position = position / 1e6,
@@ -411,7 +402,7 @@ for (targetModel in models) {
         png(
             filename = paste0(outputStem, ".", targetModel, ".png"),
             height = nVariables * panelRefHeight + nGenes * geneRefHeight,
-            width = 1000
+            width = 900
         )
         grid.draw(plotGrob)
         dummy <- dev.off()
