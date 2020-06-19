@@ -7,7 +7,7 @@ import java.util.zip.Deflater;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.io.ld.LdMatrixWriter;
-import no.uib.triogen.log.Logger;
+import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.trio_genotypes.VariantIndex;
 import no.uib.triogen.io.genotypes.WindowGenotypesIterator;
@@ -47,7 +47,7 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
     /**
      * The logger.
      */
-    private final Logger logger;
+    private final SimpleCliLogger logger;
     /**
      * Boolean indicating whether the runnable has been canceled.
      */
@@ -90,7 +90,7 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
             boolean hardCalls,
             VariantIndex variantIndex,
             boolean testIteration,
-            Logger logger
+            SimpleCliLogger logger
     ) {
 
         this.writer = writer;

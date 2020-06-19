@@ -14,7 +14,7 @@ import no.uib.triogen.io.genotypes.iterators.window.BufferedGenotypesIterator;
 import no.uib.triogen.io.genotypes.iterators.window.TargetGenotypesIterator;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.io.ld.LdMatrixWriter;
-import no.uib.triogen.log.Logger;
+import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.trio_genotypes.VariantIndex;
 import no.uib.triogen.model.trio_genotypes.VariantList;
@@ -94,7 +94,7 @@ public class LdMatrixComputer {
     /**
      * The logger.
      */
-    private final Logger logger;
+    private final SimpleCliLogger logger;
 
     /**
      * constructor.
@@ -130,7 +130,7 @@ public class LdMatrixComputer {
             int nVariants,
             double downstreamLoadingFactor,
             double upstreamLoadingFactor,
-            Logger logger
+            SimpleCliLogger logger
     ) {
 
         this.genotypesFile = genotypesFile;

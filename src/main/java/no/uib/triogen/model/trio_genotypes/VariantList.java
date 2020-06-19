@@ -3,6 +3,7 @@ package no.uib.triogen.model.trio_genotypes;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
@@ -34,7 +35,7 @@ public class VariantList {
     /**
      * Set of the ids of the variants in the list.
      */
-    private final HashSet<String> variantIds;
+    private final HashMap<String, Integer> variantIdsMap;
 
     /**
      * Constructor.
@@ -55,11 +56,13 @@ public class VariantList {
         this.start = start;
         this.end = end;
 
-        variantIds = Arrays.stream(variantId)
-                .collect(
-                        Collectors.toCollection(HashSet::new)
-                );
-        
+        variantIdsMap = new HashMap<>(variantId.length);
+
+        for (int i = 0; i < variantId.length; i++) {
+
+            variantIdsMap.put(variantId[i], i);
+
+        }
     }
 
     /**
@@ -163,17 +166,34 @@ public class VariantList {
                         .toArray()
         );
     }
-    
+
     /**
      * Returns a boolean indicating whether the variant id is in the list.
-     * 
+     *
      * @param variantId The id of the variant of interest.
-     * 
+     *
      * @return A boolean indicating whether the variant id is in the list.
      */
-    public boolean contains(String variantId) {
-        
-        return variantIds.contains(variantId);
-        
+    public boolean contains(
+            String variantId
+    ) {
+
+        return variantIdsMap.containsKey(variantId);
+
+    }
+
+    /**
+     * Returns the index of the given variant id in the list.
+     *
+     * @param variantId The id of the variant of interest.
+     *
+     * @return The index of the given variant id, null if not found.
+     */
+    public Integer getIndex(
+            String variantId
+    ) {
+
+        return variantIdsMap.get(variantId);
+
     }
 }

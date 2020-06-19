@@ -1,5 +1,6 @@
 package no.uib.triogen.cmd.locus;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import no.uib.triogen.TrioGen;
@@ -9,9 +10,11 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.log.SimpleCliLogger;
+import no.uib.triogen.model.trio_genotypes.VariantList;
 
 /**
- * Computes LD between variants and saves the results in a matrix.
+ * Extracts association data and ld for a locus of interest.
  *
  * @author Marc Vaudel
  */
@@ -72,18 +75,22 @@ public class LocusZoom {
     private static void run(
             LocusZoomOptionsBean bean
     ) throws IOException {
+        
+        SimpleCliLogger logger = new SimpleCliLogger(new File(bean.outputFileStem + ".log"));
+
+        VariantList variantList = VariantList.getVariantList(bean.variantFile);
 
         LocusZoomExtractor.writeData(
                 bean.targetPhenotype,
-                bean.targetVariant,
+                variantList,
                 bean.maxDistance,
                 bean.buildNumber,
                 bean.resultsFile,
                 bean.ldMatrixFile,
-                bean.outputFile,
-                bean.geneCoordinatesFile
+                bean.outputFileStem,
+                bean.geneCoordinatesFileStem,
+                logger
         );
-
     }
 
     /**

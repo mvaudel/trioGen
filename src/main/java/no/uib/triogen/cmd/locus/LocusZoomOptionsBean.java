@@ -1,8 +1,6 @@
 package no.uib.triogen.cmd.locus;
 
-import no.uib.triogen.cmd.ld.*;
 import java.io.File;
-import no.uib.triogen.io.genotypes.GenotypesFileType;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -15,11 +13,11 @@ public class LocusZoomOptionsBean {
     /**
      * The phenotype of interest.
      */
-    public final String targetPhenotype;
+    public String targetPhenotype = null;
     /**
-     * The id of the variant of interest.
+     * The file listing the variants to process.
      */
-    public final String targetVariant;
+    public File variantFile = null;
     /**
      * The maximum distance from the variant in bp.
      */
@@ -37,13 +35,13 @@ public class LocusZoomOptionsBean {
      */
     public final File resultsFile;
     /**
-     * The output file.
+     * Stem for the output file.
      */
-    public final File outputFile;
+    public final String outputFileStem;
     /**
-     * The gene coordinates file.
+     * Stem for the gene coordinates file.
      */
-    public File geneCoordinatesFile = null;
+    public String geneCoordinatesFileStem = null;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -66,10 +64,25 @@ public class LocusZoomOptionsBean {
         }
 
         // The phenotype
-        targetPhenotype = aLine.getOptionValue(LocusZoomOptions.phenoName.opt);
+        if (aLine.hasOption(LocusZoomOptions.phenoName.opt)) {
 
-        // The variant id
-        targetVariant = aLine.getOptionValue(LocusZoomOptions.variantId.opt);
+            targetPhenotype = aLine.getOptionValue(LocusZoomOptions.phenoName.opt);
+
+        }
+
+        // The variant ids
+        if (aLine.hasOption(LocusZoomOptions.variantId.opt)) {
+
+            String filePath = aLine.getOptionValue(LocusZoomOptions.variantId.opt);
+
+            variantFile = new File(filePath);
+
+            if (!variantFile.exists()) {
+
+                throw new IllegalArgumentException("Variant file (" + variantFile + ") not found.");
+
+            }
+        }
 
         // The max distance
         if (aLine.hasOption(LocusZoomOptions.maxDistance.opt)) {
@@ -122,28 +135,13 @@ public class LocusZoomOptionsBean {
         }
 
         // The output file
-        filePath = aLine.getOptionValue(LocusZoomOptions.out.opt);
-
-        outputFile = new File(filePath);
-
-        if (!outputFile.getParentFile().exists()) {
-
-            throw new IllegalArgumentException("Output folder (" + outputFile.getParentFile() + ") not found.");
-
-        }
+        outputFileStem = aLine.getOptionValue(LocusZoomOptions.out.opt);
 
         // The gene coordinates file
         if (aLine.hasOption(LocusZoomOptions.geneCoordinates.opt)) {
 
-            filePath = aLine.getOptionValue(LocusZoomOptions.geneCoordinates.opt);
-
-            geneCoordinatesFile = new File(filePath);
-
-            if (!geneCoordinatesFile.getParentFile().exists()) {
-
-                throw new IllegalArgumentException("Gene coordinates folder (" + geneCoordinatesFile.getParentFile() + ") not found.");
-
-            }
+            geneCoordinatesFileStem = aLine.getOptionValue(LocusZoomOptions.geneCoordinates.opt);
+            
         }
     }
 }

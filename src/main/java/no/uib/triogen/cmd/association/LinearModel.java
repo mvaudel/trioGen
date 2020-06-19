@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
-import no.uib.triogen.log.Logger;
+import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.trio_genotypes.VariantList;
@@ -104,7 +104,7 @@ public class LinearModel {
         File logFile = new File(resultStem + ".log.gz");
         File variantLogFile = bean.variantLog ? new File(resultStem + ".variantLog.gz") : null;
 
-        Logger logger = new Logger(logFile, variantLogFile);
+        SimpleCliLogger logger = new SimpleCliLogger(logFile, variantLogFile);
         logger.writeComment("Software", "TrioGen");
         logger.writeComment("Version", TrioGen.getVersion());
         logger.writeComment("Command", "LinearModel");

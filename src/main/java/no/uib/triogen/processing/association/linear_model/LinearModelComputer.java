@@ -16,7 +16,7 @@ import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.VariantIterator;
-import no.uib.triogen.log.Logger;
+import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.trio_genotypes.VariantList;
@@ -86,7 +86,7 @@ public class LinearModelComputer {
     /**
      * The logger.
      */
-    private final Logger logger;
+    private final SimpleCliLogger logger;
 
     /**
      * Constructor.
@@ -121,7 +121,7 @@ public class LinearModelComputer {
             Model[] models,
             File destinationFile,
             int nVariants,
-            Logger logger
+            SimpleCliLogger logger
     ) {
 
         this.genotypesFile = genotypesFile;

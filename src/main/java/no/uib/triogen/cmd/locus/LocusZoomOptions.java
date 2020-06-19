@@ -11,12 +11,12 @@ import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
  */
 public enum LocusZoomOptions {
 
-    phenoName("pn", "phenoName", "The name of the phenotype to export the locus zoom data on. Example: pheno1.", true, true),
-    variantId("vi", "variantId", "The id of the variant to export the locus zoom data on. Example: rs123.", true, true),
-    maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Should be below the distance used to create the ld matrix and, if gene mapping is conducted, below 2.5e6. Default: 1000000.", false, true),
-    buildNumber("b", "buildNumber", "The number of the build to use if gene mapping is conducted. e.g. 38 for GRCh38. Default: 38.", false, true),
     ldMatrix("ld", "ldMatrix", "The file containing the ldMatrix. 'tld' file generated using the 'ldMatrix' command.", true, true),
     results("res", "results", "The linear association results file.", true, true),
+    variantId("vi", "variantId", "File listing the variants to include in the analysis.", true, true),
+    phenoName("pn", "phenoName", "The name of the phenotype to export the locus zoom data on. Example: pheno1. Default: all phenotypes found for the given variants.", false, true),
+    maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Should be below the distance used to create the ld matrix and, if gene mapping is conducted, below 2.5e6. Default: 1000000.", false, true),
+    buildNumber("b", "buildNumber", "The number of the build to use if gene mapping is conducted. e.g. 38 for GRCh38. Default: 38.", false, true),
     out("o", "out", "The file where to write the data needed to build a locus zoom plot.", true, true),
     geneCoordinates("g", "geneCoordinates", "The file where to write the gene coordinates. If none provided gene mapping will be skipped.", false, true);
 

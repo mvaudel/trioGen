@@ -10,7 +10,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
-import no.uib.triogen.log.Logger;
+import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.processing.ld.LdMatrixComputer;
 
@@ -85,7 +85,7 @@ public class LdMatrix {
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
 
         File logFile = new File(bean.destinationFilePath + ".log.gz");
-        Logger logger = new Logger(logFile, null);
+        SimpleCliLogger logger = new SimpleCliLogger(logFile, null);
         logger.writeComment("Software", "TrioGen");
         logger.writeComment("Version", TrioGen.getVersion());
         logger.writeComment("Command", "LinearModel");
