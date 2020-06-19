@@ -9,6 +9,7 @@ import no.uib.triogen.io.genotypes.VariantIterator;
 import static no.uib.triogen.io.genotypes.vcf.generic.VcfIterator.getVcfIndexFile;
 import no.uib.triogen.io.genotypes.vcf.generic.VcfVariant;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.genome.ChromosomeUtils;
 import no.uib.triogen.model.maf.MafEstimator;
 import no.uib.triogen.utils.SimpleSemaphore;
 
@@ -77,12 +78,15 @@ public class VcfGenotypeIterator implements VariantIterator {
         this.bpStart = bpStart;
         this.bpEnd = bpEnd;
 
+        int windowStart = Math.max(bpStart, 1);
+        int windowend = Math.min(bpEnd, ChromosomeUtils.chromosomeLength37.get(contig));
+
         File indexFile = getVcfIndexFile(vcfFile);
         VCFFileReader reader = new VCFFileReader(vcfFile, indexFile);
         iterator = reader.query(
                 contig,
-                bpStart,
-                bpEnd
+                windowStart,
+                windowend
         );
 
     }

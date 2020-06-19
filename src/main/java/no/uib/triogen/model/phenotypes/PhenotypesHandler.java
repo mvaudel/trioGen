@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
@@ -55,6 +54,8 @@ public class PhenotypesHandler {
             String[] phenoNames,
             String[] covariates
     ) {
+        
+        sanityCheck(phenoNames, covariates);
 
         phenoMap = new HashMap<>(phenoNames.length);
         nValidValuesMap = new HashMap<>(phenoNames.length);
@@ -91,7 +92,7 @@ public class PhenotypesHandler {
         boolean found = false;
         int lineNumber = 1;
 
-        try (SimpleFileReader phenoReader = SimpleFileReader.getFileReader(phenoFile)) {
+        try ( SimpleFileReader phenoReader = SimpleFileReader.getFileReader(phenoFile)) {
 
             String line = phenoReader.readLine();
 
@@ -321,6 +322,37 @@ public class PhenotypesHandler {
 
                 }
             }
+        }
+    }
+
+    /**
+     * Checks whether the pheno and covariate names overlap.
+     * 
+     * @param phenoNames The names of the phenotypes.
+     * @param covariates The names of the covariates.
+     */
+    private static void sanityCheck(
+            String[] phenoNames,
+            String[] covariates
+    ) {
+
+        HashSet<String> covariatesSet = Arrays.stream(covariates)
+                .collect(
+                        Collectors.toCollection(HashSet::new)
+                );
+
+        String[] errors = Arrays.stream(phenoNames)
+                .filter(
+                        phenoName -> covariatesSet.contains(phenoName)
+                )
+                .toArray(String[]::new);
+
+        if (errors.length > 0) {
+
+            System.out.println(
+                    "Warning: covariates found in list of phenotypes (" + String.join(", ", errors) + ")."
+            );
+
         }
     }
 }

@@ -6,6 +6,7 @@ import htsjdk.variant.vcf.VCFFileReader;
 import java.io.File;
 import java.time.Instant;
 import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.model.genome.ChromosomeUtils;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.utils.SimpleSemaphore;
 
@@ -116,11 +117,14 @@ public class VcfIteratorTargets implements VariantIterator {
                 return null;
 
             }
+            
+            int windowStart = Math.max(variantList.start[variantListIndex] - maxDistance, 1);
+            int windowend = Math.min(variantList.start[variantListIndex] - maxDistance, ChromosomeUtils.chromosomeLength37.get(variantList.chromosome[variantListIndex]));
 
             iterator = reader.query(
                     variantList.chromosome[variantListIndex],
-                    variantList.start[variantListIndex] - maxDistance,
-                    variantList.end[variantListIndex] + maxDistance
+                    windowStart,
+                    windowend
             );
 
         }

@@ -12,6 +12,7 @@ import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.utils.SimpleSemaphore;
 import no.uib.triogen.io.genotypes.WindowGenotypesIterator;
 import no.uib.triogen.io.genotypes.iterators.VcfGenotypeIterator;
+import no.uib.triogen.model.genome.ChromosomeUtils;
 
 /**
  * Iterator for a single SNP and the SNPs around in a given BP window.
@@ -101,11 +102,14 @@ public class TargetGenotypesIterator implements WindowGenotypesIterator {
      */
     private void init() {
 
+        int windowStart = Math.max(targetSnpBpStart, 1);
+        int windowend = Math.min(targetSnpBpEnd, ChromosomeUtils.chromosomeLength37.get(targetSnpContig));
+
         File indexFile = getVcfIndexFile(vcfFile);
         VCFFileReader reader = new VCFFileReader(vcfFile, indexFile);
         CloseableIterator<VariantContext> iterator = reader.query(targetSnpContig,
-                targetSnpBpStart,
-                targetSnpBpEnd
+                windowStart,
+                windowend
         );
 
         VariantContext variantContext;
