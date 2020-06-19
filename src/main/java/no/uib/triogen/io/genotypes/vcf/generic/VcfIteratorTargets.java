@@ -118,7 +118,7 @@ public class VcfIteratorTargets implements VariantIterator {
 
             }
 
-            int windowStart = Math.max(variantList.start[variantListIndex] - maxDistance, 1);
+            int windowStart = Math.max(variantList.start[variantListIndex] + maxDistance, 1);
 
             int targetBpEnd = variantList.start[variantListIndex] - maxDistance;
             Integer chrLength = ChromosomeUtils.chromosomeLength37.get(variantList.chromosome[variantListIndex]);
