@@ -103,13 +103,16 @@ public class TargetGenotypesIterator implements WindowGenotypesIterator {
     private void init() {
 
         int windowStart = Math.max(targetSnpBpStart, 1);
-        int windowend = Math.min(targetSnpBpEnd, ChromosomeUtils.chromosomeLength37.get(targetSnpContig));
+        
+        Integer chrLength = ChromosomeUtils.chromosomeLength37.get(targetSnpContig);
+        
+        int windowEnd = chrLength != null && chrLength < targetSnpBpEnd ? chrLength : targetSnpBpEnd;
 
         File indexFile = getVcfIndexFile(vcfFile);
         VCFFileReader reader = new VCFFileReader(vcfFile, indexFile);
         CloseableIterator<VariantContext> iterator = reader.query(targetSnpContig,
                 windowStart,
-                windowend
+                windowEnd
         );
 
         VariantContext variantContext;

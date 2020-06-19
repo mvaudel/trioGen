@@ -79,14 +79,17 @@ public class VcfGenotypeIterator implements VariantIterator {
         this.bpEnd = bpEnd;
 
         int windowStart = Math.max(bpStart, 1);
-        int windowend = Math.min(bpEnd, ChromosomeUtils.chromosomeLength37.get(contig));
+        
+        Integer chrLength = ChromosomeUtils.chromosomeLength37.get(contig);
+        
+        int windowEnd = chrLength != null && chrLength < bpEnd ? chrLength : bpEnd;
 
         File indexFile = getVcfIndexFile(vcfFile);
         VCFFileReader reader = new VCFFileReader(vcfFile, indexFile);
         iterator = reader.query(
                 contig,
                 windowStart,
-                windowend
+                windowEnd
         );
 
     }
