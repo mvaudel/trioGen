@@ -18,7 +18,8 @@ public enum LocusZoomOptions {
     maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Should be below the distance used to create the ld matrix and, if gene mapping is conducted, below 2.5e6. Default: 1000000.", false, true),
     buildNumber("b", "buildNumber", "The number of the build to use if gene mapping is conducted. e.g. 38 for GRCh38. Default: 38.", false, true),
     out("o", "out", "The file where to write the data needed to build a locus zoom plot.", true, true),
-    geneCoordinates("g", "geneCoordinates", "The file where to write the gene coordinates. If none provided gene mapping will be skipped.", false, true);
+    geneCoordinates("g", "geneCoordinates", "The file where to write the gene coordinates. If none provided gene mapping will be skipped.", false, true),
+    log("log", "log", "The file where to write the log. Default: next to the output.", false, true);
 
     /**
      * The short option.

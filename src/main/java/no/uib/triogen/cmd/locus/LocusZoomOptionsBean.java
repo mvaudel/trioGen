@@ -42,6 +42,10 @@ public class LocusZoomOptionsBean {
      * Stem for the gene coordinates file.
      */
     public String geneCoordinatesFileStem = null;
+    /**
+     * Path for the file where to write the log.
+     */
+    public String logFilePath = null;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -141,6 +145,13 @@ public class LocusZoomOptionsBean {
         if (aLine.hasOption(LocusZoomOptions.geneCoordinates.opt)) {
 
             geneCoordinatesFileStem = aLine.getOptionValue(LocusZoomOptions.geneCoordinates.opt);
+            
+        }
+
+        // The log file
+        if (aLine.hasOption(LocusZoomOptions.log.opt)) {
+
+            logFilePath = aLine.getOptionValue(LocusZoomOptions.log.opt);
             
         }
     }

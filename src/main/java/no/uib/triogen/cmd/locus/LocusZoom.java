@@ -76,7 +76,9 @@ public class LocusZoom {
             LocusZoomOptionsBean bean
     ) throws IOException {
         
-        SimpleCliLogger logger = new SimpleCliLogger(new File(bean.outputFileStem + ".log"));
+        File logFile = bean.logFilePath == null ? new File(bean.outputFileStem + ".log") : new File(bean.logFilePath);
+        
+        SimpleCliLogger logger = new SimpleCliLogger(logFile);
 
         VariantList variantList = VariantList.getVariantList(bean.variantFile);
 
