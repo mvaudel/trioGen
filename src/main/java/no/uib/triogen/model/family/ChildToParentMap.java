@@ -3,6 +3,7 @@ package no.uib.triogen.model.family;
 import java.io.File;
 import java.util.HashMap;
 import java.util.TreeSet;
+import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 
 /**
@@ -65,20 +66,20 @@ public class ChildToParentMap {
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(trioFile)) {
 
             String line = reader.readLine();
-            String[] lineSplit = line.split(" ");
+            String[] lineSplit = line.split(IoUtils.SEPARATOR);
 
             int lineNumber = 1;
 
             if (lineSplit.length != 3) {
 
                 throw new IllegalArgumentException("3 elements expected, " + lineSplit.length + " found in line " + lineNumber + " of file " + trioFile + ".\n"
-                        + "Plase make sure that the file contains the identifiers of the children, father, and mother, in that order. Columns should be space-separated.\n" + line);
+                        + "Plase make sure that the file contains the identifiers of the children, father, and mother, in that order. Columns should be tab-separated.\n" + line);
 
             }
 
             while ((line = reader.readLine()) != null) {
 
-                lineSplit = line.split(" ");
+                lineSplit = line.split(IoUtils.SEPARATOR);
 
                 if (lineSplit.length != 3) {
 
