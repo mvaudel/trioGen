@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -167,7 +168,7 @@ public class MemoryMappedFile implements AutoCloseable {
 
             bufferSemaphore.acquire();
 
-            mappedByteBuffer.position(indexInBuffer);
+            ((Buffer) mappedByteBuffer).position(indexInBuffer);
 
         }
 
@@ -379,7 +380,7 @@ public class MemoryMappedFile implements AutoCloseable {
             bufferSemaphore = bufferSemaphores[blockIndex];
 
             bufferSemaphore.acquire();
-            mappedByteBuffer.position(0);
+            ((Buffer) mappedByteBuffer).position(0);
 
         }
 
