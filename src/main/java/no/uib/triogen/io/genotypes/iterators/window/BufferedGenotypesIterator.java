@@ -96,6 +96,11 @@ public class BufferedGenotypesIterator implements WindowGenotypesIterator {
      * Placeholder for a batch of genotypes providers.
      */
     private final ArrayList<GenotypesProvider> batch;
+    /**
+     * If true, the P0s caches will be filled upon loading and the genotypes
+     * provider trimmed.
+     */
+    private final boolean computeP0;
 
     /**
      * Constructor.
@@ -112,6 +117,8 @@ public class BufferedGenotypesIterator implements WindowGenotypesIterator {
      * @param downstreamLoadingFactor The loading factor to use when trimming
      * the buffer.
      * @param upstreamLoadingFactor The loading factor to use when buffering.
+     * @param computeP0 If true, the P0s caches will be filled upon loading and
+     * the genotypes provider trimmed.
      */
     public BufferedGenotypesIterator(
             VariantIterator iterator,
@@ -121,7 +128,8 @@ public class BufferedGenotypesIterator implements WindowGenotypesIterator {
             double mafThreshold,
             int nVariants,
             double downstreamLoadingFactor,
-            double upstreamLoadingFactor
+            double upstreamLoadingFactor,
+            boolean computeP0
     ) {
 
         this.iterator = iterator;
@@ -133,6 +141,7 @@ public class BufferedGenotypesIterator implements WindowGenotypesIterator {
         this.batch = new ArrayList<>(nVariants);
         this.downstreamLoadingFactor = downstreamLoadingFactor;
         this.upstreamLoadingFactor = upstreamLoadingFactor;
+        this.computeP0 = computeP0;
 
         init();
 
@@ -207,7 +216,7 @@ public class BufferedGenotypesIterator implements WindowGenotypesIterator {
             );
 
             if (maf >= mafThreshold) {
-                
+
                 genotypesProvider.setParentP0s(childToParentMap.children, childToParentMap);
 
                 add(genotypesProvider);
@@ -293,11 +302,19 @@ public class BufferedGenotypesIterator implements WindowGenotypesIterator {
                                     )
                                     .forEach(
                                             genotypesProvider -> {
-                                                genotypesProvider.setParentP0s(
-                                                        childToParentMap.children,
-                                                        childToParentMap
-                                                );
+
+                                                if (computeP0) {
+
+                                                    genotypesProvider.setParentP0s(
+                                                            childToParentMap.children,
+                                                            childToParentMap
+                                                    );
+                                                    genotypesProvider.trim();
+
+                                                }
+                                                
                                                 add(genotypesProvider);
+                                            
                                             }
                                     );
 
@@ -307,7 +324,6 @@ public class BufferedGenotypesIterator implements WindowGenotypesIterator {
                     }
 
                     // System.out.println("    " + Instant.now() + " - " + bp + " (" + currentMinBp.get(contig) + " - " + currentMaxBp.get(contig) + ", " + buffer.get(contig).size() + " variants in window)");
-
                 }
 
                 bufferSemaphore.release();
@@ -451,9 +467,9 @@ public class BufferedGenotypesIterator implements WindowGenotypesIterator {
                 .toArray(
                         GenotypesProvider[]::new
                 );
-        
+
         return new SimpleGenotypeIterator(genotypes);
-        
+
     }
 
     /**
@@ -505,7 +521,6 @@ public class BufferedGenotypesIterator implements WindowGenotypesIterator {
         }
     }
 
-    
     @Override
     public void releaseMinBp(
             String contig,

@@ -196,7 +196,8 @@ public class LdMatrixComputer {
                     mafThreshold,
                     nVariants,
                     downstreamLoadingFactor,
-                    upstreamLoadingFactor
+                    upstreamLoadingFactor,
+                    true
             );
 
             File destinationFile = new File(destinationStem + ".tld");

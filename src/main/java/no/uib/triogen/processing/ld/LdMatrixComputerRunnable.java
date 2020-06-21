@@ -130,19 +130,11 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
 
                         int variantIdB = variantIndex.getIndex(genotypesProviderB.getVariantID());
 
-                        boolean debug = genotypesProviderA.getVariantID().equals("rs287621") && genotypesProviderB.getVariantID().equals("rs10260148");
-
                         if (!hardCalls) {
 
                             double nA = genotypesProviderA.getParentsDosageP0Cache();
                             double nB = genotypesProviderB.getParentsDosageP0Cache();
                             double n = 2 * childToParentMap.children.length;
-
-                            if (debug) {
-                                System.out.println("n: " + n);
-                                System.out.println("nA: " + nA);
-                                System.out.println("nB: " + nB);
-                            }
 
                             if (nA > 0 && nA < n || nB > 0 && nB < n) {
 
@@ -156,10 +148,6 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
 
                                 }
 
-                                if (debug) {
-                                    System.out.println("nAB: " + nAB);
-                                }
-
                                 if (nAB * n != nA * nB) {
 
                                     double pAB = nAB / n;
@@ -169,14 +157,6 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                                     double d = pAB - (pA * pB);
 
                                     double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
-
-                                    if (debug) {
-                                        System.out.println("pAB: " + pAB);
-                                        System.out.println("pA: " + pA);
-                                        System.out.println("pB: " + pB);
-                                        System.out.println("d: " + d);
-                                        System.out.println("r2: " + r2);
-                                    }
 
                                     if (r2 > minR2) {
 
@@ -191,12 +171,6 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                             double nA = genotypesProviderA.getParentsGenotypeP0Cache();
                             double nB = genotypesProviderB.getParentsGenotypeP0Cache();
                             double n = 2 * childToParentMap.children.length;
-
-                            if (debug) {
-                                System.out.println("n: " + n);
-                                System.out.println("nA: " + nA);
-                                System.out.println("nB: " + nB);
-                            }
 
                             if (nA < n && nA > 0 || nB < n && nB > 0) {
 
@@ -213,10 +187,6 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                                     }
                                 }
 
-                                if (debug) {
-                                    System.out.println("nAB: " + nAB);
-                                }
-
                                 if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
 
                                     double pAB = nAB / n;
@@ -226,14 +196,6 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
                                     double d = pAB - (pA * pB);
 
                                     double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
-
-                                    if (debug) {
-                                        System.out.println("pAB: " + pAB);
-                                        System.out.println("pA: " + pA);
-                                        System.out.println("pB: " + pB);
-                                        System.out.println("d: " + d);
-                                        System.out.println("r2: " + r2);
-                                    }
 
                                     if (r2 > minR2) {
 

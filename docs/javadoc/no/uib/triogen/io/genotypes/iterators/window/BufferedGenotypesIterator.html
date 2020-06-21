@@ -129,14 +129,15 @@ implements <a href="../../WindowGenotypesIterator.html" title="interface in no.u
 </thead>
 <tbody>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(no.uib.triogen.io.genotypes.VariantIterator,no.uib.triogen.model.family.ChildToParentMap,int,int,double,int,double,double)">BufferedGenotypesIterator</a></span>&#8203;(<a href="../../VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a>&nbsp;iterator,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(no.uib.triogen.io.genotypes.VariantIterator,no.uib.triogen.model.family.ChildToParentMap,int,int,double,int,double,double,boolean)">BufferedGenotypesIterator</a></span>&#8203;(<a href="../../VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a>&nbsp;iterator,
 <a href="../../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
 int&nbsp;upStreamDistance,
 int&nbsp;downStreamDistance,
 double&nbsp;mafThreshold,
 int&nbsp;nVariants,
 double&nbsp;downstreamLoadingFactor,
-double&nbsp;upstreamLoadingFactor)</code></th>
+double&nbsp;upstreamLoadingFactor,
+boolean&nbsp;computeP0)</code></th>
 <td class="colLast">
 <div class="block">Constructor.</div>
 </td>
@@ -221,7 +222,7 @@ int&nbsp;minBp)</code></th>
 <ul class="blockList">
 <li class="blockList">
 <section class="detail">
-<h3><a id="&lt;init&gt;(no.uib.triogen.io.genotypes.VariantIterator,no.uib.triogen.model.family.ChildToParentMap,int,int,double,int,double,double)">BufferedGenotypesIterator</a></h3>
+<h3><a id="&lt;init&gt;(no.uib.triogen.io.genotypes.VariantIterator,no.uib.triogen.model.family.ChildToParentMap,int,int,double,int,double,double,boolean)">BufferedGenotypesIterator</a></h3>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="memberName">BufferedGenotypesIterator</span>&#8203;(<span class="arguments"><a href="../../VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a>&nbsp;iterator,
 <a href="../../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
 int&nbsp;upStreamDistance,
@@ -229,7 +230,8 @@ int&nbsp;downStreamDistance,
 double&nbsp;mafThreshold,
 int&nbsp;nVariants,
 double&nbsp;downstreamLoadingFactor,
-double&nbsp;upstreamLoadingFactor)</span></div>
+double&nbsp;upstreamLoadingFactor,
+boolean&nbsp;computeP0)</span></div>
 <div class="block">Constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -245,6 +247,8 @@ double&nbsp;upstreamLoadingFactor)</span></div>
 <dd><code>downstreamLoadingFactor</code> - The loading factor to use when trimming
  the buffer.</dd>
 <dd><code>upstreamLoadingFactor</code> - The loading factor to use when buffering.</dd>
+<dd><code>computeP0</code> - If true, the P0s caches will be filled upon loading and
+ the genotypes provider trimmed.</dd>
 </dl>
 </section>
 </li>

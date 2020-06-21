@@ -23,7 +23,7 @@ public class VcfLine implements GenotypesProvider {
     /**
      * The line as read from the file.
      */
-    private final String line;
+    private String line;
 
     /**
      * The indexes of the samples.
@@ -449,6 +449,14 @@ public class VcfLine implements GenotypesProvider {
     public int getParentsGenotypeP0Cache() {
         
         return parentsGenotypeP0Cache;
+        
+    }
+
+    @Override
+    public void trim() {
+        
+        line = null;
+        indexes = null;
         
     }
 }

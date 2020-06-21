@@ -144,5 +144,10 @@ public interface GenotypesProvider {
      * @return The sum of p0s.
      */
     public int getParentsGenotypeP0Cache();
+    
+    /**
+     * Removes all data that is not in cache.
+     */
+    public void trim();
 
 }

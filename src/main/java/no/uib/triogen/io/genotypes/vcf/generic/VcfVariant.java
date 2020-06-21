@@ -443,4 +443,11 @@ public class VcfVariant implements GenotypesProvider {
 
     }
 
+    @Override
+    public void trim() {
+        
+        // Nothing to do here.
+        
+    }
+
 }
