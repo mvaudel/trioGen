@@ -89,7 +89,7 @@ public class EnsemblAPI {
                 JSONObject jsonObject = array.getJSONObject(i);
 
                 GeneCoordinates geneCoordinates = new GeneCoordinates(
-                        jsonObject.getString("biotype"),
+                        jsonObject.has("biotype") ? jsonObject.getString("biotype") : "Not Available",
                         jsonObject.has("external_name") ? jsonObject.getString("external_name") : jsonObject.getString("gene_id"),
                         jsonObject.getInt("start"),
                         jsonObject.getInt("end")
