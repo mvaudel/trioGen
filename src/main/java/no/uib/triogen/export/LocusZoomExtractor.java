@@ -159,7 +159,7 @@ public class LocusZoomExtractor {
 
                                     variantsFound.add(variantI);
 
-                                    File destinationFile = new File(destinationFileStem + "_" + variantId + "_" + phenoName + "_LocusZoomData.gz");
+                                    File destinationFile = new File(destinationFileStem + "_" + targetVariantId + "_" + phenoName + "_LocusZoomData.gz");
                                     writer = new SimpleFileWriter(destinationFile, true);
 
                                     for (String comment : comments) {
