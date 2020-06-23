@@ -81,6 +81,8 @@ public class LocusZoom {
         SimpleCliLogger logger = new SimpleCliLogger(logFile);
 
         VariantList variantList = VariantList.getVariantList(bean.variantFile);
+        
+        try {
 
         LocusZoomExtractor.writeData(
                 bean.targetPhenotype,
@@ -93,6 +95,14 @@ public class LocusZoom {
                 bean.geneCoordinatesFileStem,
                 logger
         );
+        
+        } catch (Throwable t) {
+            
+            t.printStackTrace();
+            
+            logger.logError(t.getLocalizedMessage());
+            
+        }
     }
 
     /**

@@ -241,8 +241,9 @@ public class LocusZoomExtractor {
                 String targetContig = variantList.chromosome[variantI];
                 int targetBpStart = variantList.start[variantI];
                 int targetBpEnd = variantList.end[variantI];
+                String targetVariantId = variantList.variantId[variantI];
 
-                File geneFile = new File(genesFileStem + "_LocusZoomGenes.gz");
+                File geneFile = new File(genesFileStem + "_" + targetVariantId + "_LocusZoomGenes.gz");
 
                 try ( SimpleFileWriter writer = new SimpleFileWriter(geneFile, true)) {
 
