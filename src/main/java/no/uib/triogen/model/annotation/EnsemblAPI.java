@@ -87,9 +87,21 @@ public class EnsemblAPI {
             for (int i = 0; i < array.length(); i++) {
 
                 JSONObject jsonObject = array.getJSONObject(i);
+                
+                String bioType = "Not Available";
+                
+                try {
+                    
+                    bioType = jsonObject.getString("biotype");
+                    
+                } catch (Exception e) {
+                    
+                    // Ignore
+                    
+                }
 
                 GeneCoordinates geneCoordinates = new GeneCoordinates(
-                        jsonObject.has("biotype") ? jsonObject.getString("biotype") : "Not Available",
+                        bioType,
                         jsonObject.has("external_name") ? jsonObject.getString("external_name") : jsonObject.getString("gene_id"),
                         jsonObject.getInt("start"),
                         jsonObject.getInt("end")
