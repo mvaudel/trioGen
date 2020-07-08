@@ -6,7 +6,7 @@ package no.uib.triogen.utils;
  * @author Marc Vaudel
  */
 public class Utils {
-    
+
     /**
      * Placeholder for an array of NAs.
      */
@@ -34,18 +34,64 @@ public class Utils {
      * @return A concatenation of the first and the second arrays.
      */
     public static byte[] mergeArrays(
-            byte[] array1, 
+            byte[] array1,
             byte[] array2,
             int len2
     ) {
-        
+
         byte[] result = new byte[array1.length + len2];
-        
+
         System.arraycopy(array1, 0, result, 0, array1.length);
         System.arraycopy(array2, 0, result, array1.length, len2);
-        
+
         return result;
-    
+
+    }
+
+    /**
+     * Centers and scales the values in x in column using the mean and standard
+     * deviation.
+     *
+     * @param x The genotype matrix to scale.
+     */
+    public static void centerAndScaleColumns(
+            double[][] x
+    ) {
+
+        int nRows = x.length;
+        int nColumns = x[0].length;
+
+        for (int columnI = 0; columnI < nColumns; columnI++) {
+
+            double mean = 0.0;
+
+            for (int rowI = 0; rowI < nRows; rowI++) {
+
+                mean += x[rowI][columnI];
+
+            }
+
+            mean /= nRows;
+
+            double sd = 0.0;
+
+            for (int rowI = 0; rowI < nRows; rowI++) {
+
+                double diff = x[rowI][columnI] - mean;
+                sd += diff * diff;
+
+            }
+
+            sd /= nRows;
+
+            sd = Math.sqrt(sd);
+
+            for (int rowI = 0; rowI < nRows; rowI++) {
+
+                x[rowI][columnI] = (x[rowI][columnI] - mean) / sd;
+
+            }
+        }
     }
 
 }

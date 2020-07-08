@@ -228,9 +228,31 @@ public enum Model {
             GenotypesProvider genotypesProvider,
             boolean useDosages
     ) {
-        
-        fillXHardCalls(x, model, index, childId, motherId, fatherId, genotypesProvider);
 
+        if (useDosages) {
+            
+            fillXDosages(
+                    x, 
+                    model, 
+                    index, 
+                    childId, 
+                    motherId, 
+                    fatherId, 
+                    genotypesProvider
+            );
+
+        } else {
+
+            fillXHardCalls(
+                    x,
+                    model,
+                    index,
+                    childId,
+                    motherId,
+                    fatherId,
+                    genotypesProvider
+            );
+        }
     }
 
     /**
@@ -388,11 +410,11 @@ public enum Model {
         short nAltChild = (short) (h[0] + h[2]);
         short nAltMother = (short) (h[0] + h[1]);
         short nAltFather = (short) (h[2] + h[3]);
-        
+
         float[] dosagesChild = genotypesProvider.getDosages(childId);
         float[] dosagesMother = genotypesProvider.getDosages(motherId);
         float[] dosagesFather = genotypesProvider.getDosages(fatherId);
-        
+
         double dosageGenotypeChild = dosagesChild[1] + 2 * dosagesChild[2];
         double dosageGenotypeMother = dosagesMother[1] + 2 * dosagesMother[2];
         double dosageGenotypeFather = dosagesFather[1] + 2 * dosagesFather[2];

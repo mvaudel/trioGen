@@ -18,6 +18,7 @@ import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.utils.SimpleSemaphore;
+import no.uib.triogen.utils.Utils;
 import org.apache.commons.math3.linear.SingularMatrixException;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 
@@ -387,6 +388,8 @@ public class LinearModelRunnable implements Runnable {
                                         genotypesProvider,
                                         canceled
                                 );
+                                
+                                Utils.centerAndScaleColumns(x);
 
                             }
 

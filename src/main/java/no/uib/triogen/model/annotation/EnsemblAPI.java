@@ -28,9 +28,9 @@ public class EnsemblAPI {
 
     /**
      * Returns the url of the server to use for the given build.
-     * 
+     *
      * @param buildNumber The number of the build, e.g. 38 for GRCh38.
-     * 
+     *
      * @return The url of the server to use for the given build.
      */
     public static String getServer(
@@ -87,22 +87,18 @@ public class EnsemblAPI {
             for (int i = 0; i < array.length(); i++) {
 
                 JSONObject jsonObject = array.getJSONObject(i);
-                
-                String bioType = "Not Available";
-                
-                try {
-                    
-                    bioType = jsonObject.getString("biotype");
-                    
-                } catch (Exception e) {
-                    
-                    // Ignore
-                    
-                }
+
+                String bioType = jsonObject.has("biotype") ? jsonObject.getString("biotype") : "Not Available";
+
+                String geneId = jsonObject.has("external_name")
+                        ? jsonObject.getString("external_name")
+                        : jsonObject.has("gene_id")
+                        ? jsonObject.getString("gene_id")
+                        : "Not Available";
 
                 GeneCoordinates geneCoordinates = new GeneCoordinates(
                         bioType,
-                        jsonObject.has("external_name") ? jsonObject.getString("external_name") : jsonObject.getString("gene_id"),
+                        geneId,
                         jsonObject.getInt("start"),
                         jsonObject.getInt("end")
                 );
@@ -122,7 +118,7 @@ public class EnsemblAPI {
 
     /**
      * Returns the Ensembl version as string.
-     * 
+     *
      * @param buildNumber The number of the build, e.g. 38 for GRCh38.
      *
      * @return The Ensembl version as string.
