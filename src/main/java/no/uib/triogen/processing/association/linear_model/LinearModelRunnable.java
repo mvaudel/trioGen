@@ -386,7 +386,7 @@ public class LinearModelRunnable implements Runnable {
                                         motherId,
                                         fatherId,
                                         genotypesProvider,
-                                        canceled
+                                        useDosages
                                 );
                                 
                                 Utils.centerAndScaleColumns(x);
