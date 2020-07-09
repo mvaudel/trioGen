@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
+import no.uib.triogen.utils.Utils;
 import org.apache.commons.math3.linear.SingularMatrixException;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 
@@ -313,6 +314,8 @@ public class PhenotypesHandler {
                         newPhenos[j] = residuals[i];
 
                     }
+                    
+                    Utils.centerAndScale(newPhenos);
 
                     phenoMap.put(phenoName, newPhenos);
 

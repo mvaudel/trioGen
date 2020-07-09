@@ -1,5 +1,8 @@
 package no.uib.triogen.utils;
 
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
 /**
  * Utilities.
  *
@@ -49,10 +52,48 @@ public class Utils {
     }
 
     /**
+     * Centers and scales the values in x using the mean and standard deviation.
+     *
+     * @param x The array to scale.
+     */
+    public static void centerAndScale(
+            double[] x
+    ) {
+
+        int n = x.length;
+
+        double mean = Arrays.stream(x)
+                .filter(
+                        xi -> !Double.isNaN(xi)
+                )
+                .sum() / n;
+
+        double sd = Math.sqrt(
+                Arrays.stream(x)
+                        .filter(
+                                xi -> !Double.isNaN(xi)
+                        )
+                        .map(
+                                xi -> (xi - mean) * (xi - mean)
+                        )
+                        .sum() / n
+        );
+
+        for (int i = 0; i < n; i++) {
+
+            if (!Double.isNaN(x[i])) {
+
+                x[i] = (x[i] - mean) / sd;
+
+            }
+        }
+    }
+
+    /**
      * Centers and scales the values in x in column using the mean and standard
      * deviation.
      *
-     * @param x The genotype matrix to scale.
+     * @param x The matrix to scale.
      */
     public static void centerAndScaleColumns(
             double[][] x
