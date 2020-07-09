@@ -442,11 +442,7 @@ public class LinearModelRunnable implements Runnable {
                                 double[][] x = modelsX.get(i);
 
                                 // Center and scale
-                                System.out.println("Center and scale");
-
                                 Utils.centerAndScaleColumns(x);
-
-                                System.out.println("Center and scale done");
 
                                 // Run regression
                                 RegressionResult regressionResult = regressionResults.get(i);
