@@ -1,6 +1,7 @@
 package no.uib.triogen.model.phenotypes;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
