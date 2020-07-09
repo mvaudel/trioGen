@@ -152,14 +152,16 @@ public class PruneBolt {
 
                 HashMap<String, Double> variantLdMap = ldMatrixReader.getR2(variantId);
 
-                for (Entry<String, Double> entry2 : variantLdMap.entrySet()) {
+                if (variantLdMap != null) {
 
-                    if (entry2.getValue() >= ldThreshold) {
+                    for (Entry<String, Double> entry2 : variantLdMap.entrySet()) {
 
-                        inspectedSnp.add(entry2.getKey());
+                        if (entry2.getValue() >= ldThreshold) {
 
+                            inspectedSnp.add(entry2.getKey());
+
+                        }
                     }
-
                 }
             }
         }
