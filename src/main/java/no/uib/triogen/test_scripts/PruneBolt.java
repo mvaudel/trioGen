@@ -66,28 +66,9 @@ public class PruneBolt {
 
                                 String contig = lineSplit[1];
 
-                                if (contig.equals(previousContig)) {
+                                if (!contig.equals(previousContig)) {
 
-                                    double p = Double.parseDouble(lineSplit[6]);
-
-                                    if (p > 0.0 && p <= pValueThreshold) {
-
-                                        ArrayList<String[]> lines = pValuesMap.get(p);
-
-                                        if (lines == null) {
-
-                                            lines = new ArrayList<>(1);
-                                            pValuesMap.put(p, lines);
-
-                                        }
-
-                                        lines.add(lineSplit);
-
-                                    }
-
-                                } else {
-
-                                    ArrayList<String[]> prunedLines = prune(pValuesMap, phenoName, ldFolder, ldThreshold);
+                                    ArrayList<String[]> prunedLines = prune(pValuesMap, previousContig, ldFolder, ldThreshold);
 
                                     for (String[] lineSplitPruned : prunedLines) {
 
@@ -96,6 +77,27 @@ public class PruneBolt {
                                         writer.writeLine(linePruned);
 
                                     }
+
+                                    pValuesMap.clear();
+                                    previousContig = contig;
+
+                                }
+
+                                double p = Double.parseDouble(lineSplit[6]);
+
+                                if (p > 0.0 && p <= pValueThreshold) {
+
+                                    ArrayList<String[]> lines = pValuesMap.get(p);
+
+                                    if (lines == null) {
+
+                                        lines = new ArrayList<>(1);
+                                        pValuesMap.put(p, lines);
+
+                                    }
+
+                                    lines.add(lineSplit);
+
                                 }
                             }
                         }
