@@ -102,6 +102,13 @@ public class PruneBolt {
                             }
                         }
                     }
+
+                    Instant end = Instant.now();
+                    
+                    long duration = end.getEpochSecond() - begin.getEpochSecond();
+
+                    System.out.println("Pruning " + phenoName + " " + role + " done in " + duration + "s.");
+                    
                 }
             }
 
