@@ -68,17 +68,22 @@ public class PruneBolt {
 
                                 if (!contig.equals(previousContig)) {
 
-                                    ArrayList<String[]> prunedLines = prune(pValuesMap, previousContig, ldFolder, ldThreshold);
+                                    if (!pValuesMap.isEmpty()) {
 
-                                    for (String[] lineSplitPruned : prunedLines) {
+                                        ArrayList<String[]> prunedLines = prune(pValuesMap, previousContig, ldFolder, ldThreshold);
 
-                                        String linePruned = String.join(" ", lineSplitPruned);
+                                        for (String[] lineSplitPruned : prunedLines) {
 
-                                        writer.writeLine(linePruned);
+                                            String linePruned = String.join(" ", lineSplitPruned);
+
+                                            writer.writeLine(linePruned);
+
+                                        }
+
+                                        pValuesMap.clear();
 
                                     }
 
-                                    pValuesMap.clear();
                                     previousContig = contig;
 
                                 }
@@ -104,11 +109,11 @@ public class PruneBolt {
                     }
 
                     Instant end = Instant.now();
-                    
+
                     long duration = end.getEpochSecond() - begin.getEpochSecond();
 
                     System.out.println("Pruning " + phenoName + " " + role + " done in " + duration + "s.");
-                    
+
                 }
             }
 
