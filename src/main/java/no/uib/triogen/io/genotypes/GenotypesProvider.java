@@ -11,8 +11,12 @@ public interface GenotypesProvider {
     
     /**
      * Parses the genotypes.
+     * 
+     * @param childToParentMap The child to parent map to use.
      */
-    public void parse();
+    public void parse(
+            ChildToParentMap childToParentMap
+    );
     
     /**
      * Returns the hard-called genotype for a given sample. 0: 0|0 1: 1|0 2: 0|1 3: 1|1
@@ -22,6 +26,17 @@ public interface GenotypesProvider {
      * @return The hard-called genotype.
      */
     public short getGenotype(
+            String sampleId
+    );
+    
+    /**
+     * Returns the number of alternative alleles using hard calls.
+     *
+     * @param sampleId The id of the sample.
+     *
+     * @return The hard-called number of alternative alleles.
+     */
+    public short getNAlt(
             String sampleId
     );
     
@@ -37,28 +52,26 @@ public interface GenotypesProvider {
     );
     
     /**
-     * Returns the hs for a trio according to the nomenclature of Chen et al. (https://doi.org/10.1101/737106).
+     * Returns the number of alternative alleles using dosages.
      *
-     * @param sampleId The id of the child in the trio.
-     * @param childToParentMap The child to parent map.
+     * @param sampleId The id of the sample.
      *
-     * @return An array containing the hs.
+     * @return The number of alternative alleles using dosages.
      */
-    public short[] getH(
-            ChildToParentMap childToParentMap,
+    public double getNAltDosages(
             String sampleId
     );
     
     /**
-     * Returns the hs for a trio according to the nomenclature of Chen et al. (https://doi.org/10.1101/737106).
+     * Returns the number of alternative alleles for each h of a trio according to the nomenclature of Chen et al. (https://doi.org/10.1101/737106).
      *
      * @param childId The id of the child.
      * @param motherId The id of the mother.
      * @param fatherId The id of the father.
      *
-     * @return An array containing the hs.
+     * @return An array containing the number of alternative alleles.
      */
-    public short[] getH(
+    public short[] getNAltH(
             String childId,
             String motherId,
             String fatherId
@@ -144,10 +157,5 @@ public interface GenotypesProvider {
      * @return The sum of p0s.
      */
     public int getParentsGenotypeP0Cache();
-    
-    /**
-     * Removes all data that is not in cache.
-     */
-    public void trim();
 
 }

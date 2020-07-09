@@ -133,7 +133,7 @@ implements <a href="../../GenotypesProvider.html" title="interface in no.uib.tri
 <td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#TYPED">TYPED</a></span></code></th>
 <td class="colLast">
-<div class="block">Vcf key for the genotyping floag.</div>
+<div class="block">Vcf key for the genotyping flag.</div>
 </td>
 </tr>
 </tbody>
@@ -158,9 +158,8 @@ implements <a href="../../GenotypesProvider.html" title="interface in no.uib.tri
 </thead>
 <tbody>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator,java.lang.String,boolean)">VcfLine</a></span>&#8203;(<a href="CustomVcfIterator.html" title="class in no.uib.triogen.io.genotypes.vcf.custom">CustomVcfIterator</a>&nbsp;vcfIterator,
-<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;line,
-boolean&nbsp;useCache)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator,java.lang.String)">VcfLine</a></span>&#8203;(<a href="CustomVcfIterator.html" title="class in no.uib.triogen.io.genotypes.vcf.custom">CustomVcfIterator</a>&nbsp;vcfIterator,
+<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;line)</code></th>
 <td class="colLast">
 <div class="block">Constructor.</div>
 </td>
@@ -231,84 +230,83 @@ boolean&nbsp;useCache)</code></th>
 </td>
 </tr>
 <tr class="altColor" id="i6">
-<td class="colFirst"><code>short[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getH(java.lang.String,java.lang.String,java.lang.String)">getH</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;childId,
-<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;motherId,
-<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fatherId)</code></th>
+<td class="colFirst"><code>short</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNAlt(java.lang.String)">getNAlt</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sampleId)</code></th>
 <td class="colLast">
-<div class="block">Returns the hs for a trio according to the nomenclature of Chen et al.</div>
+<div class="block">Returns the number of alternative alleles using hard calls.</div>
 </td>
 </tr>
 <tr class="rowColor" id="i7">
-<td class="colFirst"><code>short[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getH(no.uib.triogen.model.family.ChildToParentMap,java.lang.String)">getH</a></span>&#8203;(<a href="../../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
-<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;childId)</code></th>
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNAltDosages(java.lang.String)">getNAltDosages</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sampleId)</code></th>
 <td class="colLast">
-<div class="block">Returns the hs for a trio according to the nomenclature of Chen et al.</div>
+<div class="block">Returns the number of alternative alleles using dosages.</div>
 </td>
 </tr>
 <tr class="altColor" id="i8">
+<td class="colFirst"><code>short[]</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNAltH(java.lang.String,java.lang.String,java.lang.String)">getNAltH</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;childId,
+<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;motherId,
+<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fatherId)</code></th>
+<td class="colLast">
+<div class="block">Returns the number of alternative alleles for each h of a trio according to the nomenclature of Chen et al.</div>
+</td>
+</tr>
+<tr class="rowColor" id="i9">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParentsDosageP0Cache()">getParentsDosageP0Cache</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the sum of p0s for all parents of the given child ids.</div>
 </td>
 </tr>
-<tr class="rowColor" id="i9">
+<tr class="altColor" id="i10">
 <td class="colFirst"><code>float[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParentsDosageP0sCache()">getParentsDosageP0sCache</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the p0s for all parents of the given child ids.</div>
 </td>
 </tr>
-<tr class="altColor" id="i10">
+<tr class="rowColor" id="i11">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParentsGenotypeP0Cache()">getParentsGenotypeP0Cache</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the sum of p0s for all parents of the given child ids.</div>
 </td>
 </tr>
-<tr class="rowColor" id="i11">
+<tr class="altColor" id="i12">
 <td class="colFirst"><code>boolean[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParentsGenotypeP0sCache()">getParentsGenotypeP0sCache</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the p0s for all parents of the given child ids.</div>
 </td>
 </tr>
-<tr class="altColor" id="i12">
+<tr class="rowColor" id="i13">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRef()">getRef</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the reference allele of the variant.</div>
 </td>
 </tr>
-<tr class="rowColor" id="i13">
+<tr class="altColor" id="i14">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVariantID()">getVariantID</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the id of the variant.</div>
 </td>
 </tr>
-<tr class="altColor" id="i14">
+<tr class="rowColor" id="i15">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#parse()">parse</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#parse(no.uib.triogen.model.family.ChildToParentMap)">parse</a></span>&#8203;(<a href="../../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</code></th>
 <td class="colLast">
 <div class="block">Parses the genotypes.</div>
 </td>
 </tr>
-<tr class="rowColor" id="i15">
+<tr class="altColor" id="i16">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setParentP0s(java.lang.String%5B%5D,no.uib.triogen.model.family.ChildToParentMap)">setParentP0s</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;childIds,
 <a href="../../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</code></th>
 <td class="colLast">
 <div class="block">Sets the p0s for all parents of the given child ids.</div>
-</td>
-</tr>
-<tr class="altColor" id="i16">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#trim()">trim</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Removes all data that is not in cache.</div>
 </td>
 </tr>
 </tbody>
@@ -337,7 +335,7 @@ boolean&nbsp;useCache)</code></th>
 <section class="detail">
 <h3><a id="TYPED">TYPED</a></h3>
 <div class="memberSignature"><span class="modifiers">public static final</span>&nbsp;<span class="returnType"><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></span>&nbsp;<span class="memberName">TYPED</span></div>
-<div class="block">Vcf key for the genotyping floag.</div>
+<div class="block">Vcf key for the genotyping flag.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../../../constant-values.html#no.uib.triogen.io.genotypes.vcf.custom.VcfLine.TYPED">Constant Field Values</a></dd>
@@ -356,17 +354,14 @@ boolean&nbsp;useCache)</code></th>
 <ul class="blockList">
 <li class="blockList">
 <section class="detail">
-<h3><a id="&lt;init&gt;(no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator,java.lang.String,boolean)">VcfLine</a></h3>
+<h3><a id="&lt;init&gt;(no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator,java.lang.String)">VcfLine</a></h3>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="memberName">VcfLine</span>&#8203;(<span class="arguments"><a href="CustomVcfIterator.html" title="class in no.uib.triogen.io.genotypes.vcf.custom">CustomVcfIterator</a>&nbsp;vcfIterator,
-<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;line,
-boolean&nbsp;useCache)</span></div>
+<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;line)</span></div>
 <div class="block">Constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>vcfIterator</code> - The iterator used to parse the file.</dd>
 <dd><code>line</code> - The line as read from the file.</dd>
-<dd><code>useCache</code> - Boolean indicating whether the genotypes provider should
- cache genotype values.</dd>
 </dl>
 </section>
 </li>
@@ -382,13 +377,15 @@ boolean&nbsp;useCache)</span></div>
 <ul class="blockList">
 <li class="blockList">
 <section class="detail">
-<h3><a id="parse()">parse</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">parse</span>()</div>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../GenotypesProvider.html#parse()">GenotypesProvider</a></code></span></div>
+<h3><a id="parse(no.uib.triogen.model.family.ChildToParentMap)">parse</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">parse</span>&#8203;(<span class="arguments"><a href="../../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</span></div>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../GenotypesProvider.html#parse(no.uib.triogen.model.family.ChildToParentMap)">GenotypesProvider</a></code></span></div>
 <div class="block">Parses the genotypes.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../GenotypesProvider.html#parse()">parse</a></code>&nbsp;in interface&nbsp;<code><a href="../../GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></code></dd>
+<dd><code><a href="../../GenotypesProvider.html#parse(no.uib.triogen.model.family.ChildToParentMap)">parse</a></code>&nbsp;in interface&nbsp;<code><a href="../../GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>childToParentMap</code> - The child to parent map to use.</dd>
 </dl>
 </section>
 </li>
@@ -494,39 +491,17 @@ boolean&nbsp;useCache)</span></div>
 </li>
 <li class="blockList">
 <section class="detail">
-<h3><a id="getH(no.uib.triogen.model.family.ChildToParentMap,java.lang.String)">getH</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">short[]</span>&nbsp;<span class="memberName">getH</span>&#8203;(<span class="arguments"><a href="../../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
-<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;childId)</span></div>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../GenotypesProvider.html#getH(no.uib.triogen.model.family.ChildToParentMap,java.lang.String)">GenotypesProvider</a></code></span></div>
-<div class="block">Returns the hs for a trio according to the nomenclature of Chen et al. (https://doi.org/10.1101/737106).</div>
+<h3><a id="getNAlt(java.lang.String)">getNAlt</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">short</span>&nbsp;<span class="memberName">getNAlt</span>&#8203;(<span class="arguments"><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sampleId)</span></div>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../GenotypesProvider.html#getNAlt(java.lang.String)">GenotypesProvider</a></code></span></div>
+<div class="block">Returns the number of alternative alleles using hard calls.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../GenotypesProvider.html#getH(no.uib.triogen.model.family.ChildToParentMap,java.lang.String)">getH</a></code>&nbsp;in interface&nbsp;<code><a href="../../GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></code></dd>
+<dd><code><a href="../../GenotypesProvider.html#getNAlt(java.lang.String)">getNAlt</a></code>&nbsp;in interface&nbsp;<code><a href="../../GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>childToParentMap</code> - The child to parent map.</dd>
-<dd><code>childId</code> - The id of the child in the trio.</dd>
+<dd><code>sampleId</code> - The id of the sample.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>An array containing the hs.</dd>
-</dl>
-</section>
-</li>
-<li class="blockList">
-<section class="detail">
-<h3><a id="getH(java.lang.String,java.lang.String,java.lang.String)">getH</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">short[]</span>&nbsp;<span class="memberName">getH</span>&#8203;(<span class="arguments"><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;childId,
-<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;motherId,
-<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fatherId)</span></div>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../GenotypesProvider.html#getH(java.lang.String,java.lang.String,java.lang.String)">GenotypesProvider</a></code></span></div>
-<div class="block">Returns the hs for a trio according to the nomenclature of Chen et al. (https://doi.org/10.1101/737106).</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../GenotypesProvider.html#getH(java.lang.String,java.lang.String,java.lang.String)">getH</a></code>&nbsp;in interface&nbsp;<code><a href="../../GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>childId</code> - The id of the child.</dd>
-<dd><code>motherId</code> - The id of the mother.</dd>
-<dd><code>fatherId</code> - The id of the father.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>An array containing the hs.</dd>
+<dd>The hard-called number of alternative alleles.</dd>
 </dl>
 </section>
 </li>
@@ -543,6 +518,42 @@ boolean&nbsp;useCache)</span></div>
 <dd><code>sampleId</code> - The id of the sample.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The dosages.</dd>
+</dl>
+</section>
+</li>
+<li class="blockList">
+<section class="detail">
+<h3><a id="getNAltDosages(java.lang.String)">getNAltDosages</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">double</span>&nbsp;<span class="memberName">getNAltDosages</span>&#8203;(<span class="arguments"><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sampleId)</span></div>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../GenotypesProvider.html#getNAltDosages(java.lang.String)">GenotypesProvider</a></code></span></div>
+<div class="block">Returns the number of alternative alleles using dosages.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../GenotypesProvider.html#getNAltDosages(java.lang.String)">getNAltDosages</a></code>&nbsp;in interface&nbsp;<code><a href="../../GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>sampleId</code> - The id of the sample.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The number of alternative alleles using dosages.</dd>
+</dl>
+</section>
+</li>
+<li class="blockList">
+<section class="detail">
+<h3><a id="getNAltH(java.lang.String,java.lang.String,java.lang.String)">getNAltH</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">short[]</span>&nbsp;<span class="memberName">getNAltH</span>&#8203;(<span class="arguments"><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;childId,
+<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;motherId,
+<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fatherId)</span></div>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../GenotypesProvider.html#getNAltH(java.lang.String,java.lang.String,java.lang.String)">GenotypesProvider</a></code></span></div>
+<div class="block">Returns the number of alternative alleles for each h of a trio according to the nomenclature of Chen et al. (https://doi.org/10.1101/737106).</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../GenotypesProvider.html#getNAltH(java.lang.String,java.lang.String,java.lang.String)">getNAltH</a></code>&nbsp;in interface&nbsp;<code><a href="../../GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>childId</code> - The id of the child.</dd>
+<dd><code>motherId</code> - The id of the mother.</dd>
+<dd><code>fatherId</code> - The id of the father.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>An array containing the number of alternative alleles.</dd>
 </dl>
 </section>
 </li>
@@ -615,18 +626,6 @@ boolean&nbsp;useCache)</span></div>
 <dd><code><a href="../../GenotypesProvider.html#getParentsGenotypeP0Cache()">getParentsGenotypeP0Cache</a></code>&nbsp;in interface&nbsp;<code><a href="../../GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The sum of p0s.</dd>
-</dl>
-</section>
-</li>
-<li class="blockList">
-<section class="detail">
-<h3><a id="trim()">trim</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">trim</span>()</div>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../GenotypesProvider.html#trim()">GenotypesProvider</a></code></span></div>
-<div class="block">Removes all data that is not in cache.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../GenotypesProvider.html#trim()">trim</a></code>&nbsp;in interface&nbsp;<code><a href="../../GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></code></dd>
 </dl>
 </section>
 </li>

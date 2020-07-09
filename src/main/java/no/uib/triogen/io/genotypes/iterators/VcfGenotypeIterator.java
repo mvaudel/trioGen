@@ -112,11 +112,10 @@ public class VcfGenotypeIterator implements VariantIterator {
             if (variantContext.getStart() >= bpStart) {
 
                 GenotypesProvider genotypesProvider = new VcfVariant(
-                        variantContext,
-                        false
+                        variantContext
                 );
 
-                genotypesProvider.parse();
+                genotypesProvider.parse(childToParentMap);
 
                 double maf = MafEstimator.getMaf(
                         genotypesProvider,

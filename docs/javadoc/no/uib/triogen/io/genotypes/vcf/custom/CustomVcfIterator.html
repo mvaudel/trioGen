@@ -19,7 +19,7 @@
 <script type="text/javascript" src="../../../../../../../script-dir/jquery-ui.js"></script>
 </head>
 <body class="class-declaration">
-<script type="text/javascript">var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+<script type="text/javascript">var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -136,6 +136,13 @@ implements <a href="../../VariantIterator.html" title="interface in no.uib.triog
 <div class="block">The maximum number of variants to process, ignored if negative.</div>
 </td>
 </tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#samples">samples</a></span></code></th>
+<td class="colLast">
+<div class="block">The sample ids as they appear in the vcf file.</div>
+</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -158,8 +165,7 @@ implements <a href="../../VariantIterator.html" title="interface in no.uib.triog
 </thead>
 <tbody>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.io.File,boolean)">CustomVcfIterator</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a>&nbsp;file,
-boolean&nbsp;useCache)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.io.File)">CustomVcfIterator</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a>&nbsp;file)</code></th>
 <td class="colLast">
 <div class="block">Constructor.</div>
 </td>
@@ -216,20 +222,13 @@ boolean&nbsp;useCache)</code></th>
 </td>
 </tr>
 <tr class="altColor" id="i4">
-<td class="colFirst"><code>int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSampleIndex(java.lang.String)">getSampleIndex</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sampleId)</code></th>
-<td class="colLast">
-<div class="block">Returns the column index for a sample.</div>
-</td>
-</tr>
-<tr class="rowColor" id="i5">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isFinished()">isFinished</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns a boolean indicating whether the iteration is finished.</div>
 </td>
 </tr>
-<tr class="altColor" id="i6">
+<tr class="rowColor" id="i5">
 <td class="colFirst"><code><a href="VcfLine.html" title="class in no.uib.triogen.io.genotypes.vcf.custom">VcfLine</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#next()">next</a></span>()</code></th>
 <td class="colLast">
@@ -260,6 +259,13 @@ boolean&nbsp;useCache)</code></th>
 <ul class="blockList">
 <li class="blockList">
 <section class="detail">
+<h3><a id="samples">samples</a></h3>
+<div class="memberSignature"><span class="modifiers">public final</span>&nbsp;<span class="returnType"><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</span>&nbsp;<span class="memberName">samples</span></div>
+<div class="block">The sample ids as they appear in the vcf file.</div>
+</section>
+</li>
+<li class="blockList">
+<section class="detail">
 <h3><a id="nLimit">nLimit</a></h3>
 <div class="memberSignature"><span class="modifiers">public static</span>&nbsp;<span class="returnType">int</span>&nbsp;<span class="memberName">nLimit</span></div>
 <div class="block">The maximum number of variants to process, ignored if negative.</div>
@@ -277,15 +283,12 @@ boolean&nbsp;useCache)</code></th>
 <ul class="blockList">
 <li class="blockList">
 <section class="detail">
-<h3><a id="&lt;init&gt;(java.io.File,boolean)">CustomVcfIterator</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="memberName">CustomVcfIterator</span>&#8203;(<span class="arguments"><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a>&nbsp;file,
-boolean&nbsp;useCache)</span></div>
+<h3><a id="&lt;init&gt;(java.io.File)">CustomVcfIterator</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="memberName">CustomVcfIterator</span>&#8203;(<span class="arguments"><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a>&nbsp;file)</span></div>
 <div class="block">Constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>file</code> - The file to iterate.</dd>
-<dd><code>useCache</code> - Boolean indicating whether the genotypes provider should
- cache genotype values.</dd>
 </dl>
 </section>
 </li>
@@ -332,19 +335,6 @@ boolean&nbsp;useCache)</span></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the number of samples</dd>
-</dl>
-</section>
-</li>
-<li class="blockList">
-<section class="detail">
-<h3><a id="getSampleIndex(java.lang.String)">getSampleIndex</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">int</span>&nbsp;<span class="memberName">getSampleIndex</span>&#8203;(<span class="arguments"><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sampleId)</span></div>
-<div class="block">Returns the column index for a sample.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>sampleId</code> - the id of the sample</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the column index for a sample</dd>
 </dl>
 </section>
 </li>

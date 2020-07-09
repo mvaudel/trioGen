@@ -3,8 +3,10 @@ package no.uib.triogen.io.vcf;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.io.genotypes.vcf.custom.VcfLine;
 import java.io.File;
+import java.util.HashMap;
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import no.uib.triogen.model.family.ChildToParentMap;
 
 /**
  *
@@ -14,11 +16,18 @@ public class VcfParsingTest extends TestCase {
 
     public void testParsing() {
 
+        String[] children = new String[]{"SAMPLE1"};
+        HashMap<String, String> childToMotherMap = new HashMap<>();
+        childToMotherMap.put("SAMPLE1", "SAMPLE2");
+        HashMap<String, String> childToFatherMap = new HashMap<>();
+        childToFatherMap.put("SAMPLE1", "SAMPLE3");
+        
+        ChildToParentMap childToParentMap = new ChildToParentMap(children, childToMotherMap, childToFatherMap);
+        
         File vcfFile = new File("src/test/resources/vcf/example/test.vcf");
 
         CustomVcfIterator iterator = new CustomVcfIterator(
-                vcfFile,
-                false
+                vcfFile
         );
 
         int nLines = 0;
@@ -28,7 +37,7 @@ public class VcfParsingTest extends TestCase {
 
             if (nLines == 0) {
 
-                vcfLine.parse();
+                vcfLine.parse(childToParentMap);
 
                 String variantId = vcfLine.getVariantID();
                 Assert.assertTrue(variantId.equals("rs123"));
@@ -80,7 +89,7 @@ public class VcfParsingTest extends TestCase {
 
             } else if (nLines == 1) {
 
-                vcfLine.parse();
+                vcfLine.parse(childToParentMap);
 
                 String variantId = vcfLine.getVariantID();
                 Assert.assertTrue(variantId.equals("rs234"));

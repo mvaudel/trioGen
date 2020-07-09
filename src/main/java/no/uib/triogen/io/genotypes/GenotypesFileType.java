@@ -69,23 +69,19 @@ public enum GenotypesFileType {
      *
      * @param genotypesFile The file containing the genotypes.
      * @param genotypesFileType The genotypes file type.
-     * @param useCache Boolean indicating whether the genotypes provider should
-     * cache genotype values.
      *
      * @return An iterator for the variants.
      */
     public static VariantIterator getVariantIterator(
             File genotypesFile,
-            GenotypesFileType genotypesFileType,
-            boolean useCache
+            GenotypesFileType genotypesFileType
     ) {
 
         return getVariantIterator(
                 genotypesFile,
                 genotypesFileType,
                 null,
-                -1,
-                useCache
+                -1
         );
 
     }
@@ -96,24 +92,20 @@ public enum GenotypesFileType {
      * @param genotypesFile The file containing the genotypes.
      * @param genotypesFileType The genotypes file type.
      * @param variantList The variants to process.
-     * @param useCache Boolean indicating whether the genotypes provider should
-     * cache genotype values.
      *
      * @return An iterator for the variants.
      */
     public static VariantIterator getVariantIterator(
             File genotypesFile,
             GenotypesFileType genotypesFileType,
-            VariantList variantList,
-            boolean useCache
+            VariantList variantList
     ) {
 
         return getVariantIterator(
                 genotypesFile,
                 genotypesFileType,
                 variantList,
-                0,
-                useCache
+                0
         );
     }
 
@@ -124,8 +116,6 @@ public enum GenotypesFileType {
      * @param genotypesFileType The genotypes file type.
      * @param variantList The variants to process.
      * @param maxDistance The maximal number of bp to allow between variants.
-     * @param useCache Boolean indicating whether the genotypes provider should
-     * cache genotype values.
      *
      * @return An iterator for the variants.
      */
@@ -133,16 +123,14 @@ public enum GenotypesFileType {
             File genotypesFile,
             GenotypesFileType genotypesFileType,
             VariantList variantList,
-            int maxDistance,
-            boolean useCache
+            int maxDistance
     ) {
 
         if (variantList != null) {
             return new VcfIteratorTargets(
                     genotypesFile,
                     variantList,
-                    maxDistance,
-                    useCache
+                    maxDistance
             );
 
         }
@@ -150,13 +138,11 @@ public enum GenotypesFileType {
         switch (genotypesFileType) {
             case sangerVCF:
                 return new CustomVcfIterator(
-                        genotypesFile,
-                        useCache
+                        genotypesFile
                 );
             case vcf:
                 return new VcfIterator(
-                        genotypesFile,
-                        useCache
+                        genotypesFile
                 );
         }
 

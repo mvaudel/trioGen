@@ -62,11 +62,6 @@ public class VcfIteratorTargets implements VariantIterator {
      * The maximum number of variants to process, ignored if negative.
      */
     public static int nLimit = -1;
-    /**
-     * Boolean indicating whether the genotypes provider should cache genotype
-     * values.
-     */
-    private final boolean useCache;
 
     /**
      * Constructor.
@@ -74,17 +69,12 @@ public class VcfIteratorTargets implements VariantIterator {
      * @param vcfFile The vcf file.
      * @param maxDistance The maximal number of bp to allow between variants.
      * @param variantList The ids of the variants to iterate.
-     * @param useCache Boolean indicating whether the genotypes provider should
-     * cache genotype values.
      */
     public VcfIteratorTargets(
             File vcfFile,
             VariantList variantList,
-            int maxDistance,
-            boolean useCache
+            int maxDistance
     ) {
-
-        this.useCache = useCache;
 
         File indexFile = getVcfIndexFile(vcfFile);
         fileName = vcfFile.getName();
@@ -159,8 +149,7 @@ public class VcfIteratorTargets implements VariantIterator {
         mutex.release();
 
         return new VcfVariant(
-                variantContext,
-                useCache
+                variantContext
         );
 
     }

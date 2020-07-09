@@ -23,9 +23,9 @@ public class CustomVcfIterator implements VariantIterator {
      */
     private final SimpleFileReader reader;
     /**
-     * Sample to column index map.
+     * The sample ids as they appear in the vcf file.
      */
-    private final HashMap<String, Integer> sampleMap;
+    public final String[] samples;
     /**
      * Number of variant columns.
      */
@@ -54,25 +54,15 @@ public class CustomVcfIterator implements VariantIterator {
      * The maximum number of variants to process, ignored if negative.
      */
     public static int nLimit = -1;
-    /**
-     * Boolean indicating whether the genotypes provider should cache genotype
-     * values.
-     */
-    private final boolean useCache;
 
     /**
      * Constructor.
      *
      * @param file The file to iterate.
-     * @param useCache Boolean indicating whether the genotypes provider should
-     * cache genotype values.
      */
     public CustomVcfIterator(
-            File file,
-            boolean useCache
+            File file
     ) {
-        
-        this.useCache = useCache;
 
         // Set up reader
         fileName = file.getName();
@@ -94,13 +84,16 @@ public class CustomVcfIterator implements VariantIterator {
 
         nVariantColumns = lineSplit[8].equals("FORMAT") ? 9 : 8;
         nSamples = lineSplit.length - nVariantColumns;
-        sampleMap = new HashMap<>(nSamples);
-
-        for (int i = nVariantColumns; i < lineSplit.length; i++) {
-
-            sampleMap.put(lineSplit[i], i - nVariantColumns);
-
-        }
+        
+        samples = new String[nSamples];
+        
+        System.arraycopy(
+                lineSplit, 
+                nVariantColumns, 
+                samples, 
+                0, 
+                nSamples
+        );
     }
 
     @Override
@@ -130,8 +123,7 @@ public class CustomVcfIterator implements VariantIterator {
         return line == null ? null
                 : new VcfLine(
                         this,
-                        line,
-                        useCache
+                        line
                 );
 
     }
@@ -155,21 +147,6 @@ public class CustomVcfIterator implements VariantIterator {
     public int getnSamples() {
 
         return nSamples;
-
-    }
-
-    /**
-     * Returns the column index for a sample.
-     *
-     * @param sampleId the id of the sample
-     *
-     * @return the column index for a sample
-     */
-    public int getSampleIndex(
-            String sampleId
-    ) {
-
-        return sampleMap.get(sampleId);
 
     }
 

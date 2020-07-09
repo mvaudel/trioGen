@@ -208,7 +208,7 @@ public class BufferedGenotypesIterator implements WindowGenotypesIterator {
 
         while ((genotypesProvider = iterator.next()) != null) {
 
-            genotypesProvider.parse();
+            genotypesProvider.parse(childToParentMap);
 
             double maf = MafEstimator.getMaf(
                     genotypesProvider,
@@ -280,7 +280,7 @@ public class BufferedGenotypesIterator implements WindowGenotypesIterator {
 
                         double[] batchMaf = batch.parallelStream()
                                 .peek(
-                                        value -> value.parse()
+                                        value -> value.parse(childToParentMap)
                                 )
                                 .mapToDouble(
                                         value -> MafEstimator.getMaf(
@@ -309,7 +309,6 @@ public class BufferedGenotypesIterator implements WindowGenotypesIterator {
                                                             childToParentMap.children,
                                                             childToParentMap
                                                     );
-                                                    genotypesProvider.trim();
 
                                                 }
                                                 

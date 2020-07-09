@@ -123,8 +123,8 @@ public class TargetGenotypesIterator implements WindowGenotypesIterator {
 
             if (vcfVariantId.equals(targetSnpId)) {
 
-                genotypesProvider = new VcfVariant(variantContext, true);
-                genotypesProvider.parse();
+                genotypesProvider = new VcfVariant(variantContext);
+                genotypesProvider.parse(childToParentMap);
                 genotypesProvider.setParentP0s(childToParentMap.children, childToParentMap);
 
             }

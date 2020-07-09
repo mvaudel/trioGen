@@ -11,6 +11,7 @@ import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
+import no.uib.triogen.io.genotypes.StandardizedGenotypesProvider;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
@@ -145,7 +146,7 @@ public class LinearModelRunnable implements Runnable {
             while ((tempGenotypesProvider = iterator.next()) != null && !canceled) {
 
                 GenotypesProvider genotypesProvider = tempGenotypesProvider;
-                genotypesProvider.parse();
+                genotypesProvider.parse(childToParentMap);
 
                 phenotypesHandler.phenoMap.entrySet()
                         .parallelStream()
@@ -228,7 +229,10 @@ public class LinearModelRunnable implements Runnable {
                 sumPhenos += y;
 
                 String childId = childToParentMap.children[i];
-                short[] h = genotypesProvider.getH(childToParentMap, childId);
+                String motherId = childToParentMap.getMother(childId);
+                String fatherId = childToParentMap.getFather(childId);
+
+                short[] h = genotypesProvider.getNAltH(childId, motherId, fatherId);
 
                 h1_0 = h1_0 || h[0] == 0;
                 h1_1 = h1_1 || h[0] == 1;
@@ -262,21 +266,17 @@ public class LinearModelRunnable implements Runnable {
 
                     if (!x0 || h1_0 && h1_1 && h2_0 && h2_1 && h3_0 && h3_1 && h4_0 && h4_1) {
 
-                        // Gather the input to use for the models, gather values for the histograms
+                        // Prepare the objects to use for the models, gather values for the histograms
                         double[] phenoY = new double[nValidValues];
 
                         double phenoMean = sumPhenos / nValidValues;
                         double rss0 = 0.0;
 
-                        ArrayList<double[][]> modelsX = new ArrayList<>(models.length);
                         ArrayList<RegressionResult> regressionResults = new ArrayList<>(models.length);
 
                         for (int i = 0; i < models.length; i++) {
 
                             Model model = models[i];
-
-                            double[][] x = new double[nValidValues][model.betaNames.length];
-                            modelsX.add(x);
 
                             regressionResults.add(new RegressionResult(model));
 
@@ -307,7 +307,7 @@ public class LinearModelRunnable implements Runnable {
                             String motherId = childToParentMap.getMother(childId);
                             String fatherId = childToParentMap.getFather(childId);
 
-                            short[] h = genotypesProvider.getH(
+                            short[] h = genotypesProvider.getNAltH(
                                     childId,
                                     motherId,
                                     fatherId
@@ -373,24 +373,6 @@ public class LinearModelRunnable implements Runnable {
 
                             }
 
-                            for (int k = 0; k < models.length; k++) {
-
-                                Model model = models[k];
-                                double[][] x = modelsX.get(k);
-
-                                Model.fillX(
-                                        x,
-                                        model,
-                                        i,
-                                        childId,
-                                        motherId,
-                                        fatherId,
-                                        genotypesProvider,
-                                        useDosages
-                                );
-
-                            }
-
                             phenoY[i] = y;
 
                         }
@@ -427,9 +409,9 @@ public class LinearModelRunnable implements Runnable {
                         OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
                         HashMap<String, RegressionResult> regressionRestultsMap = new HashMap<>(regressionResults.size());
 
-                        for (int i = 0; i < models.length; i++) {
+                        for (int modelI = 0; modelI < models.length; modelI++) {
 
-                            Model model = models[i];
+                            Model model = models[modelI];
 
                             if (Model.likelyNotSingular(
                                     model,
@@ -439,13 +421,34 @@ public class LinearModelRunnable implements Runnable {
                                     fatherNotSingular
                             )) {
 
-                                double[][] x = modelsX.get(i);
+                                // Standardize genotypes
+                                StandardizedGenotypesProvider standardizedGenotypesProvider = new StandardizedGenotypesProvider(genotypesProvider, childToParentMap);
 
-                                // Center and scale
-                                Utils.centerAndScaleColumns(x);
+                                // Set input
+                                double[][] x = new double[nValidValues][model.betaNames.length];
+
+                                for (int i = 0; i < indexes.length; i++) {
+
+                                    int index = indexes[i];
+
+                                    String childId = childToParentMap.children[index];
+                                    String motherId = childToParentMap.getMother(childId);
+                                    String fatherId = childToParentMap.getFather(childId);
+
+                                    Model.fillX(
+                                            x,
+                                            model,
+                                            i,
+                                            childId,
+                                            motherId,
+                                            fatherId,
+                                            standardizedGenotypesProvider,
+                                            useDosages
+                                    );
+                                }
 
                                 // Run regression
-                                RegressionResult regressionResult = regressionResults.get(i);
+                                RegressionResult regressionResult = regressionResults.get(modelI);
 
                                 try {
 

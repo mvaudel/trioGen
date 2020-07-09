@@ -1,8 +1,11 @@
 package no.uib.triogen.model.family;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 
@@ -25,6 +28,10 @@ public class ChildToParentMap {
      * Ordered array of children.
      */
     public final String[] children;
+    /**
+     * Set of all sample ids.
+     */
+    public final HashSet<String> samplIds;
 
     /**
      * Constructor.
@@ -42,7 +49,17 @@ public class ChildToParentMap {
         this.children = children;
         this.childToFatherMap = childToFatherMap;
         this.childToMotherMap = childToMotherMap;
-
+        
+        samplIds = Arrays.stream(children)
+                .collect(
+                        Collectors.toCollection(
+                                HashSet::new
+                        )
+                );
+        
+        samplIds.addAll(childToFatherMap.values());
+        samplIds.addAll(childToMotherMap.values());
+        
     }
 
     /**

@@ -103,8 +103,7 @@ public class Extractor {
         VariantIterator iterator = GenotypesFileType.getVariantIterator(
                 genotypesFile,
                 genotypesFileType,
-                variantList,
-                false
+                variantList
         );
         SimpleFileWriter h1Writer = new SimpleFileWriter(
                 new File(destinationStem + "_h1.gz"),

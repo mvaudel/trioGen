@@ -12,7 +12,7 @@ import no.uib.triogen.model.family.ChildToParentMap;
 public class VcfLine implements GenotypesProvider {
 
     /**
-     * Vcf key for the genotyping floag.
+     * Vcf key for the genotyping flag.
      */
     public final static String TYPED = "TYPED";
     /**
@@ -24,11 +24,6 @@ public class VcfLine implements GenotypesProvider {
      * The line as read from the file.
      */
     private String line;
-
-    /**
-     * The indexes of the samples.
-     */
-    private int[] indexes;
     /**
      * The variant id.
      */
@@ -54,14 +49,21 @@ public class VcfLine implements GenotypesProvider {
      */
     private boolean typed;
     /**
-     * Boolean indicating whether the genotypes provider should cache genotype
-     * values.
+     * Map of the indexes of samples in the alleles and dosages arrays.
      */
-    private final boolean useCache;
+    private HashMap<String, Integer> indexMap;
     /**
-     * Cache for the dosages.
+     * Boolean array indicating whether the first allele is called alt.
      */
-    private final HashMap<String, float[]> dosagesCache = new HashMap<>(0);
+    private boolean[] alleles1;
+    /**
+     * Boolean array indicating whether the second allele is called alt.
+     */
+    private boolean[] alleles2;
+    /**
+     * Values for the dosages.
+     */
+    private float[][] dosages;
     /**
      * Cache for individual p0s.
      */
@@ -84,28 +86,30 @@ public class VcfLine implements GenotypesProvider {
      *
      * @param vcfIterator The iterator used to parse the file.
      * @param line The line as read from the file.
-     * @param useCache Boolean indicating whether the genotypes provider should
-     * cache genotype values.
      */
     public VcfLine(
             CustomVcfIterator vcfIterator,
-            String line,
-            boolean useCache
+            String line
     ) {
 
         this.vcfIterator = vcfIterator;
         this.line = line;
-        this.useCache = useCache;
 
     }
 
     @Override
-    public void parse() {
+    public void parse(
+            ChildToParentMap childToParentMap
+    ) {
 
-        indexes = new int[vcfIterator.getnSamples()];
+        indexMap = new HashMap<>(childToParentMap.samplIds.size());
+        alleles1 = new boolean[childToParentMap.samplIds.size()];
+        alleles2 = new boolean[childToParentMap.samplIds.size()];
+        dosages = new float[3][childToParentMap.samplIds.size()];
 
         int nSeparators = 0;
-        int index1 = -1;
+        int previousIndex = -1;
+        int vcfSampleIndex = 0;
 
         for (int index = 0; index < line.length(); index++) {
 
@@ -113,50 +117,152 @@ public class VcfLine implements GenotypesProvider {
 
                 nSeparators++;
 
-                if (nSeparators >= vcfIterator.getnVariantColumns()) {
-
-                    indexes[nSeparators - vcfIterator.getnVariantColumns()] = index;
-                }
                 if (nSeparators == 1) {
 
-                    contig = line.substring(index1 + 1, index);
-                    index1 = index;
+                    contig = line.substring(previousIndex + 1, index);
 
                 } else if (nSeparators == 2) {
 
-                    bp = Integer.parseInt(
-                            line.substring(index1 + 1, index)
-                    );
-                    index1 = index;
+                    bp = Integer.parseInt(line.substring(previousIndex + 1, index));
 
                 } else if (nSeparators == 3) {
 
-                    variantId = line.substring(index1 + 1, index);
-                    index1 = index;
+                    variantId = line.substring(previousIndex + 1, index);
 
                 } else if (nSeparators == 4) {
 
-                    ref = line.substring(index1 + 1, index);
-                    index1 = index;
+                    ref = line.substring(previousIndex + 1, index);
 
                 } else if (nSeparators == 5) {
 
-                    alt = line.substring(index1 + 1, index);
-                    index1 = index;
-
-                } else if (nSeparators == 7) {
-
-                    index1 = index;
+                    alt = line.substring(previousIndex + 1, index);
 
                 } else if (nSeparators == 8) {
 
-                    String info = line.substring(index1 + 1, index);
+                    String info = line.substring(previousIndex + 1, index);
                     typed = info.startsWith(TYPED);
-                    index1 = index;
+
+                } else if (nSeparators > vcfIterator.getnVariantColumns()) {
+
+                    String sampleId = vcfIterator.samples[vcfSampleIndex];
+
+                    if (childToParentMap.samplIds.contains(sampleId)) {
+
+                        parseSample(
+                                sampleId,
+                                previousIndex,
+                                index
+                        );
+                    }
+
+                    vcfSampleIndex++;
 
                 }
+
+                previousIndex = index;
+
             }
         }
+
+        String sampleId = vcfIterator.samples[vcfSampleIndex];
+
+        if (childToParentMap.samplIds.contains(sampleId)) {
+
+            parseSample(
+                    sampleId,
+                    previousIndex,
+                    line.length()
+            );
+        }
+
+        line = null;
+
+    }
+
+    /**
+     * Parses the values to keep in memory for the given sample.
+     *
+     * @param sampleId The id of the sample.
+     * @param previousIndex The index of the separator before this sample.
+     * @param index The index of the separator after this sample.
+     */
+    private void parseSample(
+            String sampleId,
+            int previousIndex,
+            int index
+    ) {
+
+        int sampleIndex = indexMap.size();
+        indexMap.put(sampleId, sampleIndex);
+
+        // Parse genotypes 
+        int indexAllele1 = previousIndex + 1;
+        int indexSeparator = indexAllele1 + 1;
+        int indexAllele2 = indexSeparator + 1;
+        char allele1 = line.charAt(indexAllele1);
+        char separator = line.charAt(indexSeparator);
+        char allele2 = line.charAt(indexAllele2);
+
+        if (separator != '|' && separator != '/' && separator != ':') {
+
+            throw new IllegalArgumentException(
+                    "Unexpected separator in genotype '" + allele1 + separator + allele2 + "' (variant '" + getVariantID() + "', line index '" + previousIndex + "')."
+            );
+
+        }
+        if (allele1 != '0' && allele1 != '1') {
+
+            throw new IllegalArgumentException(
+                    "Unexpected allele1 in genotype '" + allele1 + separator + allele2 + "' (variant '" + getVariantID() + "', line index '" + previousIndex + "')."
+            );
+
+        }
+        if (allele2 != '0' && allele2 != '1') {
+
+            throw new IllegalArgumentException(
+                    "Unexpected allel2 in genotype '" + allele1 + separator + allele2 + "' (variant '" + getVariantID() + "', line index '" + previousIndex + "')."
+            );
+
+        }
+
+        alleles1[sampleIndex] = allele1 == '1';
+        alleles2[sampleIndex] = allele2 == '1';
+
+        // Parse dosages
+        int indexBeginning = previousIndex + 1;
+        int indexEnd = index;
+
+        String sampleData = line.substring(indexBeginning, indexEnd);
+        String[] split = sampleData.split(":");
+        String dosagesString = split[split.length - 1];
+        String[] dosagesStringSplit = dosagesString.split(",");
+
+        if (dosagesStringSplit.length != 3) {
+
+            throw new IllegalArgumentException(
+                    dosagesStringSplit.length + " dosages found where 3 expected in '" + dosagesString + "' (variant '" + getVariantID() + "', line index '" + previousIndex + "')."
+            );
+        }
+
+        float[] sampleDosages = new float[3];
+
+        for (int i = 0; i < 3; i++) {
+
+            try {
+
+                sampleDosages[i] = Float.parseFloat(dosagesStringSplit[i]);
+
+            } catch (Throwable t) {
+
+                throw new IllegalArgumentException(
+                        "Could not parse dosage '" + dosagesStringSplit[i] + "' as number in '" + dosagesString + "' (variant '" + getVariantID() + "', line index '" + previousIndex + "').",
+                        t
+                );
+            }
+        }
+
+        dosages[sampleIndex] = sampleDosages;
+
     }
 
     @Override
@@ -206,38 +312,10 @@ public class VcfLine implements GenotypesProvider {
             String sampleId
     ) {
 
-        int sampleIndex = vcfIterator.getSampleIndex(sampleId);
-        int index1 = indexes[sampleIndex] + 1;
-        int indexSeparator = index1 + 1;
-        int index2 = indexSeparator + 1;
-        char allele1 = line.charAt(index1);
-        char separator = line.charAt(indexSeparator);
-        char allele2 = line.charAt(index2);
+        int sampleIndex = indexMap.get(sampleId);
 
-        if (separator != '|' && separator != '/' && separator != ':') {
-
-            throw new IllegalArgumentException(
-                    "Unexpected separator in genotype " + line.substring(index1, index2 + 1) + " for variant " + getVariantID() + " in sample " + sampleId + "."
-            );
-
-        }
-        if (allele1 != '0' && allele1 != '1') {
-
-            throw new IllegalArgumentException(
-                    "Unexpected allele1 in genotype " + line.substring(index1, index2 + 1) + " for variant " + getVariantID() + " in sample " + sampleId + "."
-            );
-
-        }
-        if (allele2 != '0' && allele2 != '1') {
-
-            throw new IllegalArgumentException(
-                    "Unexpected allel2 in genotype " + line.substring(index1, index2 + 1) + " for variant " + getVariantID() + " in sample " + sampleId + "."
-            );
-
-        }
-
-        boolean allele11 = allele1 == '1';
-        boolean allele21 = allele2 == '1';
+        boolean allele11 = alleles1[sampleIndex];
+        boolean allele21 = alleles2[sampleIndex];
 
         if (!allele11 && !allele21) {
 
@@ -259,26 +337,54 @@ public class VcfLine implements GenotypesProvider {
     }
 
     @Override
-    public short[] getH(
-            ChildToParentMap childToParentMap,
-            String childId
+    public short getNAlt(
+            String sampleId
     ) {
 
-        String motherId = childToParentMap.getMother(childId);
-        String fatherId = childToParentMap.getFather(childId);
-        
-        return getH(
-                childId, 
-                motherId, 
-                fatherId
-        );
+        int sampleIndex = indexMap.get(sampleId);
+
+        boolean allele11 = alleles1[sampleIndex];
+        boolean allele21 = alleles2[sampleIndex];
+
+        if (!allele11 && !allele21) {
+
+            return 0;
+
+        } else if (allele11 && !allele21 || !allele11 && allele21) {
+
+            return 1;
+
+        } else {
+
+            return 2;
+
+        }
+    }
+
+    @Override
+    public float[] getDosages(String sampleId) {
+
+        int sampleIndex = indexMap.get(sampleId);
+
+        return dosages[sampleIndex];
 
     }
 
     @Override
-    public short[] getH(
-            String childId, 
-            String motherId, 
+    public double getNAltDosages(
+            String sampleId
+    ) {
+
+        float[] sampleDosages = getDosages(sampleId);
+
+        return sampleDosages[1] + 2 * sampleDosages[2];
+
+    }
+
+    @Override
+    public short[] getNAltH(
+            String childId,
+            String motherId,
             String fatherId
     ) {
 
@@ -295,62 +401,6 @@ public class VcfLine implements GenotypesProvider {
         short h4 = (short) (nAltFather - h3);
 
         return new short[]{h1, h2, h3, h4};
-        
-    }
-
-    @Override
-    public float[] getDosages(String sampleId) {
-
-        if (useCache) {
-
-            float[] dosages = dosagesCache.get(sampleId);
-
-            if (dosages != null) {
-
-                return dosages;
-
-            }
-        }
-
-        int sampleIndex = vcfIterator.getSampleIndex(sampleId);
-        int index1 = indexes[sampleIndex] + 1;
-        int index2 = sampleIndex == indexes.length - 1 ? line.length() : indexes[sampleIndex + 1];
-
-        String sampleData = line.substring(index1, index2);
-        String[] split = sampleData.split(":");
-        String[] dosagesString = split[split.length - 1].split(",");
-
-        if (dosagesString.length != 3) {
-
-            throw new IllegalArgumentException(
-                    dosagesString.length + " dosages found where 3 expected."
-            );
-        }
-
-        float[] dosages = new float[3];
-
-        for (int i = 0; i < 3; i++) {
-
-            try {
-
-                dosages[i] = Float.parseFloat(dosagesString[i]);
-
-            } catch (Throwable t) {
-
-                throw new IllegalArgumentException(
-                        "Could not parse dosage as number (Sample: '" + sampleId + "' value: '" + dosagesString[i] + "')",
-                        t
-                );
-            }
-        }
-
-        if (useCache) {
-
-            dosagesCache.put(sampleId, dosages);
-
-        }
-
-        return dosages;
 
     }
 
@@ -374,51 +424,51 @@ public class VcfLine implements GenotypesProvider {
             String childId = childIds[i];
 
             String motherId = childToParentMap.getMother(childId);
-            float[] dosages = getDosages(motherId);
-            dosageHomRef[i] = dosages[0];
-            dosageHomAlt[i] = dosages[2];
-            sumDosageHomRef += dosages[0];
-            sumDosageHomAlt += dosages[2];
-            
+            float[] sampleDosages = getDosages(motherId);
+            dosageHomRef[i] = sampleDosages[0];
+            dosageHomAlt[i] = sampleDosages[2];
+            sumDosageHomRef += sampleDosages[0];
+            sumDosageHomAlt += sampleDosages[2];
+
             int genotype = getGenotype(motherId);
             genotypeHomRef[i] = genotype == 0;
             genotypeHomAlt[i] = genotype == 3;
 
             if (genotype == 0) {
-                
+
                 sumGenotypeHomRef++;
-            
+
             } else if (genotype == 3) {
-                
+
                 sumGenotypeHomAlt++;
-            
+
             }
 
             String fatherId = childToParentMap.getFather(childId);
-            dosages = getDosages(fatherId);
-            dosageHomRef[i + childIds.length] = dosages[0];
-            dosageHomAlt[i + childIds.length] = dosages[2];
-            sumDosageHomRef += dosages[0];
-            sumDosageHomAlt += dosages[2];
-            
+            sampleDosages = getDosages(fatherId);
+            dosageHomRef[i + childIds.length] = sampleDosages[0];
+            dosageHomAlt[i + childIds.length] = sampleDosages[2];
+            sumDosageHomRef += sampleDosages[0];
+            sumDosageHomAlt += sampleDosages[2];
+
             genotype = getGenotype(fatherId);
             genotypeHomRef[i + childIds.length] = genotype == 0;
             genotypeHomAlt[i + childIds.length] = genotype == 3;
 
             if (genotype == 0) {
-                
+
                 sumGenotypeHomRef++;
-            
+
             } else if (genotype == 3) {
-                
+
                 sumGenotypeHomAlt++;
-            
+
             }
         }
 
         parentsDosageP0sCache = sumDosageHomRef >= sumDosageHomAlt ? dosageHomRef : dosageHomAlt;
         parentsDosageP0Cache = sumDosageHomRef >= sumDosageHomAlt ? sumDosageHomRef : sumDosageHomAlt;
-        
+
         parentsGenotypeP0sCache = sumGenotypeHomRef >= sumGenotypeHomAlt ? genotypeHomRef : genotypeHomAlt;
         parentsGenotypeP0Cache = sumGenotypeHomRef >= sumGenotypeHomAlt ? sumGenotypeHomRef : sumGenotypeHomAlt;
 
@@ -440,23 +490,15 @@ public class VcfLine implements GenotypesProvider {
 
     @Override
     public boolean[] getParentsGenotypeP0sCache() {
-        
+
         return parentsGenotypeP0sCache;
-        
+
     }
 
     @Override
     public int getParentsGenotypeP0Cache() {
-        
-        return parentsGenotypeP0Cache;
-        
-    }
 
-    @Override
-    public void trim() {
-        
-        line = null;
-        indexes = null;
-        
+        return parentsGenotypeP0Cache;
+
     }
 }

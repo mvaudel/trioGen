@@ -81,7 +81,7 @@ public class ExtractorRunnable implements Runnable {
             GenotypesProvider genotypesProvider;
             while ((genotypesProvider = iterator.next()) != null && !canceled) {
 
-                genotypesProvider.parse();
+                genotypesProvider.parse(childToParentMap);
 
                 String[] genotypes = extractHs(genotypesProvider);
                 
@@ -161,9 +161,10 @@ public class ExtractorRunnable implements Runnable {
                 .collect(
                         Collectors.toMap(
                                 childId -> childId,
-                                childId -> genotypesProvider.getH(
-                                        childToParentMap,
-                                        childId
+                                childId -> genotypesProvider.getNAltH(
+                                        childId,
+                                        childToParentMap.getMother(childId),
+                                        childToParentMap.getFather(childId)
                                 ),
                                 (a, b) -> a,
                                 HashMap::new
