@@ -501,4 +501,14 @@ public class VcfLine implements GenotypesProvider {
         return parentsGenotypeP0Cache;
 
     }
+
+    @Override
+    public void emptyGenotypeDosageCaches() {
+
+        indexMap = null;
+        alleles1 = null;
+        alleles2 = null;
+        dosages = null;
+
+    }
 }

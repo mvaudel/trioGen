@@ -157,5 +157,10 @@ public interface GenotypesProvider {
      * @return The sum of p0s.
      */
     public int getParentsGenotypeP0Cache();
+    
+    /**
+     * Empty the caches for genotypes and dosages.
+     */
+    public void emptyGenotypeDosageCaches();
 
 }

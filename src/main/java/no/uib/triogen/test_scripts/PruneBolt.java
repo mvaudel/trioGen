@@ -68,8 +68,6 @@ public class PruneBolt {
 
                                 if (!contig.equals(previousContig)) {
 
-                                    System.out.println(Instant.now() + "        " + phenoName + " " + role + " chr" + contig + ".");
-
                                     if (!pValuesMap.isEmpty()) {
 
                                         ArrayList<String[]> prunedLines = prune(pValuesMap, previousContig, ldFolder, ldThreshold);
@@ -107,8 +105,6 @@ public class PruneBolt {
 
                                 }
                             }
-
-                            System.out.println(Instant.now() + "        " + phenoName + " " + role + " chr" + previousContig + ".");
 
                             if (!pValuesMap.isEmpty()) {
 

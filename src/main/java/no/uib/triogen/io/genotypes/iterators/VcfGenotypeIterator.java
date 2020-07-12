@@ -125,6 +125,7 @@ public class VcfGenotypeIterator implements VariantIterator {
                 if (maf >= mafThreshold) {
 
                     genotypesProvider.setParentP0s(childToParentMap.children, childToParentMap);
+                    genotypesProvider.emptyGenotypeDosageCaches();
 
                     nVariants++;
 

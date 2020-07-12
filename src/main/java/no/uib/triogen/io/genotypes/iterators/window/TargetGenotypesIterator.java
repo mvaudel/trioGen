@@ -126,6 +126,7 @@ public class TargetGenotypesIterator implements WindowGenotypesIterator {
                 genotypesProvider = new VcfVariant(variantContext);
                 genotypesProvider.parse(childToParentMap);
                 genotypesProvider.setParentP0s(childToParentMap.children, childToParentMap);
+                genotypesProvider.emptyGenotypeDosageCaches();
 
             }
         }

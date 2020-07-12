@@ -58,7 +58,7 @@ public class LdMatrixOptionsBean {
     /**
      * The upstream loading factor.
      */
-    public double upstreamLoadingFactor = 1.5;
+    public double upstreamLoadingFactor = 1.1;
     /**
      * The number of days before timeout.
      */

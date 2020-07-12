@@ -429,4 +429,14 @@ public class VcfVariant implements GenotypesProvider {
 
     }
 
+    @Override
+    public void emptyGenotypeDosageCaches() {
+
+        indexMap = null;
+        alleles1 = null;
+        alleles2 = null;
+        dosages = null;
+
+    }
+
 }

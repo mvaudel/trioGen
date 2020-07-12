@@ -218,6 +218,7 @@ public class BufferedGenotypesIterator implements WindowGenotypesIterator {
             if (maf >= mafThreshold) {
 
                 genotypesProvider.setParentP0s(childToParentMap.children, childToParentMap);
+                genotypesProvider.emptyGenotypeDosageCaches();
 
                 add(genotypesProvider);
 
@@ -309,6 +310,7 @@ public class BufferedGenotypesIterator implements WindowGenotypesIterator {
                                                             childToParentMap.children,
                                                             childToParentMap
                                                     );
+                                                    genotypesProvider.emptyGenotypeDosageCaches();
 
                                                 }
                                                 
