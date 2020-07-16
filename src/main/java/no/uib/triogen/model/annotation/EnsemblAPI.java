@@ -88,23 +88,26 @@ public class EnsemblAPI {
 
                 JSONObject jsonObject = array.getJSONObject(i);
 
-                String bioType = jsonObject.has("biotype") ? jsonObject.getString("biotype") : "Not Available";
+                if (jsonObject.has("start") && jsonObject.has("end")) {
 
-                String geneId = jsonObject.has("external_name")
-                        ? jsonObject.getString("external_name")
-                        : jsonObject.has("gene_id")
-                        ? jsonObject.getString("gene_id")
-                        : "Not Available";
+                    String bioType = jsonObject.has("biotype") ? jsonObject.getString("biotype") : "Not Available";
 
-                GeneCoordinates geneCoordinates = new GeneCoordinates(
-                        bioType,
-                        geneId,
-                        jsonObject.getInt("start"),
-                        jsonObject.getInt("end")
-                );
+                    String geneId = jsonObject.has("external_name")
+                            ? jsonObject.getString("external_name")
+                            : jsonObject.has("gene_id")
+                            ? jsonObject.getString("gene_id")
+                            : "Not Available";
 
-                result.add(geneCoordinates);
+                    GeneCoordinates geneCoordinates = new GeneCoordinates(
+                            bioType,
+                            geneId,
+                            jsonObject.getInt("start"),
+                            jsonObject.getInt("end")
+                    );
 
+                    result.add(geneCoordinates);
+
+                }
             }
 
             return result;
