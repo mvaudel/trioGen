@@ -1,4 +1,4 @@
-package no.uib.triogen.cmd.results;
+package no.uib.triogen.cmd.extract;
 
 import java.io.File;
 import java.io.FileNotFoundException;

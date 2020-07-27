@@ -1,4 +1,4 @@
-package no.uib.triogen.cmd.results;
+package no.uib.triogen.cmd.extract;
 
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
