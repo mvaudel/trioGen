@@ -88,19 +88,27 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
+<th class="colFirst" scope="row"><a href="#no.uib.triogen.cmd.mendelian_check">no.uib.triogen.cmd.mendelian_check</a></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="#no.uib.triogen.cmd.transmission">no.uib.triogen.cmd.transmission</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="#no.uib.triogen.io.genotypes">no.uib.triogen.io.genotypes</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="#no.uib.triogen.processing.association.linear_model">no.uib.triogen.processing.association.linear_model</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="#no.uib.triogen.processing.ld">no.uib.triogen.processing.ld</a></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<th class="colFirst" scope="row"><a href="#no.uib.triogen.processing.mendelian_check">no.uib.triogen.processing.mendelian_check</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
@@ -159,6 +167,34 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr class="altColor">
 <td class="colFirst"><code><a href="../GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">LdMatrixOptionsBean.</span><code><span class="memberNameLink"><a href="../../../cmd/ld/LdMatrixOptionsBean.html#genotypesFileType">genotypesFileType</a></span></code></th>
+<td class="colLast">
+<div class="block">The genotypes file type.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</li>
+<li class="blockList">
+<section class="detail"><a id="no.uib.triogen.cmd.mendelian_check">
+<!--   -->
+</a>
+<h2>Uses of <a href="../GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a> in <a href="../../../cmd/mendelian_check/package-summary.html">no.uib.triogen.cmd.mendelian_check</a></h2>
+<div class="useSummary">
+<table>
+<caption><span>Fields in <a href="../../../cmd/mendelian_check/package-summary.html">no.uib.triogen.cmd.mendelian_check</a> declared as <a href="../GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a></span><span class="tabEnd">&nbsp;</span></caption>
+<thead>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Field</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">MendelianCheckOptionsBean.</span><code><span class="memberNameLink"><a href="../../../cmd/mendelian_check/MendelianCheckOptionsBean.html#genotypesFileType">genotypesFileType</a></span></code></th>
 <td class="colLast">
 <div class="block">The genotypes file type.</div>
 </td>
@@ -347,6 +383,39 @@ boolean&nbsp;hardCalls,
 int&nbsp;nVariants,
 double&nbsp;downstreamLoadingFactor,
 double&nbsp;upstreamLoadingFactor,
+<a href="../../../log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code></th>
+<td class="colLast">
+<div class="block">constructor.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</li>
+<li class="blockList">
+<section class="detail"><a id="no.uib.triogen.processing.mendelian_check">
+<!--   -->
+</a>
+<h2>Uses of <a href="../GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a> in <a href="../../../processing/mendelian_check/package-summary.html">no.uib.triogen.processing.mendelian_check</a></h2>
+<div class="useSummary">
+<table>
+<caption><span>Constructors in <a href="../../../processing/mendelian_check/package-summary.html">no.uib.triogen.processing.mendelian_check</a> with parameters of type <a href="../GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a></span><span class="tabEnd">&nbsp;</span></caption>
+<thead>
+<tr>
+<th class="colFirst" scope="col">Constructor</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="altColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../processing/mendelian_check/MendelianCheckComputer.html#%3Cinit%3E(java.io.File,no.uib.triogen.io.genotypes.GenotypesFileType,no.uib.triogen.model.trio_genotypes.VariantList,no.uib.triogen.model.family.ChildToParentMap,java.io.File,double,int,no.uib.triogen.log.SimpleCliLogger)">MendelianCheckComputer</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a>&nbsp;genotypesFile,
+<a href="../GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
+<a href="../../../model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
+<a href="../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
+<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a>&nbsp;destinationFile,
+double&nbsp;mafThreshold,
+int&nbsp;nVariants,
 <a href="../../../log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code></th>
 <td class="colLast">
 <div class="block">constructor.</div>

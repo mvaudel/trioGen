@@ -1,8 +1,9 @@
 no.uib.triogen
 no.uib.triogen.cmd.association
+no.uib.triogen.cmd.extract
 no.uib.triogen.cmd.ld
 no.uib.triogen.cmd.locus
-no.uib.triogen.cmd.results
+no.uib.triogen.cmd.mendelian_check
 no.uib.triogen.cmd.transmission
 no.uib.triogen.export
 no.uib.triogen.io
@@ -26,6 +27,7 @@ no.uib.triogen.model.phenotypes
 no.uib.triogen.model.trio_genotypes
 no.uib.triogen.processing.association.linear_model
 no.uib.triogen.processing.ld
+no.uib.triogen.processing.mendelian_check
 no.uib.triogen.processing.transmission.extraction
 no.uib.triogen.test_scripts
 no.uib.triogen.utils

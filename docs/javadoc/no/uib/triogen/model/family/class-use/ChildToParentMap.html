@@ -116,6 +116,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<th class="colFirst" scope="row"><a href="#no.uib.triogen.processing.mendelian_check">no.uib.triogen.processing.mendelian_check</a></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="#no.uib.triogen.processing.transmission.extraction">no.uib.triogen.processing.transmission.extraction</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -477,6 +481,49 @@ double&nbsp;minR2,
 boolean&nbsp;hardCalls,
 <a href="../../trio_genotypes/VariantIndex.html" title="class in no.uib.triogen.model.trio_genotypes">VariantIndex</a>&nbsp;variantIndex,
 boolean&nbsp;testIteration,
+<a href="../../../log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code></th>
+<td class="colLast">
+<div class="block">Constructor.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</li>
+<li class="blockList">
+<section class="detail"><a id="no.uib.triogen.processing.mendelian_check">
+<!--   -->
+</a>
+<h2>Uses of <a href="../ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a> in <a href="../../../processing/mendelian_check/package-summary.html">no.uib.triogen.processing.mendelian_check</a></h2>
+<div class="useSummary">
+<table>
+<caption><span>Constructors in <a href="../../../processing/mendelian_check/package-summary.html">no.uib.triogen.processing.mendelian_check</a> with parameters of type <a href="../ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a></span><span class="tabEnd">&nbsp;</span></caption>
+<thead>
+<tr>
+<th class="colFirst" scope="col">Constructor</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="altColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../processing/mendelian_check/MendelianCheckComputer.html#%3Cinit%3E(java.io.File,no.uib.triogen.io.genotypes.GenotypesFileType,no.uib.triogen.model.trio_genotypes.VariantList,no.uib.triogen.model.family.ChildToParentMap,java.io.File,double,int,no.uib.triogen.log.SimpleCliLogger)">MendelianCheckComputer</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a>&nbsp;genotypesFile,
+<a href="../../../io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
+<a href="../../trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
+<a href="../ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
+<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a>&nbsp;destinationFile,
+double&nbsp;mafThreshold,
+int&nbsp;nVariants,
+<a href="../../../log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code></th>
+<td class="colLast">
+<div class="block">constructor.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../processing/mendelian_check/MendelianCheckRunnable.html#%3Cinit%3E(no.uib.triogen.io.flat.SimpleFileWriter,no.uib.triogen.io.genotypes.VariantIterator,no.uib.triogen.model.family.ChildToParentMap,double,no.uib.triogen.log.SimpleCliLogger)">MendelianCheckRunnable</a></span>&#8203;(<a href="../../../io/flat/SimpleFileWriter.html" title="class in no.uib.triogen.io.flat">SimpleFileWriter</a>&nbsp;writer,
+<a href="../../../io/genotypes/VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a>&nbsp;iterator,
+<a href="../ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
+double&nbsp;mafThreshold,
 <a href="../../../log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code></th>
 <td class="colLast">
 <div class="block">Constructor.</div>
