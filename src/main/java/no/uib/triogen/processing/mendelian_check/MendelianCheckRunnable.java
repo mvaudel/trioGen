@@ -80,6 +80,8 @@ public class MendelianCheckRunnable implements Runnable, AutoCloseable {
 
             GenotypesProvider genotypesProvider;
             while ((genotypesProvider = iterator.next()) != null && !canceled) {
+                
+                genotypesProvider.parse(childToParentMap);
 
                 double maf = MafEstimator.getMaf(genotypesProvider, childToParentMap);
 
