@@ -104,12 +104,12 @@ public class VcfVariant implements GenotypesProvider {
         altAllele = altAlleles.get(0);
 
         // Parse genotypes and dosages
-        indexMap = new HashMap<>(childToParentMap.samplIds.size());
-        alleles1 = new boolean[childToParentMap.samplIds.size()];
-        alleles2 = new boolean[childToParentMap.samplIds.size()];
-        dosages = new float[childToParentMap.samplIds.size()][3];
+        indexMap = new HashMap<>(childToParentMap.sampleIds.size());
+        alleles1 = new boolean[childToParentMap.sampleIds.size()];
+        alleles2 = new boolean[childToParentMap.sampleIds.size()];
+        dosages = new float[childToParentMap.sampleIds.size()][3];
 
-        for (String sampleId : childToParentMap.samplIds) {
+        for (String sampleId : childToParentMap.sampleIds) {
 
             int sampleIndex = indexMap.size();
             indexMap.put(sampleId, sampleIndex);

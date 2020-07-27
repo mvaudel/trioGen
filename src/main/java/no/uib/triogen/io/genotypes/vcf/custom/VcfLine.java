@@ -102,10 +102,10 @@ public class VcfLine implements GenotypesProvider {
             ChildToParentMap childToParentMap
     ) {
 
-        indexMap = new HashMap<>(childToParentMap.samplIds.size());
-        alleles1 = new boolean[childToParentMap.samplIds.size()];
-        alleles2 = new boolean[childToParentMap.samplIds.size()];
-        dosages = new float[childToParentMap.samplIds.size()][3];
+        indexMap = new HashMap<>(childToParentMap.sampleIds.size());
+        alleles1 = new boolean[childToParentMap.sampleIds.size()];
+        alleles2 = new boolean[childToParentMap.sampleIds.size()];
+        dosages = new float[childToParentMap.sampleIds.size()][3];
 
         int nSeparators = 0;
         int previousIndex = -1;
@@ -146,7 +146,7 @@ public class VcfLine implements GenotypesProvider {
 
                     String sampleId = vcfIterator.samples[vcfSampleIndex];
 
-                    if (childToParentMap.samplIds.contains(sampleId)) {
+                    if (childToParentMap.sampleIds.contains(sampleId)) {
 
                         parseSample(
                                 sampleId,
@@ -166,7 +166,7 @@ public class VcfLine implements GenotypesProvider {
 
         String sampleId = vcfIterator.samples[vcfSampleIndex];
 
-        if (childToParentMap.samplIds.contains(sampleId)) {
+        if (childToParentMap.sampleIds.contains(sampleId)) {
 
             parseSample(
                     sampleId,

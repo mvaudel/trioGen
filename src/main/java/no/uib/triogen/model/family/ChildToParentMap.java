@@ -29,9 +29,9 @@ public class ChildToParentMap {
      */
     public final String[] children;
     /**
-     * Set of all sample ids.
+     * Set of all sample ids (child + mother + father).
      */
-    public final HashSet<String> samplIds;
+    public final HashSet<String> sampleIds;
 
     /**
      * Constructor.
@@ -50,15 +50,15 @@ public class ChildToParentMap {
         this.childToFatherMap = childToFatherMap;
         this.childToMotherMap = childToMotherMap;
         
-        samplIds = Arrays.stream(children)
+        sampleIds = Arrays.stream(children)
                 .collect(
                         Collectors.toCollection(
                                 HashSet::new
                         )
                 );
         
-        samplIds.addAll(childToFatherMap.values());
-        samplIds.addAll(childToMotherMap.values());
+        sampleIds.addAll(childToFatherMap.values());
+        sampleIds.addAll(childToMotherMap.values());
         
     }
 
