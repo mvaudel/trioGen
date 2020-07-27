@@ -12,6 +12,7 @@ import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.maf.MafEstimator;
+import no.uib.triogen.model.mendelian_error.MendelianErrorEstimator;
 import no.uib.triogen.model.trio_genotypes.VariantIndex;
 
 /**
@@ -101,22 +102,21 @@ public class MendelianCheckRunnable implements Runnable, AutoCloseable {
 
                         if (hs[1] == -1) {
 
-                            freq_h2_1 += 1;
+                            freq_h2_1 += 1.0;
 
                         } else if (hs[1] == 2) {
 
-                            freq_h2_2 += 1;
+                            freq_h2_2 += 1.0;
 
                         } else if (hs[3] == -1) {
 
-                            freq_h4_1 += 1;
+                            freq_h4_1 += 1.0;
 
                         } else if (hs[3] == 2) {
 
-                            freq_h4_2 += 1;
+                            freq_h4_2 += 1.0;
 
                         }
-
                     }
 
                     freq_h2_1 /= childToParentMap.children.length;
@@ -133,9 +133,12 @@ public class MendelianCheckRunnable implements Runnable, AutoCloseable {
                     double p_h2_2 = freq_h2_2 / exp_h2_2;
                     double p_h4_1 = freq_h4_1 / exp_h4_1;
                     double p_h4_2 = freq_h4_2 / exp_h4_2;
+                    
+                    double prevalence = MendelianErrorEstimator.estimateMendelianErrorPrevalence(genotypesProvider, childToParentMap);
 
                     writer.writeLine(
                             genotypesProvider.getContig(),
+                            Integer.toString(genotypesProvider.getBp()),
                             genotypesProvider.getVariantID(),
                             genotypesProvider.getRef(),
                             genotypesProvider.getAlt(),
@@ -151,7 +154,8 @@ public class MendelianCheckRunnable implements Runnable, AutoCloseable {
                             Double.toString(p_h2_1),
                             Double.toString(p_h2_2),
                             Double.toString(p_h4_1),
-                            Double.toString(p_h4_2)
+                            Double.toString(p_h4_2),
+                            Double.toString(prevalence)
                     );
                 }
             }

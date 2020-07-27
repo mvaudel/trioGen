@@ -199,7 +199,8 @@ public class MendelianCheckComputer {
                 "h2_1_p",
                 "h2_2_p",
                 "h4_1_p",
-                "h4_2_p"
+                "h4_2_p",
+                "prevalence"
         );
 
     }

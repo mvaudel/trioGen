@@ -23,6 +23,7 @@ no.uib.triogen.model.annotation
 no.uib.triogen.model.family
 no.uib.triogen.model.genome
 no.uib.triogen.model.maf
+no.uib.triogen.model.mendelian_error
 no.uib.triogen.model.phenotypes
 no.uib.triogen.model.trio_genotypes
 no.uib.triogen.processing.association.linear_model
