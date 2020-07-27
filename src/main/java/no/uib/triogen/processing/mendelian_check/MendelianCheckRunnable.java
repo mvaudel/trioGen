@@ -88,10 +88,10 @@ public class MendelianCheckRunnable implements Runnable, AutoCloseable {
 
                 if (maf >= mafThreshold) {
 
-                    double freq_h2_1 = 0.0;
-                    double freq_h2_2 = 0.0;
-                    double freq_h4_1 = 0.0;
-                    double freq_h4_2 = 0.0;
+                    int freq_h2_1 = 0;
+                    int freq_h2_2 = 0;
+                    int freq_h4_1 = 0;
+                    int freq_h4_2 = 0;
 
                     for (String childId : childToParentMap.children) {
 
@@ -102,42 +102,41 @@ public class MendelianCheckRunnable implements Runnable, AutoCloseable {
 
                         if (hs[1] == -1) {
 
-                            freq_h2_1 += 1.0;
+                            freq_h2_1 += 1;
 
                         } 
                         if (hs[1] == 2) {
 
-                            freq_h2_2 += 1.0;
+                            freq_h2_2 += 1;
 
                         } 
                         if (hs[3] == -1) {
 
-                            freq_h4_1 += 1.0;
+                            freq_h4_1 += 1;
 
                         } 
                         if (hs[3] == 2) {
 
-                            freq_h4_2 += 1.0;
+                            freq_h4_2 += 1;
 
                         }
                     }
 
-                    freq_h2_1 /= childToParentMap.children.length;
-                    freq_h2_2 /= childToParentMap.children.length;
-                    freq_h4_1 /= childToParentMap.children.length;
-                    freq_h4_2 /= childToParentMap.children.length;
+                    double exp_h2_1 = childToParentMap.children.length * (1 - maf) * (1 - maf) * maf; // 001*
+                    double exp_h2_2 = childToParentMap.children.length * maf * maf * (1 - maf); // 110*
+                    double exp_h4_1 = childToParentMap.children.length * exp_h2_1; // *100
+                    double exp_h4_2 = childToParentMap.children.length * exp_h2_2; // *011
 
-                    double exp_h2_1 = (1 - maf) * (1 - maf) * maf; // 001*
-                    double exp_h2_2 = maf * maf * (1 - maf); // 110*
-                    double exp_h4_1 = exp_h2_1; // *100
-                    double exp_h4_2 = exp_h2_2; // *011
-
-                    double p_h2_1 = freq_h2_1 / exp_h2_1;
-                    double p_h2_2 = freq_h2_2 / exp_h2_2;
-                    double p_h4_1 = freq_h4_1 / exp_h4_1;
-                    double p_h4_2 = freq_h4_2 / exp_h4_2;
+                    double p_h2_1 = ((double) freq_h2_1) / exp_h2_1;
+                    double p_h2_2 = ((double) freq_h2_2) / exp_h2_2;
+                    double p_h4_1 = ((double) freq_h4_1) / exp_h4_1;
+                    double p_h4_2 = ((double) freq_h4_2) / exp_h4_2;
                     
-                    double prevalence = MendelianErrorEstimator.estimateMendelianErrorPrevalence(genotypesProvider, childToParentMap);
+                    double prevalenceBefore = MendelianErrorEstimator.estimateMendelianErrorPrevalence(genotypesProvider, childToParentMap);
+                    
+                    genotypesProvider.checkMendelianErrors(childToParentMap);
+                    
+                    double prevalenceAfter = MendelianErrorEstimator.estimateMendelianErrorPrevalence(genotypesProvider, childToParentMap);
 
                     writer.writeLine(
                             genotypesProvider.getContig(),
@@ -159,7 +158,8 @@ public class MendelianCheckRunnable implements Runnable, AutoCloseable {
                             Double.toString(p_h2_2),
                             Double.toString(p_h4_1),
                             Double.toString(p_h4_2),
-                            Double.toString(prevalence)
+                            Double.toString(prevalenceBefore),
+                            Double.toString(prevalenceAfter)
                     );
                 }
             }

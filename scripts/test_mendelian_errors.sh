@@ -9,5 +9,5 @@ java -cp bin/triogen-0.4.0-beta/triogen-0.4.0-beta.jar no.uib.triogen.cmd.mendel
              -gf 1 \
              -f /mnt/work/marc/moba/run/triogen/pheno/trio \
              -maf 0.005 \
-             -o /mnt/work/marc/moba/run/triogen/m_err/chr22 \
+             -o /mnt/work/marc/moba/run/triogen/m_err/chr22.gz \
              -nv 42

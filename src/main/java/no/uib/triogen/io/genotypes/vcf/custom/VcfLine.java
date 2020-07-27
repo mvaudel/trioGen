@@ -395,9 +395,9 @@ public class VcfLine implements GenotypesProvider {
         short nAltMother = (short) (genotypeMother >= 2 ? genotypeMother - 1 : genotypeMother);
         short nAltFather = (short) (genotypeFather >= 2 ? genotypeFather - 1 : genotypeFather);
 
-        short h3 = (short) (genotypeChild == 0 || genotypeChild == 2 ? 0 : 1);
-        short h1 = (short) (genotypeChild == 0 || genotypeChild == 1 ? 0 : 1);
+        short h1 = (short) (genotypeChild == 0 || genotypeChild == 2 ? 0 : 1);
         short h2 = (short) (nAltMother - h1);
+        short h3 = (short) (genotypeChild == 0 || genotypeChild == 1 ? 0 : 1);
         short h4 = (short) (nAltFather - h3);
 
         return new short[]{h1, h2, h3, h4};
@@ -515,7 +515,26 @@ public class VcfLine implements GenotypesProvider {
     @Override
     public double checkMendelianErrors(ChildToParentMap childToParentMap) {
         
-        return MendelianErrorEstimator.estimateMendelianErrorPrevalence(this, childToParentMap);
-        
+        double errorPrevalence = MendelianErrorEstimator.estimateMendelianErrorPrevalence(this, childToParentMap);
+
+        if (errorPrevalence > 0.5) {
+
+            for (String childId : childToParentMap.children) {
+
+                int index = indexMap.get(childId);
+
+                boolean temp = alleles1[index];
+                alleles1[index] = alleles2[index];
+                alleles2[index] = temp;
+
+            }
+
+            return MendelianErrorEstimator.estimateMendelianErrorPrevalence(this, childToParentMap);
+
+        } else {
+
+            return errorPrevalence;
+
+        }
     }
 }

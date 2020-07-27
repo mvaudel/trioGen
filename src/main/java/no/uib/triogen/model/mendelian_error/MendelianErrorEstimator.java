@@ -26,8 +26,8 @@ public class MendelianErrorEstimator {
 
         double maf = MafEstimator.getMaf(genotypesProvider, childToParentMap);
 
-        double minusOne = 0.0;
-        double two = 0.0;
+        double minusOne = 0;
+        double two = 0;
 
         for (String childId : childToParentMap.children) {
 
@@ -38,12 +38,12 @@ public class MendelianErrorEstimator {
 
             if (hs[1] == -1 || hs[3] == -1) {
 
-                minusOne += 1.0;
+                minusOne += 1;
 
             } 
             if (hs[1] == 2 || hs[3] == 2) {
 
-                two += 1.0;
+                two += 1;
 
             }
         }
@@ -51,7 +51,7 @@ public class MendelianErrorEstimator {
         double expectedMinusOne = childToParentMap.children.length * 2 * (1 - maf) * (1 - maf) * maf; // number of trios with 001* *100
         double expectedTwo = childToParentMap.children.length * 2 * maf * maf * (1 - maf); // number of trios with 110* *011
 
-        return (minusOne + two) / (expectedMinusOne + expectedTwo);
+        return ((double) (minusOne + two)) / (expectedMinusOne + expectedTwo);
 
     }
 

@@ -201,7 +201,8 @@ public class MendelianCheckComputer {
                 "h2_2_p",
                 "h4_1_p",
                 "h4_2_p",
-                "prevalence"
+                "prevalence_before_check",
+                "prevalence_after_check"
         );
 
     }

@@ -35,14 +35,6 @@ public class VcfVariant implements GenotypesProvider {
      */
     private Allele altAllele;
     /**
-     * Cache for the dosages.
-     */
-    private final HashMap<String, float[]> dosagesCache = new HashMap<>(0);
-    /**
-     * Cache for the hard calls.
-     */
-    private final HashMap<String, Short> hardCallsCache = new HashMap<>(0);
-    /**
      * Cache for individual p0s.
      */
     private float[] parentsDosageP0sCache = null;
@@ -316,16 +308,16 @@ public class VcfVariant implements GenotypesProvider {
             String fatherId
     ) {
 
-        short genotypeKid = getGenotype(childId);
+        short genotypeChild = getGenotype(childId);
         short genotypeMother = getGenotype(motherId);
         short genotypeFather = getGenotype(fatherId);
 
         short nAltMother = (short) (genotypeMother >= 2 ? genotypeMother - 1 : genotypeMother);
         short nAltFather = (short) (genotypeFather >= 2 ? genotypeFather - 1 : genotypeFather);
 
-        short h3 = (short) (genotypeKid == 0 || genotypeKid == 2 ? 0 : 1);
-        short h1 = (short) (genotypeKid == 0 || genotypeKid == 1 ? 0 : 1);
+        short h1 = (short) (genotypeChild == 0 || genotypeChild == 2 ? 0 : 1);
         short h2 = (short) (nAltMother - h1);
+        short h3 = (short) (genotypeChild == 0 || genotypeChild == 1 ? 0 : 1);
         short h4 = (short) (nAltFather - h3);
 
         return new short[]{h1, h2, h3, h4};
@@ -442,9 +434,27 @@ public class VcfVariant implements GenotypesProvider {
 
     @Override
     public double checkMendelianErrors(ChildToParentMap childToParentMap) {
-        
-        return MendelianErrorEstimator.estimateMendelianErrorPrevalence(this, childToParentMap);
-        
-    }
 
+        double errorPrevalence = MendelianErrorEstimator.estimateMendelianErrorPrevalence(this, childToParentMap);
+
+        if (errorPrevalence > 0.5) {
+
+            for (String childId : childToParentMap.children) {
+
+                int index = indexMap.get(childId);
+
+                boolean temp = alleles1[index];
+                alleles1[index] = alleles2[index];
+                alleles2[index] = temp;
+
+            }
+
+            return MendelianErrorEstimator.estimateMendelianErrorPrevalence(this, childToParentMap);
+
+        } else {
+
+            return errorPrevalence;
+
+        }
+    }
 }
