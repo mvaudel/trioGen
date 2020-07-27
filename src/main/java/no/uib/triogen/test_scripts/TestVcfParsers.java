@@ -82,8 +82,10 @@ public class TestVcfParsers {
                     }
 
                     GenotypesProvider genericProvider = genericIterator.next();
+                    genericProvider.parse(childToParentMap);
 
                     GenotypesProvider customProvider = customIterator.next();
+                    customProvider.parse(childToParentMap);
 
                     if (!genericProvider.getVariantID().equals(customProvider.getVariantID())) {
 
