@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.mendelian_error.MendelianErrorEstimator;
 
 /**
  * The VcfVariant provides genotypes for a variant from a vcf file.
@@ -437,6 +438,13 @@ public class VcfVariant implements GenotypesProvider {
         alleles2 = null;
         dosages = null;
 
+    }
+
+    @Override
+    public double checkMendelianErrors(ChildToParentMap childToParentMap) {
+        
+        return MendelianErrorEstimator.estimateMendelianErrorPrevalence(this, childToParentMap);
+        
     }
 
 }

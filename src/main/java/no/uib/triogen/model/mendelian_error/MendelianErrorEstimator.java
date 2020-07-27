@@ -40,7 +40,8 @@ public class MendelianErrorEstimator {
 
                 minusOne += 1.0;
 
-            } else if (hs[1] == 2 || hs[3] == 2) {
+            } 
+            if (hs[1] == 2 || hs[3] == 2) {
 
                 two += 1.0;
 

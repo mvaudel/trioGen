@@ -19,7 +19,7 @@
 <script type="text/javascript" src="../../../../../../../script-dir/jquery-ui.js"></script>
 </head>
 <body class="class-declaration">
-<script type="text/javascript">var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
+<script type="text/javascript">var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -194,69 +194,76 @@ implements <a href="../../GenotypesProvider.html" title="interface in no.uib.tri
 </thead>
 <tbody>
 <tr class="altColor" id="i0">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#checkMendelianErrors(no.uib.triogen.model.family.ChildToParentMap)">checkMendelianErrors</a></span>&#8203;(<a href="../../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</code></th>
+<td class="colLast">
+<div class="block">Checks the prevalence of Mendelian errors.If more than 50%, switch the children alleles.</div>
+</td>
+</tr>
+<tr class="rowColor" id="i1">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#emptyGenotypeDosageCaches()">emptyGenotypeDosageCaches</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Empty the caches for genotypes and dosages.</div>
 </td>
 </tr>
-<tr class="rowColor" id="i1">
+<tr class="altColor" id="i2">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#genotyped()">genotyped</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns a boolean indicating whether the marker is genotyped.</div>
 </td>
 </tr>
-<tr class="altColor" id="i2">
+<tr class="rowColor" id="i3">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAlt()">getAlt</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the alternative allele of the variant.</div>
 </td>
 </tr>
-<tr class="rowColor" id="i3">
+<tr class="altColor" id="i4">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBp()">getBp</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the bp of the variant.</div>
 </td>
 </tr>
-<tr class="altColor" id="i4">
+<tr class="rowColor" id="i5">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getContig()">getContig</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the contig of the variant.</div>
 </td>
 </tr>
-<tr class="rowColor" id="i5">
+<tr class="altColor" id="i6">
 <td class="colFirst"><code>float[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDosages(java.lang.String)">getDosages</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sampleId)</code></th>
 <td class="colLast">
 <div class="block">Returns the dosages for the given sample as an array [p0, p1, p2].</div>
 </td>
 </tr>
-<tr class="altColor" id="i6">
+<tr class="rowColor" id="i7">
 <td class="colFirst"><code>short</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGenotype(java.lang.String)">getGenotype</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sampleId)</code></th>
 <td class="colLast">
 <div class="block">Returns the hard-called genotype for a given sample.</div>
 </td>
 </tr>
-<tr class="rowColor" id="i7">
+<tr class="altColor" id="i8">
 <td class="colFirst"><code>short</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNAlt(java.lang.String)">getNAlt</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sampleId)</code></th>
 <td class="colLast">
 <div class="block">Returns the number of alternative alleles using hard calls.</div>
 </td>
 </tr>
-<tr class="altColor" id="i8">
+<tr class="rowColor" id="i9">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNAltDosages(java.lang.String)">getNAltDosages</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sampleId)</code></th>
 <td class="colLast">
 <div class="block">Returns the number of alternative alleles using dosages.</div>
 </td>
 </tr>
-<tr class="rowColor" id="i9">
+<tr class="altColor" id="i10">
 <td class="colFirst"><code>short[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNAltH(java.lang.String,java.lang.String,java.lang.String)">getNAltH</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;childId,
 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;motherId,
@@ -265,56 +272,56 @@ implements <a href="../../GenotypesProvider.html" title="interface in no.uib.tri
 <div class="block">Returns the number of alternative alleles for each h of a trio according to the nomenclature of Chen et al.</div>
 </td>
 </tr>
-<tr class="altColor" id="i10">
+<tr class="rowColor" id="i11">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParentsDosageP0Cache()">getParentsDosageP0Cache</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the sum of p0s for all parents of the given child ids.</div>
 </td>
 </tr>
-<tr class="rowColor" id="i11">
+<tr class="altColor" id="i12">
 <td class="colFirst"><code>float[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParentsDosageP0sCache()">getParentsDosageP0sCache</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the p0s for all parents of the given child ids.</div>
 </td>
 </tr>
-<tr class="altColor" id="i12">
+<tr class="rowColor" id="i13">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParentsGenotypeP0Cache()">getParentsGenotypeP0Cache</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the sum of p0s for all parents of the given child ids.</div>
 </td>
 </tr>
-<tr class="rowColor" id="i13">
+<tr class="altColor" id="i14">
 <td class="colFirst"><code>boolean[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParentsGenotypeP0sCache()">getParentsGenotypeP0sCache</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the p0s for all parents of the given child ids.</div>
 </td>
 </tr>
-<tr class="altColor" id="i14">
+<tr class="rowColor" id="i15">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRef()">getRef</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the reference allele of the variant.</div>
 </td>
 </tr>
-<tr class="rowColor" id="i15">
+<tr class="altColor" id="i16">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVariantID()">getVariantID</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the id of the variant.</div>
 </td>
 </tr>
-<tr class="altColor" id="i16">
+<tr class="rowColor" id="i17">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#parse(no.uib.triogen.model.family.ChildToParentMap)">parse</a></span>&#8203;(<a href="../../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</code></th>
 <td class="colLast">
 <div class="block">Parses the genotypes.</div>
 </td>
 </tr>
-<tr class="rowColor" id="i17">
+<tr class="altColor" id="i18">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setParentP0s(java.lang.String%5B%5D,no.uib.triogen.model.family.ChildToParentMap)">setParentP0s</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;childIds,
 <a href="../../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</code></th>
@@ -660,6 +667,22 @@ implements <a href="../../GenotypesProvider.html" title="interface in no.uib.tri
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../GenotypesProvider.html#emptyGenotypeDosageCaches()">emptyGenotypeDosageCaches</a></code>&nbsp;in interface&nbsp;<code><a href="../../GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></code></dd>
+</dl>
+</section>
+</li>
+<li class="blockList">
+<section class="detail">
+<h3><a id="checkMendelianErrors(no.uib.triogen.model.family.ChildToParentMap)">checkMendelianErrors</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">double</span>&nbsp;<span class="memberName">checkMendelianErrors</span>&#8203;(<span class="arguments"><a href="../../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</span></div>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../GenotypesProvider.html#checkMendelianErrors(no.uib.triogen.model.family.ChildToParentMap)">GenotypesProvider</a></code></span></div>
+<div class="block">Checks the prevalence of Mendelian errors.If more than 50%, switch the children alleles.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../GenotypesProvider.html#checkMendelianErrors(no.uib.triogen.model.family.ChildToParentMap)">checkMendelianErrors</a></code>&nbsp;in interface&nbsp;<code><a href="../../GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>childToParentMap</code> - The child to parent map to use.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The estimated prevalence of Mendelian errors.</dd>
 </dl>
 </section>
 </li>

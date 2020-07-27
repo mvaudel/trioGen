@@ -104,15 +104,18 @@ public class MendelianCheckRunnable implements Runnable, AutoCloseable {
 
                             freq_h2_1 += 1.0;
 
-                        } else if (hs[1] == 2) {
+                        } 
+                        if (hs[1] == 2) {
 
                             freq_h2_2 += 1.0;
 
-                        } else if (hs[3] == -1) {
+                        } 
+                        if (hs[3] == -1) {
 
                             freq_h4_1 += 1.0;
 
-                        } else if (hs[3] == 2) {
+                        } 
+                        if (hs[3] == 2) {
 
                             freq_h4_2 += 1.0;
 
@@ -143,6 +146,7 @@ public class MendelianCheckRunnable implements Runnable, AutoCloseable {
                             genotypesProvider.getRef(),
                             genotypesProvider.getAlt(),
                             genotypesProvider.genotyped() ? "1" : "0",
+                            Double.toString(maf),
                             Double.toString(freq_h2_1),
                             Double.toString(freq_h2_2),
                             Double.toString(freq_h4_1),

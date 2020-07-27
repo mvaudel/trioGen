@@ -188,6 +188,7 @@ public class MendelianCheckComputer {
                 "refAllele",
                 "altAllele",
                 "typed",
+                "maf",
                 "h2_1_obs",
                 "h2_2_obs",
                 "h4_1_obs",

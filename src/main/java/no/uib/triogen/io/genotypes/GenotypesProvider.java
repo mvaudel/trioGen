@@ -162,5 +162,14 @@ public interface GenotypesProvider {
      * Empty the caches for genotypes and dosages.
      */
     public void emptyGenotypeDosageCaches();
+    
+    /**
+     * Checks the prevalence of Mendelian errors.If more than 50%, switch the children alleles.
+     * 
+     * @param childToParentMap The child to parent map to use.
+     * 
+     * @return The estimated prevalence of Mendelian errors.
+     */
+    public double checkMendelianErrors(ChildToParentMap childToParentMap);
 
 }

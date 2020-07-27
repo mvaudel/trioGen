@@ -3,6 +3,7 @@ package no.uib.triogen.io.genotypes.vcf.custom;
 import java.util.HashMap;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.mendelian_error.MendelianErrorEstimator;
 
 /**
  * This class contains and parses a line in the vcf file.
@@ -19,7 +20,6 @@ public class VcfLine implements GenotypesProvider {
      * The iterator used to parse the file.
      */
     private final CustomVcfIterator vcfIterator;
-
     /**
      * The line as read from the file.
      */
@@ -510,5 +510,12 @@ public class VcfLine implements GenotypesProvider {
         alleles2 = null;
         dosages = null;
 
+    }
+
+    @Override
+    public double checkMendelianErrors(ChildToParentMap childToParentMap) {
+        
+        return MendelianErrorEstimator.estimateMendelianErrorPrevalence(this, childToParentMap);
+        
     }
 }
