@@ -57,16 +57,13 @@ public class CleanMeta {
 
             try ( SimpleFileWriter writer = new SimpleFileWriter(outFile, true)) {
 
-                String line = reader.readLine();
+                String line = reader.readLine().trim();
 
-                String separator = "\t";
-
-                String[] lineSplit = line.split(separator);
+                String[] lineSplit = line.split("\t");
 
                 if (lineSplit.length == 1) {
 
-                    separator = " ";
-                    lineSplit = line.split(separator);
+                    lineSplit = line.split(" ");
 
                     if (lineSplit.length == 1) {
 
@@ -97,7 +94,22 @@ public class CleanMeta {
                     // Read new line, sanity check on the number of clumn
                     lineNumber++;
 
-                    lineSplit = line.split(separator);
+                    line = line.trim();
+                    lineSplit = line.split("\t");
+
+                    if (lineSplit.length == 1) {
+
+                        lineSplit = line.split(" ");
+
+                        if (lineSplit.length == 1) {
+
+                            throw new IllegalArgumentException("Separator not found for file " + file + ".");
+
+                        }
+
+                        line = line.replace(' ', '\t');
+
+                    }
 
                     if (lineSplit.length != columnMap.size()) {
 
@@ -336,7 +348,7 @@ public class CleanMeta {
 
                     }
 
-                    // Set snp id as CHR:POS_A_B where A and B are in alphabetical order
+                    // Set snp id as CHR:POS_A_B where A and B are in alphabetical order and put it as first column
                     TreeSet<String> alleles = new TreeSet<>();
 
                     alleles.add(lineSplit[columnMap.get("EFFECT_ALLELE")]);
@@ -357,13 +369,6 @@ public class CleanMeta {
 
                     String snpId = snpIdBuilder.toString();
 
-                    // Make sure the line is tab separated and add the snp id in first column
-                    if (separator.equals(" ")) {
-
-                        line = line.replace(' ', '\t');
-
-                    }
-
                     line = String.join("\t", snpId, line);
 
                     // Write to the result file
@@ -377,7 +382,7 @@ public class CleanMeta {
 
         long timeInSeconds = end.getEpochSecond() - start.getEpochSecond();
 
-        System.out.println(end + "    Processing " + filePath + " (" + timeInSeconds + " s)");
+        System.out.println(end + "    Done " + filePath + " (" + timeInSeconds + " s)");
 
     }
 
