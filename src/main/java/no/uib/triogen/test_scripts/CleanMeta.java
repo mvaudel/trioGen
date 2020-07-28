@@ -16,6 +16,7 @@ public class CleanMeta {
 
     public static final double MAC_THRESHOLD = 10;
     public static final double INFO_THRESHOLD = 0.4;
+    public static final double ROUNDING = 1e-6;
 
     /**
      * Main method.
@@ -30,7 +31,11 @@ public class CleanMeta {
 
             for (File file : folder.listFiles()) {
 
-                processFile(file);
+                if (file.getName().endsWith(".gz")) {
+
+                    processFile(file);
+
+                }
 
             }
         } catch (Throwable t) {
@@ -68,13 +73,13 @@ public class CleanMeta {
                         throw new IllegalArgumentException("Separator not found for file " + file + ".");
 
                     }
-                    
+
                     line = line.replace(' ', '\t');
-                    
+
                 }
-                
+
                 line = String.join("\t", "SNP", line);
-                
+
                 writer.writeLine(line);
 
                 HashMap<String, Integer> columnMap = new HashMap<>(lineSplit.length);
@@ -117,15 +122,26 @@ public class CleanMeta {
 
                                 info = Double.parseDouble(cellValue);
 
-                                if (info < 0 || info > 1.0) {
-
-                                    throw new IllegalArgumentException("info " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
-
-                                }
-
                             } catch (Exception e) {
 
                                 throw new IllegalArgumentException("info " + cellValue + " could not be parsed as a number at line " + lineNumber + " in file " + file + ".");
+
+                            }
+
+                            if (info < 0 && info >= -ROUNDING) {
+
+                                info = 0;
+
+                            }
+                            if (info > 1.0 && info <= 1.0 + ROUNDING) {
+
+                                info = 1.0;
+
+                            }
+
+                            if (info < 0 || info > 1.0) {
+
+                                throw new IllegalArgumentException("info " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
 
                             }
                         }
@@ -145,15 +161,26 @@ public class CleanMeta {
 
                                 infoFemales = Double.parseDouble(cellValue);
 
-                                if (infoFemales < 0 || infoFemales > 1.0) {
-
-                                    throw new IllegalArgumentException("infoFemales " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
-
-                                }
-
                             } catch (Exception e) {
 
                                 throw new IllegalArgumentException("infoFemales " + cellValue + " could not be parsed as a number at line " + lineNumber + " in file " + file + ".");
+
+                            }
+
+                            if (infoFemales < 0 && infoFemales >= -ROUNDING) {
+
+                                infoFemales = 0;
+
+                            }
+                            if (infoFemales > 1.0 && infoFemales <= 1.0 + ROUNDING) {
+
+                                infoFemales = 1.0;
+
+                            }
+
+                            if (infoFemales < 0 || infoFemales > 1.0) {
+
+                                throw new IllegalArgumentException("infoFemales " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
 
                             }
                         }
@@ -172,15 +199,26 @@ public class CleanMeta {
 
                                 infoMales = Double.parseDouble(cellValue);
 
-                                if (infoMales < 0 || infoMales > 1.0) {
-
-                                    throw new IllegalArgumentException("infoMales " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
-
-                                }
-
                             } catch (Exception e) {
 
                                 throw new IllegalArgumentException("infoMales " + cellValue + " could not be parsed as a number at line " + lineNumber + " in file " + file + ".");
+
+                            }
+
+                            if (infoMales < 0 && infoMales >= -ROUNDING) {
+
+                                infoMales = 0;
+
+                            }
+                            if (infoMales > 1.0 && infoMales <= 1.0 + ROUNDING) {
+
+                                infoMales = 1.0;
+
+                            }
+
+                            if (infoMales < 0 || infoMales > 1.0) {
+
+                                throw new IllegalArgumentException("infoMales " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
 
                             }
                         }
@@ -214,15 +252,15 @@ public class CleanMeta {
 
                         se = Double.parseDouble(cellValue);
 
-                        if (se <= 0) {
-
-                            throw new IllegalArgumentException("se " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
-
-                        }
-
                     } catch (Exception e) {
 
                         throw new IllegalArgumentException("se " + cellValue + " could not be parsed as a number at line " + lineNumber + " in file " + file + ".");
+
+                    }
+
+                    if (se <= 0) {
+
+                        throw new IllegalArgumentException("se " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
 
                     }
 
@@ -234,15 +272,15 @@ public class CleanMeta {
 
                         maf = Double.parseDouble(cellValue);
 
-                        if (maf < 0 || maf > 1.0) {
-
-                            throw new IllegalArgumentException("maf " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
-
-                        }
-
                     } catch (Exception e) {
 
                         throw new IllegalArgumentException("maf " + cellValue + " could not be parsed as a number at line " + lineNumber + " in file " + file + ".");
+
+                    }
+
+                    if (maf < 0 || maf > 1.0) {
+
+                        throw new IllegalArgumentException("maf " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
 
                     }
 
@@ -257,19 +295,17 @@ public class CleanMeta {
 
                     try {
 
-                        int nInt = Integer.parseInt(cellValue);
-
-                        if (nInt <= 0) {
-
-                            throw new IllegalArgumentException("N " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
-
-                        }
-
-                        n = (double) nInt;
+                        n = Integer.parseInt(cellValue);
 
                     } catch (Exception e) {
 
                         throw new IllegalArgumentException("N " + cellValue + " could not be parsed as an integer at line " + lineNumber + " in file " + file + ".");
+
+                    }
+
+                    if (n <= 0) {
+
+                        throw new IllegalArgumentException("N " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
 
                     }
 
@@ -320,19 +356,17 @@ public class CleanMeta {
                     );
 
                     String snpId = snpIdBuilder.toString();
-                    
+
                     // Make sure the line is tab separated and add the snp id in first column
-                    
                     if (separator.equals(" ")) {
-                        
+
                         line = line.replace(' ', '\t');
-                        
+
                     }
-                    
+
                     line = String.join("\t", snpId, line);
-                    
+
                     // Write to the result file
-                    
                     writer.writeLine(line);
 
                 }
