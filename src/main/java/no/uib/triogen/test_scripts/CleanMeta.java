@@ -129,8 +129,7 @@ public class CleanMeta {
 
                             }
                         }
-                    }
-                    if (columnMap.containsKey("INFO_fem") || columnMap.containsKey("INFO_male")) {
+                    } else if (columnMap.containsKey("INFO_fem") || columnMap.containsKey("INFO_male")) {
 
                         double infoFemales;
 
