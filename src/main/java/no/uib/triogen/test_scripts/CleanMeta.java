@@ -237,7 +237,7 @@ public class CleanMeta {
 
                     }
 
-                    // Read se, skip NAs
+                    // Read se, skip NAs and null/negative values
                     String cellValue = lineSplit[columnMap.get("SE")];
 
                     if (cellValue.equals("NA") || cellValue.equals("NaN") || cellValue.equals(".")) {
@@ -258,9 +258,9 @@ public class CleanMeta {
 
                     }
 
-                    if (se < 0) {
+                    if (se <= 0) {
 
-                        throw new IllegalArgumentException("se " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
+                        continue;
 
                     }
 
