@@ -307,11 +307,11 @@ public class CleanMeta {
 
                     try {
 
-                        n = Integer.parseInt(cellValue);
+                        n = Double.parseDouble(cellValue);
 
                     } catch (Exception e) {
 
-                        throw new IllegalArgumentException("N " + cellValue + " could not be parsed as an integer at line " + lineNumber + " in file " + file + ".");
+                        throw new IllegalArgumentException("N " + cellValue + " could not be parsed as a number at line " + lineNumber + " in file " + file + ".");
 
                     }
 
