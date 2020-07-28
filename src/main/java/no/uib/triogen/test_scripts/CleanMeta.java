@@ -258,7 +258,7 @@ public class CleanMeta {
 
                     }
 
-                    if (se <= 0) {
+                    if (se < 0) {
 
                         throw new IllegalArgumentException("se " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
 
