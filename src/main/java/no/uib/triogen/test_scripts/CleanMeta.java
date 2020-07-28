@@ -107,7 +107,7 @@ public class CleanMeta {
 
                         String cellValue = lineSplit[columnMap.get("INFO")];
 
-                        if (cellValue.equals(".")) {
+                        if (cellValue.equals(".") || cellValue.equals("NA") || cellValue.equals("NaN")) {
 
                             info = 1.0;
 
@@ -135,7 +135,7 @@ public class CleanMeta {
 
                         String cellValue = lineSplit[columnMap.get("INFO_fem")];
 
-                        if (cellValue.equals(".")) {
+                        if (cellValue.equals(".") || cellValue.equals("NA") || cellValue.equals("NaN")) {
 
                             infoFemales = 1.0;
 
@@ -162,7 +162,7 @@ public class CleanMeta {
 
                         double infoMales;
 
-                        if (cellValue.equals(".")) {
+                        if (cellValue.equals(".") || cellValue.equals("NA") || cellValue.equals("NaN")) {
 
                             infoMales = 1.0;
 
