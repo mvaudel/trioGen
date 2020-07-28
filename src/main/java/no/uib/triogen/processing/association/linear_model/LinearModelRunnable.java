@@ -15,11 +15,11 @@ import no.uib.triogen.io.genotypes.StandardizedGenotypesProvider;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.mendelian_error.MendelianErrorEstimator;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.utils.SimpleSemaphore;
-import no.uib.triogen.utils.Utils;
 import org.apache.commons.math3.linear.SingularMatrixException;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 
@@ -398,6 +398,9 @@ public class LinearModelRunnable implements Runnable {
                                 getHistogramAsString(hHist[3]),
                                 ")"
                         );
+                        
+                        // Estimate the prevalence of Mendelian errors
+                        double mendelianErrors = MendelianErrorEstimator.estimateMendelianErrorPrevalence(genotypesProvider, childToParentMap);
 
                         // Anticipate singularities
                         boolean hNotSingluar = h1_0 && h1_1 && h2_0 && h2_1 && h3_0 && h3_1 && h4_0 && h4_1;
@@ -546,7 +549,9 @@ public class LinearModelRunnable implements Runnable {
                                 .append(IoUtils.SEPARATOR)
                                 .append(altHistograms)
                                 .append(IoUtils.SEPARATOR)
-                                .append(hHistograms);
+                                .append(hHistograms)
+                                .append(IoUtils.SEPARATOR)
+                                .append(mendelianErrors);
 
                         regressionResults
                                 .forEach(

@@ -15,7 +15,7 @@ library("scico")
 # Load data
 
 mendelianErrorDF <- read.table(
-    file = "tmp/chr22/chr22",
+    file = "tmp/chr22.gz",
     header = T,
     stringsAsFactors = F,
     sep = "\t",
@@ -31,14 +31,31 @@ mendelianErrorDF %>% gather(
     h4_2_p
 ) -> mendelianErrorDF2
 
+mendelianErrorDF %>% gather(
+    key = "error_type",
+    value = "p",
+    prevalence_before_check,
+    prevalence_after_check
+) -> mendelianErrorDF3
+
 # Plot density
 
 ggplot() +
     theme_bw() +
-    geom_density(
-        data = mendelianErrorDF %>% filter(typed == 0),
+    geom_point(
+        data = mendelianErrorDF,
         mapping = aes(
-            x = p,
+            x = h4_2_obs
+        )
+    )
+
+ggplot() +
+    theme_bw() +
+    geom_point(
+        data = mendelianErrorDF2 %>% filter(p < 2),
+        mapping = aes(
+            x = prevalence_before_check,
+            y = prevalence_after_check,
             col = error_type
         )
     )
@@ -46,7 +63,7 @@ ggplot() +
 ggplot() +
     theme_bw() +
     geom_density(
-        data = mendelianErrorDF2 %>% filter(typed == 0 & p < 2),
+        data = mendelianErrorDF3 %>% filter(p < 2),
         mapping = aes(
             x = p,
             col = error_type

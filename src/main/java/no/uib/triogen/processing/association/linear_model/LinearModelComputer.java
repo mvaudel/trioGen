@@ -236,7 +236,8 @@ public class LinearModelComputer {
                         "typed",
                         "n",
                         "nAlt",
-                        "nH"
+                        "nH",
+                        "mendelianError"
                 )
         );
         for (Model model : models) {
