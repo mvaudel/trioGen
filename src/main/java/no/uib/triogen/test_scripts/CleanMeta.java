@@ -330,23 +330,34 @@ public class CleanMeta {
                     }
 
                     // Parse contig, use 23 for the 'X' chromosome
-                    String contig = lineSplit[columnMap.get("CHR")];
+                    int contigIndex = columnMap.get("CHR");
+                    String contig = lineSplit[contigIndex];
 
                     if (contig.equals("0X") || contig.equals("X") || contig.equals("NA")) {
 
                         contig = "23";
 
                     }
+                    
+                    int contigNumber;
 
                     try {
 
-                        Double.parseDouble(contig);
+                        contigNumber = Integer.parseInt(contig);
 
                     } catch (Exception e) {
 
                         throw new IllegalArgumentException("Contig " + contig + " could not be parsed as a number at line " + lineNumber + " in file " + file + ".");
 
                     }
+
+                    if (contigNumber <= 0 || contigNumber > 23) {
+
+                        throw new IllegalArgumentException("Chromosome number " + cellValue + " out of range at line " + lineNumber + " in file " + file + ".");
+
+                    }
+                    
+                    lineSplit[contigIndex] = Integer.toString(contigNumber);
 
                     // Set snp id as CHR:POS_A_B where A and B are in alphabetical order and put it as first column
                     TreeSet<String> alleles = new TreeSet<>();
