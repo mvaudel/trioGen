@@ -357,7 +357,8 @@ public class CleanMeta {
 
                     }
                     
-                    lineSplit[contigIndex] = Integer.toString(contigNumber);
+                    contig = Integer.toString(contigNumber);
+                    lineSplit[contigIndex] = contig;
 
                     // Set snp id as CHR:POS_A_B where A and B are in alphabetical order and put it as first column
                     TreeSet<String> alleles = new TreeSet<>();
