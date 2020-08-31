@@ -7,6 +7,7 @@ no.uib.triogen.cmd.mendelian_check
 no.uib.triogen.cmd.transmission
 no.uib.triogen.export
 no.uib.triogen.io
+no.uib.triogen.io.covariates
 no.uib.triogen.io.flat
 no.uib.triogen.io.flat.indexed
 no.uib.triogen.io.flat.mapping
@@ -20,6 +21,7 @@ no.uib.triogen.io.ld
 no.uib.triogen.io.rest
 no.uib.triogen.log
 no.uib.triogen.model.annotation
+no.uib.triogen.model.covariates
 no.uib.triogen.model.family
 no.uib.triogen.model.genome
 no.uib.triogen.model.maf

@@ -52,17 +52,24 @@ public class RegressionResult {
      * Model significance relatively to included parent models.
      */
     public final double[] modelRelativeSignificance;
+    /**
+     * The number of values used in the model.
+     */
+    public final int nValues;
 
     /**
      * Constructor.
      *
-     * @param model the model of this regression.
+     * @param model The model used in this regression.
+     * @param nValues The number of samples used in this regression.
      */
     public RegressionResult(
-            Model model
+            Model model,
+            int nValues
     ) {
 
         this.model = model;
+        this.nValues = nValues;
 
         switch (model.betaNames.length) {
 
@@ -121,34 +128,26 @@ public class RegressionResult {
      * Computes the significance of the model relative to an intercept.
      *
      * @param rss0 The residual sum of squares for the intercept.
-     * @param nValidValues The number of phenotypic values included in the
-     * regression.
      */
     public void computeModelSignificance(
-            double rss0,
-            int nValidValues
+            double rss0
     ) {
 
         modelSignificance = getModelSignificance(
                 rss0,
                 1,
                 rss,
-                model.betaNames.length + 1,
-                nValidValues
+                model.betaNames.length + 1
         );
 
     }
 
     /**
      * Computes the significance the beta estimates.
-     *
-     * @param nValidValues the number of valid values
      */
-    public void computeBetaSignificance(
-            int nValidValues
-    ) {
+    public void computeBetaSignificance() {
 
-        int degreesOfFreedom = nValidValues - beta.length - 1;
+        int degreesOfFreedom = nValues - beta.length - 1;
 
         if (degreesOfFreedom > 1) {
 
@@ -192,12 +191,9 @@ public class RegressionResult {
      * Computes the model significance against available parent models.
      *
      * @param regressionRestultsMap Map of the regression results.
-     * @param nValidValues The number of phenotypic values included in the
-     * regression.
      */
     public void computeModelSignificance(
-            HashMap<String, RegressionResult> regressionRestultsMap,
-            int nValidValues
+            HashMap<String, RegressionResult> regressionRestultsMap
     ) {
 
         for (int i = 0; i < model.includedParentModels.length; i++) {
@@ -211,8 +207,7 @@ public class RegressionResult {
                         rss,
                         model.betaNames.length + 1,
                         regressionResult2.rss,
-                        regressionResult2.model.betaNames.length + 1,
-                        nValidValues
+                        regressionResult2.model.betaNames.length + 1
                 );
                 
             }
@@ -228,7 +223,6 @@ public class RegressionResult {
      * @param p1 the number of parameters of model 1
      * @param model2RSS the residual sum of squares for model 2
      * @param p2 the number of parameters of model 2
-     * @param n the number of values
      *
      * @return the significance
      */
@@ -236,8 +230,7 @@ public class RegressionResult {
             double model1RSS,
             int p1,
             double model2RSS,
-            int p2,
-            int n
+            int p2
     ) {
 
         if (Double.isNaN(model1RSS) || Double.isNaN(model2RSS)) {
@@ -247,7 +240,7 @@ public class RegressionResult {
         }
 
         double numeratorDegreesOfFreedom = p2 - p1;
-        double denominatorDegreesOfFreedom = n - p2;
+        double denominatorDegreesOfFreedom = nValues - p2;
         double x = ((model1RSS - model2RSS) / numeratorDegreesOfFreedom) / (model2RSS / denominatorDegreesOfFreedom);
 
         FDistribution fDistribution = new FDistribution(numeratorDegreesOfFreedom, denominatorDegreesOfFreedom);

@@ -1,14 +1,20 @@
 package no.uib.triogen.cmd.association;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
+import no.uib.triogen.io.covariates.SpecificCovariatesFile;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
 import no.uib.triogen.processing.association.linear_model.LinearModelRunnable;
 import org.apache.commons.cli.CommandLine;
+import org.json.JSONObject;
 
 /**
  * Parses and stores the command line options.
@@ -38,9 +44,13 @@ public class LinearModelOptionsBean {
      */
     public final String[] phenoNames;
     /**
-     * Names of the covariates to use for the phenotypes.
+     * Names of the covariates to use for all the phenotypes.
      */
-    public final String[] covariates;
+    public final String[] covariatesGeneral;
+    /**
+     * Map of the covariates to use for specific phenotypes.
+     */
+    public final HashMap<String, TreeSet<String>> covariatesSpecific;
     /**
      * The file listing the variants to process.
      */
@@ -164,7 +174,7 @@ public class LinearModelOptionsBean {
 
         // The maf threshold
         if (aLine.hasOption(LinearModelOptions.maf.opt)) {
-            
+
             String option = aLine.getOptionValue(LinearModelOptions.maf.opt);
 
             try {
@@ -228,16 +238,37 @@ public class LinearModelOptionsBean {
 
         }
 
-        // The pheno columns
-        if (aLine.hasOption(LinearModelOptions.covariate.opt)) {
+        // The general covariates
+        if (aLine.hasOption(LinearModelOptions.covariate_general.opt)) {
 
-            option = aLine.getOptionValue(LinearModelOptions.covariate.opt);
+            option = aLine.getOptionValue(LinearModelOptions.covariate_general.opt);
 
-            covariates = option.split(",");
-            
+            covariatesGeneral = option.split(",");
+
         } else {
 
-            covariates = new String[0];
+            covariatesGeneral = new String[0];
+
+        }
+
+        // The spcoific covariates
+        if (aLine.hasOption(LinearModelOptions.covariate_specific.opt)) {
+
+            option = aLine.getOptionValue(LinearModelOptions.covariate_specific.opt);
+
+            File covariatesFile = new File(option);
+
+            if (!covariatesFile.exists()) {
+
+                throw new IllegalArgumentException("Covariates file " + option + " not found.");
+
+            }
+
+            covariatesSpecific = SpecificCovariatesFile.praseCovariates(covariatesFile);
+
+        } else {
+
+            covariatesSpecific = new HashMap<>(0);
 
         }
 

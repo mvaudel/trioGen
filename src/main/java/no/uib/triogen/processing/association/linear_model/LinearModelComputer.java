@@ -3,11 +3,17 @@ package no.uib.triogen.processing.association.linear_model;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.getIndexFile;
@@ -17,6 +23,7 @@ import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.log.SimpleCliLogger;
+import no.uib.triogen.model.covariates.CovariatesHandler;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.trio_genotypes.VariantList;
@@ -43,7 +50,8 @@ public class LinearModelComputer {
      */
     private final VariantList variantList;
     /**
-     * Variants with a distance to a target variant lower than maxDistance will be included in the computation.
+     * Variants with a distance to a target variant lower than maxDistance will
+     * be included in the computation.
      */
     private final int maxDistance;
     /**
@@ -64,9 +72,13 @@ public class LinearModelComputer {
      */
     private final String[] phenoNames;
     /**
-     * The covariates to use.
+     * Names of the covariates to use for all the phenotypes.
      */
-    private final String[] covariates;
+    public final String[] covariatesGeneral;
+    /**
+     * Map of the covariates to use for specific phenotypes.
+     */
+    public final HashMap<String, TreeSet<String>> covariatesSpecific;
     /**
      * The models to use.
      */
@@ -101,7 +113,10 @@ public class LinearModelComputer {
      * @param childToParentMap The map of trios.
      * @param phenotypesFile The file containing the phenotypes.
      * @param phenoNames The names of the phenotypes to use.
-     * @param covariates The names of the covariates to use.
+     * @param covariatesGeneral The names of the general covariates to use for
+     * all phenotypes.
+     * @param covariatesSpecific The names of the covariates specific to
+     * phenotypes.
      * @param models The models to use.
      * @param destinationFile The file to export the result to.
      * @param nVariants The number of variants to process in parallel.
@@ -117,7 +132,8 @@ public class LinearModelComputer {
             ChildToParentMap childToParentMap,
             File phenotypesFile,
             String[] phenoNames,
-            String[] covariates,
+            String[] covariatesGeneral,
+            HashMap<String, TreeSet<String>> covariatesSpecific,
             Model[] models,
             File destinationFile,
             int nVariants,
@@ -133,7 +149,8 @@ public class LinearModelComputer {
         this.childToParentMap = childToParentMap;
         this.phenotypesFile = phenotypesFile;
         this.phenoNames = phenoNames;
-        this.covariates = covariates;
+        this.covariatesGeneral = covariatesGeneral;
+        this.covariatesSpecific = covariatesSpecific;
         this.models = models;
         this.destinationFile = destinationFile;
         this.nVariants = nVariants;
@@ -163,29 +180,64 @@ public class LinearModelComputer {
 
         }
 
-        if (covariates.length > 0) {
-
-            logger.logMessage("Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath() + " and adjusting for " + covariates.length + " covariates");
-
-        } else {
-
-            logger.logMessage("Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath());
-
-        }
+        logger.logMessage("Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath());
 
         long start = Instant.now().getEpochSecond();
+
+        HashSet<String> allPhenoColumns = Stream.concat(
+                Arrays.stream(phenoNames),
+                Stream.concat(
+                        Arrays.stream(covariatesGeneral),
+                        Stream.concat(
+                                covariatesSpecific.keySet().stream(),
+                                covariatesSpecific.values().stream()
+                                        .flatMap(
+                                                subCovariates -> subCovariates.stream()
+                                        )
+                        )
+                )
+        ).collect(
+                Collectors.toCollection(HashSet::new)
+        );
 
         PhenotypesHandler phenotypesHandler = new PhenotypesHandler(
                 phenotypesFile,
                 childToParentMap.children,
-                phenoNames,
-                covariates
+                allPhenoColumns
         );
 
         long end = Instant.now().getEpochSecond();
         long duration = end - start;
 
         logger.logMessage("Done (" + phenoNames.length + " phenotypes for " + phenotypesHandler.nChildren + " children imported in " + duration + " seconds)");
+
+        logger.logMessage("Adjusting for covariates");
+
+        start = Instant.now().getEpochSecond();
+
+        CovariatesHandler covariatesHandler = new CovariatesHandler(
+                phenoNames,
+                phenotypesHandler,
+                covariatesGeneral,
+                covariatesSpecific
+        );
+
+        phenotypesHandler.adjustForCovariates(phenoNames, covariatesHandler);
+
+        covariatesHandler.trim();
+
+        end = Instant.now().getEpochSecond();
+        duration = end - start;
+
+        Arrays.stream(phenoNames)
+                .sorted()
+                .forEach(
+                        phenoName -> logger.logMessage("    " + phenoName + ": " + covariatesHandler.covariatesMap.get(phenoName).length + " covariates representing " + covariatesHandler.rankMap.get(phenoName) + " dimensions - " + covariatesHandler.indexMap.get(phenoName).length + " phenotypes initially " + phenotypesHandler.nValidValuesMap.get(phenoName) + " remaining.")
+        );
+
+        logger.logMessage("Done (Adjusted for covariates in " + duration + " seconds)");
+        
+        phenotypesHandler.sanityCheck();
 
         String nVariantsText = variantList == null ? "" : ", " + variantList.variantId.length + " variants";
 
@@ -274,6 +326,7 @@ public class LinearModelComputer {
                                     childToParentMap,
                                     models,
                                     phenotypesHandler,
+                                    covariatesHandler,
                                     outputWriter,
                                     index,
                                     gzIndexMutex,

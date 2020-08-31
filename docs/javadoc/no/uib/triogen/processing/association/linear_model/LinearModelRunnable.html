@@ -166,13 +166,14 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Runnable.
 </thead>
 <tbody>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(no.uib.triogen.io.genotypes.VariantIterator,no.uib.triogen.model.trio_genotypes.VariantList,double,boolean,no.uib.triogen.model.family.ChildToParentMap,no.uib.triogen.model.trio_genotypes.Model%5B%5D,no.uib.triogen.model.phenotypes.PhenotypesHandler,no.uib.triogen.io.flat.indexed.IndexedGzWriter,no.uib.triogen.io.flat.SimpleFileWriter,no.uib.triogen.utils.SimpleSemaphore,no.uib.triogen.log.SimpleCliLogger)">LinearModelRunnable</a></span>&#8203;(<a href="../../../io/genotypes/VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a>&nbsp;iterator,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(no.uib.triogen.io.genotypes.VariantIterator,no.uib.triogen.model.trio_genotypes.VariantList,double,boolean,no.uib.triogen.model.family.ChildToParentMap,no.uib.triogen.model.trio_genotypes.Model%5B%5D,no.uib.triogen.model.phenotypes.PhenotypesHandler,no.uib.triogen.model.covariates.CovariatesHandler,no.uib.triogen.io.flat.indexed.IndexedGzWriter,no.uib.triogen.io.flat.SimpleFileWriter,no.uib.triogen.utils.SimpleSemaphore,no.uib.triogen.log.SimpleCliLogger)">LinearModelRunnable</a></span>&#8203;(<a href="../../../io/genotypes/VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a>&nbsp;iterator,
 <a href="../../../model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
 double&nbsp;mafThreshold,
 boolean&nbsp;useDosages,
 <a href="../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
 <a href="../../../model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>[]&nbsp;models,
 <a href="../../../model/phenotypes/PhenotypesHandler.html" title="class in no.uib.triogen.model.phenotypes">PhenotypesHandler</a>&nbsp;phenotypesHandler,
+<a href="../../../model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a>&nbsp;covariatesHandler,
 <a href="../../../io/flat/indexed/IndexedGzWriter.html" title="class in no.uib.triogen.io.flat.indexed">IndexedGzWriter</a>&nbsp;outputWriter,
 <a href="../../../io/flat/SimpleFileWriter.html" title="class in no.uib.triogen.io.flat">SimpleFileWriter</a>&nbsp;resultsIndex,
 <a href="../../../utils/SimpleSemaphore.html" title="class in no.uib.triogen.utils">SimpleSemaphore</a>&nbsp;gzIndexSemaphore,
@@ -258,7 +259,7 @@ boolean&nbsp;useDosages,
 <ul class="blockList">
 <li class="blockList">
 <section class="detail">
-<h3><a id="&lt;init&gt;(no.uib.triogen.io.genotypes.VariantIterator,no.uib.triogen.model.trio_genotypes.VariantList,double,boolean,no.uib.triogen.model.family.ChildToParentMap,no.uib.triogen.model.trio_genotypes.Model[],no.uib.triogen.model.phenotypes.PhenotypesHandler,no.uib.triogen.io.flat.indexed.IndexedGzWriter,no.uib.triogen.io.flat.SimpleFileWriter,no.uib.triogen.utils.SimpleSemaphore,no.uib.triogen.log.SimpleCliLogger)">LinearModelRunnable</a></h3>
+<h3><a id="&lt;init&gt;(no.uib.triogen.io.genotypes.VariantIterator,no.uib.triogen.model.trio_genotypes.VariantList,double,boolean,no.uib.triogen.model.family.ChildToParentMap,no.uib.triogen.model.trio_genotypes.Model[],no.uib.triogen.model.phenotypes.PhenotypesHandler,no.uib.triogen.model.covariates.CovariatesHandler,no.uib.triogen.io.flat.indexed.IndexedGzWriter,no.uib.triogen.io.flat.SimpleFileWriter,no.uib.triogen.utils.SimpleSemaphore,no.uib.triogen.log.SimpleCliLogger)">LinearModelRunnable</a></h3>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="memberName">LinearModelRunnable</span>&#8203;(<span class="arguments"><a href="../../../io/genotypes/VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a>&nbsp;iterator,
 <a href="../../../model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
 double&nbsp;mafThreshold,
@@ -266,6 +267,7 @@ boolean&nbsp;useDosages,
 <a href="../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
 <a href="../../../model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>[]&nbsp;models,
 <a href="../../../model/phenotypes/PhenotypesHandler.html" title="class in no.uib.triogen.model.phenotypes">PhenotypesHandler</a>&nbsp;phenotypesHandler,
+<a href="../../../model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a>&nbsp;covariatesHandler,
 <a href="../../../io/flat/indexed/IndexedGzWriter.html" title="class in no.uib.triogen.io.flat.indexed">IndexedGzWriter</a>&nbsp;outputWriter,
 <a href="../../../io/flat/SimpleFileWriter.html" title="class in no.uib.triogen.io.flat">SimpleFileWriter</a>&nbsp;resultsIndex,
 <a href="../../../utils/SimpleSemaphore.html" title="class in no.uib.triogen.utils">SimpleSemaphore</a>&nbsp;gzIndexSemaphore,
@@ -283,6 +285,7 @@ boolean&nbsp;useDosages,
 <dd><code>childToParentMap</code> - The child to parent map.</dd>
 <dd><code>models</code> - The list of the names of the models to use.</dd>
 <dd><code>phenotypesHandler</code> - The phenotypes handler.</dd>
+<dd><code>covariatesHandler</code> - The covariates handler.</dd>
 <dd><code>outputWriter</code> - The output writer.</dd>
 <dd><code>resultsIndex</code> - The writer for the index of the results file.</dd>
 <dd><code>gzIndexSemaphore</code> - The semaphore to keep gz file and index

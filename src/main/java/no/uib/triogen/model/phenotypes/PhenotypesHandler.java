@@ -1,18 +1,15 @@
 package no.uib.triogen.model.phenotypes;
 
 import java.io.File;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.triogen.utils.Utils;
-import org.apache.commons.math3.linear.SingularMatrixException;
-import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
+import no.uib.triogen.model.covariates.CovariatesHandler;
 
 /**
  * This class parses phenotypes from a pheno file.
@@ -27,15 +24,20 @@ public class PhenotypesHandler {
     public static String childIdColumn = "child_SentrixID";
 
     /**
-     * Phenotype name to child id to phenotype value map.
+     * Phenotype name to phenotype value map.
      */
-    public final HashMap<String, double[]> phenoMap;
+    public final ConcurrentHashMap<String, double[]> phenoMap;
 
     /**
      * Phenotype name to number of valid values. A valid value here is not NA
      * and not infinite.
      */
-    public final HashMap<String, Integer> nValidValuesMap;
+    public final ConcurrentHashMap<String, Integer> nValidValuesMap;
+
+    /**
+     * Mean of phenotypic values.
+     */
+    public final ConcurrentHashMap<String, Double> phenoMeanMap;
 
     /**
      * The number of children for which a phenotype was found.
@@ -45,42 +47,30 @@ public class PhenotypesHandler {
     /**
      * Constructor from a phenotypes file.
      *
-     * @param phenoFile a file containing the phenotypes
-     * @param childrenIds the ids of the children
-     * @param phenoNames the names of the phenotypes to parse
-     * @param covariates the names of the covariates to parse
+     * @param phenoFile The file containing the phenotypes.
+     * @param childrenIds The ids of the children.
+     * @param phenoNames The names of the phenotypes to parse, including
+     * covariates.
      */
     public PhenotypesHandler(
             File phenoFile,
             String[] childrenIds,
-            String[] phenoNames,
-            String[] covariates
+            HashSet<String> phenoNames
     ) {
-        
-        sanityCheck(phenoNames, covariates);
 
-        phenoMap = new HashMap<>(phenoNames.length);
-        nValidValuesMap = new HashMap<>(phenoNames.length);
+        phenoMap = new ConcurrentHashMap<>(phenoNames.size());
+        nValidValuesMap = new ConcurrentHashMap<>(phenoNames.size());
+        phenoMeanMap = new ConcurrentHashMap<>(phenoNames.size());
 
-        for (String phenoName : phenoNames) {
-
-            double[] phenoValues = new double[childrenIds.length];
-            Arrays.fill(phenoValues, Double.NaN);
-            phenoMap.put(phenoName, phenoValues);
-
-            nValidValuesMap.put(phenoName, 0);
-
-        }
-
-        double[][] covariatesX = new double[childrenIds.length][covariates.length];
-
-        for (int i = 0; i < childrenIds.length; i++) {
-            for (int j = 0; j < covariates.length; j++) {
-
-                covariatesX[i][j] = Double.NaN;
-
-            }
-        }
+        phenoNames.parallelStream()
+                .forEach(
+                        phenoName -> {
+                            double[] phenoValues = new double[childrenIds.length];
+                            Arrays.fill(phenoValues, Double.NaN);
+                            phenoMap.put(phenoName, phenoValues);
+                            nValidValuesMap.put(phenoName, 0);
+                        }
+                );
 
         HashMap<String, Integer> childIndexMap = new HashMap<>(childrenIds.length);
         int childIndex = 0;
@@ -113,19 +103,13 @@ public class PhenotypesHandler {
             if (nColumns < 2) {
 
                 throw new IllegalArgumentException(
-                        "Only one column found in pheno file. Please verify that the pheno file is correctly formatted."
+                        "Only one column found in phenotypes file. Please verify that the phenotypes file is correctly formatted."
                 );
 
             }
 
-            HashSet<String> phenoNamesSet = Arrays.stream(phenoNames)
-                    .collect(Collectors.toCollection(HashSet::new));
-            HashSet<String> covariatesSet = Arrays.stream(covariates)
-                    .collect(Collectors.toCollection(HashSet::new));
-
             int idColumnIndex = -1;
-            HashMap<String, Integer> phenoColumnIndexMap = new HashMap<>(phenoNames.length);
-            TreeMap<String, Integer> covariatesColumnIndexMap = new TreeMap<>();
+            HashMap<String, Integer> columnIndexMap = new HashMap<>(phenoNames.size());
 
             for (int i = 0; i < lineContent.length; i++) {
 
@@ -135,13 +119,9 @@ public class PhenotypesHandler {
 
                     idColumnIndex = i;
 
-                } else if (phenoNamesSet.contains(cellContent)) {
+                } else if (phenoNames.contains(cellContent)) {
 
-                    phenoColumnIndexMap.put(cellContent, i);
-
-                } else if (covariatesSet.contains(cellContent)) {
-
-                    covariatesColumnIndexMap.put(cellContent, i);
+                    columnIndexMap.put(cellContent, i);
 
                 }
             }
@@ -154,9 +134,9 @@ public class PhenotypesHandler {
 
             }
 
-            String missingPhenos = Arrays.stream(phenoNames)
+            String missingPhenos = phenoNames.stream()
                     .filter(
-                            phenoName -> !phenoColumnIndexMap.containsKey(phenoName)
+                            phenoName -> !columnIndexMap.containsKey(phenoName)
                     )
                     .collect(
                             Collectors.joining(", ")
@@ -166,22 +146,6 @@ public class PhenotypesHandler {
 
                 throw new IllegalArgumentException(
                         "The following phenotypes were not found in the phenotypes file: " + missingPhenos + "."
-                );
-
-            }
-
-            String missingCovariates = Arrays.stream(covariates)
-                    .filter(
-                            phenoName -> !covariatesColumnIndexMap.containsKey(phenoName)
-                    )
-                    .collect(
-                            Collectors.joining(", ")
-                    );
-
-            if (missingCovariates.length() > 0) {
-
-                throw new IllegalArgumentException(
-                        "The following covariates were not found in the phenotypes file: " + missingCovariates + "."
                 );
 
             }
@@ -208,7 +172,7 @@ public class PhenotypesHandler {
 
                     childIndex = childIndexMap.get(childId);
 
-                    for (Entry<String, Integer> phenoColumn : phenoColumnIndexMap.entrySet()) {
+                    for (Entry<String, Integer> phenoColumn : columnIndexMap.entrySet()) {
 
                         String phenoName = phenoColumn.getKey();
                         String valueString = lineContent[phenoColumn.getValue()];
@@ -234,31 +198,6 @@ public class PhenotypesHandler {
 
                         }
                     }
-
-                    int i = 0;
-                    for (Entry<String, Integer> covariateColumn : covariatesColumnIndexMap.entrySet()) {
-
-                        String valueString = lineContent[covariateColumn.getValue()];
-
-                        if (!valueString.equals("NA") && !valueString.equals("Inf") && !valueString.equals("-Inf")) {
-
-                            double newValue;
-                            try {
-
-                                newValue = Double.parseDouble(valueString);
-
-                            } catch (Exception e) {
-
-                                throw new IllegalArgumentException(
-                                        "The value for covariate " + covariateColumn.getKey() + " at for child id " + childId + " (" + valueString + ") could not be parsed as a number."
-                                );
-                            }
-
-                            covariatesX[childIndex][i] = newValue;
-                            i++;
-
-                        }
-                    }
                 }
             }
         }
@@ -272,91 +211,70 @@ public class PhenotypesHandler {
             );
 
         }
-
-        // Adjust for covariates
-        if (covariates.length > 0) {
-
-            OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
-
-            for (String phenoName : phenoNames) {
-
-                double[] phenos = phenoMap.get(phenoName);
-
-                int nValidValues = nValidValuesMap.get(phenoName);
-
-                int[] index = new int[nValidValues];
-                double[] y = new double[nValidValues];
-                double[][] x = new double[nValidValues][covariatesX.length];
-
-                int j = 0;
-                for (int i = 0; i < phenos.length; i++) {
-
-                    if (!Double.isNaN(phenos[i])) {
-
-                        index[j] = i;
-                        y[j] = phenos[i];
-                        x[j] = covariatesX[i];
-                        j++;
-
-                    }
-                }
-
-                regression.newSampleData(y, x);
-
-                try {
-
-                    double[] residuals = regression.estimateResiduals();
-
-                    double[] newPhenos = Arrays.copyOf(phenos, phenos.length);
-
-                    for (int i = 0; i < index.length; i++) {
-
-                        j = index[i];
-                        newPhenos[j] = residuals[i];
-
-                    }
-                    
-                    Utils.centerAndScale(newPhenos);
-
-                    phenoMap.put(phenoName, newPhenos);
-
-                } catch (SingularMatrixException singularMatrixException) {
-
-                    throw new IllegalArgumentException("Singular matrix obtained when adjusting " + phenoName + " for the given covariates.", singularMatrixException);
-
-                }
-            }
-        }
     }
 
     /**
-     * Checks whether the pheno and covariate names overlap.
-     * 
-     * @param phenoNames The names of the phenotypes.
-     * @param covariates The names of the covariates.
+     * Projects phenotypes for the given pheno names using the covariates
+     * handler. Removes phenotypes that are not in the given set from the
+     * mapping.
+     *
+     * @param phenoNames
+     * @param covariatesHandler
      */
-    private static void sanityCheck(
+    public void adjustForCovariates(
             String[] phenoNames,
-            String[] covariates
+            CovariatesHandler covariatesHandler
     ) {
+        
+        phenoMap.clear();
+        nValidValuesMap.clear();
 
-        HashSet<String> covariatesSet = Arrays.stream(covariates)
-                .collect(
-                        Collectors.toCollection(HashSet::new)
+        Arrays.stream(phenoNames)
+                .parallel()
+                .forEach(phenoName -> {
+
+                            double[] newValues = covariatesHandler.getProjectedValues(phenoName);
+                            
+                            double phenoMean = Arrays.stream(newValues)
+                                    .sum() / newValues.length;
+
+                            phenoMap.put(phenoName, newValues);
+                            nValidValuesMap.put(phenoName, newValues.length);
+                            phenoMeanMap.put(phenoName, phenoMean);
+
+                        }
                 );
+    }
+    
+    /**
+     * Checks that every phenotype has a value and no NaN or infinite value. Throws an exception otherwise.
+     */
+    public void sanityCheck() {
 
-        String[] errors = Arrays.stream(phenoNames)
-                .filter(
-                        phenoName -> covariatesSet.contains(phenoName)
-                )
-                .toArray(String[]::new);
-
-        if (errors.length > 0) {
-
-            System.out.println(
-                    "Warning: covariates found in list of phenotypes (" + String.join(", ", errors) + ")."
-            );
-
-        }
+        phenoMap.entrySet().parallelStream()
+                .forEach(
+                        entry -> {
+                            
+                            if (entry.getValue().length == 0) {
+                                
+                                throw new IllegalArgumentException("Phenotpype " + entry.getKey() + " has no value after filtering and adjustement for covariates.");
+                                 
+                            }
+                            
+                            for (double value : entry.getValue()) {
+                                
+                                if (Double.isNaN(value)) {
+                                    
+                                    throw new IllegalArgumentException("Phenotpype " + entry.getKey() + " contains NaN value after filtering and adjustement for covariates.");
+                                    
+                                }
+                                if (Double.isInfinite(value)) {
+                                    
+                                    throw new IllegalArgumentException("Phenotpype " + entry.getKey() + " contains infinite value after filtering and adjustement for covariates.");
+                                    
+                                }
+                            }
+                        }
+                );
     }
 }

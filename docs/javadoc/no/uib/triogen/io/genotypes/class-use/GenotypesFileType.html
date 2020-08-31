@@ -332,7 +332,7 @@ int&nbsp;maxDistance)</code></th>
 </thead>
 <tbody>
 <tr class="altColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../processing/association/linear_model/LinearModelComputer.html#%3Cinit%3E(java.io.File,no.uib.triogen.io.genotypes.GenotypesFileType,no.uib.triogen.model.trio_genotypes.VariantList,int,double,boolean,no.uib.triogen.model.family.ChildToParentMap,java.io.File,java.lang.String%5B%5D,java.lang.String%5B%5D,no.uib.triogen.model.trio_genotypes.Model%5B%5D,java.io.File,int,no.uib.triogen.log.SimpleCliLogger)">LinearModelComputer</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a>&nbsp;genotypesFile,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../processing/association/linear_model/LinearModelComputer.html#%3Cinit%3E(java.io.File,no.uib.triogen.io.genotypes.GenotypesFileType,no.uib.triogen.model.trio_genotypes.VariantList,int,double,boolean,no.uib.triogen.model.family.ChildToParentMap,java.io.File,java.lang.String%5B%5D,java.lang.String%5B%5D,java.util.HashMap,no.uib.triogen.model.trio_genotypes.Model%5B%5D,java.io.File,int,no.uib.triogen.log.SimpleCliLogger)">LinearModelComputer</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a>&nbsp;genotypesFile,
 <a href="../GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
 <a href="../../../model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
 int&nbsp;maxDistance,
@@ -341,7 +341,8 @@ boolean&nbsp;useDosages,
 <a href="../../../model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
 <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a>&nbsp;phenotypesFile,
 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;phenoNames,
-<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;covariates,
+<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;covariatesGeneral,
+<a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util" class="externalLink">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/TreeSet.html?is-external=true" title="class or interface in java.util" class="externalLink">TreeSet</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&gt;&nbsp;covariatesSpecific,
 <a href="../../../model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>[]&nbsp;models,
 <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io" class="externalLink">File</a>&nbsp;destinationFile,
 int&nbsp;nVariants,

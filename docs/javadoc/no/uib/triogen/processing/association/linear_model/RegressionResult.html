@@ -174,6 +174,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#nValues">nValues</a></span></code></th>
+<td class="colLast">
+<div class="block">The number of values used in the model.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rss">rss</a></span></code></th>
 <td class="colLast">
@@ -202,7 +209,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </thead>
 <tbody>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(no.uib.triogen.model.trio_genotypes.Model)">RegressionResult</a></span>&#8203;(<a href="../../../model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(no.uib.triogen.model.trio_genotypes.Model,int)">RegressionResult</a></span>&#8203;(<a href="../../../model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
+int&nbsp;nValues)</code></th>
 <td class="colLast">
 <div class="block">Constructor.</div>
 </td>
@@ -239,23 +247,21 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr class="rowColor" id="i1">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#computeBetaSignificance(int)">computeBetaSignificance</a></span>&#8203;(int&nbsp;nValidValues)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#computeBetaSignificance()">computeBetaSignificance</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Computes the significance the beta estimates.</div>
 </td>
 </tr>
 <tr class="altColor" id="i2">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#computeModelSignificance(double,int)">computeModelSignificance</a></span>&#8203;(double&nbsp;rss0,
-int&nbsp;nValidValues)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#computeModelSignificance(double)">computeModelSignificance</a></span>&#8203;(double&nbsp;rss0)</code></th>
 <td class="colLast">
 <div class="block">Computes the significance of the model relative to an intercept.</div>
 </td>
 </tr>
 <tr class="rowColor" id="i3">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#computeModelSignificance(java.util.HashMap,int)">computeModelSignificance</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util" class="externalLink">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="RegressionResult.html" title="class in no.uib.triogen.processing.association.linear_model">RegressionResult</a>&gt;&nbsp;regressionRestultsMap,
-int&nbsp;nValidValues)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#computeModelSignificance(java.util.HashMap)">computeModelSignificance</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util" class="externalLink">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="RegressionResult.html" title="class in no.uib.triogen.processing.association.linear_model">RegressionResult</a>&gt;&nbsp;regressionRestultsMap)</code></th>
 <td class="colLast">
 <div class="block">Computes the model significance against available parent models.</div>
 </td>
@@ -345,6 +351,13 @@ int&nbsp;nValidValues)</code></th>
 <div class="block">Model significance relatively to included parent models.</div>
 </section>
 </li>
+<li class="blockList">
+<section class="detail">
+<h3><a id="nValues">nValues</a></h3>
+<div class="memberSignature"><span class="modifiers">public final</span>&nbsp;<span class="returnType">int</span>&nbsp;<span class="memberName">nValues</span></div>
+<div class="block">The number of values used in the model.</div>
+</section>
+</li>
 </ul>
 </section>
 </li>
@@ -357,12 +370,14 @@ int&nbsp;nValidValues)</code></th>
 <ul class="blockList">
 <li class="blockList">
 <section class="detail">
-<h3><a id="&lt;init&gt;(no.uib.triogen.model.trio_genotypes.Model)">RegressionResult</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="memberName">RegressionResult</span>&#8203;(<span class="arguments"><a href="../../../model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model)</span></div>
+<h3><a id="&lt;init&gt;(no.uib.triogen.model.trio_genotypes.Model,int)">RegressionResult</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="memberName">RegressionResult</span>&#8203;(<span class="arguments"><a href="../../../model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
+int&nbsp;nValues)</span></div>
 <div class="block">Constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>model</code> - the model of this regression.</dd>
+<dd><code>model</code> - The model used in this regression.</dd>
+<dd><code>nValues</code> - The number of samples used in this regression.</dd>
 </dl>
 </section>
 </li>
@@ -385,40 +400,30 @@ int&nbsp;nValidValues)</code></th>
 </li>
 <li class="blockList">
 <section class="detail">
-<h3><a id="computeModelSignificance(double,int)">computeModelSignificance</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">computeModelSignificance</span>&#8203;(<span class="arguments">double&nbsp;rss0,
-int&nbsp;nValidValues)</span></div>
+<h3><a id="computeModelSignificance(double)">computeModelSignificance</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">computeModelSignificance</span>&#8203;(<span class="arguments">double&nbsp;rss0)</span></div>
 <div class="block">Computes the significance of the model relative to an intercept.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>rss0</code> - The residual sum of squares for the intercept.</dd>
-<dd><code>nValidValues</code> - The number of phenotypic values included in the
- regression.</dd>
 </dl>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
-<h3><a id="computeBetaSignificance(int)">computeBetaSignificance</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">computeBetaSignificance</span>&#8203;(<span class="arguments">int&nbsp;nValidValues)</span></div>
+<h3><a id="computeBetaSignificance()">computeBetaSignificance</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">computeBetaSignificance</span>()</div>
 <div class="block">Computes the significance the beta estimates.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>nValidValues</code> - the number of valid values</dd>
-</dl>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
-<h3><a id="computeModelSignificance(java.util.HashMap,int)">computeModelSignificance</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">computeModelSignificance</span>&#8203;(<span class="arguments"><a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util" class="externalLink">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="RegressionResult.html" title="class in no.uib.triogen.processing.association.linear_model">RegressionResult</a>&gt;&nbsp;regressionRestultsMap,
-int&nbsp;nValidValues)</span></div>
+<h3><a id="computeModelSignificance(java.util.HashMap)">computeModelSignificance</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">computeModelSignificance</span>&#8203;(<span class="arguments"><a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util" class="externalLink">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="RegressionResult.html" title="class in no.uib.triogen.processing.association.linear_model">RegressionResult</a>&gt;&nbsp;regressionRestultsMap)</span></div>
 <div class="block">Computes the model significance against available parent models.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>regressionRestultsMap</code> - Map of the regression results.</dd>
-<dd><code>nValidValues</code> - The number of phenotypic values included in the
- regression.</dd>
 </dl>
 </section>
 </li>

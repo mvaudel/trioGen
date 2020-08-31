@@ -85,6 +85,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Writes a variant to the file.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html#adjustForCovariates(java.lang.String%5B%5D,no.uib.triogen.model.covariates.CovariatesHandler)">adjustForCovariates(String[], CovariatesHandler)</a></span> - Method in class no.uib.triogen.model.phenotypes.<a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html" title="class in no.uib.triogen.model.phenotypes">PhenotypesHandler</a></dt>
+<dd>
+<div class="block">Projects phenotypes for the given pheno names using the covariates
+ handler.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/flat/indexed/IndexedGzWriter.html#append(java.lang.String)">append(String)</a></span> - Method in class no.uib.triogen.io.flat.indexed.<a href="no/uib/triogen/io/flat/indexed/IndexedGzWriter.html" title="class in no.uib.triogen.io.flat.indexed">IndexedGzWriter</a></dt>
 <dd>
 <div class="block">Appends a String to the file and returns the coordinates of the file.</div>
@@ -291,15 +296,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/utils/CompressionUtils.html#%3Cinit%3E()">CompressionUtils()</a></span> - Constructor for class no.uib.triogen.utils.<a href="no/uib/triogen/utils/CompressionUtils.html" title="class in no.uib.triogen.utils">CompressionUtils</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html#computeBetaSignificance(int)">computeBetaSignificance(int)</a></span> - Method in class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html" title="class in no.uib.triogen.processing.association.linear_model">RegressionResult</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html#computeBetaSignificance()">computeBetaSignificance()</a></span> - Method in class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html" title="class in no.uib.triogen.processing.association.linear_model">RegressionResult</a></dt>
 <dd>
 <div class="block">Computes the significance the beta estimates.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html#computeModelSignificance(double,int)">computeModelSignificance(double, int)</a></span> - Method in class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html" title="class in no.uib.triogen.processing.association.linear_model">RegressionResult</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html#computeModelSignificance(double)">computeModelSignificance(double)</a></span> - Method in class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html" title="class in no.uib.triogen.processing.association.linear_model">RegressionResult</a></dt>
 <dd>
 <div class="block">Computes the significance of the model relative to an intercept.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html#computeModelSignificance(java.util.HashMap,int)">computeModelSignificance(HashMap&lt;String, RegressionResult&gt;, int)</a></span> - Method in class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html" title="class in no.uib.triogen.processing.association.linear_model">RegressionResult</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html#computeModelSignificance(java.util.HashMap)">computeModelSignificance(HashMap&lt;String, RegressionResult&gt;)</a></span> - Method in class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html" title="class in no.uib.triogen.processing.association.linear_model">RegressionResult</a></dt>
 <dd>
 <div class="block">Computes the model significance against available parent models.</div>
 </dd>
@@ -311,11 +316,37 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Returns a boolean indicating whether the variant id is in the list.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/association/LinearModelOptions.html#covariate">covariate</a></span> - no.uib.triogen.cmd.association.<a href="no/uib/triogen/cmd/association/LinearModelOptions.html" title="enum in no.uib.triogen.cmd.association">LinearModelOptions</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/association/LinearModelOptions.html#covariate_general">covariate_general</a></span> - no.uib.triogen.cmd.association.<a href="no/uib/triogen/cmd/association/LinearModelOptions.html" title="enum in no.uib.triogen.cmd.association">LinearModelOptions</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/association/LinearModelOptionsBean.html#covariates">covariates</a></span> - Variable in class no.uib.triogen.cmd.association.<a href="no/uib/triogen/cmd/association/LinearModelOptionsBean.html" title="class in no.uib.triogen.cmd.association">LinearModelOptionsBean</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/association/LinearModelOptions.html#covariate_specific">covariate_specific</a></span> - no.uib.triogen.cmd.association.<a href="no/uib/triogen/cmd/association/LinearModelOptions.html" title="enum in no.uib.triogen.cmd.association">LinearModelOptions</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/association/LinearModelOptionsBean.html#covariatesGeneral">covariatesGeneral</a></span> - Variable in class no.uib.triogen.cmd.association.<a href="no/uib/triogen/cmd/association/LinearModelOptionsBean.html" title="class in no.uib.triogen.cmd.association">LinearModelOptionsBean</a></dt>
 <dd>
-<div class="block">Names of the covariates to use for the phenotypes.</div>
+<div class="block">Names of the covariates to use for all the phenotypes.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/LinearModelComputer.html#covariatesGeneral">covariatesGeneral</a></span> - Variable in class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/LinearModelComputer.html" title="class in no.uib.triogen.processing.association.linear_model">LinearModelComputer</a></dt>
+<dd>
+<div class="block">Names of the covariates to use for all the phenotypes.</div>
+</dd>
+<dt><a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates"><span class="typeNameLink">CovariatesHandler</span></a> - Class in <a href="no/uib/triogen/model/covariates/package-summary.html">no.uib.triogen.model.covariates</a></dt>
+<dd>
+<div class="block">Handler for covariates.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/covariates/CovariatesHandler.html#%3Cinit%3E(java.lang.String%5B%5D,no.uib.triogen.model.phenotypes.PhenotypesHandler,java.lang.String%5B%5D,java.util.HashMap)">CovariatesHandler(String[], PhenotypesHandler, String[], HashMap&lt;String, TreeSet&lt;String&gt;&gt;)</a></span> - Constructor for class no.uib.triogen.model.covariates.<a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a></dt>
+<dd>
+<div class="block">Constructor.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/covariates/CovariatesHandler.html#covariatesMap">covariatesMap</a></span> - Variable in class no.uib.triogen.model.covariates.<a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a></dt>
+<dd>
+<div class="block">Phenotype name to covariates.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/association/LinearModelOptionsBean.html#covariatesSpecific">covariatesSpecific</a></span> - Variable in class no.uib.triogen.cmd.association.<a href="no/uib/triogen/cmd/association/LinearModelOptionsBean.html" title="class in no.uib.triogen.cmd.association">LinearModelOptionsBean</a></dt>
+<dd>
+<div class="block">Map of the covariates to use for specific phenotypes.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/LinearModelComputer.html#covariatesSpecific">covariatesSpecific</a></span> - Variable in class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/LinearModelComputer.html" title="class in no.uib.triogen.processing.association.linear_model">LinearModelComputer</a></dt>
+<dd>
+<div class="block">Map of the covariates to use for specific phenotypes.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/association/LinearModelOptions.html#createOptionsCLI(org.apache.commons.cli.Options)">createOptionsCLI(Options)</a></span> - Static method in enum no.uib.triogen.cmd.association.<a href="no/uib/triogen/cmd/association/LinearModelOptions.html" title="enum in no.uib.triogen.cmd.association">LinearModelOptions</a></dt>
 <dd>
@@ -921,6 +952,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html#getParentsGenotypeP0sCache()">getParentsGenotypeP0sCache()</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.generic.<a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html" title="class in no.uib.triogen.io.genotypes.vcf.generic">VcfVariant</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/covariates/CovariatesHandler.html#getProjectedValues(java.lang.String)">getProjectedValues(String)</a></span> - Method in class no.uib.triogen.model.covariates.<a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a></dt>
+<dd>
+<div class="block">Projects the phenotypes of the given name orthogonally to the covariates, ie returns
+ ut*values on the dimensions higher than the numerical rank.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/covariates/CovariatesHandler.html#getProjectedValues(java.lang.String,double%5B%5D%5B%5D)">getProjectedValues(String, double[][])</a></span> - Method in class no.uib.triogen.model.covariates.<a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a></dt>
+<dd>
+<div class="block">Projects the columns of the given values orthogonally to the covariates, ie returns
+ ut*values on the dimensions higher than the numerical rank.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/ld/LdMatrixReader.html#getR2(java.lang.String)">getR2(String)</a></span> - Method in class no.uib.triogen.io.ld.<a href="no/uib/triogen/io/ld/LdMatrixReader.html" title="class in no.uib.triogen.io.ld">LdMatrixReader</a></dt>
 <dd>
 <div class="block">Returns a map containing the ids of the variants B in LD with variant A
@@ -1078,6 +1119,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Constructor.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/covariates/CovariatesHandler.html#indexMap">indexMap</a></span> - Variable in class no.uib.triogen.model.covariates.<a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a></dt>
+<dd>
+<div class="block">The index of the children in the raw pheno values.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/test_scripts/CleanMeta.html#INFO_THRESHOLD">INFO_THRESHOLD</a></span> - Static variable in class no.uib.triogen.test_scripts.<a href="no/uib/triogen/test_scripts/CleanMeta.html" title="class in no.uib.triogen.test_scripts">CleanMeta</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/extract/ExtractOptions.html#input">input</a></span> - no.uib.triogen.cmd.extract.<a href="no/uib/triogen/cmd/extract/ExtractOptions.html" title="enum in no.uib.triogen.cmd.extract">ExtractOptions</a></dt>
@@ -1197,7 +1242,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">This class runs a linear model on the given phenotypes.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/LinearModelComputer.html#%3Cinit%3E(java.io.File,no.uib.triogen.io.genotypes.GenotypesFileType,no.uib.triogen.model.trio_genotypes.VariantList,int,double,boolean,no.uib.triogen.model.family.ChildToParentMap,java.io.File,java.lang.String%5B%5D,java.lang.String%5B%5D,no.uib.triogen.model.trio_genotypes.Model%5B%5D,java.io.File,int,no.uib.triogen.log.SimpleCliLogger)">LinearModelComputer(File, GenotypesFileType, VariantList, int, double, boolean, ChildToParentMap, File, String[], String[], Model[], File, int, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/LinearModelComputer.html" title="class in no.uib.triogen.processing.association.linear_model">LinearModelComputer</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/LinearModelComputer.html#%3Cinit%3E(java.io.File,no.uib.triogen.io.genotypes.GenotypesFileType,no.uib.triogen.model.trio_genotypes.VariantList,int,double,boolean,no.uib.triogen.model.family.ChildToParentMap,java.io.File,java.lang.String%5B%5D,java.lang.String%5B%5D,java.util.HashMap,no.uib.triogen.model.trio_genotypes.Model%5B%5D,java.io.File,int,no.uib.triogen.log.SimpleCliLogger)">LinearModelComputer(File, GenotypesFileType, VariantList, int, double, boolean, ChildToParentMap, File, String[], String[], HashMap&lt;String, TreeSet&lt;String&gt;&gt;, Model[], File, int, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/LinearModelComputer.html" title="class in no.uib.triogen.processing.association.linear_model">LinearModelComputer</a></dt>
 <dd>
 <div class="block">Constructor.</div>
 </dd>
@@ -1217,7 +1262,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Runnable for the linear model association.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/LinearModelRunnable.html#%3Cinit%3E(no.uib.triogen.io.genotypes.VariantIterator,no.uib.triogen.model.trio_genotypes.VariantList,double,boolean,no.uib.triogen.model.family.ChildToParentMap,no.uib.triogen.model.trio_genotypes.Model%5B%5D,no.uib.triogen.model.phenotypes.PhenotypesHandler,no.uib.triogen.io.flat.indexed.IndexedGzWriter,no.uib.triogen.io.flat.SimpleFileWriter,no.uib.triogen.utils.SimpleSemaphore,no.uib.triogen.log.SimpleCliLogger)">LinearModelRunnable(VariantIterator, VariantList, double, boolean, ChildToParentMap, Model[], PhenotypesHandler, IndexedGzWriter, SimpleFileWriter, SimpleSemaphore, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/LinearModelRunnable.html" title="class in no.uib.triogen.processing.association.linear_model">LinearModelRunnable</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/LinearModelRunnable.html#%3Cinit%3E(no.uib.triogen.io.genotypes.VariantIterator,no.uib.triogen.model.trio_genotypes.VariantList,double,boolean,no.uib.triogen.model.family.ChildToParentMap,no.uib.triogen.model.trio_genotypes.Model%5B%5D,no.uib.triogen.model.phenotypes.PhenotypesHandler,no.uib.triogen.model.covariates.CovariatesHandler,no.uib.triogen.io.flat.indexed.IndexedGzWriter,no.uib.triogen.io.flat.SimpleFileWriter,no.uib.triogen.utils.SimpleSemaphore,no.uib.triogen.log.SimpleCliLogger)">LinearModelRunnable(VariantIterator, VariantList, double, boolean, ChildToParentMap, Model[], PhenotypesHandler, CovariatesHandler, IndexedGzWriter, SimpleFileWriter, SimpleSemaphore, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/LinearModelRunnable.html" title="class in no.uib.triogen.processing.association.linear_model">LinearModelRunnable</a></dt>
 <dd>
 <div class="block">Constructor.</div>
 </dd>
@@ -1603,6 +1648,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="no/uib/triogen/io/package-summary.html">no.uib.triogen.io</a> - package no.uib.triogen.io</dt>
 <dd>&nbsp;</dd>
+<dt><a href="no/uib/triogen/io/covariates/package-summary.html">no.uib.triogen.io.covariates</a> - package no.uib.triogen.io.covariates</dt>
+<dd>&nbsp;</dd>
 <dt><a href="no/uib/triogen/io/flat/package-summary.html">no.uib.triogen.io.flat</a> - package no.uib.triogen.io.flat</dt>
 <dd>&nbsp;</dd>
 <dt><a href="no/uib/triogen/io/flat/indexed/package-summary.html">no.uib.triogen.io.flat.indexed</a> - package no.uib.triogen.io.flat.indexed</dt>
@@ -1628,6 +1675,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="no/uib/triogen/log/package-summary.html">no.uib.triogen.log</a> - package no.uib.triogen.log</dt>
 <dd>&nbsp;</dd>
 <dt><a href="no/uib/triogen/model/annotation/package-summary.html">no.uib.triogen.model.annotation</a> - package no.uib.triogen.model.annotation</dt>
+<dd>&nbsp;</dd>
+<dt><a href="no/uib/triogen/model/covariates/package-summary.html">no.uib.triogen.model.covariates</a> - package no.uib.triogen.model.covariates</dt>
 <dd>&nbsp;</dd>
 <dt><a href="no/uib/triogen/model/family/package-summary.html">no.uib.triogen.model.family</a> - package no.uib.triogen.model.family</dt>
 <dd>&nbsp;</dd>
@@ -1656,6 +1705,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html#nValidValuesMap">nValidValuesMap</a></span> - Variable in class no.uib.triogen.model.phenotypes.<a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html" title="class in no.uib.triogen.model.phenotypes">PhenotypesHandler</a></dt>
 <dd>
 <div class="block">Phenotype name to number of valid values.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html#nValues">nValues</a></span> - Variable in class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html" title="class in no.uib.triogen.processing.association.linear_model">RegressionResult</a></dt>
+<dd>
+<div class="block">The number of values used in the model.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/association/LinearModelOptions.html#nVariants">nVariants</a></span> - no.uib.triogen.cmd.association.<a href="no/uib/triogen/cmd/association/LinearModelOptions.html" title="enum in no.uib.triogen.cmd.association">LinearModelOptions</a></dt>
 <dd>&nbsp;</dd>
@@ -1753,7 +1806,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html#phenoMap">phenoMap</a></span> - Variable in class no.uib.triogen.model.phenotypes.<a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html" title="class in no.uib.triogen.model.phenotypes">PhenotypesHandler</a></dt>
 <dd>
-<div class="block">Phenotype name to child id to phenotype value map.</div>
+<div class="block">Phenotype name to phenotype value map.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html#phenoMeanMap">phenoMeanMap</a></span> - Variable in class no.uib.triogen.model.phenotypes.<a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html" title="class in no.uib.triogen.model.phenotypes">PhenotypesHandler</a></dt>
+<dd>
+<div class="block">Mean of phenotypic values.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/association/LinearModelOptions.html#phenoName">phenoName</a></span> - no.uib.triogen.cmd.association.<a href="no/uib/triogen/cmd/association/LinearModelOptions.html" title="enum in no.uib.triogen.cmd.association">LinearModelOptions</a></dt>
 <dd>&nbsp;</dd>
@@ -1777,9 +1834,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">This class parses phenotypes from a pheno file.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html#%3Cinit%3E(java.io.File,java.lang.String%5B%5D,java.lang.String%5B%5D,java.lang.String%5B%5D)">PhenotypesHandler(File, String[], String[], String[])</a></span> - Constructor for class no.uib.triogen.model.phenotypes.<a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html" title="class in no.uib.triogen.model.phenotypes">PhenotypesHandler</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html#%3Cinit%3E(java.io.File,java.lang.String%5B%5D,java.util.HashSet)">PhenotypesHandler(File, String[], HashSet&lt;String&gt;)</a></span> - Constructor for class no.uib.triogen.model.phenotypes.<a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html" title="class in no.uib.triogen.model.phenotypes">PhenotypesHandler</a></dt>
 <dd>
 <div class="block">Constructor from a phenotypes file.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/covariates/SpecificCovariatesFile.html#praseCovariates(java.io.File)">praseCovariates(File)</a></span> - Static method in class no.uib.triogen.io.covariates.<a href="no/uib/triogen/io/covariates/SpecificCovariatesFile.html" title="class in no.uib.triogen.io.covariates">SpecificCovariatesFile</a></dt>
+<dd>
+<div class="block">Parses the content of a covariates specification file.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/covariates/SpecificCovariatesFile.html#praseCovariates(java.lang.String)">praseCovariates(String)</a></span> - Static method in class no.uib.triogen.io.covariates.<a href="no/uib/triogen/io/covariates/SpecificCovariatesFile.html" title="class in no.uib.triogen.io.covariates">SpecificCovariatesFile</a></dt>
+<dd>
+<div class="block">Parses the content of a covariates specification file.</div>
 </dd>
 <dt><a href="no/uib/triogen/test_scripts/PruneBolt.html" title="class in no.uib.triogen.test_scripts"><span class="typeNameLink">PruneBolt</span></a> - Class in <a href="no/uib/triogen/test_scripts/package-summary.html">no.uib.triogen.test_scripts</a></dt>
 <dd>
@@ -1793,6 +1858,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h2 class="title">R</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/covariates/CovariatesHandler.html#rankMap">rankMap</a></span> - Variable in class no.uib.triogen.model.covariates.<a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a></dt>
+<dd>
+<div class="block">The effective numerical rank for each phenotype.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/covariates/CovariatesHandler.html#rawPhenoValues">rawPhenoValues</a></span> - Variable in class no.uib.triogen.model.covariates.<a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a></dt>
+<dd>
+<div class="block">The phenotypes prior to adjustment for covariates.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/flat/indexed/IndexedGzReader.html#read(long,int,int)">read(long, int, int)</a></span> - Method in class no.uib.triogen.io.flat.indexed.<a href="no/uib/triogen/io/flat/indexed/IndexedGzReader.html" title="class in no.uib.triogen.io.flat.indexed">IndexedGzReader</a></dt>
 <dd>
 <div class="block">Reads and uncompresses the content of the file at the given coordinates.</div>
@@ -1813,7 +1886,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Placeholder for the results of a regression.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html#%3Cinit%3E(no.uib.triogen.model.trio_genotypes.Model)">RegressionResult(Model)</a></span> - Constructor for class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html" title="class in no.uib.triogen.processing.association.linear_model">RegressionResult</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html#%3Cinit%3E(no.uib.triogen.model.trio_genotypes.Model,int)">RegressionResult(Model, int)</a></span> - Constructor for class no.uib.triogen.processing.association.linear_model.<a href="no/uib/triogen/processing/association/linear_model/RegressionResult.html" title="class in no.uib.triogen.processing.association.linear_model">RegressionResult</a></dt>
 <dd>
 <div class="block">Constructor.</div>
 </dd>
@@ -1887,6 +1960,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/GenotypesFileType.html#sangerVCF">sangerVCF</a></span> - no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html#sanityCheck()">sanityCheck()</a></span> - Method in class no.uib.triogen.model.phenotypes.<a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html" title="class in no.uib.triogen.model.phenotypes">PhenotypesHandler</a></dt>
+<dd>
+<div class="block">Checks that every phenotype has a value and no NaN or infinite value.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/IoUtils.html#SEPARATOR">SEPARATOR</a></span> - Static variable in class no.uib.triogen.io.<a href="no/uib/triogen/io/IoUtils.html" title="class in no.uib.triogen.io">IoUtils</a></dt>
 <dd>
 <div class="block">Default separator</div>
@@ -1982,6 +2059,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Semaphore allowing delays.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/utils/SimpleTimeSemaphore.html#%3Cinit%3E()">SimpleTimeSemaphore()</a></span> - Constructor for class no.uib.triogen.utils.<a href="no/uib/triogen/utils/SimpleTimeSemaphore.html" title="class in no.uib.triogen.utils">SimpleTimeSemaphore</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="no/uib/triogen/io/covariates/SpecificCovariatesFile.html" title="class in no.uib.triogen.io.covariates"><span class="typeNameLink">SpecificCovariatesFile</span></a> - Class in <a href="no/uib/triogen/io/covariates/package-summary.html">no.uib.triogen.io.covariates</a></dt>
+<dd>
+<div class="block">Convenience class used to parse covariates specification files.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/covariates/SpecificCovariatesFile.html#%3Cinit%3E()">SpecificCovariatesFile()</a></span> - Constructor for class no.uib.triogen.io.covariates.<a href="no/uib/triogen/io/covariates/SpecificCovariatesFile.html" title="class in no.uib.triogen.io.covariates">SpecificCovariatesFile</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/extract/ExtractOptions.html#split_by_pheno">split_by_pheno</a></span> - no.uib.triogen.cmd.extract.<a href="no/uib/triogen/cmd/extract/ExtractOptions.html" title="enum in no.uib.triogen.cmd.extract">ExtractOptions</a></dt>
 <dd>&nbsp;</dd>
@@ -2111,6 +2194,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">The number of days before timeout.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/covariates/CovariatesHandler.html#trim()">trim()</a></span> - Method in class no.uib.triogen.model.covariates.<a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a></dt>
+<dd>
+<div class="block">Removes the raw pheno values to save memory.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/association/LinearModelOptions.html#trio">trio</a></span> - no.uib.triogen.cmd.association.<a href="no/uib/triogen/cmd/association/LinearModelOptions.html" title="enum in no.uib.triogen.cmd.association">LinearModelOptions</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/ld/LdMatrixOptions.html#trio">trio</a></span> - no.uib.triogen.cmd.ld.<a href="no/uib/triogen/cmd/ld/LdMatrixOptions.html" title="enum in no.uib.triogen.cmd.ld">LdMatrixOptions</a></dt>
@@ -2177,6 +2264,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/utils/Utils.html#%3Cinit%3E()">Utils()</a></span> - Constructor for class no.uib.triogen.utils.<a href="no/uib/triogen/utils/Utils.html" title="class in no.uib.triogen.utils">Utils</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/covariates/CovariatesHandler.html#utMap">utMap</a></span> - Variable in class no.uib.triogen.model.covariates.<a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a></dt>
+<dd>
+<div class="block">The transpose of u for each phenotype.</div>
+</dd>
 </dl>
 <a id="I:V">
 <!--   -->
