@@ -7,7 +7,7 @@
 java -Xmx5G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar no.uib.triogen.cmd.association.LinearModel \
              -g /mnt/archive/MOBAGENETICS/genotypes-base/imputed/all/vcf/22.vcf.gz \
              -gf 1 \
-             -vi resources/triogen/targets/targets \
+             -vi /mnt/work/marc/moba/mobaRun/resources/triogen/targets/targets \
              -f /mnt/work/marc/moba/run/triogen/pheno/trio \
              -p /mnt/work/marc/moba/run/triogen/pheno/trio_pheno \
              -pn "z_bmi0" \
