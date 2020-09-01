@@ -58,7 +58,7 @@ public class SpecificCovariatesFile {
     ) {
 
         JSONObject jsonObject = new JSONObject(fileContent);
-        
+
         Set<String> keys = jsonObject.keySet();
 
         HashMap<String, TreeSet<String>> result = new HashMap<>(keys.size());
@@ -67,18 +67,22 @@ public class SpecificCovariatesFile {
 
             JSONObject phenoObject = jsonObject.getJSONObject(key);
 
-            JSONArray array = phenoObject.getJSONArray("controlVariables");
-
             TreeSet<String> covariates = new TreeSet<>();
-
-            for (int i = 0; i < array.length(); i++) {
-
-                covariates.add(array.getString(i));
-
-            }
 
             result.put(key, covariates);
 
+            Object controlVariablesObject = phenoObject.get("controlVariables");
+
+            if (controlVariablesObject instanceof JSONArray) {
+
+                JSONArray array = (JSONArray) controlVariablesObject;
+
+                for (int i = 0; i < array.length(); i++) {
+
+                    covariates.add(array.getString(i));
+
+                }
+            }
         }
 
         return result;
