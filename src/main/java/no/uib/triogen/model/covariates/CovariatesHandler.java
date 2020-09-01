@@ -27,6 +27,10 @@ public class CovariatesHandler {
      */
     public final ConcurrentHashMap<String, String[]> covariatesMap;
     /**
+     * The u for each phenotype.
+     */
+    public final ConcurrentHashMap<String, RealMatrix> uMap;
+    /**
      * The transpose of u for each phenotype.
      */
     public final ConcurrentHashMap<String, RealMatrix> utMap;
@@ -61,6 +65,7 @@ public class CovariatesHandler {
     ) {
 
         this.covariatesMap = new ConcurrentHashMap<>(phenotypeNames.length);
+        uMap = new ConcurrentHashMap<>(phenotypeNames.length);
         utMap = new ConcurrentHashMap<>(phenotypeNames.length);
         rankMap = new ConcurrentHashMap<>(phenotypeNames.length);
         rawPhenoValues = new ConcurrentHashMap<>(phenotypeNames.length);
@@ -146,7 +151,7 @@ public class CovariatesHandler {
                     j++;
 
                 }
-                
+
             }
 
             // DEBUG
@@ -160,12 +165,10 @@ public class CovariatesHandler {
 
             SingularValueDecomposition svd = new SingularValueDecomposition(xMatrix);
 
+            utMap.put(phenoName, svd.getU());
             utMap.put(phenoName, svd.getUT());
-
             rankMap.put(phenoName, svd.getRank());
-
             rawPhenoValues.put(phenoName, y);
-
             indexMap.put(phenoName, index);
 
             // DEBUG
@@ -250,14 +253,13 @@ public class CovariatesHandler {
     }
 
     /**
-     * Projects the phenotypes of the given name orthogonally to the covariates,
-     * ie returns ut*values on the dimensions higher than the numerical rank.
+     * Removes the contribution of the covariates from the phenotypes and returns the new values.
      *
      * @param phenoName The name of the phenotype.
      *
-     * @return The projected values.
+     * @return The values adjusted for covariates.
      */
-    public double[] getProjectedValues(
+    public double[] getAdjustedValues(
             String phenoName
     ) {
 
@@ -266,14 +268,6 @@ public class CovariatesHandler {
         RealMatrix utMatrix = utMap.get(phenoName);
 
         if (utMatrix != null) {
-
-            double[] product = utMatrix.operate(values);
-
-            int resultLength = product.length - rankMap.get(phenoName);
-
-            double[] result = new double[resultLength];
-
-            System.arraycopy(product, resultLength, result, 0, resultLength);
 
             // DEBUG
             File degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_rawPheno.gz");
@@ -289,10 +283,28 @@ public class CovariatesHandler {
                 writer.writeLine(line);
             }
 
-            degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_product.gz");
+            double[] covariateBaseValues = utMatrix.operate(values);
+
+            for (int i = rankMap.get(phenoName) + 1; i < covariateBaseValues.length; i++) {
+
+                covariateBaseValues[i] = 0.0;
+
+            }
+
+            RealMatrix uMatrix = uMap.get(phenoName);
+            double[] covariatesContribution = uMatrix.operate(covariateBaseValues);
+
+            for (int i = 0; i < values.length; i++) {
+
+                values[i] = values[i] - covariatesContribution[i];
+
+            }
+
+            // DEBUG
+            degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_covariateBaseValues.gz");
             try ( SimpleFileWriter writer = new SimpleFileWriter(degugFile, true)) {
 
-                String line = Arrays.stream(product)
+                String line = Arrays.stream(covariateBaseValues)
                         .mapToObj(
                                 value -> Double.toString(value)
                         )
@@ -305,7 +317,7 @@ public class CovariatesHandler {
             degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_result.gz");
             try ( SimpleFileWriter writer = new SimpleFileWriter(degugFile, true)) {
 
-                String line = Arrays.stream(result)
+                String line = Arrays.stream(values)
                         .mapToObj(
                                 value -> Double.toString(value)
                         )
@@ -315,25 +327,21 @@ public class CovariatesHandler {
                 writer.writeLine(line);
             }
 
-            return result;
-
-        } else {
-
-            return values;
-
         }
+        
+        return values;
+        
     }
 
     /**
-     * Projects the columns of the given values orthogonally to the covariates,
-     * ie returns ut*values on the dimensions higher than the numerical rank.
+     * Subtracts the contribution of the covariates to the columns in x.
      *
      * @param phenoName The name of the phenotype.
      * @param x The values to project.
      *
      * @return The projected values.
      */
-    public double[][] getProjectedValues(
+    public double[][] getAdjustedValues(
             String phenoName,
             double[][] x
     ) {
@@ -344,16 +352,23 @@ public class CovariatesHandler {
 
             Array2DRowRealMatrix xMatrix = new Array2DRowRealMatrix(x, false);
 
-            RealMatrix productMatrix = utMatrix.multiply(xMatrix);
+            RealMatrix covariateBaseValues = utMatrix.multiply(xMatrix);
 
-            RealMatrix projectionMatrix = productMatrix.getSubMatrix(
-                    rankMap.get(phenoName),
-                    productMatrix.getRowDimension(),
-                    0,
-                    productMatrix.getColumnDimension()
-            );
+            for (int i = rankMap.get(phenoName) + 1; i < covariateBaseValues.getRowDimension(); i++) {
 
-            return projectionMatrix.getData();
+                for (int j = 0; j < covariateBaseValues.getColumnDimension(); j++) {
+
+                    covariateBaseValues.setEntry(i, j, 0.0);
+
+                }
+            }
+
+            RealMatrix uMatrix = uMap.get(phenoName);
+            RealMatrix covariatesContributionMatrix = uMatrix.multiply(covariateBaseValues);
+
+            RealMatrix resultMatrix = xMatrix.subtract(covariatesContributionMatrix);
+
+            return resultMatrix.getData();
 
         } else {
 

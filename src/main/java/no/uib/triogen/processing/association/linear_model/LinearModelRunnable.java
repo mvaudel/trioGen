@@ -429,7 +429,7 @@ public class LinearModelRunnable implements Runnable {
                         }
                         
                         // Adjust for covariates
-                        x = covariatesHandler.getProjectedValues(phenoName, x);
+                        x = covariatesHandler.getAdjustedValues(phenoName, x);
 
                         // Run regression
                         RegressionResult regressionResult = regressionResults.get(modelI);

@@ -672,6 +672,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Maps the bytes at the current position to the given array.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/covariates/CovariatesHandler.html#getAdjustedValues(java.lang.String)">getAdjustedValues(String)</a></span> - Method in class no.uib.triogen.model.covariates.<a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a></dt>
+<dd>
+<div class="block">Removes the contribution of the covariates from the phenotypes and returns the new values.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/covariates/CovariatesHandler.html#getAdjustedValues(java.lang.String,double%5B%5D%5B%5D)">getAdjustedValues(String, double[][])</a></span> - Method in class no.uib.triogen.model.covariates.<a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a></dt>
+<dd>
+<div class="block">Subtracts the contribution of the covariates to the columns in x.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/GenotypesProvider.html#getAlt()">getAlt()</a></span> - Method in interface no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></dt>
 <dd>
 <div class="block">Returns the alternative allele of the variant.</div>
@@ -952,16 +960,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html#getParentsGenotypeP0sCache()">getParentsGenotypeP0sCache()</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.generic.<a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html" title="class in no.uib.triogen.io.genotypes.vcf.generic">VcfVariant</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/model/covariates/CovariatesHandler.html#getProjectedValues(java.lang.String)">getProjectedValues(String)</a></span> - Method in class no.uib.triogen.model.covariates.<a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a></dt>
-<dd>
-<div class="block">Projects the phenotypes of the given name orthogonally to the covariates,
- ie returns ut*values on the dimensions higher than the numerical rank.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/model/covariates/CovariatesHandler.html#getProjectedValues(java.lang.String,double%5B%5D%5B%5D)">getProjectedValues(String, double[][])</a></span> - Method in class no.uib.triogen.model.covariates.<a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a></dt>
-<dd>
-<div class="block">Projects the columns of the given values orthogonally to the covariates,
- ie returns ut*values on the dimensions higher than the numerical rank.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/ld/LdMatrixReader.html#getR2(java.lang.String)">getR2(String)</a></span> - Method in class no.uib.triogen.io.ld.<a href="no/uib/triogen/io/ld/LdMatrixReader.html" title="class in no.uib.triogen.io.ld">LdMatrixReader</a></dt>
 <dd>
 <div class="block">Returns a map containing the ids of the variants B in LD with variant A
@@ -2240,6 +2238,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h2 class="title">U</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/covariates/CovariatesHandler.html#uMap">uMap</a></span> - Variable in class no.uib.triogen.model.covariates.<a href="no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a></dt>
+<dd>
+<div class="block">The u for each phenotype.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/utils/CompressionUtils.html#uncompress(byte%5B%5D,int)">uncompress(byte[], int)</a></span> - Static method in class no.uib.triogen.utils.<a href="no/uib/triogen/utils/CompressionUtils.html" title="class in no.uib.triogen.utils">CompressionUtils</a></dt>
 <dd>
 <div class="block">Uncompresses the given byte array.</div>

@@ -225,16 +225,17 @@ public class PhenotypesHandler {
             String[] phenoNames,
             CovariatesHandler covariatesHandler
     ) {
-        
+
         phenoMap.clear();
         nValidValuesMap.clear();
 
         Arrays.stream(phenoNames)
                 .parallel()
-                .forEach(phenoName -> {
+                .forEach(
+                        phenoName -> {
 
-                            double[] newValues = covariatesHandler.getProjectedValues(phenoName);
-                            
+                            double[] newValues = covariatesHandler.getAdjustedValues(phenoName);
+
                             double phenoMean = Arrays.stream(newValues)
                                     .sum() / newValues.length;
 
@@ -245,33 +246,34 @@ public class PhenotypesHandler {
                         }
                 );
     }
-    
+
     /**
-     * Checks that every phenotype has a value and no NaN or infinite value. Throws an exception otherwise.
+     * Checks that every phenotype has a value and no NaN or infinite value.
+     * Throws an exception otherwise.
      */
     public void sanityCheck() {
 
         phenoMap.entrySet().parallelStream()
                 .forEach(
                         entry -> {
-                            
+
                             if (entry.getValue().length == 0) {
-                                
+
                                 throw new IllegalArgumentException("Phenotpype " + entry.getKey() + " has no value after filtering and adjustement for covariates.");
-                                 
+
                             }
-                            
+
                             for (double value : entry.getValue()) {
-                                
+
                                 if (Double.isNaN(value)) {
-                                    
+
                                     throw new IllegalArgumentException("Phenotpype " + entry.getKey() + " contains NaN value after filtering and adjustement for covariates.");
-                                    
+
                                 }
                                 if (Double.isInfinite(value)) {
-                                    
+
                                     throw new IllegalArgumentException("Phenotpype " + entry.getKey() + " contains infinite value after filtering and adjustement for covariates.");
-                                    
+
                                 }
                             }
                         }

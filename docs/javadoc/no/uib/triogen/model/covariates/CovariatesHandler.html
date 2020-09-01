@@ -154,6 +154,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ConcurrentHashMap.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">ConcurrentHashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;org.apache.commons.math3.linear.RealMatrix&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#uMap">uMap</a></span></code></th>
+<td class="colLast">
+<div class="block">The u for each phenotype.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ConcurrentHashMap.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">ConcurrentHashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;org.apache.commons.math3.linear.RealMatrix&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#utMap">utMap</a></span></code></th>
 <td class="colLast">
 <div class="block">The transpose of u for each phenotype.</div>
@@ -214,19 +221,17 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <tbody>
 <tr class="altColor" id="i0">
 <td class="colFirst"><code>double[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getProjectedValues(java.lang.String)">getProjectedValues</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;phenoName)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAdjustedValues(java.lang.String)">getAdjustedValues</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;phenoName)</code></th>
 <td class="colLast">
-<div class="block">Projects the phenotypes of the given name orthogonally to the covariates,
- ie returns ut*values on the dimensions higher than the numerical rank.</div>
+<div class="block">Removes the contribution of the covariates from the phenotypes and returns the new values.</div>
 </td>
 </tr>
 <tr class="rowColor" id="i1">
 <td class="colFirst"><code>double[][]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getProjectedValues(java.lang.String,double%5B%5D%5B%5D)">getProjectedValues</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;phenoName,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAdjustedValues(java.lang.String,double%5B%5D%5B%5D)">getAdjustedValues</a></span>&#8203;(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;phenoName,
 double[][]&nbsp;x)</code></th>
 <td class="colLast">
-<div class="block">Projects the columns of the given values orthogonally to the covariates,
- ie returns ut*values on the dimensions higher than the numerical rank.</div>
+<div class="block">Subtracts the contribution of the covariates to the columns in x.</div>
 </td>
 </tr>
 <tr class="altColor" id="i2">
@@ -263,6 +268,13 @@ double[][]&nbsp;x)</code></th>
 <h3><a id="covariatesMap">covariatesMap</a></h3>
 <div class="memberSignature"><span class="modifiers">public final</span>&nbsp;<span class="returnType"><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ConcurrentHashMap.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">ConcurrentHashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&gt;</span>&nbsp;<span class="memberName">covariatesMap</span></div>
 <div class="block">Phenotype name to covariates.</div>
+</section>
+</li>
+<li class="blockList">
+<section class="detail">
+<h3><a id="uMap">uMap</a></h3>
+<div class="memberSignature"><span class="modifiers">public final</span>&nbsp;<span class="returnType"><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ConcurrentHashMap.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">ConcurrentHashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;org.apache.commons.math3.linear.RealMatrix&gt;</span>&nbsp;<span class="memberName">uMap</span></div>
+<div class="block">The u for each phenotype.</div>
 </section>
 </li>
 <li class="blockList">
@@ -334,25 +346,23 @@ double[][]&nbsp;x)</code></th>
 <ul class="blockList">
 <li class="blockList">
 <section class="detail">
-<h3><a id="getProjectedValues(java.lang.String)">getProjectedValues</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">double[]</span>&nbsp;<span class="memberName">getProjectedValues</span>&#8203;(<span class="arguments"><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;phenoName)</span></div>
-<div class="block">Projects the phenotypes of the given name orthogonally to the covariates,
- ie returns ut*values on the dimensions higher than the numerical rank.</div>
+<h3><a id="getAdjustedValues(java.lang.String)">getAdjustedValues</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">double[]</span>&nbsp;<span class="memberName">getAdjustedValues</span>&#8203;(<span class="arguments"><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;phenoName)</span></div>
+<div class="block">Removes the contribution of the covariates from the phenotypes and returns the new values.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>phenoName</code> - The name of the phenotype.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The projected values.</dd>
+<dd>The values adjusted for covariates.</dd>
 </dl>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
-<h3><a id="getProjectedValues(java.lang.String,double[][])">getProjectedValues</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">double[][]</span>&nbsp;<span class="memberName">getProjectedValues</span>&#8203;(<span class="arguments"><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;phenoName,
+<h3><a id="getAdjustedValues(java.lang.String,double[][])">getAdjustedValues</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">double[][]</span>&nbsp;<span class="memberName">getAdjustedValues</span>&#8203;(<span class="arguments"><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;phenoName,
 double[][]&nbsp;x)</span></div>
-<div class="block">Projects the columns of the given values orthogonally to the covariates,
- ie returns ut*values on the dimensions higher than the numerical rank.</div>
+<div class="block">Subtracts the contribution of the covariates to the columns in x.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>phenoName</code> - The name of the phenotype.</dd>
