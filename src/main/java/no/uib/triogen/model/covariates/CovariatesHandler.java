@@ -118,7 +118,7 @@ public class CovariatesHandler {
 
             int[] index = new int[nValidValues];
             double[] y = new double[nValidValues];
-            double[][] x = new double[nValidValues][nValidValues];
+            double[][] x = new double[nValidValues][covariates.length];
 
             // DEBUG
             boolean covariateNA = false;
