@@ -1,11 +1,14 @@
 package no.uib.triogen.model.covariates;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
@@ -99,7 +102,7 @@ public class CovariatesHandler {
         )
                 .distinct()
                 .toArray(String[]::new);
-        
+
         covariatesMap.put(phenoName, covariates);
 
         if (covariates.length > 0) {
@@ -159,8 +162,57 @@ public class CovariatesHandler {
             rankMap.put(phenoName, svd.getRank());
 
             rawPhenoValues.put(phenoName, y);
-            
+
             indexMap.put(phenoName, index);
+
+            // DEBUG
+            File degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_u.gz");
+            SimpleFileWriter writer = new SimpleFileWriter(degugFile, true);
+
+            for (int i = 0; i < svd.getU().getRowDimension(); i++) {
+
+                String line = Arrays.stream(svd.getU().getRow(i))
+                        .mapToObj(
+                                value -> Double.toString(value)
+                        )
+                        .collect(
+                                Collectors.joining("\t")
+                        );
+                writer.writeLine(line);
+
+            }
+            
+            degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_s");
+            writer = new SimpleFileWriter(degugFile, true);
+
+            for (int i = 0; i < svd.getS().getRowDimension(); i++) {
+
+                String line = Arrays.stream(svd.getS().getRow(i))
+                        .mapToObj(
+                                value -> Double.toString(value)
+                        )
+                        .collect(
+                                Collectors.joining("\t")
+                        );
+                writer.writeLine(line);
+
+            }
+            
+            degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_v");
+            writer = new SimpleFileWriter(degugFile, true);
+
+            for (int i = 0; i < svd.getV().getRowDimension(); i++) {
+
+                String line = Arrays.stream(svd.getV().getRow(i))
+                        .mapToObj(
+                                value -> Double.toString(value)
+                        )
+                        .collect(
+                                Collectors.joining("\t")
+                        );
+                writer.writeLine(line);
+
+            }
 
         } else {
 
@@ -185,15 +237,15 @@ public class CovariatesHandler {
             }
 
             rawPhenoValues.put(phenoName, y);
-            
+
             indexMap.put(phenoName, index);
 
         }
     }
 
     /**
-     * Projects the phenotypes of the given name orthogonally to the covariates, ie returns
-     * ut*values on the dimensions higher than the numerical rank.
+     * Projects the phenotypes of the given name orthogonally to the covariates,
+     * ie returns ut*values on the dimensions higher than the numerical rank.
      *
      * @param phenoName The name of the phenotype.
      *
@@ -227,8 +279,8 @@ public class CovariatesHandler {
     }
 
     /**
-     * Projects the columns of the given values orthogonally to the covariates, ie returns
-     * ut*values on the dimensions higher than the numerical rank.
+     * Projects the columns of the given values orthogonally to the covariates,
+     * ie returns ut*values on the dimensions higher than the numerical rank.
      *
      * @param phenoName The name of the phenotype.
      * @param x The values to project.
@@ -243,18 +295,18 @@ public class CovariatesHandler {
         RealMatrix utMatrix = utMap.get(phenoName);
 
         if (utMatrix != null) {
-            
+
             Array2DRowRealMatrix xMatrix = new Array2DRowRealMatrix(x, false);
-            
-           RealMatrix productMatrix = utMatrix.multiply(xMatrix);
-           
-           RealMatrix projectionMatrix = productMatrix.getSubMatrix(
-                   rankMap.get(phenoName), 
-                   productMatrix.getRowDimension(), 
-                   0, 
-                   productMatrix.getColumnDimension()
-           );
-            
+
+            RealMatrix productMatrix = utMatrix.multiply(xMatrix);
+
+            RealMatrix projectionMatrix = productMatrix.getSubMatrix(
+                    rankMap.get(phenoName),
+                    productMatrix.getRowDimension(),
+                    0,
+                    productMatrix.getColumnDimension()
+            );
+
             return projectionMatrix.getData();
 
         } else {
@@ -263,13 +315,13 @@ public class CovariatesHandler {
 
         }
     }
-    
+
     /**
      * Removes the raw pheno values to save memory.
      */
     public void trim() {
-        
+
         rawPhenoValues.clear();
-        
+
     }
 }

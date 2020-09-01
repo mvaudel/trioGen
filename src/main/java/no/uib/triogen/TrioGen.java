@@ -36,7 +36,7 @@ public class TrioGen {
 //
 //        return p.getProperty("triogen.version");
 
-        return "0.4.0-beta";
+        return "0.5.0-beta";
 
     }
 
