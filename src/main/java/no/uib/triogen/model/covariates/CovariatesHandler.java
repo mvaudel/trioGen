@@ -141,11 +141,11 @@ public class CovariatesHandler {
 
                     }
 
+                    x[j][covariates.length] = 1.0;
+
                     j++;
 
                 }
-                
-                x[j][covariates.length] = 1.0;
                 
             }
 
