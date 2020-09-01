@@ -167,7 +167,7 @@ public class CovariatesHandler {
 
             // DEBUG
             File degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_u.gz");
-            SimpleFileWriter writer = new SimpleFileWriter(degugFile, true);
+            try (SimpleFileWriter writer = new SimpleFileWriter(degugFile, true)) {
 
             for (int i = 0; i < svd.getU().getRowDimension(); i++) {
 
@@ -181,9 +181,10 @@ public class CovariatesHandler {
                 writer.writeLine(line);
 
             }
+            }
             
             degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_s");
-            writer = new SimpleFileWriter(degugFile, true);
+            try (SimpleFileWriter writer = new SimpleFileWriter(degugFile, true)) {
 
             for (int i = 0; i < svd.getS().getRowDimension(); i++) {
 
@@ -197,9 +198,10 @@ public class CovariatesHandler {
                 writer.writeLine(line);
 
             }
+            }
             
             degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_v");
-            writer = new SimpleFileWriter(degugFile, true);
+            try (SimpleFileWriter writer = new SimpleFileWriter(degugFile, true)) {
 
             for (int i = 0; i < svd.getV().getRowDimension(); i++) {
 
@@ -212,6 +214,7 @@ public class CovariatesHandler {
                         );
                 writer.writeLine(line);
 
+            }
             }
 
         } else {
@@ -268,6 +271,46 @@ public class CovariatesHandler {
             double[] result = new double[resultLength];
 
             System.arraycopy(product, resultLength, result, 0, resultLength);
+            
+            // DEBUG
+            File degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_rawPheno.gz");
+            try (SimpleFileWriter writer = new SimpleFileWriter(degugFile, true)) {
+
+                String line = Arrays.stream(values)
+                        .mapToObj(
+                                value -> Double.toString(value)
+                        )
+                        .collect(
+                                Collectors.joining("\t")
+                        );
+                writer.writeLine(line);
+            }
+            
+            degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_product.gz");
+            try (SimpleFileWriter writer = new SimpleFileWriter(degugFile, true)) {
+
+                String line = Arrays.stream(product)
+                        .mapToObj(
+                                value -> Double.toString(value)
+                        )
+                        .collect(
+                                Collectors.joining("\t")
+                        );
+                writer.writeLine(line);
+            }
+            
+            degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_result.gz");
+            try (SimpleFileWriter writer = new SimpleFileWriter(degugFile, true)) {
+
+                String line = Arrays.stream(result)
+                        .mapToObj(
+                                value -> Double.toString(value)
+                        )
+                        .collect(
+                                Collectors.joining("\t")
+                        );
+                writer.writeLine(line);
+            }
 
             return result;
 
