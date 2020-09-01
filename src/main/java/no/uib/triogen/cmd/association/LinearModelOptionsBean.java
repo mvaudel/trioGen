@@ -271,6 +271,15 @@ public class LinearModelOptionsBean {
             covariatesSpecific = new HashMap<>(0);
 
         }
+        
+        for (String phenoName : phenoNames) {
+            
+            if (!covariatesSpecific.containsKey(phenoName)) {
+                
+                covariatesSpecific.put(phenoName, new TreeSet<>());
+                
+            }
+        }
 
         // The child id column in the pheno file
         if (aLine.hasOption(LinearModelOptions.childId.opt)) {
