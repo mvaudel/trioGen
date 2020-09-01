@@ -165,7 +165,7 @@ public class CovariatesHandler {
 
             SingularValueDecomposition svd = new SingularValueDecomposition(xMatrix);
 
-            utMap.put(phenoName, svd.getU());
+            uMap.put(phenoName, svd.getU());
             utMap.put(phenoName, svd.getUT());
             rankMap.put(phenoName, svd.getRank());
             rawPhenoValues.put(phenoName, y);
