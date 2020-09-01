@@ -171,58 +171,6 @@ public class CovariatesHandler {
             rawPhenoValues.put(phenoName, y);
             indexMap.put(phenoName, index);
 
-            // DEBUG
-            File degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_u.gz");
-            try ( SimpleFileWriter writer = new SimpleFileWriter(degugFile, true)) {
-
-                for (int i = 0; i < svd.getU().getRowDimension(); i++) {
-
-                    String line = Arrays.stream(svd.getU().getRow(i))
-                            .mapToObj(
-                                    value -> Double.toString(value)
-                            )
-                            .collect(
-                                    Collectors.joining("\t")
-                            );
-                    writer.writeLine(line);
-
-                }
-            }
-
-            degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_s.gz");
-            try ( SimpleFileWriter writer = new SimpleFileWriter(degugFile, true)) {
-
-                for (int i = 0; i < svd.getS().getRowDimension(); i++) {
-
-                    String line = Arrays.stream(svd.getS().getRow(i))
-                            .mapToObj(
-                                    value -> Double.toString(value)
-                            )
-                            .collect(
-                                    Collectors.joining("\t")
-                            );
-                    writer.writeLine(line);
-
-                }
-            }
-
-            degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_v.gz");
-            try ( SimpleFileWriter writer = new SimpleFileWriter(degugFile, true)) {
-
-                for (int i = 0; i < svd.getV().getRowDimension(); i++) {
-
-                    String line = Arrays.stream(svd.getV().getRow(i))
-                            .mapToObj(
-                                    value -> Double.toString(value)
-                            )
-                            .collect(
-                                    Collectors.joining("\t")
-                            );
-                    writer.writeLine(line);
-
-                }
-            }
-
         } else {
 
             double[] phenos = phenotypesHandler.phenoMap.get(phenoName);
@@ -268,21 +216,7 @@ public class CovariatesHandler {
         RealMatrix utMatrix = utMap.get(phenoName);
 
         if (utMatrix != null) {
-
-            // DEBUG
-            File degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_rawPheno.gz");
-            try ( SimpleFileWriter writer = new SimpleFileWriter(degugFile, true)) {
-
-                String line = Arrays.stream(values)
-                        .mapToObj(
-                                value -> Double.toString(value)
-                        )
-                        .collect(
-                                Collectors.joining("\t")
-                        );
-                writer.writeLine(line);
-            }
-
+            
             double[] covariateBaseValues = utMatrix.operate(values);
 
             for (int i = rankMap.get(phenoName) + 1; i < covariateBaseValues.length; i++) {
@@ -299,34 +233,6 @@ public class CovariatesHandler {
                 values[i] = values[i] - covariatesContribution[i];
 
             }
-
-            // DEBUG
-            degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_covariateBaseValues.gz");
-            try ( SimpleFileWriter writer = new SimpleFileWriter(degugFile, true)) {
-
-                String line = Arrays.stream(covariateBaseValues)
-                        .mapToObj(
-                                value -> Double.toString(value)
-                        )
-                        .collect(
-                                Collectors.joining("\t")
-                        );
-                writer.writeLine(line);
-            }
-
-            degugFile = new File("/mnt/cargo/marc/triogen/svd/" + phenoName + "_result.gz");
-            try ( SimpleFileWriter writer = new SimpleFileWriter(degugFile, true)) {
-
-                String line = Arrays.stream(values)
-                        .mapToObj(
-                                value -> Double.toString(value)
-                        )
-                        .collect(
-                                Collectors.joining("\t")
-                        );
-                writer.writeLine(line);
-            }
-
         }
         
         return values;

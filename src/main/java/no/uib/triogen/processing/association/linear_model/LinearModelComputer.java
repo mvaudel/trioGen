@@ -232,7 +232,7 @@ public class LinearModelComputer {
         Arrays.stream(phenoNames)
                 .sorted()
                 .forEach(
-                        phenoName -> logger.logMessage("    " + phenoName + ": " + covariatesHandler.covariatesMap.get(phenoName).length + " covariates plus intercept representing " + covariatesHandler.rankMap.get(phenoName) + " dimensions - " + covariatesHandler.indexMap.get(phenoName).length + " phenotypes initially " + phenotypesHandler.nValidValuesMap.get(phenoName) + " remaining.")
+                        phenoName -> logger.logMessage("    " + phenoName + ": " + covariatesHandler.indexMap.get(phenoName).length + " phenotypes, " + covariatesHandler.covariatesMap.get(phenoName).length + " covariates plus intercept representing " + covariatesHandler.rankMap.get(phenoName) + " dimensions.")
         );
 
         logger.logMessage("Done (Adjusted for covariates in " + duration + " seconds)");
