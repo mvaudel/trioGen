@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
-import no.uib.triogen.io.genotypes.StandardizedGenotypesProvider;
 
 /**
  * Enum of the linear regression models implemented.
@@ -24,49 +23,49 @@ public enum Model {
     cmf(
             "child-mother-father",
             "Regression against the number of alternative alleles of the child, mother, and father.",
-            "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + ε",
+            "y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + ε",
             new String[]{"h", "cmf_mt", "cmf_mnt", "cmf_ft", "cmf_fnt"},
             new String[]{"Bc", "Bm", "Bf"}
     ),
     cmf_mt(
             "child-mother-father_mother-transmitted",
             "Regression against the number of alternative alleles of the child, mother, and father, and transmitted maternal allele.",
-            "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βmt h1 + ε",
+            "y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + βmt h1 + ε",
             new String[0],
             new String[]{"Bc", "Bm", "Bf", "Bmt"}
     ),
     cmf_ft(
             "child-mother-father_father-transmitted",
             "Regression against the number of alternative alleles of the child, mother, and father, and transmitted paternal allele.",
-            "y = βm (h1 + h2) + βc (h2 + h3) + βf (h3 + h4) + βft h3 + ε",
+            "y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + βft h3 + ε",
             new String[0],
             new String[]{"Bc", "Bm", "Bf", "Bft"}
     ),
     cm(
             "child-mother",
             "Regression against the number of alternative alleles of the child and mother.",
-            "y = βm (h1 + h2) + βc (h2 + h3) + ε",
+            "y = βm (h1 + h2) + βc (h1 + h3) + ε",
             new String[]{"h", "cmf", "cm_mt"},
             new String[]{"Bc", "Bm"}
     ),
     cm_mt(
             "child-mother_mother-transmitted",
             "Regression against the number of alternative alleles of the child and mother, and transmitted maternal allele.",
-            "y = βm (h1 + h2) + βc (h2 + h3) + βmt h1 + ε",
+            "y = βm (h1 + h2) + βc (h1 + h3) + βmt h1 + ε",
             new String[]{"h", "cmf_mt"},
             new String[]{"Bc", "Bm", "Bmt"}
     ),
     cf(
             "child-father",
             "Regression against the number of alternative alleles of the child and father.",
-            "y = βc (h2 + h3) + βf (h3 + h4) + ε",
+            "y = βc (h1 + h3) + βf (h3 + h4) + ε",
             new String[]{"h", "cmf", "cf_ft"},
             new String[]{"Bc", "Bf"}
     ),
     cf_ft(
             "child-father_father-transmitted",
             "Regression against the number of alternative alleles of the child and father, and transmitted paternal allele.",
-            "y = βc (h2 + h3) + βf (h3 + h4) + βft h3 + ε",
+            "y = βc (h1 + h3) + βf (h3 + h4) + βft h3 + ε",
             new String[]{"h", "cmf_ft"},
             new String[]{"Bc", "Bf", "Bft"}
     ),
@@ -80,21 +79,21 @@ public enum Model {
     c(
             "child",
             "Regression against the number of alternative alleles of the child.",
-            "y = βc (h2 + h3) + ε",
+            "y = βc (h1 + h3) + ε",
             new String[]{"h", "cmf", "cm", "cf"},
             new String[]{"Bc"}
     ),
     c_mt(
             "child_mother-transmitted",
             "Regression against the number of alternative alleles of the child and transmitted maternal allele.",
-            "y = βc (h2 + h3) + βmt h1 + ε",
+            "y = βc (h1 + h3) + βmt h1 + ε",
             new String[]{"h", "cmf_mt", "cm_mt"},
             new String[]{"Bc", "Bmt"}
     ),
     c_ft(
             "child_father-transmitted",
             "Regression against the number of alternative alleles of the child and transmitted paternal allele.",
-            "y = βc (h2 + h3) + βft h3 + ε",
+            "y = βc (h1 + h3) + βft h3 + ε",
             new String[]{"h", "cmf_ft", "cf_ft"},
             new String[]{"Bc", "Bft"}
     ),
@@ -215,7 +214,7 @@ public enum Model {
      * @param childId The id of the child.
      * @param motherId The id of the mother.
      * @param fatherId The id of the father.
-     * @param standardizedGenotypesProvider The genotypes provider to use for this variant.
+     * @param genotypesProvider The genotypes provider to use for this variant.
      * @param useDosages If true, dosages will be used when possible, hard calls
      * otherwise.
      */
@@ -226,18 +225,18 @@ public enum Model {
             String childId,
             String motherId,
             String fatherId,
-            StandardizedGenotypesProvider standardizedGenotypesProvider,
+            GenotypesProvider genotypesProvider,
             boolean useDosages
     ) {
 
-        double[] h = standardizedGenotypesProvider.getNAltH(
+        short[] h = genotypesProvider.getNAltH(
                 childId,
                 motherId,
                 fatherId
         );
-        double nAltChild = standardizedGenotypesProvider.getNAltChild(childId, useDosages);
-        double nAltMother = standardizedGenotypesProvider.getNAltMother(motherId, useDosages);
-        double nAltFather = standardizedGenotypesProvider.getNAltFather(fatherId, useDosages);
+        double nAltChild = useDosages ? genotypesProvider.getNAltDosages(childId) : (double) genotypesProvider.getNAlt(childId);
+        double nAltMother = useDosages ? genotypesProvider.getNAltDosages(motherId) : (double) genotypesProvider.getNAlt(motherId);
+        double nAltFather = useDosages ? genotypesProvider.getNAltDosages(fatherId) : (double) genotypesProvider.getNAlt(fatherId);
 
         switch (model) {
 

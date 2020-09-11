@@ -90,7 +90,7 @@ public class ChildToParentMap {
             if (lineSplit.length != 3) {
 
                 throw new IllegalArgumentException("3 elements expected, " + lineSplit.length + " found in line " + lineNumber + " of file " + trioFile + ".\n"
-                        + "Plase make sure that the file contains the identifiers of the children, father, and mother, in that order. Columns should be tab-separated.\n" + line);
+                        + "Plase make sure that the file contains the identifiers of the children, mother, and father, in that order. Columns should be tab-separated.\n" + line);
 
             }
 
@@ -108,8 +108,8 @@ public class ChildToParentMap {
 
                 if (!childId.equals("NA")) {
 
-                    String fatherId = lineSplit[1];
-                    String motherId = lineSplit[2];
+                    String motherId = lineSplit[1];
+                    String fatherId = lineSplit[2];
                     
                     childIdsSet.add(childId);
                     

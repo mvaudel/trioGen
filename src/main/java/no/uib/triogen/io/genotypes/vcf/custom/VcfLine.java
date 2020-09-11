@@ -537,4 +537,30 @@ public class VcfLine implements GenotypesProvider {
 
         }
     }
+
+    @Override
+    public String getDosagesAsString(
+            String sampleId,
+            String separator
+    ) {
+
+        float[] dosages = getDosages(sampleId);
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < dosages.length; i++) {
+
+            if (i > 0) {
+
+                sb.append(separator);
+
+            }
+
+            sb.append(dosages[i]);
+
+        }
+
+        return sb.toString();
+
+    }
 }

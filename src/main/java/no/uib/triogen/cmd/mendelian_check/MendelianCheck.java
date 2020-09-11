@@ -91,7 +91,7 @@ public class MendelianCheck {
         logger.writeComment("Command", "LinearModel");
         logger.writeComment("Arguments", command);
         logger.writeHeaders();
-        
+
         VariantList variantList = bean.variantFile == null ? null : VariantList.getVariantList(bean.variantFile);
 
         MendelianCheckComputer computer = new MendelianCheckComputer(
@@ -112,11 +112,16 @@ public class MendelianCheck {
                     bean.test
             );
 
-        } catch (Throwable e) {
+        } catch (Throwable t) {
 
-            e.printStackTrace();
+            t.printStackTrace();
+
+            logger.logError(t.getLocalizedMessage());
 
         }
+
+        logger.close();
+
     }
 
     /**

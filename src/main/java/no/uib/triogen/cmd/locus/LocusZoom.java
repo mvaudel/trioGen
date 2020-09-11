@@ -75,34 +75,37 @@ public class LocusZoom {
     private static void run(
             LocusZoomOptionsBean bean
     ) throws IOException {
-        
+
         File logFile = bean.logFilePath == null ? new File(bean.outputFileStem + ".log") : new File(bean.logFilePath);
-        
+
         SimpleCliLogger logger = new SimpleCliLogger(logFile);
 
         VariantList variantList = VariantList.getVariantList(bean.variantFile);
-        
+
         try {
 
-        LocusZoomExtractor.writeData(
-                bean.targetPhenotype,
-                variantList,
-                bean.maxDistance,
-                bean.buildNumber,
-                bean.resultsFile,
-                bean.ldMatrixFile,
-                bean.outputFileStem,
-                bean.geneCoordinatesFileStem,
-                logger
-        );
-        
+            LocusZoomExtractor.writeData(
+                    bean.targetPhenotype,
+                    variantList,
+                    bean.maxDistance,
+                    bean.buildNumber,
+                    bean.resultsFile,
+                    bean.ldMatrixFile,
+                    bean.outputFileStem,
+                    bean.geneCoordinatesFileStem,
+                    logger
+            );
+
         } catch (Throwable t) {
-            
+
             t.printStackTrace();
-            
+
             logger.logError(t.getLocalizedMessage());
-            
+
         }
+
+        logger.close();
+
     }
 
     /**

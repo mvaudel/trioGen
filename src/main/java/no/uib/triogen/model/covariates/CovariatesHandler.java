@@ -142,7 +142,7 @@ public class CovariatesHandler {
                         // DEBUG
                         if (Double.isNaN(covariateValues[i])) {
                             covariateNA = true;
-                        }
+                    }
 
                     }
 

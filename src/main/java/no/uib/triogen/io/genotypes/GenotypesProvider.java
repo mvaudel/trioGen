@@ -52,6 +52,19 @@ public interface GenotypesProvider {
     );
     
     /**
+     * Returns the dosages for the given sample as a string.
+     *
+     * @param sampleId The id of the sample.
+     * @param separator The separator to use.
+     *
+     * @return The dosages.
+     */
+    public String getDosagesAsString(
+            String sampleId,
+            String separator
+    );
+    
+    /**
      * Returns the number of alternative alleles using dosages.
      *
      * @param sampleId The id of the sample.
@@ -63,7 +76,7 @@ public interface GenotypesProvider {
     );
     
     /**
-     * Returns the number of alternative alleles for each h of a trio according to the nomenclature of Chen et al. (https://doi.org/10.1101/737106).
+     * Returns the number of alternative alleles for each h of a trio according to the nomenclature of Chen et al. (https://doi.org/10.1101/737106) as an array [h1, h2, h3, h4].
      *
      * @param childId The id of the child.
      * @param motherId The id of the mother.

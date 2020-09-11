@@ -11,7 +11,6 @@ import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
-import no.uib.triogen.io.genotypes.StandardizedGenotypesProvider;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.covariates.CovariatesHandler;
@@ -94,6 +93,8 @@ public class LinearModelRunnable implements Runnable {
      * The variants to process.
      */
     private final VariantList variantList;
+
+    private final static SimpleSemaphore debugMutex = new SimpleSemaphore(1);
 
     /**
      * Constructor.
@@ -245,7 +246,7 @@ public class LinearModelRunnable implements Runnable {
             if (!x0 || h1_0 && h1_1 && h2_0 && h2_1 && h3_0 && h3_1 && h4_0 && h4_1) {
 
                 // Prepare the objects to use for the models, gather values for the histograms
-                        double[] phenoValues = phenotypesHandler.phenoMap.get(phenoName);
+                double[] phenoValues = phenotypesHandler.phenoMap.get(phenoName);
                 double phenoMean = phenotypesHandler.phenoMeanMap.get(phenoName);
                 double rss0 = 0.0;
 
@@ -257,7 +258,7 @@ public class LinearModelRunnable implements Runnable {
 
                     regressionResults.add(
                             new RegressionResult(
-                                    model, 
+                                    model,
                                     phenoValues.length
                             )
                     );
@@ -393,7 +394,7 @@ public class LinearModelRunnable implements Runnable {
                 for (int modelI = 0; modelI < models.length; modelI++) {
 
                     Model model = models[modelI];
-
+                    
                     if (Model.likelyNotSingular(
                             model,
                             hNotSingluar,
@@ -401,9 +402,6 @@ public class LinearModelRunnable implements Runnable {
                             motherNotSingular,
                             fatherNotSingular
                     )) {
-
-                        // Standardize genotypes
-                        StandardizedGenotypesProvider standardizedGenotypesProvider = new StandardizedGenotypesProvider(genotypesProvider, childToParentMap);
 
                         // Set input
                         double[][] x = new double[childIndexes.length][model.betaNames.length];
@@ -423,11 +421,11 @@ public class LinearModelRunnable implements Runnable {
                                     childId,
                                     motherId,
                                     fatherId,
-                                    standardizedGenotypesProvider,
+                                    genotypesProvider,
                                     useDosages
                             );
                         }
-                        
+
                         // Adjust for covariates
                         x = covariatesHandler.getAdjustedValues(phenoName, x);
 
@@ -652,7 +650,7 @@ public class LinearModelRunnable implements Runnable {
 
     /**
      * Writes a debug report when a singularity is found.
-     * 
+     *
      * @param variantId The id of the variant.
      * @param phenoName The name of the phenotype.
      * @param modelName The name of the model.

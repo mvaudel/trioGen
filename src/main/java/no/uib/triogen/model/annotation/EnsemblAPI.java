@@ -114,6 +114,8 @@ public class EnsemblAPI {
 
         } catch (UnirestException e) {
 
+            System.out.println("Faulty Request:\n" + request);
+            
             throw new RuntimeException(e);
 
         }

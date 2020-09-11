@@ -232,7 +232,7 @@ public class LinearModelComputer {
         Arrays.stream(phenoNames)
                 .sorted()
                 .forEach(
-                        phenoName -> logger.logMessage("    " + phenoName + ": " + covariatesHandler.indexMap.get(phenoName).length + " phenotypes, " + covariatesHandler.covariatesMap.get(phenoName).length + " covariates plus intercept representing " + covariatesHandler.rankMap.get(phenoName) + " dimensions.")
+                        phenoName -> logger.logMessage("    " + phenoName + ": " + covariatesHandler.indexMap.get(phenoName).length + " phenotypes, " + covariatesHandler.covariatesMap.get(phenoName).length + " covariates (including intercept) representing " + covariatesHandler.rankMap.get(phenoName) + " dimensions.")
         );
 
         logger.logMessage("Done (Adjusted for covariates in " + duration + " seconds)");
@@ -241,7 +241,7 @@ public class LinearModelComputer {
 
         String nVariantsText = variantList == null ? "" : ", " + variantList.variantId.length + " variants";
 
-        logger.logMessage("Linear association (geno: " + genotypesFile.getAbsolutePath() + nVariantsText + ", pheno: " + phenotypesFile.getAbsolutePath() + ")");
+        logger.logMessage("Linear association (geno: " + genotypesFile.getAbsolutePath() + nVariantsText + ", pheno: " + phenotypesFile.getAbsolutePath() + " " + phenoNames.length + " phenotypes)");
 
         start = Instant.now().getEpochSecond();
 

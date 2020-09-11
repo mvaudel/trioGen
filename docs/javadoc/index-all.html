@@ -574,7 +574,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/Model.html#f_ft">f_ft</a></span> - no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/Model.html#fillX(double%5B%5D%5B%5D,no.uib.triogen.model.trio_genotypes.Model,int,java.lang.String,java.lang.String,java.lang.String,no.uib.triogen.io.genotypes.StandardizedGenotypesProvider,boolean)">fillX(double[][], Model, int, String, String, String, StandardizedGenotypesProvider, boolean)</a></span> - Static method in enum no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/Model.html#fillX(double%5B%5D%5B%5D,no.uib.triogen.model.trio_genotypes.Model,int,java.lang.String,java.lang.String,java.lang.String,no.uib.triogen.io.genotypes.GenotypesProvider,boolean)">fillX(double[][], Model, int, String, String, String, GenotypesProvider, boolean)</a></span> - Static method in enum no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a></dt>
 <dd>
 <div class="block">Fills the given x matrix based on the model.</div>
 </dd>
@@ -732,6 +732,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html#getDosages(java.lang.String)">getDosages(String)</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.generic.<a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html" title="class in no.uib.triogen.io.genotypes.vcf.generic">VcfVariant</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/GenotypesProvider.html#getDosagesAsString(java.lang.String,java.lang.String)">getDosagesAsString(String, String)</a></span> - Method in interface no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></dt>
+<dd>
+<div class="block">Returns the dosages for the given sample as a string.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/custom/VcfLine.html#getDosagesAsString(java.lang.String,java.lang.String)">getDosagesAsString(String, String)</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.custom.<a href="no/uib/triogen/io/genotypes/vcf/custom/VcfLine.html" title="class in no.uib.triogen.io.genotypes.vcf.custom">VcfLine</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html#getDosagesAsString(java.lang.String,java.lang.String)">getDosagesAsString(String, String)</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.generic.<a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html" title="class in no.uib.triogen.io.genotypes.vcf.generic">VcfVariant</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/flat/mapping/MemoryMappedFile.MiniBuffer.html#getDouble()">getDouble()</a></span> - Method in class no.uib.triogen.io.flat.mapping.<a href="no/uib/triogen/io/flat/mapping/MemoryMappedFile.MiniBuffer.html" title="class in no.uib.triogen.io.flat.mapping">MemoryMappedFile.MiniBuffer</a></dt>
 <dd>
 <div class="block">Returns the double at the current position in the file.</div>
@@ -831,11 +839,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html#getNAlt(java.lang.String)">getNAlt(String)</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.generic.<a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html" title="class in no.uib.triogen.io.genotypes.vcf.generic">VcfVariant</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/StandardizedGenotypesProvider.html#getNAltChild(java.lang.String,boolean)">getNAltChild(String, boolean)</a></span> - Method in class no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/StandardizedGenotypesProvider.html" title="class in no.uib.triogen.io.genotypes">StandardizedGenotypesProvider</a></dt>
-<dd>
-<div class="block">Returns the number of alternative alleles for a child centered and
- scaled.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/GenotypesProvider.html#getNAltDosages(java.lang.String)">getNAltDosages(String)</a></span> - Method in interface no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></dt>
 <dd>
 <div class="block">Returns the number of alternative alleles using dosages.</div>
@@ -844,28 +847,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html#getNAltDosages(java.lang.String)">getNAltDosages(String)</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.generic.<a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html" title="class in no.uib.triogen.io.genotypes.vcf.generic">VcfVariant</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/StandardizedGenotypesProvider.html#getNAltFather(java.lang.String,boolean)">getNAltFather(String, boolean)</a></span> - Method in class no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/StandardizedGenotypesProvider.html" title="class in no.uib.triogen.io.genotypes">StandardizedGenotypesProvider</a></dt>
-<dd>
-<div class="block">Returns the number of alternative alleles for a father centered and
- scaled.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/GenotypesProvider.html#getNAltH(java.lang.String,java.lang.String,java.lang.String)">getNAltH(String, String, String)</a></span> - Method in interface no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a></dt>
 <dd>
 <div class="block">Returns the number of alternative alleles for each h of a trio according to the nomenclature of Chen et al.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/StandardizedGenotypesProvider.html#getNAltH(java.lang.String,java.lang.String,java.lang.String)">getNAltH(String, String, String)</a></span> - Method in class no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/StandardizedGenotypesProvider.html" title="class in no.uib.triogen.io.genotypes">StandardizedGenotypesProvider</a></dt>
-<dd>
-<div class="block">Returns the number of alternative alleles for each h centered and scaled.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/custom/VcfLine.html#getNAltH(java.lang.String,java.lang.String,java.lang.String)">getNAltH(String, String, String)</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.custom.<a href="no/uib/triogen/io/genotypes/vcf/custom/VcfLine.html" title="class in no.uib.triogen.io.genotypes.vcf.custom">VcfLine</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html#getNAltH(java.lang.String,java.lang.String,java.lang.String)">getNAltH(String, String, String)</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.generic.<a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html" title="class in no.uib.triogen.io.genotypes.vcf.generic">VcfVariant</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/StandardizedGenotypesProvider.html#getNAltMother(java.lang.String,boolean)">getNAltMother(String, boolean)</a></span> - Method in class no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/StandardizedGenotypesProvider.html" title="class in no.uib.triogen.io.genotypes">StandardizedGenotypesProvider</a></dt>
-<dd>
-<div class="block">Returns the number of alternative alleles for a mother centered and
- scaled.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/custom/CustomVcfIterator.html#getnSamples()">getnSamples()</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.custom.<a href="no/uib/triogen/io/genotypes/vcf/custom/CustomVcfIterator.html" title="class in no.uib.triogen.io.genotypes.vcf.custom">CustomVcfIterator</a></dt>
 <dd>
 <div class="block">Returns the number of samples.</div>
@@ -2075,14 +2064,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/extract/ExtractOptionsBean.html#splitByVariant">splitByVariant</a></span> - Variable in class no.uib.triogen.cmd.extract.<a href="no/uib/triogen/cmd/extract/ExtractOptionsBean.html" title="class in no.uib.triogen.cmd.extract">ExtractOptionsBean</a></dt>
 <dd>
 <div class="block">Splits the results by variant.</div>
-</dd>
-<dt><a href="no/uib/triogen/io/genotypes/StandardizedGenotypesProvider.html" title="class in no.uib.triogen.io.genotypes"><span class="typeNameLink">StandardizedGenotypesProvider</span></a> - Class in <a href="no/uib/triogen/io/genotypes/package-summary.html">no.uib.triogen.io.genotypes</a></dt>
-<dd>
-<div class="block">Convenience class to standardize the genotypes.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/StandardizedGenotypesProvider.html#%3Cinit%3E(no.uib.triogen.io.genotypes.GenotypesProvider,no.uib.triogen.model.family.ChildToParentMap)">StandardizedGenotypesProvider(GenotypesProvider, ChildToParentMap)</a></span> - Constructor for class no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/StandardizedGenotypesProvider.html" title="class in no.uib.triogen.io.genotypes">StandardizedGenotypesProvider</a></dt>
-<dd>
-<div class="block">Constructor.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/annotation/GeneCoordinates.html#start">start</a></span> - Variable in class no.uib.triogen.model.annotation.<a href="no/uib/triogen/model/annotation/GeneCoordinates.html" title="class in no.uib.triogen.model.annotation">GeneCoordinates</a></dt>
 <dd>&nbsp;</dd>

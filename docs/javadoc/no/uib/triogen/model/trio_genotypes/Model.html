@@ -295,13 +295,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Enum.html?is
 <tbody>
 <tr class="altColor" id="i0">
 <td class="colFirst"><code>static void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#fillX(double%5B%5D%5B%5D,no.uib.triogen.model.trio_genotypes.Model,int,java.lang.String,java.lang.String,java.lang.String,no.uib.triogen.io.genotypes.StandardizedGenotypesProvider,boolean)">fillX</a></span>&#8203;(double[][]&nbsp;x,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#fillX(double%5B%5D%5B%5D,no.uib.triogen.model.trio_genotypes.Model,int,java.lang.String,java.lang.String,java.lang.String,no.uib.triogen.io.genotypes.GenotypesProvider,boolean)">fillX</a></span>&#8203;(double[][]&nbsp;x,
 <a href="Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
 int&nbsp;index,
 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;childId,
 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;motherId,
 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fatherId,
-<a href="../../io/genotypes/StandardizedGenotypesProvider.html" title="class in no.uib.triogen.io.genotypes">StandardizedGenotypesProvider</a>&nbsp;standardizedGenotypesProvider,
+<a href="../../io/genotypes/GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a>&nbsp;genotypesProvider,
 boolean&nbsp;useDosages)</code></th>
 <td class="colLast">
 <div class="block">Fills the given x matrix based on the model.</div>
@@ -604,14 +604,14 @@ not permitted.)</div>
 </li>
 <li class="blockList">
 <section class="detail">
-<h3><a id="fillX(double[][],no.uib.triogen.model.trio_genotypes.Model,int,java.lang.String,java.lang.String,java.lang.String,no.uib.triogen.io.genotypes.StandardizedGenotypesProvider,boolean)">fillX</a></h3>
+<h3><a id="fillX(double[][],no.uib.triogen.model.trio_genotypes.Model,int,java.lang.String,java.lang.String,java.lang.String,no.uib.triogen.io.genotypes.GenotypesProvider,boolean)">fillX</a></h3>
 <div class="memberSignature"><span class="modifiers">public static</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">fillX</span>&#8203;(<span class="arguments">double[][]&nbsp;x,
 <a href="Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
 int&nbsp;index,
 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;childId,
 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;motherId,
 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fatherId,
-<a href="../../io/genotypes/StandardizedGenotypesProvider.html" title="class in no.uib.triogen.io.genotypes">StandardizedGenotypesProvider</a>&nbsp;standardizedGenotypesProvider,
+<a href="../../io/genotypes/GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a>&nbsp;genotypesProvider,
 boolean&nbsp;useDosages)</span></div>
 <div class="block">Fills the given x matrix based on the model.</div>
 <dl>
@@ -622,7 +622,7 @@ boolean&nbsp;useDosages)</span></div>
 <dd><code>childId</code> - The id of the child.</dd>
 <dd><code>motherId</code> - The id of the mother.</dd>
 <dd><code>fatherId</code> - The id of the father.</dd>
-<dd><code>standardizedGenotypesProvider</code> - The genotypes provider to use for this variant.</dd>
+<dd><code>genotypesProvider</code> - The genotypes provider to use for this variant.</dd>
 <dd><code>useDosages</code> - If true, dosages will be used when possible, hard calls
  otherwise.</dd>
 </dl>
