@@ -1,4 +1,4 @@
-package no.uib.triogen.cmd.ld;
+package no.uib.triogen.cmd.ld_matrix;
 
 import java.io.File;
 import java.io.PrintWriter;

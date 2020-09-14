@@ -130,10 +130,6 @@ public class LdMatrixReader implements AutoCloseable {
             return null;
 
         }
-        
-        if (index > BLOCK_SIZE) {
-            int debug = 1;
-        }
 
         int nVariants;
         byte[] compressedData;

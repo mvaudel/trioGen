@@ -11,6 +11,10 @@ import java.util.stream.IntStream;
 public class Utils {
 
     /**
+     * Wild card to flag contig names in file paths.
+     */
+    public final static String CONTIG_WILDCARD = "{contig}";
+    /**
      * Placeholder for an array of NAs.
      */
     public final static double[] na1 = new double[]{Double.NaN};

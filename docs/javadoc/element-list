@@ -1,7 +1,8 @@
 no.uib.triogen
 no.uib.triogen.cmd.association
 no.uib.triogen.cmd.extract
-no.uib.triogen.cmd.ld
+no.uib.triogen.cmd.ld_matrix
+no.uib.triogen.cmd.ld_value
 no.uib.triogen.cmd.locus
 no.uib.triogen.cmd.mendelian_check
 no.uib.triogen.cmd.transmission

@@ -1,11 +1,7 @@
 package no.uib.triogen.processing.mendelian_check;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import static no.uib.triogen.cmd.ld.LdMatrixOptions.hardCalls;
-import static no.uib.triogen.cmd.ld.LdMatrixOptions.maxDistance;
-import static no.uib.triogen.cmd.ld.LdMatrixOptions.minR2;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.genotypes.VariantIterator;
@@ -13,7 +9,6 @@ import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.maf.MafEstimator;
 import no.uib.triogen.model.mendelian_error.MendelianErrorEstimator;
-import no.uib.triogen.model.trio_genotypes.VariantIndex;
 
 /**
  * Runnable for the LD matrix writer.
