@@ -245,6 +245,16 @@ public class LinearModelRunnable implements Runnable {
 
             if (!x0 || h1_0 && h1_1 && h2_0 && h2_1 && h3_0 && h3_1 && h4_0 && h4_1) {
 
+                // Estimate the prevalence of Mendelian errors, swap child alleles if >50%
+                double mendelianErrors = MendelianErrorEstimator.estimateMendelianErrorPrevalence(genotypesProvider, childToParentMap);
+
+                if (mendelianErrors > 0.5) {
+
+                    genotypesProvider.swapChildAlleles(childToParentMap);
+                    mendelianErrors = MendelianErrorEstimator.estimateMendelianErrorPrevalence(genotypesProvider, childToParentMap);
+
+                }
+
                 // Prepare the objects to use for the models, gather values for the histograms
                 double[] phenoValues = phenotypesHandler.phenoMap.get(phenoName);
                 double phenoMean = phenotypesHandler.phenoMeanMap.get(phenoName);
@@ -378,9 +388,6 @@ public class LinearModelRunnable implements Runnable {
                         ")"
                 );
 
-                // Estimate the prevalence of Mendelian errors
-                double mendelianErrors = MendelianErrorEstimator.estimateMendelianErrorPrevalence(genotypesProvider, childToParentMap);
-
                 // Anticipate singularities
                 boolean hNotSingluar = h1_0 && h1_1 && h2_0 && h2_1 && h3_0 && h3_1 && h4_0 && h4_1;
                 boolean childNotSingular = h2_0 && h2_1 && h3_0 && h3_1;
@@ -394,7 +401,7 @@ public class LinearModelRunnable implements Runnable {
                 for (int modelI = 0; modelI < models.length; modelI++) {
 
                     Model model = models[modelI];
-                    
+
                     if (Model.likelyNotSingular(
                             model,
                             hNotSingluar,

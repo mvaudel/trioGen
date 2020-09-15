@@ -563,4 +563,18 @@ public class VcfLine implements GenotypesProvider {
         return sb.toString();
 
     }
+
+    @Override
+    public void swapChildAlleles(ChildToParentMap childToParentMap) {
+        
+        for (String childId : childToParentMap.children) {
+            
+            int childIndex = indexMap.get(childId);
+            
+            boolean genotype1 = alleles1[childIndex];
+            alleles1[childIndex] = alleles2[childIndex];
+            alleles2[childIndex] = genotype1;
+            
+        }
+    }
 }

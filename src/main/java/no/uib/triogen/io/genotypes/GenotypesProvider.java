@@ -184,5 +184,12 @@ public interface GenotypesProvider {
      * @return The estimated prevalence of Mendelian errors.
      */
     public double checkMendelianErrors(ChildToParentMap childToParentMap);
+    
+    /**
+     * Swaps child alleles.
+     * 
+     * @param childToParentMap The child to parent map to use.
+     */
+    public void swapChildAlleles(ChildToParentMap childToParentMap);
 
 }

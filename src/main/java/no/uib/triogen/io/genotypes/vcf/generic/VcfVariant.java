@@ -118,8 +118,8 @@ public class VcfVariant implements GenotypesProvider {
 
             }
 
-            alleles1[sampleIndex] = alleles.get(0).compareTo(altAllele) == 0;
-            alleles2[sampleIndex] = alleles.get(1).compareTo(altAllele) == 0;
+            alleles1[sampleIndex] = alleles.get(1).compareTo(altAllele) == 0;
+            alleles2[sampleIndex] = alleles.get(0).compareTo(altAllele) == 0;
 
             // Dosages
             Object dosagesObject = genotype.getAnyAttribute(DOSAGE_KEY);
@@ -482,5 +482,19 @@ public class VcfVariant implements GenotypesProvider {
 
         return sb.toString();
 
+    }
+
+    @Override
+    public void swapChildAlleles(ChildToParentMap childToParentMap) {
+        
+        for (String childId : childToParentMap.children) {
+            
+            int childIndex = indexMap.get(childId);
+            
+            boolean genotype1 = alleles1[childIndex];
+            alleles1[childIndex] = alleles2[childIndex];
+            alleles2[childIndex] = genotype1;
+            
+        }
     }
 }
