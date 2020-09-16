@@ -20,6 +20,8 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.io.flat.SimpleFileReader;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.ld.LdMatrixReader;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.utils.Utils;
@@ -164,6 +166,23 @@ public class LdValue {
 
                             if (result != null) {
 
+                                if (bean.minR2 != null) {
+
+                                    result = result.entrySet()
+                                            .stream()
+                                            .filter(
+                                                    entry -> entry.getValue() >= bean.minR2
+                                            )
+                                            .collect(
+                                                    Collectors.toMap(
+                                                            Entry::getKey,
+                                                            Entry::getValue,
+                                                            (a, b) -> a,
+                                                            HashMap::new
+                                                    )
+                                            );
+                                }
+
                                 results.put(contig, result);
 
                             }
@@ -196,8 +215,11 @@ public class LdValue {
             }
         }
 
-        FileWriter writer = new FileWriter(bean.destinationFile);
-        writer.write(resultJson.toString());
+        try (SimpleFileWriter writer = new SimpleFileWriter(bean.destinationFile, true)) {
+            
+            writer.writeLine(resultJson.toString());
+            
+        }
 
         end = Instant.now();
 

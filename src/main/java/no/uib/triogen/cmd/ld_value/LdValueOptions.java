@@ -14,6 +14,7 @@ public enum LdValueOptions {
 
     ldMatrix("l", "ldMatrix", "The ld matrix file as generated using the LdMatrix command. If ld matrix files are computed per contig, replace the contig name with '" + Utils.CONTIG_WILDCARD + "'.", true, true),
     variantId("vi", "variantId", "File listing the variants to include in the analysis.", true, true),
+    minR2("r", "minR2", "The minimal ld r2 to report (inclusive). Default: 1e-6. Min value: value used when generating the tld file.", false, true),
     out("o", "out", "The file where to write the results.", true, true);
 
     /**

@@ -22,6 +22,10 @@ public class LdValueOptionsBean {
      * File where to write the output.
      */
     public final File destinationFile;
+    /**
+     * The minimal r2 to export.
+     */
+    public Double minR2 = null;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -43,7 +47,7 @@ public class LdValueOptionsBean {
             }
         }
 
-        // The genotypes file
+        // The ld matrix file
         String filePath = aLine.getOptionValue(LdValueOptions.ldMatrix.opt);
 
         ldMatrixFilePath = filePath;
@@ -64,6 +68,12 @@ public class LdValueOptionsBean {
 
         // The output file
         filePath = aLine.getOptionValue(LdValueOptions.out.opt);
+        
+        if (!filePath.endsWith(".gz")) {
+            
+            filePath = filePath + ".gz";
+            
+        }
 
         destinationFile = new File(filePath);
 
@@ -74,6 +84,21 @@ public class LdValueOptionsBean {
             throw new IllegalArgumentException("Output folder (" + destinationFolder + ") not found.");
 
         }
-
+        
+        // The max r2 to report
+        if (aLine.hasOption(LdValueOptions.minR2.opt)) {
+            
+            String stringValue = aLine.getOptionValue(LdValueOptions.minR2.opt);
+            
+            try {
+                
+                minR2 = Double.valueOf(stringValue);
+                
+            } catch (Exception e) {
+                
+            throw new IllegalArgumentException("Input for minimal r2 cannot be parsed as a number (" + stringValue + ").");
+                
+            }
+        }
     }
 }
