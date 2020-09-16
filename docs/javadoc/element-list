@@ -2,6 +2,7 @@ no.uib.triogen
 no.uib.triogen.cmd.association
 no.uib.triogen.cmd.extract
 no.uib.triogen.cmd.ld_matrix
+no.uib.triogen.cmd.ld_pruning
 no.uib.triogen.cmd.ld_value
 no.uib.triogen.cmd.locus
 no.uib.triogen.cmd.mendelian_check
@@ -19,6 +20,7 @@ no.uib.triogen.io.genotypes.iterators.window
 no.uib.triogen.io.genotypes.vcf.custom
 no.uib.triogen.io.genotypes.vcf.generic
 no.uib.triogen.io.ld
+no.uib.triogen.io.ld.pruning
 no.uib.triogen.io.rest
 no.uib.triogen.log
 no.uib.triogen.model.annotation

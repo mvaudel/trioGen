@@ -85,7 +85,7 @@ public class LdValueOptionsBean {
 
         }
         
-        // The max r2 to report
+        // The min r2 to report
         if (aLine.hasOption(LdValueOptions.minR2.opt)) {
             
             String stringValue = aLine.getOptionValue(LdValueOptions.minR2.opt);
