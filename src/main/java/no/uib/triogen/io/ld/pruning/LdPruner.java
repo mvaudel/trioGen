@@ -112,7 +112,7 @@ public class LdPruner {
 
             lineNumber++;
 
-            String[] lineSplit = headerLine.split(headerLine);
+            String[] lineSplit = headerLine.split(separator);
 
             for (int i = 0; i < lineSplit.length; i++) {
 
@@ -140,22 +140,22 @@ public class LdPruner {
 
             if (variantIdColIndex == -1) {
 
-                throw new IllegalArgumentException("Variant id column '" + variantIdColName + "' not found in " + resultsFile + ".");
+                throw new IllegalArgumentException("Variant id column '" + variantIdColName + "' not found in " + resultsFile + ".\n" + headerLine);
 
             }
             if (pColIndex == -1) {
 
-                throw new IllegalArgumentException("P-value column '" + pColName + "' not found in " + resultsFile + ".");
+                throw new IllegalArgumentException("P-value column '" + pColName + "' not found in " + resultsFile + ".\n" + headerLine);
 
             }
             if (phenoColName != null && phenoColIndex == -1) {
 
-                throw new IllegalArgumentException("Pheno column '" + phenoColName + "' not found in " + resultsFile + ".");
+                throw new IllegalArgumentException("Pheno column '" + phenoColName + "' not found in " + resultsFile + ".\n" + headerLine);
 
             }
             if (contigColIndex == -1) {
 
-                throw new IllegalArgumentException("contig column '" + contigColName + "' not found in " + resultsFile + ".");
+                throw new IllegalArgumentException("contig column '" + contigColName + "' not found in " + resultsFile + ".\n" + headerLine);
 
             }
 

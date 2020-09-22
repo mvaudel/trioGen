@@ -1,28 +1,14 @@
 package no.uib.triogen.cmd.ld_pruning;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import no.uib.triogen.TrioGen;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
-import no.uib.triogen.io.flat.SimpleFileWriter;
-import no.uib.triogen.io.ld.LdMatrixReader;
 import no.uib.triogen.io.ld.pruning.LdPruner;
-import no.uib.triogen.model.trio_genotypes.VariantList;
-import no.uib.triogen.utils.Utils;
-import org.json.JSONObject;
 
 /**
  * Computes LD between variants and saves the results in a matrix.
