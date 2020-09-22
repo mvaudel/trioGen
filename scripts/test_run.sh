@@ -4,7 +4,7 @@
 # This script makes a test run on the moba data.
 ##
 
-java -Xmx5G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar no.uib.triogen.cmd.association.LinearModel \
+java -Xmx32G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar no.uib.triogen.cmd.association.LinearModel \
              -g /mnt/archive/MOBAGENETICS/genotypes-base/imputed/all/vcf/22.vcf.gz \
              -gf 1 \
              -vi /mnt/work/marc/moba/mobaRun/resources/triogen/targets/targets \
