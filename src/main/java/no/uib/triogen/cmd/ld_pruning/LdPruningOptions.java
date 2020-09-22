@@ -19,7 +19,7 @@ public enum LdPruningOptions {
     idColName("id", "idColName", "The name of the variant id column. Default: 'variantId'.", false, true),
     pColName("pn", "pColName", "The name of the p-value column. Default: 'h.intercept.p'.", false, true),
     contigColName("cn", "contigColName", "The name of the contig column. Default: 'contig'.", false, true),
-    phenoColName("pn", "phenoColName", "The name of the contig column. Ignored if not provided.", false, true),
+    phenoColName("phn", "phenoColName", "The name of the contig column. Ignored if not provided.", false, true),
     separator("s", "separator", "Separator for the columns. Default: '\t'.", false, true),
     out("o", "out", "The file where to write the results.", true, true);
 

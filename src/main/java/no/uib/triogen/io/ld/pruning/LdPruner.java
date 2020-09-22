@@ -184,21 +184,21 @@ public class LdPruner {
 
                 if (pValue <= maxP) {
 
-                    HashMap<String, TreeMap<Double, TreeMap<String, String>>> phenoPvalueVariantLineMap = contigPhenoPvalueVariantLineMap.get(pheno);
+                    HashMap<String, TreeMap<Double, TreeMap<String, String>>> phenoPvalueVariantLineMap = contigPhenoPvalueVariantLineMap.get(contig);
 
                     if (phenoPvalueVariantLineMap == null) {
 
                         phenoPvalueVariantLineMap = new HashMap<>();
-                        contigPhenoPvalueVariantLineMap.put(pheno, phenoPvalueVariantLineMap);
+                        contigPhenoPvalueVariantLineMap.put(contig, phenoPvalueVariantLineMap);
 
                     }
 
-                    TreeMap<Double, TreeMap<String, String>> pvalueVariantLineMap = phenoPvalueVariantLineMap.get(contig);
+                    TreeMap<Double, TreeMap<String, String>> pvalueVariantLineMap = phenoPvalueVariantLineMap.get(pheno);
 
                     if (pvalueVariantLineMap == null) {
 
                         pvalueVariantLineMap = new TreeMap<>();
-                        phenoPvalueVariantLineMap.put(contig, pvalueVariantLineMap);
+                        phenoPvalueVariantLineMap.put(pheno, pvalueVariantLineMap);
 
                     }
 
