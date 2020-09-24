@@ -101,7 +101,7 @@ public class LdPruner {
 
         int lineNumber = 0;
 
-        try ( SimpleFileReader reader = SimpleFileReader.getFileReader(resultsFile)) {
+        try (SimpleFileReader reader = SimpleFileReader.getFileReader(resultsFile)) {
 
             int variantIdColIndex = -1;
             int pColIndex = -1;
@@ -241,7 +241,7 @@ public class LdPruner {
 
             System.out.println("Exporting to " + destinationFile + ".");
 
-            try ( SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true)) {
+            try (SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true)) {
 
                 writer.writeLine(headerLine);
 
@@ -272,6 +272,9 @@ public class LdPruner {
 
         return contigMap.entrySet()
                 .parallelStream()
+                .filter(
+                        entry -> getLdMatrixReader(entry.getKey()) != null
+                )
                 .collect(
                         Collectors.toMap(
                                 Entry::getKey,
@@ -291,9 +294,17 @@ public class LdPruner {
 
             String contigLdMatrixFilePath = ldMatrixFilePath.replace(Utils.CONTIG_WILDCARD, contig);
 
+            File contigLdFile = new File(contigLdMatrixFilePath);
+
+            if (!contigLdFile.exists()) {
+
+                return null;
+
+            }
+
             try {
 
-                return new LdMatrixReader(new File(contigLdMatrixFilePath));
+                return new LdMatrixReader(contigLdFile);
 
             } catch (Exception e) {
 
