@@ -104,7 +104,7 @@ public class MergeBolt {
 
                                 if (!header) {
 
-                                    String headerLine = String.join(" ", "pheno", "geno", line);
+                                    String headerLine = String.join("\t", "PHENO", "GENO", line);
 
                                     writer.writeLine(headerLine);
 
@@ -114,13 +114,13 @@ public class MergeBolt {
 
                                 while ((line = reader.readLine()) != null) {
 
-                                    int separatorIndex = line.indexOf(' ');
+                                    int separatorIndex = line.indexOf('\t');
 
                                     String rsId = line.substring(0, separatorIndex);
 
                                     if (targets.contains(rsId)) {
 
-                                        line = String.join(" ", pheno, geno, line);
+                                        line = String.join("\t", pheno, geno, line);
 
                                         writer.writeLine(line);
 
