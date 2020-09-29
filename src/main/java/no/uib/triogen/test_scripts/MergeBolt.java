@@ -59,7 +59,7 @@ public class MergeBolt {
 
         long durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
 
-        System.out.println(Instant.now() + "    Importing targets finished (" + durationSeconds + " s)");
+        System.out.println(Instant.now() + "    Importing targets finished (" + targets.size() + " imported in " + durationSeconds + " s)");
 
         // Iterate bolt results and save target variants
         File destinationFile = new File("/mnt/work/marc/moba/H2020/docs/results/parent_gwas.gz");
@@ -97,6 +97,8 @@ public class MergeBolt {
                             String headerLine = String.join(" ", "pheno", "geno", line);
 
                             writer.writeLine(headerLine);
+                            
+                            header = true;
 
                         }
 
