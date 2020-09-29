@@ -76,6 +76,10 @@ public class MergeBolt {
                 "child", "mother", "father"
             };
 
+            String[] suffixes = new String[]{
+                "", "-chrX"
+            };
+
             for (int i = 0; i < phenos.length; i++) {
 
                 String pheno = phenos[i];
@@ -84,36 +88,44 @@ public class MergeBolt {
 
                 begin = Instant.now();
 
-                for (String geno : genomes) {
+                for (String suffix : suffixes) {
 
-                    String boltFilePath = "/mnt/work/marc/moba/run/bolt/bolt_output/MobaRun_" + geno + "Geno_" + pheno + "_maf0.005.gz";
+                    for (String geno : genomes) {
 
-                    try (SimpleFileReader reader = SimpleFileReader.getFileReader(new File(boltFilePath))) {
+                        String boltFilePath = "/mnt/work/marc/moba/run/bolt/bolt_output/" + geno + "Geno_" + pheno + "-stats-bgen" + suffix + ".gz";
 
-                        String line = reader.readLine();
+                        File boltFile = new File(boltFilePath);
 
-                        if (!header) {
+                        if (boltFile.exists()) {
 
-                            String headerLine = String.join(" ", "pheno", "geno", line);
+                            try (SimpleFileReader reader = SimpleFileReader.getFileReader(boltFile)) {
 
-                            writer.writeLine(headerLine);
-                            
-                            header = true;
+                                String line = reader.readLine();
 
-                        }
+                                if (!header) {
 
-                        while ((line = reader.readLine()) != null) {
+                                    String headerLine = String.join(" ", "pheno", "geno", line);
 
-                            int separatorIndex = line.indexOf(' ');
+                                    writer.writeLine(headerLine);
 
-                            String rsId = line.substring(0, separatorIndex);
+                                    header = true;
 
-                            if (targets.contains(rsId)) {
+                                }
 
-                                line = String.join(" ", pheno, geno, line);
+                                while ((line = reader.readLine()) != null) {
 
-                                writer.writeLine(line);
+                                    int separatorIndex = line.indexOf(' ');
 
+                                    String rsId = line.substring(0, separatorIndex);
+
+                                    if (targets.contains(rsId)) {
+
+                                        line = String.join(" ", pheno, geno, line);
+
+                                        writer.writeLine(line);
+
+                                    }
+                                }
                             }
                         }
                     }
