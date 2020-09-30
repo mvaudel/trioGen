@@ -7,7 +7,9 @@ package no.uib.triogen.test_scripts;
 
 import java.io.File;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 
@@ -30,11 +32,11 @@ public class MergeBolt {
 
         Instant begin = Instant.now();
 
-        HashSet<String> targets = new HashSet<>();
+        HashMap<String, Boolean> targets = new HashMap<>();
 
         String[] targetPaths = new String[]{
-            "/mnt/work/marc/moba/mobaRun/resources/triogen/targets/targets_h2020",
-            "/mnt/work/marc/moba/mobaRun/resources/triogen/targets/targets"
+            "/mnt/work/marc/moba/mobaRun/resources/triogen/targets/targets_egg_bw",
+            "/mnt/work/marc/moba/mobaRun/resources/triogen/targets/targets_yengo_bmi"
         };
 
         for (String targetPath : targetPaths) {
@@ -49,7 +51,7 @@ public class MergeBolt {
 
                     String[] lineSplit = line.split("\t");
 
-                    targets.add(lineSplit[0]);
+                    targets.put(lineSplit[0], false);
 
                 }
             }
@@ -62,7 +64,7 @@ public class MergeBolt {
         System.out.println(Instant.now() + "    Importing targets finished (" + targets.size() + " imported in " + durationSeconds + " s)");
 
         // Iterate bolt results and save target variants
-        File destinationFile = new File("/mnt/work/marc/moba/H2020/docs/results/parent_gwas.gz");
+        File destinationFile = new File("/mnt/work/marc/moba/H2020/docs/results/yengo_bw.gz");
 
         boolean header = false;
 
@@ -118,11 +120,13 @@ public class MergeBolt {
 
                                     String rsId = line.substring(0, separatorIndex);
 
-                                    if (targets.contains(rsId)) {
+                                    if (targets.containsKey(rsId)) {
 
                                         line = String.join("\t", pheno, geno, line);
 
                                         writer.writeLine(line);
+
+                                        targets.put(rsId, true);
 
                                     }
                                 }
@@ -139,6 +143,29 @@ public class MergeBolt {
 
             }
         }
-    }
 
+        String[] missing = targets.entrySet()
+                .stream()
+                .filter(
+                        entry -> entry.getValue() == false
+                )
+                .map(
+                        Entry::getKey
+                )
+                .toArray(String[]::new);
+
+        if (missing.length > 0) {
+
+            File missingFile = new File("/mnt/work/marc/moba/H2020/docs/results/yengo_bw_missing.gz");
+
+            try (SimpleFileWriter missingWriter = new SimpleFileWriter(missingFile, true)) {
+
+                for (String key : missing) {
+
+                    missingWriter.writeLine(key);
+
+                }
+            }
+        }
+    }
 }
