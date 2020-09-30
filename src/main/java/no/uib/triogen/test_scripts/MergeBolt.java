@@ -71,7 +71,18 @@ public class MergeBolt {
         try (SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true)) {
 
             String[] phenos = new String[]{
-                "z_mother_median_height", "z_mother_weight_beginning", "z_mother_bmi_beginning", "z_father_height", "z_father_weight", "z_father_bmi"
+                "z_bmi0", 
+                "z_bmi1", 
+                "z_bmi2", 
+                "z_bmi3", 
+                "z_bmi4", 
+                "z_bmi5", 
+                "z_bmi6", 
+                "z_bmi7", 
+                "z_bmi8", 
+                "z_bmi9", 
+                "z_bmi10", 
+                "z_bmi11"
             };
 
             String[] genomes = new String[]{
@@ -155,6 +166,8 @@ public class MergeBolt {
                 .toArray(String[]::new);
 
         if (missing.length > 0) {
+            
+            System.out.println(missing.length + " variants not found in MoBa.");
 
             File missingFile = new File("/mnt/work/marc/moba/H2020/docs/results/yengo_bw_missing.gz");
 
@@ -166,6 +179,10 @@ public class MergeBolt {
 
                 }
             }
+        } else {
+            
+            System.out.println("All variants found in MoBa.");
+            
         }
     }
 }
