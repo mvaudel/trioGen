@@ -2,7 +2,6 @@ package no.uib.triogen.io.genotypes.vcf.custom;
 
 import java.io.File;
 import java.time.Instant;
-import java.util.HashMap;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.utils.SimpleSemaphore;
@@ -66,7 +65,7 @@ public class CustomVcfIterator implements VariantIterator {
 
         // Set up reader
         fileName = file.getName();
-        reader = SimpleFileReader.getFileReader(file);
+        reader = SimpleFileReader.getFileReader(file, false);
 
         // Move to header
         String line;

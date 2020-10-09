@@ -180,7 +180,7 @@ public class ExtractionTest extends TestCase {
 
         HashMap<String, HashMap<String, Integer>> result = new HashMap<>();
 
-        SimpleFileReader reader = SimpleFileReader.getFileReader(hFile);
+        SimpleFileReader reader = SimpleFileReader.getFileReader(hFile, false);
         String line = reader.readLine();
         line = reader.readLine();
         String[] header = line.split(IoUtils.SEPARATOR);
@@ -221,7 +221,7 @@ public class ExtractionTest extends TestCase {
 
         HashMap<String, HashMap<String, int[]>> result = new HashMap<>();
 
-        SimpleFileReader reader = SimpleFileReader.getFileReader(resultFile);
+        SimpleFileReader reader = SimpleFileReader.getFileReader(resultFile, false);
 
         String line = reader.readLine();
 

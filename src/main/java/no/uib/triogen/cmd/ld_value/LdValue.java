@@ -97,6 +97,9 @@ public class LdValue {
         ConcurrentHashMap<String, LdMatrixReader> ldMatrixReaderMap = new ConcurrentHashMap<>();
 
         HashSet<String> contigs = Arrays.stream(variantList.chromosome)
+                .filter(
+                        contig -> !contig.equals("X") && !contig.equals("23")
+                )
                 .collect(
                         Collectors.toCollection(HashSet::new)
                 );
@@ -153,6 +156,9 @@ public class LdValue {
 
         IntStream.range(0, variantList.variantId.length)
                 .parallel()
+                .filter(
+                        i -> !variantList.variantId[i].equals("X") && !variantList.variantId[i].equals("23")
+                )
                 .forEach(
                         i -> {
                             String variantId = variantList.variantId[i];
@@ -179,7 +185,7 @@ public class LdValue {
                                             );
                                 }
 
-                                results.put(contig, result);
+                                results.put(variantId, result);
 
                             }
                         }
@@ -212,9 +218,9 @@ public class LdValue {
         }
 
         try (SimpleFileWriter writer = new SimpleFileWriter(bean.destinationFile, true)) {
-            
+
             writer.writeLine(resultJson.toString());
-            
+
         }
 
         end = Instant.now();
@@ -230,7 +236,7 @@ public class LdValue {
      */
     private static void printHelp() {
 
-        try ( PrintWriter lPrintWriter = new PrintWriter(System.out)) {
+        try (PrintWriter lPrintWriter = new PrintWriter(System.out)) {
             lPrintWriter.print(LINE_SEPARATOR);
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print("              trioGen             " + LINE_SEPARATOR);

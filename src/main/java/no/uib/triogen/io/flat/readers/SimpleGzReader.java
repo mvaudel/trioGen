@@ -17,6 +17,15 @@ import static no.uib.triogen.io.IoUtils.ENCODING;
  * @author Marc Vaudel
  */
 public class SimpleGzReader implements SimpleFileReader {
+    
+    /**
+     * Lines starting with this character will be ignored.
+     */
+    private final char COMMENT_CHAR = '#';
+    /**
+     * Boolean indicating whether comments should be skipped.
+     */
+    private final boolean skipComments;
 
     /**
      * The buffered reader.
@@ -26,11 +35,15 @@ public class SimpleGzReader implements SimpleFileReader {
     /**
      * Constructor.
      *
-     * @param file the file to read
+     * @param file The file to read.
+     * @param skipComments Boolean indicating whether comments should be skipped.
      */
     public SimpleGzReader(
-            File file
+            File file,
+            boolean skipComments
     ) {
+        
+        this.skipComments = skipComments;
 
         try {
 
@@ -51,8 +64,19 @@ public class SimpleGzReader implements SimpleFileReader {
     public String readLine() {
 
         try {
+            
+            String line;
+            
+            while ((line = br.readLine()) != null) {
+                
+                if (!skipComments || line.charAt(0) != COMMENT_CHAR) {
+                    
+                    return line;
+                    
+                }
+            }
 
-            return br.readLine();
+            return null;
 
         } catch (IOException e) {
             throw new RuntimeException(e);

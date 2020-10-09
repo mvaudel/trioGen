@@ -22,13 +22,30 @@ public interface SimpleFileReader extends AutoCloseable {
             File file
     ) {
         
+        return getFileReader(file, true);
+        
+    }
+
+    /**
+     * Returns a file reader, text or gz, according to the extension of the file.
+     * 
+     * @param file The file to read.
+     * @param skipComments Boolean indicating whether comments should be skipped.
+     * 
+     * @return a file reader
+     */
+    public static SimpleFileReader getFileReader(
+            File file,
+            boolean skipComments
+    ) {
+        
         if (file.getName().endsWith(".gz")) {
             
-            return new SimpleGzReader(file);
+            return new SimpleGzReader(file, skipComments);
             
         }
         
-        return new SimpleTextReader(file);
+        return new SimpleTextReader(file, skipComments);
         
     }
 

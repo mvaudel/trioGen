@@ -22,6 +22,7 @@ no.uib.triogen.io.genotypes.vcf.generic
 no.uib.triogen.io.ld
 no.uib.triogen.io.ld.pruning
 no.uib.triogen.io.rest
+no.uib.triogen.io.variant_id
 no.uib.triogen.log
 no.uib.triogen.model.annotation
 no.uib.triogen.model.covariates
@@ -35,5 +36,5 @@ no.uib.triogen.processing.association.linear_model
 no.uib.triogen.processing.ld
 no.uib.triogen.processing.mendelian_check
 no.uib.triogen.processing.transmission.extraction
-no.uib.triogen.test_scripts
+no.uib.triogen.scripts_marc
 no.uib.triogen.utils

@@ -2,10 +2,7 @@ package no.uib.triogen.model.trio_genotypes;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 
@@ -148,10 +145,8 @@ public class VariantList {
         }
 
         if (variantIdList.isEmpty()) {
-
-            throw new IllegalArgumentException(
-                    "No variant found in " + variantFile + ". Please verify that the header is not commented by \"#\""
-            );
+            
+            System.out.println("Warning: No variant found in " + variantFile + ". Please verify that the header is not commented by \"#\"");
 
         }
 

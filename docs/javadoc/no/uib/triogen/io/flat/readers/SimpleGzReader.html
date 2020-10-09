@@ -139,7 +139,8 @@ implements <a href="../../../../../../no/uib/triogen/io/flat/SimpleFileReader.ht
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/io/flat/readers/SimpleGzReader.html#SimpleGzReader-java.io.File-">SimpleGzReader</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;file)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/io/flat/readers/SimpleGzReader.html#SimpleGzReader-java.io.File-boolean-">SimpleGzReader</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;file,
+              boolean&nbsp;skipComments)</code>
 <div class="block">Constructor.</div>
 </td>
 </tr>
@@ -181,7 +182,7 @@ implements <a href="../../../../../../no/uib/triogen/io/flat/SimpleFileReader.ht
 <!--   -->
 </a>
 <h3>Methods inherited from interface&nbsp;no.uib.triogen.io.flat.<a href="../../../../../../no/uib/triogen/io/flat/SimpleFileReader.html" title="interface in no.uib.triogen.io.flat">SimpleFileReader</a></h3>
-<code><a href="../../../../../../no/uib/triogen/io/flat/SimpleFileReader.html#getFileReader-java.io.File-">getFileReader</a></code></li>
+<code><a href="../../../../../../no/uib/triogen/io/flat/SimpleFileReader.html#getFileReader-java.io.File-">getFileReader</a>, <a href="../../../../../../no/uib/triogen/io/flat/SimpleFileReader.html#getFileReader-java.io.File-boolean-">getFileReader</a></code></li>
 </ul>
 </li>
 </ul>
@@ -197,17 +198,19 @@ implements <a href="../../../../../../no/uib/triogen/io/flat/SimpleFileReader.ht
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="SimpleGzReader-java.io.File-">
+<a name="SimpleGzReader-java.io.File-boolean-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>SimpleGzReader</h4>
-<pre>public&nbsp;SimpleGzReader(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;file)</pre>
+<pre>public&nbsp;SimpleGzReader(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;file,
+                      boolean&nbsp;skipComments)</pre>
 <div class="block">Constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>file</code> - the file to read</dd>
+<dd><code>file</code> - The file to read.</dd>
+<dd><code>skipComments</code> - Boolean indicating whether comments should be skipped.</dd>
 </dl>
 </li>
 </ul>

@@ -20,7 +20,7 @@ import static no.uib.triogen.utils.Utils.mergeArrays;
  * @author Marc Vaudel
  */
 public class IndexedGzWriter implements AutoCloseable {
-
+    
     /**
      * Length of the header in bytes. Content starts at this position.
      */

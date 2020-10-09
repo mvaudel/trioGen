@@ -1,4 +1,4 @@
-package no.uib.triogen.test_scripts;
+package no.uib.triogen.scripts_marc;
 
 import java.io.File;
 import no.uib.triogen.io.flat.SimpleFileReader;
