@@ -31,7 +31,7 @@ public class TriogenToLdhub {
 
             File destinationFile = new File(ldhubFolder, variable + ".gz");
 
-            SimpleFileWriter writer = new SimpleFileWriter(ldhubFolder, true);
+            SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true);
 
             writer.writeLine("rsid\tA1\tA2\tN\tP-value\tBeta\tSE");
 
