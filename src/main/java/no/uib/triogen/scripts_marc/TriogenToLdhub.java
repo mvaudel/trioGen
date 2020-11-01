@@ -50,8 +50,6 @@ public class TriogenToLdhub {
             SimpleFileReader reader = SimpleFileReader.getFileReader(inputFile);
 
             String line = reader.readLine();
-
-            line = reader.readLine();
             String[] lineSplit = line.split("\t");
             HashMap<String, Integer> betaColumn = new HashMap<>(variables.length);
             HashMap<String, Integer> pColumn = new HashMap<>(variables.length);
