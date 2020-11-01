@@ -77,6 +77,28 @@ public class TriogenToLdhub {
 
                     }
                 }
+                
+                if (!betaColumn.containsKey(variable)) {
+                    
+                    System.out.println(line);
+                    throw new IllegalArgumentException(variable + " not found in chromosome " + chromosome);
+                    
+                }
+                
+                if (!pColumn.containsKey(variable)) {
+                    
+                    System.out.println(line);
+                    throw new IllegalArgumentException(variable + ".p not found in chromosome " + chromosome);
+                    
+                }
+                
+                if (!seColumn.containsKey(variable)) {
+                    
+                    System.out.println(line);
+                    throw new IllegalArgumentException(variable + ".se not found in chromosome " + chromosome);
+                    
+                }
+                
             }
 
             while ((line = reader.readLine()) != null) {
