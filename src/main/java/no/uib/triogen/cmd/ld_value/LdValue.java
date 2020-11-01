@@ -157,7 +157,7 @@ public class LdValue {
         IntStream.range(0, variantList.variantId.length)
                 .parallel()
                 .filter(
-                        i -> !variantList.variantId[i].equals("X") && !variantList.variantId[i].equals("23")
+                        i -> !variantList.chromosome[i].equals("X") && !variantList.chromosome[i].equals("23")
                 )
                 .forEach(
                         i -> {
