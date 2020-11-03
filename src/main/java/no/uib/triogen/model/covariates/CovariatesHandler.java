@@ -1,16 +1,16 @@
 package no.uib.triogen.model.covariates;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import no.uib.triogen.io.flat.SimpleFileWriter;
-import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
+import no.uib.triogen.utils.Utils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.SingularValueDecomposition;
@@ -22,6 +22,10 @@ import org.apache.commons.math3.linear.SingularValueDecomposition;
  */
 public class CovariatesHandler {
 
+    /**
+     * The number of neighbors to use when masking missing covariates.
+     */
+    public final int nNeighbors = 200;
     /**
      * Phenotype name to covariates.
      */
@@ -121,7 +125,7 @@ public class CovariatesHandler {
             double[][] x = new double[nValidValues][covariates.length + 1];
 
             // DEBUG
-            boolean covariateNA = false;
+            HashMap<Integer, ArrayList<Integer>> naKtoJ = new HashMap<>();
 
             int j = 0;
             for (int i = 0; i < phenos.length; i++) {
@@ -137,13 +141,27 @@ public class CovariatesHandler {
 
                         double[] covariateValues = phenotypesHandler.phenoMap.get(covariate);
 
-                        x[j][k] = covariateValues[i];
+                        double covariateValue = covariateValues[i];
 
                         // DEBUG
-                        if (Double.isNaN(covariateValues[i])) {
-                            covariateNA = true;
-                    }
+                        if (!Double.isNaN(covariateValue)) {
 
+                            x[j][k] = covariateValue;
+
+                        } else {
+
+                            ArrayList<Integer> naJ = naKtoJ.get(k);
+
+                            if (naJ == null) {
+
+                                naJ = new ArrayList<>();
+                                naKtoJ.put(k, naJ);
+
+                            }
+
+                            naJ.add(j);
+
+                        }
                     }
 
                     x[j][covariates.length] = 1.0;
@@ -151,14 +169,106 @@ public class CovariatesHandler {
                     j++;
 
                 }
-
             }
 
-            // DEBUG
-            if (covariateNA) {
+            // Mask missing covariates
+            if (!naKtoJ.isEmpty()) {
 
-                System.out.println("Covariate NA");
+                for (Entry<Integer, ArrayList<Integer>> entry : naKtoJ.entrySet()) {
 
+                    int k = entry.getKey();
+
+                    TreeMap<Double, ArrayList<Double>> phenoToCovariateValueMap = new TreeMap<>();
+
+                    String covariate = covariates[k];
+
+                    double[] covariateValues = phenotypesHandler.phenoMap.get(covariate);
+
+                    for (int i = 0; i < phenos.length; i++) {
+
+                        double phenoValue = phenos[i];
+                        double covariateValue = covariateValues[i];
+
+                        if (!Double.isNaN(phenoValue) && !Double.isNaN(covariateValue)) {
+
+                            ArrayList<Double> covariatesAtValue = phenoToCovariateValueMap.get(phenoValue);
+
+                            if (covariatesAtValue == null) {
+
+                                covariatesAtValue = new ArrayList<>(1);
+                                phenoToCovariateValueMap.put(phenoValue, covariatesAtValue);
+
+                            }
+
+                            covariatesAtValue.add(covariateValue);
+
+                        }
+                    }
+
+                    HashMap<Double, Integer> covariatePhenoIndex = new HashMap<>(y.length);
+
+                    for (int i = 0; i < y.length; i++) {
+
+                        covariatePhenoIndex.put(y[i], i);
+
+                    }
+
+                    for (int i : entry.getValue()) {
+
+                        ArrayList<Double> neighbors = new ArrayList<>(nNeighbors);
+
+                        double phenoValue = y[i];
+                        int phenoIndex = covariatePhenoIndex.get(phenoValue);
+
+                        ArrayList<Double> covariatesAtPheno = phenoToCovariateValueMap.get(phenoValue);
+                        int covariatesAtPhenoSize = 0;
+
+                        if (covariatesAtPheno != null) {
+
+                            neighbors.addAll(covariatesAtPheno);
+                            covariatesAtPhenoSize = covariatesAtPheno.size();
+
+                        }
+
+                        int toFill = (nNeighbors - covariatesAtPhenoSize) / 2;
+                        int filled = 0;
+
+                        for (j = phenoIndex - 1; j >= 0 && filled < toFill; j--) {
+
+                            covariatesAtPheno = phenoToCovariateValueMap.get(y[j]);
+
+                            if (covariatesAtPheno != null) {
+
+                                filled += covariatesAtPheno.size();
+
+                                neighbors.addAll(covariatesAtPheno);
+
+                            }
+                        }
+
+                        filled = 0;
+
+                        for (j = phenoIndex + 1; j < y.length && filled < toFill; j--) {
+
+                            covariatesAtPheno = phenoToCovariateValueMap.get(y[j]);
+
+                            if (covariatesAtPheno != null) {
+
+                                filled += covariatesAtPheno.size();
+
+                                neighbors.addAll(covariatesAtPheno);
+
+                            }
+                        }
+
+                        Collections.sort(neighbors);
+
+                        double maskValue = Utils.medianSorted(neighbors);
+
+                        x[i][k] = maskValue;
+
+                    }
+                }
             }
 
             Array2DRowRealMatrix xMatrix = new Array2DRowRealMatrix(x, false);
@@ -201,7 +311,8 @@ public class CovariatesHandler {
     }
 
     /**
-     * Removes the contribution of the covariates from the phenotypes and returns the new values.
+     * Removes the contribution of the covariates from the phenotypes and
+     * returns the new values.
      *
      * @param phenoName The name of the phenotype.
      *
@@ -216,7 +327,7 @@ public class CovariatesHandler {
         RealMatrix utMatrix = utMap.get(phenoName);
 
         if (utMatrix != null) {
-            
+
             double[] covariateBaseValues = utMatrix.operate(values);
 
             for (int i = rankMap.get(phenoName) + 1; i < covariateBaseValues.length; i++) {
@@ -234,9 +345,9 @@ public class CovariatesHandler {
 
             }
         }
-        
+
         return values;
-        
+
     }
 
     /**

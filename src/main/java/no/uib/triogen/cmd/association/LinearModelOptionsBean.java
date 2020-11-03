@@ -1,8 +1,6 @@
 package no.uib.triogen.cmd.association;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +12,6 @@ import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
 import no.uib.triogen.processing.association.linear_model.LinearModelRunnable;
 import org.apache.commons.cli.CommandLine;
-import org.json.JSONObject;
 
 /**
  * Parses and stores the command line options.
@@ -251,7 +248,7 @@ public class LinearModelOptionsBean {
 
         }
 
-        // The spcoific covariates
+        // The specific covariates
         if (aLine.hasOption(LinearModelOptions.covariate_specific.opt)) {
 
             option = aLine.getOptionValue(LinearModelOptions.covariate_specific.opt);

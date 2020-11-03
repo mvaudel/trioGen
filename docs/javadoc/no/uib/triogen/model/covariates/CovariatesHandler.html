@@ -147,24 +147,30 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/covariates/CovariatesHandler.html#nNeighbors">nNeighbors</a></span></code>
+<div class="block">The number of neighbors to use when masking missing covariates.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ConcurrentHashMap.html?is-external=true" title="class or interface in java.util.concurrent">ConcurrentHashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/covariates/CovariatesHandler.html#rankMap">rankMap</a></span></code>
 <div class="block">The effective numerical rank for each phenotype.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ConcurrentHashMap.html?is-external=true" title="class or interface in java.util.concurrent">ConcurrentHashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,double[]&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/covariates/CovariatesHandler.html#rawPhenoValues">rawPhenoValues</a></span></code>
 <div class="block">The phenotypes prior to adjustment for covariates.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ConcurrentHashMap.html?is-external=true" title="class or interface in java.util.concurrent">ConcurrentHashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,org.apache.commons.math3.linear.RealMatrix&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/covariates/CovariatesHandler.html#uMap">uMap</a></span></code>
 <div class="block">The u for each phenotype.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ConcurrentHashMap.html?is-external=true" title="class or interface in java.util.concurrent">ConcurrentHashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,org.apache.commons.math3.linear.RealMatrix&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/covariates/CovariatesHandler.html#utMap">utMap</a></span></code>
 <div class="block">The transpose of u for each phenotype.</div>
@@ -210,7 +216,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>double[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/covariates/CovariatesHandler.html#getAdjustedValues-java.lang.String-">getAdjustedValues</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;phenoName)</code>
-<div class="block">Removes the contribution of the covariates from the phenotypes and returns the new values.</div>
+<div class="block">Removes the contribution of the covariates from the phenotypes and
+ returns the new values.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -248,6 +255,20 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Field Detail</h3>
+<a name="nNeighbors">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>nNeighbors</h4>
+<pre>public final&nbsp;int nNeighbors</pre>
+<div class="block">The number of neighbors to use when masking missing covariates.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../constant-values.html#no.uib.triogen.model.covariates.CovariatesHandler.nNeighbors">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
 <a name="covariatesMap">
 <!--   -->
 </a>
@@ -353,7 +374,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>getAdjustedValues</h4>
 <pre>public&nbsp;double[]&nbsp;getAdjustedValues(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;phenoName)</pre>
-<div class="block">Removes the contribution of the covariates from the phenotypes and returns the new values.</div>
+<div class="block">Removes the contribution of the covariates from the phenotypes and
+ returns the new values.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>phenoName</code> - The name of the phenotype.</dd>
