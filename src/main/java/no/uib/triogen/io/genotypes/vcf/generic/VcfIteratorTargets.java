@@ -110,16 +110,6 @@ public class VcfIteratorTargets implements VariantIterator {
                 );
 
             }
-            
-            if (variantListIndex >= 0 && !variantFound) {
-                
-                String variantId = variantList.variantId[variantListIndex];
-                        logger.logVariant(
-                                variantId,
-                                "Variant not found"
-                        );
-                
-            }
 
             variantListIndex++;
 
@@ -128,6 +118,15 @@ public class VcfIteratorTargets implements VariantIterator {
                 mutex.release();
                 return null;
 
+            }
+            
+            if (variantListIndex >= 1 && !variantFound) {
+                
+                String variantId = variantList.variantId[variantListIndex - 1];
+                        logger.logVariant(
+                                variantId,
+                                "Variant not found"
+                        );
             }
 
             int windowStart = Math.max(variantList.start[variantListIndex] - maxDistance, 1);
