@@ -105,10 +105,19 @@ public class VcfIteratorTargets implements VariantIterator {
 
             if (iterator != null && variantListIndex < variantList.variantId.length) {
 
+                int nextIndex = variantListIndex + 1;
+                String variantId = variantList.variantId[nextIndex];
                 System.out.println(
-                        Instant.now() + " - " + variantList.variantId[variantListIndex] + " (" + (variantListIndex + 1) + " of " + variantList.variantId.length + ")"
+                        Instant.now() + " - " + variantId + " (" + nextIndex + " of " + variantList.variantId.length + ")"
                 );
 
+                if (!variantFound) {
+
+                    logger.logVariant(
+                            variantId,
+                            "Variant not found"
+                    );
+                }
             }
 
             variantListIndex++;
@@ -118,15 +127,6 @@ public class VcfIteratorTargets implements VariantIterator {
                 mutex.release();
                 return null;
 
-            }
-            
-            if (variantListIndex >= 1 && !variantFound) {
-                
-                String variantId = variantList.variantId[variantListIndex - 1];
-                        logger.logVariant(
-                                variantId,
-                                "Variant not found"
-                        );
             }
 
             int windowStart = Math.max(variantList.start[variantListIndex] - maxDistance, 1);
@@ -141,7 +141,7 @@ public class VcfIteratorTargets implements VariantIterator {
                     windowStart,
                     windowEnd
             );
-            
+
             variantFound = false;
 
         }
@@ -166,9 +166,9 @@ public class VcfIteratorTargets implements VariantIterator {
             return next();
 
         } else if (variantId.equals(variantList.variantId[variantListIndex])) {
-            
+
             variantFound = true;
-            
+
         }
 
         nVariants++;

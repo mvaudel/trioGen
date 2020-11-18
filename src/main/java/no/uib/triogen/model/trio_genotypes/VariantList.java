@@ -81,17 +81,17 @@ public class VariantList {
 
         int lineNumber = 0;
 
-        try ( SimpleFileReader phenoReader = SimpleFileReader.getFileReader(variantFile)) {
+        try ( SimpleFileReader reader = SimpleFileReader.getFileReader(variantFile)) {
 
             String line;
-            while ((line = phenoReader.readLine()) != null
+            while ((line = reader.readLine()) != null
                     && (line.trim().length() == 0 || line.charAt(0) == '#')) {
 
                 lineNumber++;
 
             }
 
-            while ((line = phenoReader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
 
                 line = line.trim();
 
