@@ -49,7 +49,11 @@ public class CovariatesHandler {
     /**
      * The index of the children in the raw pheno values.
      */
-    public final ConcurrentHashMap<String, int[]> indexMap;
+    public final ConcurrentHashMap<String, int[]> originalIndexMap;
+    /**
+     * The index of the children in the adjusted pheno values.
+     */
+    public final ConcurrentHashMap<String, int[]> adjustedIndexMap;
 
     /**
      * Constructor.
@@ -73,7 +77,8 @@ public class CovariatesHandler {
         utMap = new ConcurrentHashMap<>(phenotypeNames.length);
         rankMap = new ConcurrentHashMap<>(phenotypeNames.length);
         rawPhenoValues = new ConcurrentHashMap<>(phenotypeNames.length);
-        indexMap = new ConcurrentHashMap<>(phenotypeNames.length);
+        originalIndexMap = new ConcurrentHashMap<>(phenotypeNames.length);
+        adjustedIndexMap = new ConcurrentHashMap<>(phenotypeNames.length);
 
         Arrays.stream(phenotypeNames)
                 .parallel()
@@ -120,11 +125,13 @@ public class CovariatesHandler {
 
             int nValidValues = phenotypesHandler.nValidValuesMap.get(phenoName);
 
-            int[] index = new int[nValidValues];
+            int[] originalIndex = new int[nValidValues];
+            int[] adjustedIndex = new int[phenos.length];
+            Arrays.fill(adjustedIndex, -1);
+            
             double[] y = new double[nValidValues];
             double[][] x = new double[nValidValues][covariates.length + 1];
 
-            // DEBUG
             HashMap<Integer, ArrayList<Integer>> naKtoJ = new HashMap<>();
 
             int j = 0;
@@ -132,7 +139,9 @@ public class CovariatesHandler {
 
                 if (!Double.isNaN(phenos[i])) {
 
-                    index[j] = i;
+                    originalIndex[j] = i;
+                    adjustedIndex[i] = j;
+                    
                     y[j] = phenos[i];
 
                     for (int k = 0; k < covariates.length; k++) {
@@ -143,7 +152,6 @@ public class CovariatesHandler {
 
                         double covariateValue = covariateValues[i];
 
-                        // DEBUG
                         if (!Double.isNaN(covariateValue)) {
 
                             x[j][k] = covariateValue;
@@ -279,7 +287,8 @@ public class CovariatesHandler {
             utMap.put(phenoName, svd.getUT());
             rankMap.put(phenoName, svd.getRank());
             rawPhenoValues.put(phenoName, y);
-            indexMap.put(phenoName, index);
+            originalIndexMap.put(phenoName, originalIndex);
+            adjustedIndexMap.put(phenoName, adjustedIndex);
 
         } else {
 
@@ -287,7 +296,10 @@ public class CovariatesHandler {
 
             int nValidValues = phenotypesHandler.nValidValuesMap.get(phenoName);
 
-            int[] index = new int[nValidValues];
+            int[] originalIndex = new int[nValidValues];
+            int[] adjustedIndex = new int[phenos.length];
+            Arrays.fill(adjustedIndex, -1);
+            
             double[] y = new double[nValidValues];
 
             int j = 0;
@@ -295,7 +307,8 @@ public class CovariatesHandler {
 
                 if (!Double.isNaN(phenos[i])) {
 
-                    index[j] = i;
+                    originalIndex[j] = i;
+                    adjustedIndex[i] = j;
                     y[j] = phenos[i];
 
                     j++;
@@ -305,7 +318,8 @@ public class CovariatesHandler {
 
             rawPhenoValues.put(phenoName, y);
 
-            indexMap.put(phenoName, index);
+            originalIndexMap.put(phenoName, originalIndex);
+            adjustedIndexMap.put(phenoName, adjustedIndex);
 
         }
     }

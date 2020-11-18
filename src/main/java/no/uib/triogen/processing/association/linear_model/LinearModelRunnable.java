@@ -199,7 +199,7 @@ public class LinearModelRunnable implements Runnable {
             double[] phenotypes
     ) {
 
-        int[] childIndexes = covariatesHandler.indexMap.get(phenoName);
+        int[] childIndexes = covariatesHandler.originalIndexMap.get(phenoName);
 
         // Check maf and transmission
         int nAltParent = 0;
