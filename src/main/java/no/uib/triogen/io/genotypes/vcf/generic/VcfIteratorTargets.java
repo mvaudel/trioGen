@@ -105,10 +105,9 @@ public class VcfIteratorTargets implements VariantIterator {
 
             if (iterator != null && variantListIndex < variantList.variantId.length) {
 
-                int nextIndex = variantListIndex + 1;
-                String variantId = variantList.variantId[nextIndex];
+                String variantId = variantList.variantId[variantListIndex];
                 System.out.println(
-                        Instant.now() + " - " + variantId + " (" + nextIndex + " of " + variantList.variantId.length + ")"
+                        Instant.now() + " - " + variantId + " (" + (variantListIndex + 1) + " of " + variantList.variantId.length + ")"
                 );
 
                 if (!variantFound) {
