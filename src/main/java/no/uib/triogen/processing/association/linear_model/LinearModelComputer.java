@@ -249,7 +249,8 @@ public class LinearModelComputer {
                 genotypesFile,
                 genotypesFileType,
                 variantList,
-                maxDistance
+                maxDistance,
+                logger
         );
         IndexedGzWriter outputWriter = new IndexedGzWriter(
                 destinationFile

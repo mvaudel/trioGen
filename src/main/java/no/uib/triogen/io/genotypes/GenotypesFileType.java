@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.io.genotypes.vcf.generic.VcfIterator;
 import no.uib.triogen.io.genotypes.vcf.generic.VcfIteratorTargets;
+import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 
 /**
@@ -69,19 +70,22 @@ public enum GenotypesFileType {
      *
      * @param genotypesFile The file containing the genotypes.
      * @param genotypesFileType The genotypes file type.
+     * @param logger A logger for issues processing variants.
      *
      * @return An iterator for the variants.
      */
     public static VariantIterator getVariantIterator(
             File genotypesFile,
-            GenotypesFileType genotypesFileType
+            GenotypesFileType genotypesFileType,
+            SimpleCliLogger logger
     ) {
 
         return getVariantIterator(
                 genotypesFile,
                 genotypesFileType,
                 null,
-                -1
+                -1,
+                logger
         );
 
     }
@@ -92,20 +96,23 @@ public enum GenotypesFileType {
      * @param genotypesFile The file containing the genotypes.
      * @param genotypesFileType The genotypes file type.
      * @param variantList The variants to process.
+     * @param logger A logger for issues processing variants.
      *
      * @return An iterator for the variants.
      */
     public static VariantIterator getVariantIterator(
             File genotypesFile,
             GenotypesFileType genotypesFileType,
-            VariantList variantList
+            VariantList variantList,
+            SimpleCliLogger logger
     ) {
 
         return getVariantIterator(
                 genotypesFile,
                 genotypesFileType,
                 variantList,
-                0
+                0,
+                logger
         );
     }
 
@@ -116,6 +123,7 @@ public enum GenotypesFileType {
      * @param genotypesFileType The genotypes file type.
      * @param variantList The variants to process.
      * @param maxDistance The maximal number of bp to allow between variants.
+     * @param logger A logger for issues processing variants.
      *
      * @return An iterator for the variants.
      */
@@ -123,14 +131,16 @@ public enum GenotypesFileType {
             File genotypesFile,
             GenotypesFileType genotypesFileType,
             VariantList variantList,
-            int maxDistance
+            int maxDistance,
+            SimpleCliLogger logger
     ) {
 
         if (variantList != null) {
             return new VcfIteratorTargets(
                     genotypesFile,
                     variantList,
-                    maxDistance
+                    maxDistance,
+                    logger
             );
 
         }

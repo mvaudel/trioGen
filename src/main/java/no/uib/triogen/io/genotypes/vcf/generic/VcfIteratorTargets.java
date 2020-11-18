@@ -6,6 +6,7 @@ import htsjdk.variant.vcf.VCFFileReader;
 import java.io.File;
 import java.time.Instant;
 import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.genome.ChromosomeUtils;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.utils.SimpleSemaphore;
@@ -62,6 +63,14 @@ public class VcfIteratorTargets implements VariantIterator {
      * The maximum number of variants to process, ignored if negative.
      */
     public static int nLimit = -1;
+    /**
+     * Boolean indicating whether the currently targeted variant has been found.
+     */
+    private boolean variantFound = false;
+    /**
+     * The logger.
+     */
+    private final SimpleCliLogger logger;
 
     /**
      * Constructor.
@@ -69,11 +78,13 @@ public class VcfIteratorTargets implements VariantIterator {
      * @param vcfFile The vcf file.
      * @param maxDistance The maximal number of bp to allow between variants.
      * @param variantList The ids of the variants to iterate.
+     * @param logger A logger for issues processing variants.
      */
     public VcfIteratorTargets(
             File vcfFile,
             VariantList variantList,
-            int maxDistance
+            int maxDistance,
+            SimpleCliLogger logger
     ) {
 
         File indexFile = getVcfIndexFile(vcfFile);
@@ -81,6 +92,7 @@ public class VcfIteratorTargets implements VariantIterator {
         reader = new VCFFileReader(vcfFile, indexFile);
         this.variantList = variantList;
         this.maxDistance = maxDistance;
+        this.logger = logger;
 
     }
 
@@ -97,6 +109,16 @@ public class VcfIteratorTargets implements VariantIterator {
                         Instant.now() + " - " + variantList.variantId[variantListIndex] + " (" + (variantListIndex + 1) + " of " + variantList.variantId.length + ")"
                 );
 
+            }
+            
+            if (variantListIndex >= 0 && !variantFound) {
+                
+                String variantId = variantList.variantId[variantListIndex];
+                        logger.logVariant(
+                                variantId,
+                                "Variant not found"
+                        );
+                
             }
 
             variantListIndex++;
@@ -120,6 +142,8 @@ public class VcfIteratorTargets implements VariantIterator {
                     windowStart,
                     windowEnd
             );
+            
+            variantFound = false;
 
         }
 
@@ -142,6 +166,10 @@ public class VcfIteratorTargets implements VariantIterator {
             mutex.release();
             return next();
 
+        } else if (variantId.equals(variantList.variantId[variantListIndex])) {
+            
+            variantFound = true;
+            
         }
 
         nVariants++;

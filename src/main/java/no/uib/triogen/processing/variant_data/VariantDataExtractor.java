@@ -182,7 +182,8 @@ public class VariantDataExtractor {
                 genotypesFile,
                 genotypesFileType,
                 variantList,
-                0
+                0,
+                logger
         );
 
         try (SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true)) {

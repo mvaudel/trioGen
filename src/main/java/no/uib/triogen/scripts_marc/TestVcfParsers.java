@@ -5,6 +5,7 @@ import java.time.Instant;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
 
 /**
@@ -46,6 +47,11 @@ public class TestVcfParsers {
 
         }
 
+        SimpleCliLogger logger = new SimpleCliLogger(
+                new File(vcfFile.getParent(), "TestVcfParsers.log"),
+                new File(vcfFile.getParent(), "TestVcfParsers.variants.log")
+        );
+
         try {
 
             ChildToParentMap childToParentMap = ChildToParentMap.fromFile(trioFile);
@@ -56,13 +62,15 @@ public class TestVcfParsers {
                     vcfFile,
                     GenotypesFileType.vcf,
                     null,
-                    0
+                    0,
+                    logger
             );
             VariantIterator customIterator = GenotypesFileType.getVariantIterator(
                     vcfFile,
                     GenotypesFileType.sangerVCF,
                     null,
-                    0
+                    0,
+                    logger
             );
 
             try {

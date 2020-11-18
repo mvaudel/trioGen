@@ -1,5 +1,6 @@
 package no.uib.triogen.cmd.transmission;
 
+import java.io.File;
 import java.io.PrintWriter;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
@@ -11,6 +12,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.log.SimpleCliLogger;
 
 /**
  * Extracts h matrices from the vcf files.
@@ -59,7 +61,10 @@ public class ExtractTransmission {
                 
             }
 
-            run(bean);
+            run(
+                    bean, 
+                    String.join(" ", args)
+            );
 
         } catch (Throwable e) {
 
@@ -71,13 +76,25 @@ public class ExtractTransmission {
      * Runs the command.
      *
      * @param bean the bean of command line parameters
+     * @param command the command line as string
      */
     private static void run(
-            ExtractTransmissionOptionsBean bean
+            ExtractTransmissionOptionsBean bean,
+            String command
     ) {
 
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
         VariantList variantList = bean.variantFile == null ? null : VariantList.getVariantList(bean.variantFile);
+
+        File logFile = new File(bean.destinationStem + ".log.gz");
+        File variantLogFile = new File(bean.destinationStem + ".variantLog.gz");
+
+        SimpleCliLogger logger = new SimpleCliLogger(logFile, variantLogFile);
+        logger.writeComment("Software", "TrioGen");
+        logger.writeComment("Version", TrioGen.getVersion());
+        logger.writeComment("Command", "LinearModel");
+        logger.writeComment("Arguments", command);
+        logger.writeHeaders();
 
         Extractor extractor = new Extractor(
                 bean.genotypesFile, 
@@ -85,7 +102,8 @@ public class ExtractTransmission {
                 variantList,
                 childToParentMap, 
                 bean.destinationStem,
-                bean.nVariants
+                bean.nVariants,
+                logger
         );
 
         try {

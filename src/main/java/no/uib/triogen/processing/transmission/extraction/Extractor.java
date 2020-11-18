@@ -12,6 +12,7 @@ import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 
@@ -46,16 +47,21 @@ public class Extractor {
      * The number of variants to process in parallel.
      */
     private final int nVariants;
+    /**
+     * The logger.
+     */
+    private final SimpleCliLogger logger;
 
     /**
      * Constructor.
      *
-     * @param genotypesFile the file containing the genotypes
-     * @param genotypesFileType the type of genotypes file
-     * @param variantList the variants to process
-     * @param childToParentMap the map of trios
-     * @param destinationStem the stem of the files to export the result to
-     * @param nVariants the number of variants to process in parallel
+     * @param genotypesFile The file containing the genotypes.
+     * @param genotypesFileType The type of genotypes file.
+     * @param variantList The variants to process.
+     * @param childToParentMap The map of trios.
+     * @param destinationStem The stem of the files to export the result to.
+     * @param nVariants The number of variants to process in parallel.
+     * @param logger The logger.
      */
     public Extractor(
             File genotypesFile,
@@ -63,7 +69,8 @@ public class Extractor {
             VariantList variantList,
             ChildToParentMap childToParentMap,
             String destinationStem,
-            int nVariants
+            int nVariants,
+            SimpleCliLogger logger
     ) {
 
         this.genotypesFile = genotypesFile;
@@ -72,6 +79,7 @@ public class Extractor {
         this.childToParentMap = childToParentMap;
         this.destinationStem = destinationStem;
         this.nVariants = nVariants;
+        this.logger = logger;
 
     }
 
@@ -103,7 +111,8 @@ public class Extractor {
         VariantIterator iterator = GenotypesFileType.getVariantIterator(
                 genotypesFile,
                 genotypesFileType,
-                variantList
+                variantList,
+                logger
         );
         SimpleFileWriter h1Writer = new SimpleFileWriter(
                 new File(destinationStem + "_h1.gz"),

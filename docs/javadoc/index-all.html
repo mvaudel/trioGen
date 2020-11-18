@@ -578,7 +578,7 @@
 <dd>
 <div class="block">This class iterates a vcf file and extracts transmitted alleles.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/transmission/extraction/Extractor.html#Extractor-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-">Extractor(File, GenotypesFileType, VariantList, ChildToParentMap, String, int)</a></span> - Constructor for class no.uib.triogen.processing.transmission.extraction.<a href="no/uib/triogen/processing/transmission/extraction/Extractor.html" title="class in no.uib.triogen.processing.transmission.extraction">Extractor</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/transmission/extraction/Extractor.html#Extractor-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-no.uib.triogen.log.SimpleCliLogger-">Extractor(File, GenotypesFileType, VariantList, ChildToParentMap, String, int, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.transmission.extraction.<a href="no/uib/triogen/processing/transmission/extraction/Extractor.html" title="class in no.uib.triogen.processing.transmission.extraction">Extractor</a></dt>
 <dd>
 <div class="block">Constructor.</div>
 </dd>
@@ -1025,15 +1025,15 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html#getVariantID--">getVariantID()</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.generic.<a href="no/uib/triogen/io/genotypes/vcf/generic/VcfVariant.html" title="class in no.uib.triogen.io.genotypes.vcf.generic">VcfVariant</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/GenotypesFileType.html#getVariantIterator-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-">getVariantIterator(File, GenotypesFileType)</a></span> - Static method in enum no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/GenotypesFileType.html#getVariantIterator-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.log.SimpleCliLogger-">getVariantIterator(File, GenotypesFileType, SimpleCliLogger)</a></span> - Static method in enum no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a></dt>
 <dd>
 <div class="block">Returns a variant iterator for the given file and file type.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/GenotypesFileType.html#getVariantIterator-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-">getVariantIterator(File, GenotypesFileType, VariantList)</a></span> - Static method in enum no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/GenotypesFileType.html#getVariantIterator-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.log.SimpleCliLogger-">getVariantIterator(File, GenotypesFileType, VariantList, SimpleCliLogger)</a></span> - Static method in enum no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a></dt>
 <dd>
 <div class="block">Returns a variant iterator for the given file and file type.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/GenotypesFileType.html#getVariantIterator-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-int-">getVariantIterator(File, GenotypesFileType, VariantList, int)</a></span> - Static method in enum no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/GenotypesFileType.html#getVariantIterator-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-int-no.uib.triogen.log.SimpleCliLogger-">getVariantIterator(File, GenotypesFileType, VariantList, int, SimpleCliLogger)</a></span> - Static method in enum no.uib.triogen.io.genotypes.<a href="no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a></dt>
 <dd>
 <div class="block">Returns a variant iterator for the given file and file type.</div>
 </dd>
@@ -2658,7 +2658,7 @@ the order they are declared.</div>
 <dd>
 <div class="block">Generic iterator for a vcf file.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/generic/VcfIteratorTargets.html#VcfIteratorTargets-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-int-">VcfIteratorTargets(File, VariantList, int)</a></span> - Constructor for class no.uib.triogen.io.genotypes.vcf.generic.<a href="no/uib/triogen/io/genotypes/vcf/generic/VcfIteratorTargets.html" title="class in no.uib.triogen.io.genotypes.vcf.generic">VcfIteratorTargets</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/generic/VcfIteratorTargets.html#VcfIteratorTargets-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-int-no.uib.triogen.log.SimpleCliLogger-">VcfIteratorTargets(File, VariantList, int, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.io.genotypes.vcf.generic.<a href="no/uib/triogen/io/genotypes/vcf/generic/VcfIteratorTargets.html" title="class in no.uib.triogen.io.genotypes.vcf.generic">VcfIteratorTargets</a></dt>
 <dd>
 <div class="block">Constructor.</div>
 </dd>

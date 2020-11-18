@@ -184,7 +184,8 @@ public class LdMatrixComputer {
 
             VariantIterator iterator = GenotypesFileType.getVariantIterator(
                     genotypesFile,
-                    genotypesFileType
+                    genotypesFileType,
+                    logger
             );
 
             BufferedGenotypesIterator bufferedIterator = new BufferedGenotypesIterator(

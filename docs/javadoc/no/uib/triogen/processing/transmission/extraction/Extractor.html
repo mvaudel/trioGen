@@ -134,12 +134,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/transmission/extraction/Extractor.html#Extractor-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-">Extractor</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/transmission/extraction/Extractor.html#Extractor-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-no.uib.triogen.log.SimpleCliLogger-">Extractor</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
          <a href="../../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
          <a href="../../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
          <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;destinationStem,
-         int&nbsp;nVariants)</code>
+         int&nbsp;nVariants,
+         <a href="../../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
 <div class="block">Constructor.</div>
 </td>
 </tr>
@@ -187,7 +188,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="Extractor-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-">
+<a name="Extractor-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-no.uib.triogen.log.SimpleCliLogger-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -198,16 +199,18 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                  <a href="../../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
                  <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                  <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;destinationStem,
-                 int&nbsp;nVariants)</pre>
+                 int&nbsp;nVariants,
+                 <a href="../../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</pre>
 <div class="block">Constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>genotypesFile</code> - the file containing the genotypes</dd>
-<dd><code>genotypesFileType</code> - the type of genotypes file</dd>
-<dd><code>variantList</code> - the variants to process</dd>
-<dd><code>childToParentMap</code> - the map of trios</dd>
-<dd><code>destinationStem</code> - the stem of the files to export the result to</dd>
-<dd><code>nVariants</code> - the number of variants to process in parallel</dd>
+<dd><code>genotypesFile</code> - The file containing the genotypes.</dd>
+<dd><code>genotypesFileType</code> - The type of genotypes file.</dd>
+<dd><code>variantList</code> - The variants to process.</dd>
+<dd><code>childToParentMap</code> - The map of trios.</dd>
+<dd><code>destinationStem</code> - The stem of the files to export the result to.</dd>
+<dd><code>nVariants</code> - The number of variants to process in parallel.</dd>
+<dd><code>logger</code> - The logger.</dd>
 </dl>
 </li>
 </ul>

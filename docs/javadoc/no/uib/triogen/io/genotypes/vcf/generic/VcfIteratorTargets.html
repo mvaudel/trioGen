@@ -160,9 +160,10 @@ implements <a href="../../../../../../../no/uib/triogen/io/genotypes/VariantIter
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/vcf/generic/VcfIteratorTargets.html#VcfIteratorTargets-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-int-">VcfIteratorTargets</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;vcfFile,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/vcf/generic/VcfIteratorTargets.html#VcfIteratorTargets-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-int-no.uib.triogen.log.SimpleCliLogger-">VcfIteratorTargets</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;vcfFile,
                   <a href="../../../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
-                  int&nbsp;maxDistance)</code>
+                  int&nbsp;maxDistance,
+                  <a href="../../../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
 <div class="block">Constructor.</div>
 </td>
 </tr>
@@ -263,7 +264,7 @@ implements <a href="../../../../../../../no/uib/triogen/io/genotypes/VariantIter
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="VcfIteratorTargets-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-int-">
+<a name="VcfIteratorTargets-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-int-no.uib.triogen.log.SimpleCliLogger-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -271,13 +272,15 @@ implements <a href="../../../../../../../no/uib/triogen/io/genotypes/VariantIter
 <h4>VcfIteratorTargets</h4>
 <pre>public&nbsp;VcfIteratorTargets(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;vcfFile,
                           <a href="../../../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
-                          int&nbsp;maxDistance)</pre>
+                          int&nbsp;maxDistance,
+                          <a href="../../../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</pre>
 <div class="block">Constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>vcfFile</code> - The vcf file.</dd>
 <dd><code>maxDistance</code> - The maximal number of bp to allow between variants.</dd>
 <dd><code>variantList</code> - The ids of the variants to iterate.</dd>
+<dd><code>logger</code> - A logger for issues processing variants.</dd>
 </dl>
 </li>
 </ul>

@@ -79,6 +79,7 @@ public class LinearModel {
      * Runs the command.
      *
      * @param bean the bean of command line parameters
+     * @param command the command line as string
      */
     private static void run(
             LinearModelOptionsBean bean,

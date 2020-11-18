@@ -16,4 +16,5 @@ java -Xmx32G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar no.uib.triogen.cm
              -maf 0.005 \
              -dos \
              -o /mnt/work/marc/moba/run/triogen/debug/test_X.lm_target.gz \
-             -nv 12
+             -nv 12 \
+             -vl

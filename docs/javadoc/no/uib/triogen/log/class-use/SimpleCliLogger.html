@@ -87,6 +87,14 @@
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><a href="#no.uib.triogen.io.genotypes">no.uib.triogen.io.genotypes</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="#no.uib.triogen.io.genotypes.vcf.generic">no.uib.triogen.io.genotypes.vcf.generic</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a href="#no.uib.triogen.processing.association.linear_model">no.uib.triogen.processing.association.linear_model</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -99,6 +107,10 @@
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><a href="#no.uib.triogen.processing.transmission.extraction">no.uib.triogen.processing.transmission.extraction</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a href="#no.uib.triogen.processing.variant_data">no.uib.triogen.processing.variant_data</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -130,6 +142,68 @@
          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;genesFileStem,
          <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
 <div class="block">Writes the data needed for the given locus zoom.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="no.uib.triogen.io.genotypes">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a> in <a href="../../../../../no/uib/triogen/io/genotypes/package-summary.html">no.uib.triogen.io.genotypes</a></h3>
+<table class="useSummary" border="0" cellpadding="3" cellspacing="0" summary="Use table, listing methods, and an explanation">
+<caption><span>Methods in <a href="../../../../../no/uib/triogen/io/genotypes/package-summary.html">no.uib.triogen.io.genotypes</a> with parameters of type <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../no/uib/triogen/io/genotypes/VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a></code></td>
+<td class="colLast"><span class="typeNameLabel">GenotypesFileType.</span><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html#getVariantIterator-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.log.SimpleCliLogger-">getVariantIterator</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+                  <a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
+                  <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
+<div class="block">Returns a variant iterator for the given file and file type.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../../no/uib/triogen/io/genotypes/VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a></code></td>
+<td class="colLast"><span class="typeNameLabel">GenotypesFileType.</span><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html#getVariantIterator-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-int-no.uib.triogen.log.SimpleCliLogger-">getVariantIterator</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+                  <a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
+                  <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
+                  int&nbsp;maxDistance,
+                  <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
+<div class="block">Returns a variant iterator for the given file and file type.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../no/uib/triogen/io/genotypes/VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a></code></td>
+<td class="colLast"><span class="typeNameLabel">GenotypesFileType.</span><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html#getVariantIterator-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.log.SimpleCliLogger-">getVariantIterator</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+                  <a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
+                  <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
+                  <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
+<div class="block">Returns a variant iterator for the given file and file type.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="no.uib.triogen.io.genotypes.vcf.generic">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a> in <a href="../../../../../no/uib/triogen/io/genotypes/vcf/generic/package-summary.html">no.uib.triogen.io.genotypes.vcf.generic</a></h3>
+<table class="useSummary" border="0" cellpadding="3" cellspacing="0" summary="Use table, listing constructors, and an explanation">
+<caption><span>Constructors in <a href="../../../../../no/uib/triogen/io/genotypes/vcf/generic/package-summary.html">no.uib.triogen.io.genotypes.vcf.generic</a> with parameters of type <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/io/genotypes/vcf/generic/VcfIteratorTargets.html#VcfIteratorTargets-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-int-no.uib.triogen.log.SimpleCliLogger-">VcfIteratorTargets</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;vcfFile,
+                  <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
+                  int&nbsp;maxDistance,
+                  <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
+<div class="block">Constructor.</div>
 </td>
 </tr>
 </tbody>
@@ -254,6 +328,30 @@
                       <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                       double&nbsp;mafThreshold,
                       <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
+<div class="block">Constructor.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="no.uib.triogen.processing.transmission.extraction">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a> in <a href="../../../../../no/uib/triogen/processing/transmission/extraction/package-summary.html">no.uib.triogen.processing.transmission.extraction</a></h3>
+<table class="useSummary" border="0" cellpadding="3" cellspacing="0" summary="Use table, listing constructors, and an explanation">
+<caption><span>Constructors in <a href="../../../../../no/uib/triogen/processing/transmission/extraction/package-summary.html">no.uib.triogen.processing.transmission.extraction</a> with parameters of type <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/transmission/extraction/Extractor.html#Extractor-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-no.uib.triogen.log.SimpleCliLogger-">Extractor</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+         <a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
+         <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
+         <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
+         <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;destinationStem,
+         int&nbsp;nVariants,
+         <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
 <div class="block">Constructor.</div>
 </td>
 </tr>
