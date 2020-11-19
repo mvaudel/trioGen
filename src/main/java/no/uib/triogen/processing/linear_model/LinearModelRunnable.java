@@ -1,4 +1,4 @@
-package no.uib.triogen.processing.association.linear_model;
+package no.uib.triogen.processing.linear_model;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -93,8 +93,6 @@ public class LinearModelRunnable implements Runnable {
      * The variants to process.
      */
     private final VariantList variantList;
-
-    private final static SimpleSemaphore debugMutex = new SimpleSemaphore(1);
 
     /**
      * Constructor.

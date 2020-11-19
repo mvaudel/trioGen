@@ -1,4 +1,4 @@
-package no.uib.triogen.processing.association.linear_model;
+package no.uib.triogen.processing.linear_model;
 
 import java.io.File;
 import java.io.IOException;
@@ -233,10 +233,10 @@ public class LinearModelComputer {
                 .sorted()
                 .forEach(
                         phenoName -> logger.logMessage("    " + phenoName + ": " + covariatesHandler.originalIndexMap.get(phenoName).length + " phenotypes, " + covariatesHandler.covariatesMap.get(phenoName).length + " covariates (including intercept) representing " + covariatesHandler.rankMap.get(phenoName) + " dimensions.")
-        );
+                );
 
         logger.logMessage("Done (Adjusted for covariates in " + duration + " seconds)");
-        
+
         phenotypesHandler.sanityCheck();
 
         String nVariantsText = variantList == null ? "" : ", " + variantList.variantId.length + " variants";
@@ -357,7 +357,7 @@ public class LinearModelComputer {
         end = Instant.now().getEpochSecond();
         duration = end - start;
 
-        logger.logMessage("Done (" + iterator.getnVariants() + " variants processed in " + duration + " seconds)");
+        logger.logMessage("Done (Linear model for " + genotypesFile.getName() + ", " + iterator.getnVariants() + " variants and " + phenoNames.length + " phenoptyes processed in " + duration + " seconds)");
 
     }
 }

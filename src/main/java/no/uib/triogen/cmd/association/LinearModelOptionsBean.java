@@ -10,7 +10,7 @@ import no.uib.triogen.io.covariates.SpecificCovariatesFile;
 import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
-import no.uib.triogen.processing.association.linear_model.LinearModelRunnable;
+import no.uib.triogen.processing.linear_model.LinearModelRunnable;
 import org.apache.commons.cli.CommandLine;
 
 /**

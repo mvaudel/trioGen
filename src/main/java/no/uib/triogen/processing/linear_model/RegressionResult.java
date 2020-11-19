@@ -1,4 +1,4 @@
-package no.uib.triogen.processing.association.linear_model;
+package no.uib.triogen.processing.linear_model;
 
 import java.util.Arrays;
 import java.util.HashMap;
