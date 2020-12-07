@@ -7,8 +7,6 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.zip.DataFormatException;
-import java.util.zip.Inflater;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.ENCODING;
 import no.uib.triogen.io.flat.mapping.MemoryMappedFile;
