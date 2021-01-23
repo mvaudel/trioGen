@@ -1,6 +1,6 @@
 package no.uib.triogen.model.maf;
 
-import no.uib.triogen.io.genotypes.GenotypesProvider;
+import no.uib.triogen.io.genotypes.vcf.reader.VcfVariant;
 import no.uib.triogen.model.family.ChildToParentMap;
 
 /**
@@ -19,7 +19,7 @@ public class MafEstimator {
      * @return the maf.
      */
     public static double getMaf(
-            GenotypesProvider genotypesProvider,
+            VcfVariant genotypesProvider,
             ChildToParentMap childToParentMap
     ) {
         
@@ -28,11 +28,11 @@ public class MafEstimator {
         for (String childId : childToParentMap.children) {
             
             String motherId = childToParentMap.getMother(childId);
-            float[] dosages = genotypesProvider.getDosages(motherId);
+            float[] dosages = genotypesProvider.getGenotypingProbabilities(motherId);
             nAlt += dosages[1] + 2 * dosages[2];
             
             String fatherId = childToParentMap.getMother(childId);
-            dosages = genotypesProvider.getDosages(fatherId);
+            dosages = genotypesProvider.getGenotypingProbabilities(fatherId);
             nAlt += dosages[1] + 2 * dosages[2];
             
         }

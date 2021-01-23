@@ -213,9 +213,9 @@ public class VariantDataExtractor {
                     String motherId = childToParentMap.getMother(childId);
                     String fatherId = childToParentMap.getFather(childId);
 
-                    double nAltChild = genotypesProvider.getNAltDosages(childId);
-                    double nAltMother = genotypesProvider.getNAltDosages(motherId);
-                    double nAltFather = genotypesProvider.getNAltDosages(fatherId);
+                    double nAltChild = genotypesProvider.getNAltGenotypingProbabilities(childId);
+                    double nAltMother = genotypesProvider.getNAltGenotypingProbabilities(motherId);
+                    double nAltFather = genotypesProvider.getNAltGenotypingProbabilities(fatherId);
 
                     short[] h = genotypesProvider.getNAltH(
                             childId,

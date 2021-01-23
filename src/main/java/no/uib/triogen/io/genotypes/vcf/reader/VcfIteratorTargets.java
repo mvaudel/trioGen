@@ -1,11 +1,10 @@
-package no.uib.triogen.io.genotypes.vcf.generic;
+package no.uib.triogen.io.genotypes.vcf.reader;
 
 import htsjdk.samtools.util.CloseableIterator;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.vcf.VCFFileReader;
 import java.io.File;
 import java.time.Instant;
-import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.genome.ChromosomeUtils;
 import no.uib.triogen.model.trio_genotypes.VariantList;
@@ -16,7 +15,7 @@ import no.uib.triogen.utils.SimpleSemaphore;
  *
  * @author Marc Vaudel
  */
-public class VcfIteratorTargets implements VariantIterator {
+public class VcfIteratorTargets {
 
     /**
      * The name of the file being iterated.
@@ -96,7 +95,6 @@ public class VcfIteratorTargets implements VariantIterator {
 
     }
 
-    @Override
     public VcfVariant next() {
 
         mutex.acquire();
@@ -202,12 +200,10 @@ public class VcfIteratorTargets implements VariantIterator {
 
     }
 
-    @Override
     public int getnVariants() {
         return nVariants;
     }
 
-    @Override
     public void close() {
 
         iterator.close();;
@@ -230,7 +226,6 @@ public class VcfIteratorTargets implements VariantIterator {
 
     }
 
-    @Override
     public boolean isFinished() {
 
         return variantListIndex >= variantList.variantId.length;

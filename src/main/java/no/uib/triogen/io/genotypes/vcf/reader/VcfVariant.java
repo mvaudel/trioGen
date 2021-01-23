@@ -1,13 +1,13 @@
-package no.uib.triogen.io.genotypes.vcf.generic;
+package no.uib.triogen.io.genotypes.vcf.reader;
 
 import htsjdk.variant.variantcontext.Allele;
 import htsjdk.variant.variantcontext.Genotype;
 import htsjdk.variant.variantcontext.VariantContext;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.genome.VariantInformation;
 import no.uib.triogen.model.mendelian_error.MendelianErrorEstimator;
 
 /**
@@ -15,7 +15,7 @@ import no.uib.triogen.model.mendelian_error.MendelianErrorEstimator;
  *
  * @author Marc Vaudel
  */
-public class VcfVariant implements GenotypesProvider {
+public class VcfVariant {
 
     /**
      * Vcf key for the genotyping floag.
@@ -79,8 +79,70 @@ public class VcfVariant implements GenotypesProvider {
         this.variantContext = variantContext;
 
     }
+    
+    /**
+     * Returns information on this variant.
+     * 
+     * @return information on this variant
+     */
+    public VariantInformation getVariantInformation() {
+        
+        String contig = variantContext.getContig();
+        
+        int bp = variantContext.getStart();
+        
+        String[] alleles = variantContext.getAlleles().stream()
+                .map(
+                allele -> allele.getBaseString()
+                )
+                .toArray(String[]::new);
+        
+        String id = String.join("_", contig, Integer.toString(bp), String.join("_", alleles));
+        
+        String rsId = variantContext.getID().startsWith("rs") && !variantContext.getID().contains("_") ? variantContext.getID() : "";
+        
+        return new VariantInformation(id, rsId, contig, bp, alleles);
+        
+    }
+    
+    /**
+     * Returns the phased genotypes for the given samples.
+     * 
+     * @param sampleIds the sample ids
+     * 
+     * @return the phased genotypes
+     */
+    public ArrayList<String[]> getGenotypes(String[] sampleIds) {
+        
+        ArrayList<String[]> result = new ArrayList<>(sampleIds.length);
+        
+        for (String sampleId : sampleIds) {
 
-    @Override
+            Genotype genotype = variantContext.getGenotype(sampleId);
+
+            List<Allele> alleles = genotype.getAlleles();
+            
+            String[] sampleAlleles = new String[alleles.size()];
+            
+            for (int i = 0 ; i < alleles.size() ; i++) {
+                
+                sampleAlleles[i] = alleles.get(i).getBaseString();
+                
+            }
+            
+            result.add(sampleAlleles);
+            
+        }
+        
+        return result;
+        
+    }
+
+    /**
+     * Parses genotypes and dosages for the given samples.
+     * 
+     * @param childToParentMap the child to parents map
+     */
     public void parse(
             ChildToParentMap childToParentMap
     ) {
@@ -156,7 +218,7 @@ public class VcfVariant implements GenotypesProvider {
             if (dosagesSplit.length != 3) {
 
                 throw new IllegalArgumentException(
-                        dosagesSplit.length + " dosages found where 3 expected in '" + dosagesString + "' (variant '" + getVariantID() + "')."
+                        dosagesSplit.length + " dosages found where 3 expected in '" + dosagesString + "' (variant '" + variantContext.getID() + "')."
                 );
             }
 
@@ -171,7 +233,7 @@ public class VcfVariant implements GenotypesProvider {
                 } catch (Throwable t) {
 
                     throw new IllegalArgumentException(
-                            "Could not parse dosage '" + dosagesSplit[i] + "' as number in '" + dosagesString + "' (variant '" + getVariantID() + "').",
+                            "Could not parse dosage '" + dosagesSplit[i] + "' as number in '" + dosagesString + "' (variant '" + variantContext.getID() + "').",
                             t
                     );
                 }
@@ -182,54 +244,17 @@ public class VcfVariant implements GenotypesProvider {
         }
     }
 
-    @Override
-    public String getVariantID() {
-
-        return variantContext.getID();
-
-    }
-
-    @Override
-    public String getContig() {
-
-        return variantContext.getContig();
-
-    }
-
-    @Override
-    public int getBp() {
-
-        return variantContext.getStart();
-
-    }
-
-    @Override
-    public String getRef() {
-
-        return variantContext.getReference().getBaseString();
-
-    }
-
-    @Override
-    public String getAlt() {
-
-        return variantContext.getAlternateAlleles().stream()
-                .map(
-                        allele -> allele.getBaseString()
-                )
-                .collect(
-                        Collectors.joining(",")
-                );
-    }
-
-    @Override
+    /**
+     * Returns a boolean indicating whether the variant is genotyped.
+     * 
+     * @return a boolean indicating whether the variant is genotyped
+     */
     public boolean genotyped() {
 
         return variantContext.hasAttribute(TYPED);
 
     }
 
-    @Override
     public short getGenotype(String sampleId) {
 
         int sampleIndex = indexMap.get(sampleId);
@@ -256,7 +281,6 @@ public class VcfVariant implements GenotypesProvider {
         }
     }
 
-    @Override
     public short getNAlt(
             String sampleId
     ) {
@@ -281,8 +305,7 @@ public class VcfVariant implements GenotypesProvider {
         }
     }
 
-    @Override
-    public float[] getDosages(String sampleId) {
+    public float[] getGenotypingProbabilities(String sampleId) {
 
         int sampleIndex = indexMap.get(sampleId);
 
@@ -290,18 +313,16 @@ public class VcfVariant implements GenotypesProvider {
 
     }
 
-    @Override
-    public double getNAltDosages(
+    public double getNAltGenotypingProbabilities(
             String sampleId
     ) {
 
-        float[] sampleDosages = getDosages(sampleId);
+        float[] sampleDosages = getGenotypingProbabilities(sampleId);
 
         return sampleDosages[1] + 2 * sampleDosages[2];
 
     }
 
-    @Override
     public short[] getNAltH(
             String childId,
             String motherId,
@@ -324,7 +345,6 @@ public class VcfVariant implements GenotypesProvider {
 
     }
 
-    @Override
     public void setParentP0s(
             String[] childIds,
             ChildToParentMap childToParentMap
@@ -344,7 +364,7 @@ public class VcfVariant implements GenotypesProvider {
             String childId = childIds[i];
 
             String motherId = childToParentMap.getMother(childId);
-            float[] dosages = getDosages(motherId);
+            float[] dosages = getGenotypingProbabilities(motherId);
             dosageHomRef[i] = dosages[0];
             dosageHomAlt[i] = dosages[2];
             sumDosageHomRef += dosages[0];
@@ -365,7 +385,7 @@ public class VcfVariant implements GenotypesProvider {
             }
 
             String fatherId = childToParentMap.getFather(childId);
-            dosages = getDosages(fatherId);
+            dosages = getGenotypingProbabilities(fatherId);
             dosageHomRef[i + childIds.length] = dosages[0];
             dosageHomAlt[i + childIds.length] = dosages[2];
             sumDosageHomRef += dosages[0];
@@ -394,35 +414,30 @@ public class VcfVariant implements GenotypesProvider {
 
     }
 
-    @Override
     public float[] getParentsDosageP0sCache() {
 
         return parentsDosageP0sCache;
 
     }
 
-    @Override
     public double getParentsDosageP0Cache() {
 
         return parentsDosageP0Cache;
 
     }
 
-    @Override
     public boolean[] getParentsGenotypeP0sCache() {
 
         return parentsGenotypeP0sCache;
 
     }
 
-    @Override
     public int getParentsGenotypeP0Cache() {
 
         return parentsGenotypeP0Cache;
 
     }
 
-    @Override
     public void emptyGenotypeDosageCaches() {
 
         indexMap = null;
@@ -432,7 +447,6 @@ public class VcfVariant implements GenotypesProvider {
 
     }
 
-    @Override
     public double checkMendelianErrors(ChildToParentMap childToParentMap) {
 
         double errorPrevalence = MendelianErrorEstimator.estimateMendelianErrorPrevalence(this, childToParentMap);
@@ -458,13 +472,12 @@ public class VcfVariant implements GenotypesProvider {
         }
     }
 
-    @Override
-    public String getDosagesAsString(
+    public String getGenotypingProbabilitiesAsString(
             String sampleId,
             String separator
     ) {
 
-        float[] dosages = getDosages(sampleId);
+        float[] dosages = getGenotypingProbabilities(sampleId);
 
         StringBuilder sb = new StringBuilder();
 
@@ -484,7 +497,6 @@ public class VcfVariant implements GenotypesProvider {
 
     }
 
-    @Override
     public void swapChildAlleles(ChildToParentMap childToParentMap) {
         
         for (String childId : childToParentMap.children) {

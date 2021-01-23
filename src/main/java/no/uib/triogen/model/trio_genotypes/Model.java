@@ -234,9 +234,9 @@ public enum Model {
                 motherId,
                 fatherId
         );
-        double nAltChild = useDosages ? genotypesProvider.getNAltDosages(childId) : (double) genotypesProvider.getNAlt(childId);
-        double nAltMother = useDosages ? genotypesProvider.getNAltDosages(motherId) : (double) genotypesProvider.getNAlt(motherId);
-        double nAltFather = useDosages ? genotypesProvider.getNAltDosages(fatherId) : (double) genotypesProvider.getNAlt(fatherId);
+        double nAltChild = useDosages ? genotypesProvider.getNAltGenotypingProbabilities(childId) : (double) genotypesProvider.getNAlt(childId);
+        double nAltMother = useDosages ? genotypesProvider.getNAltGenotypingProbabilities(motherId) : (double) genotypesProvider.getNAlt(motherId);
+        double nAltFather = useDosages ? genotypesProvider.getNAltGenotypingProbabilities(fatherId) : (double) genotypesProvider.getNAlt(fatherId);
 
         switch (model) {
 

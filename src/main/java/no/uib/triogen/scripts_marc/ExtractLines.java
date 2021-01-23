@@ -5,7 +5,7 @@ import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 
 /**
- * Extracts the first lines of the gz files contains in the folder given as argument.
+ * Extracts the first lines of the given file.
  *
  * @author Marc Vaudel
  */
@@ -18,36 +18,29 @@ public class ExtractLines {
      */
     public static void main(String[] args) {
 
+        args = new String[]{"C:\\Github\\trioGen\\tmp\\23.vcf.gz", "C:\\Github\\trioGen\\tmp\\23.vcf_firstlines.txt"};
+
         int start = 0;
-        int end = 100;
+        int end = 200;
 
         try {
 
-            File folder = new File(args[0]);
+            File file = new File(args[0]);
+            File destinationFile = new File(args[1]);
 
-            for (File file : folder.listFiles()) {
+            try (SimpleFileReader reader = SimpleFileReader.getFileReader(file, false)) {
 
-                String filePath = file.getAbsolutePath();
+                try (SimpleFileWriter writer = new SimpleFileWriter(destinationFile, false)) {
 
-                if (filePath.endsWith(".gz")) {
+                    int count = 0;
 
-                    File outFile = new File(filePath.substring(0, filePath.length() - 3));
+                    String line;
+                    while ((line = reader.readLine()) != null && ++count <= end) {
 
-                    try ( SimpleFileReader reader = SimpleFileReader.getFileReader(file)) {
+                        if (count >= start) {
 
-                        try ( SimpleFileWriter writer = new SimpleFileWriter(outFile, false)) {
+                            writer.writeLine(line);
 
-                            int count = 0;
-
-                            String line;
-                            while ((line = reader.readLine()) != null && ++count <= end) {
-
-                                if (count >= start) {
-
-                                    writer.writeLine(line);
-
-                                }
-                            }
                         }
                     }
                 }
@@ -56,5 +49,4 @@ public class ExtractLines {
             t.printStackTrace();
         }
     }
-
 }

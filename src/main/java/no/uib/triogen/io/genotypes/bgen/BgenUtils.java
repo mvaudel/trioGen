@@ -14,6 +14,10 @@ public class BgenUtils {
      * The magic number of to use to identify the supported files.
      */
     public static final byte[] MAGIC_NUMBER = getMagicNumber();
+    /**
+     * The identifier for the TrioGen formatted files.
+     */
+    public static final byte[] IDENTIFIER = getIdentifier();
 
     /**
      * Returns the magic number.
@@ -34,6 +38,27 @@ public class BgenUtils {
             }
             
             return magicNumber;
+
+        } catch (UnsupportedEncodingException e) {
+
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    /**
+     * Returns the identifier for TrioGen-generated files.
+     *
+     * @return The identifier for TrioGen-generated files.
+     */
+    public static byte[] getIdentifier() {
+
+        try {
+
+            String idString = "TrioGen-0.5.0";
+            byte[] idBytes = idString.getBytes(ENCODING);
+            
+            return idBytes;
 
         } catch (UnsupportedEncodingException e) {
 

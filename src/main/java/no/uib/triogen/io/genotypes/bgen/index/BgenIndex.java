@@ -1,15 +1,14 @@
-package no.uib.triogen.io.genotypes.bgen;
+package no.uib.triogen.io.genotypes.bgen.index;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map.Entry;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.ENCODING;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.triogen.io.genotypes.bgen.BgenUtils;
 import no.uib.triogen.model.genome.VariantInformation;
 
 /**
@@ -19,23 +18,35 @@ import no.uib.triogen.model.genome.VariantInformation;
  */
 public class BgenIndex {
 
-    private final static String FIRST_LINE = "# TrioGen_bgen_index_v.1.0";
+    public final static String FIRST_LINE = "# TrioGen_bgen_index_v.1.0.1";
 
-    public final HashMap<String, VariantInformation> variantInformationMap;
+    public final String[] variantIdArray;
 
-    public final HashMap<String, Long> variantIndexMap;
+    public final VariantInformation[] variantInformationArray;
 
-    public final HashMap<String, Integer> sampleIndexMap;
+    public final long[] variantIndexArray;
+
+    public final long[] variantBlockLengthArray;
+
+    public final String[] sampleIds;
+    
+    public final int compressionType;
 
     public BgenIndex(
-            HashMap<String, VariantInformation> variantInformationMap,
-            HashMap<String, Long> variantIndexMap,
-            HashMap<String, Integer> sampleIndexMap
+            String[] variantIdArray,
+            VariantInformation[] variantInformationArray,
+            long[] variantIndexArray,
+            long[] variantBlockLengthArray,
+            String[] sampleIds,
+            int compressionType
     ) {
 
-        this.variantInformationMap = variantInformationMap;
-        this.variantIndexMap = variantIndexMap;
-        this.sampleIndexMap = sampleIndexMap;
+        this.variantIdArray = variantIdArray;
+        this.variantInformationArray = variantInformationArray;
+        this.variantIndexArray = variantIndexArray;
+        this.variantBlockLengthArray = variantBlockLengthArray;
+        this.sampleIds = sampleIds;
+        this.compressionType = compressionType;
 
     }
 
@@ -79,35 +90,31 @@ public class BgenIndex {
 
             writer.writeLine(FIRST_LINE);
 
+            writer.writeLine("# Compression:", Integer.toString(bgenIndex.compressionType));
+
             writer.writeLine("# Samples");
 
-            String[] sampleIds = new String[bgenIndex.sampleIndexMap.size()];
+            writer.writeLine(bgenIndex.sampleIds);
 
-            for (Entry<String, Integer> entry : bgenIndex.sampleIndexMap.entrySet()) {
+            writer.writeLine("# Variants:", Integer.toString(bgenIndex.variantIdArray.length));
 
-                sampleIds[entry.getValue()] = entry.getKey();
+            writer.writeLine("variantId", "rsId", "contig", "bp", "alleles", "index", "blockSize");
 
-            }
+            for (int variantI = 0; variantI < bgenIndex.variantIdArray.length; variantI++) {
 
-            writer.writeLine(sampleIds);
-
-            writer.writeLine("# Variants:", Integer.toString(bgenIndex.variantInformationMap.size()));
-
-            writer.writeLine("variantId", "rsId", "contig", "bp", "alleles", "index");
-
-            for (VariantInformation variantInformation : bgenIndex.variantInformationMap.values()) {
-
-                String id = variantInformation.id;
-
-                long index = bgenIndex.variantIndexMap.get(id);
+                String id = bgenIndex.variantIdArray[variantI];
+                VariantInformation variantInformation = bgenIndex.variantInformationArray[variantI];
+                long start = bgenIndex.variantIndexArray[variantI];
+                long length = bgenIndex.variantBlockLengthArray[variantI];
 
                 writer.writeLine(
                         id,
                         variantInformation.rsId,
                         variantInformation.contig,
-                        Integer.toString(variantInformation.bp),
+                        Integer.toString(variantInformation.position),
                         String.join(",", variantInformation.alleles),
-                        Long.toString(index)
+                        Long.toString(start),
+                        Long.toString(length)
                 );
             }
         }
@@ -117,7 +124,7 @@ public class BgenIndex {
             File indexFile
     ) {
 
-        try (SimpleFileReader reader = SimpleFileReader.getFileReader(indexFile)) {
+        try (SimpleFileReader reader = SimpleFileReader.getFileReader(indexFile, false)) {
 
             String line = reader.readLine();
 
@@ -127,28 +134,26 @@ public class BgenIndex {
 
             }
 
+            line = reader.readLine();
+            String[] lineSplit = line.split(IoUtils.SEPARATOR);
+            int compressionType = Integer.parseInt(lineSplit[1]);
+
             reader.readLine();
             line = reader.readLine();
-
             String[] samples = line.split(IoUtils.SEPARATOR);
 
-            HashMap<String, Integer> sampleIndexMap = new HashMap<>(samples.length);
-
-            for (int i = 0; i < samples.length; i++) {
-
-                sampleIndexMap.put(samples[i], i);
-
-            }
-
             line = reader.readLine();
-
-            String[] lineSplit = line.split(IoUtils.SEPARATOR);
+            lineSplit = line.split(IoUtils.SEPARATOR);
             int nVariants = Integer.parseInt(lineSplit[1]);
 
-            HashMap<String, VariantInformation> variantInformationMap = new HashMap<>(nVariants);
-            HashMap<String, Long> variantIndexMap = new HashMap<>(nVariants);
+            String[] variantIdArray = new String[nVariants];
+            VariantInformation[] variantInformationArray = new VariantInformation[nVariants];
+            long[] variantIndexArray = new long[nVariants];
+            long[] variantBlockLengthArray = new long[nVariants];
 
             reader.readLine();
+
+            int variantI = 0;
 
             while ((line = reader.readLine()) != null) {
 
@@ -161,17 +166,22 @@ public class BgenIndex {
                     String contig = lineSplit[2];
                     int bp = Integer.parseInt(lineSplit[3]);
                     String[] alleles = lineSplit[4].split(",");
-                    long position = Long.parseLong(lineSplit[5]);
+                    long start = Long.parseLong(lineSplit[5]);
+                    long blockSize = Long.parseLong(lineSplit[6]);
 
                     VariantInformation variantInformation = new VariantInformation(id, rsId, contig, bp, alleles);
 
-                    variantInformationMap.put(id, variantInformation);
-                    variantIndexMap.put(id, position);
+                    variantInformationArray[variantI] = variantInformation;
+                    variantIndexArray[variantI] = start;
+                    variantBlockLengthArray[variantI] = blockSize;
+                    variantIdArray[variantI] = id;
+
+                    variantI++;
 
                 }
             }
 
-            return new BgenIndex(variantInformationMap, variantIndexMap, sampleIndexMap);
+            return new BgenIndex(variantIdArray, variantInformationArray, variantIndexArray, variantBlockLengthArray, samples, compressionType);
 
         }
     }
@@ -180,7 +190,7 @@ public class BgenIndex {
             File bgenFile
     ) {
 
-        return new File(bgenFile.getAbsolutePath() + ".ti");
+        return new File(bgenFile.getAbsolutePath() + ".index.gz");
 
     }
 
@@ -188,9 +198,12 @@ public class BgenIndex {
             File bgenFile
     ) throws IOException {
 
-        HashMap<String, Integer> sampleIndexMap;
-        HashMap<String, VariantInformation> variantInformationMap;
-        HashMap<String, Long> variantIndexMap;
+        String[] samples;
+        String[] variantIdArray;
+        VariantInformation[] variantInformationArray;
+        long[] variantIndexArray;
+        long[] variantBlockLengthArray;
+        int compressionType;
 
         try (RandomAccessFile raf = new RandomAccessFile(bgenFile, "r")) {
 
@@ -267,11 +280,23 @@ public class BgenIndex {
             raf.read(flags);
 
             BitSet bitSet = BitSet.valueOf(flags);
-
-            if (!bitSet.get(0) || bitSet.get(1)) {
-
-                throw new IllegalArgumentException("Only files with compressed SNP block probability are supported.");
-
+            
+            if (!bitSet.get(0) && bitSet.get(1)) {
+                
+                compressionType = 2;
+                
+            } else if (bitSet.get(0) && !bitSet.get(1)) {
+                
+                compressionType = 1;
+                
+            } else if (!bitSet.get(0) && !bitSet.get(1)) {
+                
+                compressionType = 0;
+                
+            } else {
+                
+                throw new IllegalArgumentException("Compression value " + bitSet + " not supported.");
+                
             }
 
             if (bitSet.get(2) || !bitSet.get(3) || bitSet.get(4)) {
@@ -286,7 +311,7 @@ public class BgenIndex {
 
             }
 
-            // Sample identifier
+            // Sample identifiers
             tempInt = Integer.reverseBytes(raf.readInt());
 
             long identifierBlockLength = Integer.toUnsignedLong(tempInt);
@@ -314,8 +339,8 @@ public class BgenIndex {
             }
 
             int nSamples = (int) nSamples1;
-
-            sampleIndexMap = new HashMap<>(nSamples);
+            
+            samples = new String[nSamples];
 
             for (int sampleI = 0; sampleI < nSamples; sampleI++) {
 
@@ -326,14 +351,16 @@ public class BgenIndex {
                 raf.read(sampleIdBytes);
 
                 String sampleId = new String(sampleIdBytes, 0, sampleIdByteLength, ENCODING);
-
-                sampleIndexMap.put(sampleId, sampleI);
+                
+                samples[sampleI] = sampleId;
 
             }
 
             // Variant data block
-            variantInformationMap = new HashMap<>(nVariants);
-            variantIndexMap = new HashMap<>(nVariants);
+            variantIdArray = new String[nVariants];
+            variantInformationArray = new VariantInformation[nVariants];
+            variantIndexArray = new long[nVariants];
+            variantBlockLengthArray = new long[nVariants];
 
             for (int variantI = 0; variantI < nVariants; variantI++) {
 
@@ -364,15 +391,15 @@ public class BgenIndex {
 
                 tempInt = Integer.reverseBytes(raf.readInt());
 
-                long bp = Integer.toUnsignedLong(tempInt);
+                long bpLong = Integer.toUnsignedLong(tempInt);
 
-                if (bp > Integer.MAX_VALUE || bp < 0) {
+                if (bpLong > Integer.MAX_VALUE || bpLong < 0) {
 
-                    throw new IllegalArgumentException("Unexpected variant position (" + bp + ") for variant " + variantId + ", should be an integer between 0 (included) and " + Integer.MAX_VALUE + " (included).");
+                    throw new IllegalArgumentException("Unexpected variant position (" + bpLong + ") for variant " + variantId + ", should be an integer between 0 (included) and " + Integer.MAX_VALUE + " (included).");
 
                 }
 
-                int bpInt = (int) bp;
+                int bp = (int) bpLong;
 
                 tempShort = Short.reverseBytes(raf.readShort());
                 int nAlleles = Short.toUnsignedInt(tempShort);
@@ -381,11 +408,20 @@ public class BgenIndex {
 
                 for (int alleleI = 0; alleleI < nAlleles; alleleI++) {
 
-                    tempShort = Short.reverseBytes(raf.readShort());
-                    int alleleLength = Short.toUnsignedInt(tempShort);
+                    tempInt = Integer.reverseBytes(raf.readInt());
+
+                    long alleleLengthLong = Integer.toUnsignedLong(tempInt);
+
+                    if (alleleLengthLong > Integer.MAX_VALUE || alleleLengthLong < 0) {
+
+                        throw new IllegalArgumentException("Allele length " + alleleLengthLong + " for allele " + alleleI + " of variant " + variantId + " not supported, should be between 0 (included) and " + Integer.MAX_VALUE + " (included).");
+
+                    }
+
+                    int alleleLength = (int) alleleLengthLong;
 
                     byte[] alleleBytes = new byte[alleleLength];
-                    raf.read(contigBytes);
+                    raf.read(alleleBytes);
 
                     String allele = new String(alleleBytes, 0, alleleLength, ENCODING);
 
@@ -393,25 +429,41 @@ public class BgenIndex {
 
                 }
 
-                VariantInformation variantInformation = new VariantInformation(variantId, rsId, contig, bpInt, alleles);
+                if (variantId.length() == 0) {
 
-                variantInformationMap.put(variantId, variantInformation);
+                    variantId = String.join("_",
+                            contig,
+                            Integer.toString(bp),
+                            String.join("_",
+                                    alleles
+                            )
+                    );
+                }
 
-                long index = raf.getFilePointer();
+                variantIdArray[variantI] = variantId;
 
-                variantIndexMap.put(variantId, index);
+                VariantInformation variantInformation = new VariantInformation(variantId, rsId, contig, bp, alleles);
+
+                variantInformationArray[variantI] = variantInformation;
 
                 tempInt = Integer.reverseBytes(raf.readInt());
 
-                long variantDataLength = Integer.toUnsignedLong(tempInt);
+                long blockSizeLong = Integer.toUnsignedLong(tempInt);
 
-                if (variantDataLength > Integer.MAX_VALUE || variantDataLength < 0) {
+                if (blockSizeLong > Integer.MAX_VALUE || blockSizeLong < 0) {
 
-                    throw new IllegalArgumentException("Variant data length " + variantDataLength + " for variant " + variantId + " not supported, should be between 0 (included) and " + Integer.MAX_VALUE + " (included).");
+                    throw new IllegalArgumentException("Block size " + blockSizeLong + " for variant " + variantId + " not supported, should be between 0 (included) and " + Integer.MAX_VALUE + " (included).");
 
                 }
 
-                toSkip = (int) variantDataLength;
+                int blockSize = (int) blockSizeLong;
+
+                long index = raf.getFilePointer();
+
+                variantIndexArray[variantI] = index;
+                variantBlockLengthArray[variantI] = blockSize;
+
+                toSkip = blockSize;
 
                 nSkipped = raf.skipBytes(toSkip);
 
@@ -423,7 +475,7 @@ public class BgenIndex {
             }
         }
 
-        return new BgenIndex(variantInformationMap, variantIndexMap, sampleIndexMap);
+        return new BgenIndex(variantIdArray, variantInformationArray, variantIndexArray, variantBlockLengthArray, samples, compressionType);
 
     }
 

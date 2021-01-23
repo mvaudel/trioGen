@@ -1,11 +1,11 @@
-package no.uib.triogen.io.genotypes.vcf.generic;
+package no.uib.triogen.io.genotypes.vcf.reader;
 
 import htsjdk.samtools.util.CloseableIterator;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.vcf.VCFFileReader;
+import java.io.Closeable;
 import java.io.File;
 import java.time.Instant;
-import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
@@ -13,7 +13,7 @@ import no.uib.triogen.utils.SimpleSemaphore;
  *
  * @author Marc Vaudel
  */
-public class VcfIterator implements VariantIterator {
+public class VcfIterator implements Closeable {
 
     /**
      * The name of the file being iterated.
@@ -32,9 +32,9 @@ public class VcfIterator implements VariantIterator {
      */
     private int nVariantColumns;
     /**
-     * Number of samples.
+     * The sample ids.
      */
-    private int nSamples;
+    private String[] sampleIds;
     /**
      * Mutex for the access to the file.
      */
@@ -65,10 +65,11 @@ public class VcfIterator implements VariantIterator {
         fileName = vcfFile.getName();
         reader = new VCFFileReader(vcfFile, indexFile);
         iterator = reader.iterator();
+        
+        sampleIds = reader.getFileHeader().getSampleNamesInOrder().stream().toArray(String[]::new);
 
     }
 
-    @Override
     public VcfVariant next() {
 
         mutex.acquire();
@@ -114,17 +115,16 @@ public class VcfIterator implements VariantIterator {
     }
 
     /**
-     * Returns the number of samples.
+     * Returns the sample ids.
      *
-     * @return the number of samples
+     * @return the sample ids
      */
-    public int getnSamples() {
+    public String[] getSamplesIds() {
 
-        return nSamples;
+        return sampleIds;
 
     }
 
-    @Override
     public int getnVariants() {
         return nVariants;
     }
@@ -132,7 +132,7 @@ public class VcfIterator implements VariantIterator {
     @Override
     public void close() {
 
-        iterator.close();;
+        iterator.close();
         reader.close();
 
     }
@@ -152,7 +152,6 @@ public class VcfIterator implements VariantIterator {
 
     }
 
-    @Override
     public boolean isFinished() {
         
         return !iterator.hasNext();

@@ -1,6 +1,6 @@
 package no.uib.triogen.model.mendelian_error;
 
-import no.uib.triogen.io.genotypes.GenotypesProvider;
+import no.uib.triogen.io.genotypes.vcf.reader.VcfVariant;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.maf.MafEstimator;
 
@@ -20,7 +20,7 @@ public class MendelianErrorEstimator {
      * @return The prevalence as a ratio between the number of observed errors compared to the number of expected trios.
      */
     public static double estimateMendelianErrorPrevalence(
-            GenotypesProvider genotypesProvider,
+            VcfVariant genotypesProvider,
             ChildToParentMap childToParentMap
     ) {
 

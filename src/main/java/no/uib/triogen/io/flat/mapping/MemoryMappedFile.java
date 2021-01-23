@@ -49,7 +49,6 @@ public class MemoryMappedFile implements AutoCloseable {
      * @param length The length of the section of the file to map.
      * @param blockSize The block size to use in number of bytes.
      *
-     * @throws FileNotFoundException Exception thrown if the file is not found.
      * @throws IOException Exception thrown if an error occurred while reading
      * the file.
      */
@@ -58,7 +57,7 @@ public class MemoryMappedFile implements AutoCloseable {
             long offset,
             long length,
             long blockSize
-    ) throws FileNotFoundException, IOException {
+    ) throws IOException {
 
         this.blockSize = blockSize;
 

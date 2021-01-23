@@ -25,7 +25,7 @@ public class VariantInformation {
     /**
      * The location of the variant.
      */
-    public final int bp;
+    public final int position;
     
     /**
      * The alleles.
@@ -52,7 +52,7 @@ public class VariantInformation {
         this.id = id;
         this.rsId = rsId;
         this.contig = contig;
-        this.bp = bp;
+        this.position = bp;
         this.alleles = alleles;
         
     }
