@@ -28,10 +28,8 @@ public class VcfToBgenConverter {
                 bgenWriter.initiate(vcfIterator.getSamplesIds());
 
                 VcfVariant vcfVariant;
-                
-                int n = 0;
 
-                while ((vcfVariant = vcfIterator.next()) != null && ++n <= 1000) {
+                while ((vcfVariant = vcfIterator.next()) != null) {
 
                     VariantInformation variantInformation = vcfVariant.getVariantInformation();
                     ArrayList<String[]> genotypes = vcfVariant.getGenotypes(vcfIterator.getSamplesIds());

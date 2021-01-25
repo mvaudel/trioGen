@@ -1,6 +1,7 @@
 package no.uib.triogen.scripts_marc;
 
 import java.io.File;
+import java.time.Instant;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
@@ -26,13 +27,28 @@ public class TestBgen {
 
         try {
 
+            System.out.println(Instant.now() + " Creating index...");
+
             BgenIndex index = BgenIndex.getBgenIndex(bgenFile);
+
+            System.out.println(Instant.now() + " Index created.");
 
             BgenFileReader reader = new BgenFileReader(bgenFile, index, null, 0);
 
             int phased = 0;
+            int previousProgress = 0;
 
             for (int i = 0; i < reader.getNVariants(); i++) {
+
+                double progress = (100.0 * i) / reader.getNVariants();
+
+                if (progress >= previousProgress + 1) {
+
+                    System.out.println(Instant.now() + " Parsing variants... " + i + " of " + reader.getNVariants() + " (" + ((int) progress) + "%)");
+
+                    previousProgress = (int) progress;
+
+                }
 
                 BgenVariantData variantData = reader.getVariantData(i);
 
