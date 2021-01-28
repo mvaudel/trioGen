@@ -5,7 +5,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.TreeSet;
 import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.cell_rk.utils.SimpleFileWriter;
 
 /**
  * Convenience script cleaning the results of the pw meta.

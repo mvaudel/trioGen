@@ -323,28 +323,6 @@ public class VcfVariant {
 
     }
 
-    public short[] getNAltH(
-            String childId,
-            String motherId,
-            String fatherId
-    ) {
-
-        short genotypeChild = getGenotype(childId);
-        short genotypeMother = getGenotype(motherId);
-        short genotypeFather = getGenotype(fatherId);
-
-        short nAltMother = (short) (genotypeMother >= 2 ? genotypeMother - 1 : genotypeMother);
-        short nAltFather = (short) (genotypeFather >= 2 ? genotypeFather - 1 : genotypeFather);
-
-        short h1 = (short) (genotypeChild == 0 || genotypeChild == 2 ? 0 : 1);
-        short h2 = (short) (nAltMother - h1);
-        short h3 = (short) (genotypeChild == 0 || genotypeChild == 1 ? 0 : 1);
-        short h4 = (short) (nAltFather - h3);
-
-        return new short[]{h1, h2, h3, h4};
-
-    }
-
     public void setParentP0s(
             String[] childIds,
             ChildToParentMap childToParentMap
@@ -447,31 +425,6 @@ public class VcfVariant {
 
     }
 
-    public double checkMendelianErrors(ChildToParentMap childToParentMap) {
-
-        double errorPrevalence = MendelianErrorEstimator.estimateMendelianErrorPrevalence(this, childToParentMap);
-
-        if (errorPrevalence > 0.5) {
-
-            for (String childId : childToParentMap.children) {
-
-                int index = indexMap.get(childId);
-
-                boolean temp = alleles1[index];
-                alleles1[index] = alleles2[index];
-                alleles2[index] = temp;
-
-            }
-
-            return MendelianErrorEstimator.estimateMendelianErrorPrevalence(this, childToParentMap);
-
-        } else {
-
-            return errorPrevalence;
-
-        }
-    }
-
     public String getGenotypingProbabilitiesAsString(
             String sampleId,
             String separator
@@ -495,18 +448,5 @@ public class VcfVariant {
 
         return sb.toString();
 
-    }
-
-    public void swapChildAlleles(ChildToParentMap childToParentMap) {
-        
-        for (String childId : childToParentMap.children) {
-            
-            int childIndex = indexMap.get(childId);
-            
-            boolean genotype1 = alleles1[childIndex];
-            alleles1[childIndex] = alleles2[childIndex];
-            alleles2[childIndex] = genotype1;
-            
-        }
     }
 }

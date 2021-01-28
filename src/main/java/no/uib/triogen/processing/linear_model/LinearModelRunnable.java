@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
-import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import no.uib.triogen.io.genotypes.GenotypesProvider;

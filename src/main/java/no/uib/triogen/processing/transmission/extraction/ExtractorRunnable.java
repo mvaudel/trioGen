@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.GenotypesProvider;
 import no.uib.triogen.io.genotypes.VariantIterator;
 import no.uib.triogen.model.family.ChildToParentMap;

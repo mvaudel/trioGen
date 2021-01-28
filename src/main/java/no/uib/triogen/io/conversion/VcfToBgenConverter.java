@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.writer.BgenWriter;
-import no.uib.triogen.io.genotypes.vcf.reader.VcfIterator;
+import no.uib.triogen.io.genotypes.vcf.iterators.VcfIterator;
 import no.uib.triogen.io.genotypes.vcf.reader.VcfVariant;
 import no.uib.triogen.model.genome.VariantInformation;
 

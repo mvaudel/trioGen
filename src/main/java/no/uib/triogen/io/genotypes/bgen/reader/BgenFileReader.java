@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.model.genome.VariantInformation;
@@ -36,15 +37,19 @@ public class BgenFileReader implements AutoCloseable {
      * The index of the variant in the bgen file.
      */
     private final int[] variantIndexes;
+    
+    private final HashMap<Integer, char[]> inheritanceMap;
 
     public BgenFileReader(
             File bgenFile,
             BgenIndex bgenIndex,
             VariantList variantList,
-            int distance
+            int distance,
+            HashMap<Integer, char[]> inheritanceMap
     ) throws IOException {
 
         this.bgenIndex = bgenIndex;
+        this.inheritanceMap = inheritanceMap;
 
         raf = new RandomAccessFile(bgenFile, "r");
 
@@ -168,8 +173,14 @@ public class BgenFileReader implements AutoCloseable {
             
         }
         
-        return new BgenVariantData(bgenIndex.sampleIds, variantInformation, buffer, (int) blockLength, bgenIndex.compressionType);
-        
+        return new BgenVariantData(
+                bgenIndex.sampleIds, 
+                variantInformation, 
+                buffer, 
+                (int) blockLength, 
+                bgenIndex.compressionType, 
+                inheritanceMap
+        );
     }
 
     @Override

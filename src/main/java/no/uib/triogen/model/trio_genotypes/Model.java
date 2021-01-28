@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
-import no.uib.triogen.io.genotypes.GenotypesProvider;
+import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
 
 /**
  * Enum of the linear regression models implemented.
@@ -214,9 +214,8 @@ public enum Model {
      * @param childId The id of the child.
      * @param motherId The id of the mother.
      * @param fatherId The id of the father.
-     * @param genotypesProvider The genotypes provider to use for this variant.
-     * @param useDosages If true, dosages will be used when possible, hard calls
-     * otherwise.
+     * @param bgenVariantData The genotypes provider to use for this variant.
+     * @param testedAlleleIndex The index of the tested allele.
      */
     public static void fillX(
             double[][] x,
@@ -225,106 +224,107 @@ public enum Model {
             String childId,
             String motherId,
             String fatherId,
-            GenotypesProvider genotypesProvider,
-            boolean useDosages
+            BgenVariantData bgenVariantData,
+            int testedAlleleIndex
     ) {
 
-        short[] h = genotypesProvider.getNAltH(
+        double[] haplotypes = bgenVariantData.getHaplotypes(
                 childId,
                 motherId,
-                fatherId
+                fatherId, 
+                index
         );
-        double nAltChild = useDosages ? genotypesProvider.getNAltGenotypingProbabilities(childId) : (double) genotypesProvider.getNAlt(childId);
-        double nAltMother = useDosages ? genotypesProvider.getNAltGenotypingProbabilities(motherId) : (double) genotypesProvider.getNAlt(motherId);
-        double nAltFather = useDosages ? genotypesProvider.getNAltGenotypingProbabilities(fatherId) : (double) genotypesProvider.getNAlt(fatherId);
+        double child = haplotypes[1] + haplotypes[2];
+        double mother = haplotypes[0] + haplotypes[1];
+        double father = haplotypes[2] + haplotypes[3];
 
         switch (model) {
 
             case h:
 
-                x[index][0] = h[0];
-                x[index][1] = h[1];
-                x[index][2] = h[2];
-                x[index][3] = h[3];
+                x[index][0] = haplotypes[0];
+                x[index][1] = haplotypes[1];
+                x[index][2] = haplotypes[2];
+                x[index][3] = haplotypes[3];
                 return;
 
             case cmf:
-                x[index][0] = nAltChild;
-                x[index][1] = nAltMother;
-                x[index][2] = nAltFather;
+                x[index][0] = child;
+                x[index][1] = mother;
+                x[index][2] = father;
                 return;
 
             case cmf_mt:
-                x[index][0] = nAltChild;
-                x[index][1] = nAltMother;
-                x[index][2] = nAltFather;
-                x[index][3] = h[0];
+                x[index][0] = child;
+                x[index][1] = mother;
+                x[index][2] = father;
+                x[index][3] = haplotypes[1];
                 return;
 
             case cmf_ft:
-                x[index][0] = nAltChild;
-                x[index][1] = nAltMother;
-                x[index][2] = nAltFather;
-                x[index][3] = h[2];
+                x[index][0] = child;
+                x[index][1] = mother;
+                x[index][2] = father;
+                x[index][3] = haplotypes[2];
                 return;
 
             case cm:
-                x[index][0] = nAltChild;
-                x[index][1] = nAltMother;
+                x[index][0] = child;
+                x[index][1] = mother;
                 return;
 
             case cm_mt:
-                x[index][0] = nAltChild;
-                x[index][1] = nAltMother;
-                x[index][2] = h[0];
+                x[index][0] = child;
+                x[index][1] = mother;
+                x[index][2] = haplotypes[1];
                 return;
 
             case cf:
-                x[index][0] = nAltChild;
-                x[index][1] = nAltFather;
+                x[index][0] = child;
+                x[index][1] = father;
                 return;
 
             case cf_ft:
-                x[index][0] = nAltChild;
-                x[index][1] = nAltFather;
-                x[index][2] = h[2];
+                x[index][0] = child;
+                x[index][1] = father;
+                x[index][2] = haplotypes[2];
                 return;
 
             case mf:
-                x[index][0] = nAltMother;
-                x[index][1] = nAltFather;
+                x[index][0] = mother;
+                x[index][1] = father;
                 return;
 
             case c:
-                x[index][0] = nAltChild;
+                x[index][0] = child;
                 return;
 
             case c_mt:
-                x[index][0] = nAltChild;
-                x[index][1] = h[0];
+                x[index][0] = child;
+                x[index][1] = haplotypes[1];
                 return;
 
             case c_ft:
-                x[index][0] = nAltChild;
-                x[index][1] = h[2];
+                x[index][0] = child;
+                x[index][1] = haplotypes[2];
                 return;
 
             case m:
-                x[index][0] = nAltMother;
+                x[index][0] = mother;
                 return;
 
             case m_mt:
-                x[index][0] = nAltMother;
-                x[index][1] = h[0];
+                x[index][0] = mother;
+                x[index][1] = haplotypes[1];
                 return;
 
             case f:
-                x[index][0] = nAltFather;
+                x[index][0] = father;
                 return;
 
             case f_ft:
-                x[index][0] = nAltFather;
-                x[index][1] = h[2];
+                x[index][0] = father;
+                x[index][1] = haplotypes[2];
                 return;
 
             default:

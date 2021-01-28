@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
 import no.uib.triogen.io.flat.indexed.IndexedGzReader;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;

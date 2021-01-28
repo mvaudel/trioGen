@@ -2,10 +2,12 @@ package no.uib.triogen.io.genotypes.bgen.reader;
 
 import com.github.luben.zstd.Zstd;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.zip.Inflater;
+import static no.uib.triogen.io.genotypes.InheritanceUtils.FATHER;
+import static no.uib.triogen.io.genotypes.InheritanceUtils.MOTHER;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.genome.VariantInformation;
 
@@ -24,15 +26,21 @@ public class BgenVariantData {
      * Values for the haplotype probabilities for the children and parents.
      */
     private HashMap<String, double[]> haplotypeProbabilities = null;
+    private HashSet<String> missing = null;
     private int nAlleles = -1;
     private final int compressionType;
+    private double[] alleleFrequencyChildren;
+    private int nChildrenGenotyped;
+
+    private final HashMap<Integer, char[]> inheritanceMap;
 
     public BgenVariantData(
             String[] sampleIds,
             VariantInformation variantInformation,
             ByteBuffer dataBlockContent,
             int blockLength,
-            int compressionType
+            int compressionType,
+            HashMap<Integer, char[]> inheritanceMap
     ) {
 
         this.sampleIds = sampleIds;
@@ -40,12 +48,14 @@ public class BgenVariantData {
         this.compressedDataBlockContent = dataBlockContent;
         this.blockLength = blockLength;
         this.compressionType = compressionType;
+        this.inheritanceMap = inheritanceMap;
 
     }
 
     public void parse(ChildToParentMap childToParentMap) {
 
         haplotypeProbabilities = new HashMap<>(childToParentMap.children.length);
+        missing = new HashSet<>();
 
         try {
 
@@ -157,7 +167,6 @@ public class BgenVariantData {
 
                 }
 
-                boolean[] missing = new boolean[nSamples];
                 int[] ploidyArray = new int[nSamples];
 
                 for (int sampleI = 0; sampleI < nSamples; sampleI++) {
@@ -172,7 +181,13 @@ public class BgenVariantData {
 
                     }
 
-                    missing[sampleI] = missingValue == 1;
+                    String sampleId = sampleIds[sampleI];
+
+                    if (childToParentMap.sampleIds.contains(sampleId)) {
+
+                        missing.add(sampleId);
+
+                    }
 
                     int ploidyI = missingPloidy & 0b01111111;
 
@@ -207,17 +222,17 @@ public class BgenVariantData {
                     throw new IllegalArgumentException("Unexpected value for the number of bits encoding the genotyping probabilities (" + nBits + ") found for variant " + variantInformation.id + ", should be between " + 1 + " (inclusive) and " + 32 + " (inclusive).");
 
                 }
-                
+
                 int[] powers = new int[nBits];
-                
+
                 int value = 1;
-                
-                for (int i = 0 ; i < nBits ; i++) {
-                    
+
+                for (int i = 0; i < nBits; i++) {
+
                     powers[i] = value;
-                    
+
                     value *= 2;
-                    
+
                 }
 
                 double denominator = 2 * powers[nBits - 1] - 1;
@@ -272,6 +287,35 @@ public class BgenVariantData {
                     offSet += nBits * (nAlleles - 1) * z;
 
                 }
+
+                double[] nAltChildren = new double[variantInformation.alleles.length];
+                double[] nContigChildren = new double[variantInformation.alleles.length];
+                int nChildren = 0;
+
+                for (String childId : childToParentMap.children) {
+
+                    if (!missing.contains(childId)) {
+
+                        nChildren++;
+
+                        for (int alleleI = 0; alleleI < variantInformation.alleles.length; alleleI++) {
+
+                            nAltChildren[alleleI] += getProbability(childId, alleleI);
+                            nContigChildren[alleleI] += getPloidy(childId);
+
+                        }
+                    }
+                }
+
+                nChildrenGenotyped = nChildren;
+
+                alleleFrequencyChildren = new double[variantInformation.alleles.length];
+
+                for (int alleleI = 0; alleleI < variantInformation.alleles.length; alleleI++) {
+
+                    alleleFrequencyChildren[alleleI] = nAltChildren[alleleI] / nContigChildren[alleleI];
+
+                }
             }
 
         } catch (Exception e) {
@@ -292,23 +336,23 @@ public class BgenVariantData {
 
     public double getProbability(
             String sampleId,
-            int haplotype,
-            int allele
+            int z,
+            int alleleIndex
     ) {
 
         double[] sampleProbabilities = haplotypeProbabilities.get(sampleId);
 
-        if (allele < nAlleles) {
+        if (alleleIndex < nAlleles - 1) {
 
-            return sampleProbabilities[(haplotype - 1) * (nAlleles - 1) + allele - 1];
+            return sampleProbabilities[z * (nAlleles - 1) + alleleIndex - 1];
 
-        } else if (allele == nAlleles) {
+        } else if (alleleIndex == nAlleles - 1) {
 
             double complement = 0.0;
 
-            for (int otherAllele = 1; otherAllele < allele; otherAllele++) {
+            for (int otherAllele = 1; otherAllele < alleleIndex; otherAllele++) {
 
-                complement += sampleProbabilities[(haplotype - 1) * (nAlleles - 1) + otherAllele - 1];
+                complement += sampleProbabilities[z * (nAlleles - 1) + otherAllele - 1];
 
             }
 
@@ -316,15 +360,95 @@ public class BgenVariantData {
 
         } else {
 
-            throw new IllegalArgumentException("Cannot retrieve allele " + allele + " for sample " + sampleId + " and variant " + variantInformation.id + ", " + nAlleles + " alleles available.");
+            throw new IllegalArgumentException("Cannot retrieve allele index " + alleleIndex + " for sample " + sampleId + " and variant " + variantInformation.id + ", " + nAlleles + " alleles available.");
 
         }
+    }
+
+    public double getProbability(
+            String sampleId,
+            int alleleIndex
+    ) {
+
+        double p = 0.0;
+
+        for (int z = 0; z < getPloidy(sampleId); z++) {
+
+            p += getProbability(sampleId, z, alleleIndex);
+
+        }
+
+        return p;
+
     }
 
     public VariantInformation getVariantInformation() {
 
         return variantInformation;
 
+    }
+
+    public double[] getHaplotypes(
+            String childId,
+            String motherId,
+            String fatherId,
+            int testedAlleleIndex
+    ) {
+
+        if (!missing.contains(childId) && !(missing.contains(motherId) && missing.contains(fatherId))) {
+
+            int ploidyChild = getPloidy(childId);
+
+            char[] inheritance = inheritanceMap.get(ploidyChild);
+
+            double motherTransmitted = 0.0;
+            double fatherTransmitted = 0.0;
+
+            for (int z = 0; z < ploidyChild; z++) {
+
+                double probability = getProbability(fatherId, z, testedAlleleIndex);
+
+                char parent = inheritance[z];
+
+                switch (parent) {
+
+                    case MOTHER:
+                        motherTransmitted += probability;
+                        break;
+
+                    case FATHER:
+                        fatherTransmitted += probability;
+                        break;
+
+                    default:
+                        throw new IllegalArgumentException("Unsupported parent " + parent + ".");
+                }
+            }
+
+            double mother = missing.contains(motherId) ? alleleFrequencyChildren[testedAlleleIndex] * getPloidy(motherId) : getProbability(motherId, testedAlleleIndex);
+
+            double motherNonTransmitted = mother - motherTransmitted;
+
+            double father = missing.contains(fatherId) ? alleleFrequencyChildren[testedAlleleIndex] * getPloidy(fatherId) : getProbability(fatherId, testedAlleleIndex);
+
+            double fatherNonTransmitted = father - fatherTransmitted;
+
+            return new double[]{motherNonTransmitted, motherTransmitted, fatherTransmitted, fatherNonTransmitted};
+
+        }
+
+        return null;
+
+    }
+
+    public double getAlleleFrequency(
+            int testedAlleleIndex
+    ) {
+        return alleleFrequencyChildren[testedAlleleIndex];
+    }
+
+    public int getnChildrenGenotyped() {
+        return nChildrenGenotyped;
     }
 
 }

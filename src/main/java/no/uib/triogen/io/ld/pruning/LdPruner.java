@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.ld.LdMatrixReader;
 import no.uib.triogen.utils.Utils;
 

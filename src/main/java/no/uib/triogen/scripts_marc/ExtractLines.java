@@ -2,7 +2,7 @@ package no.uib.triogen.scripts_marc;
 
 import java.io.File;
 import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.cell_rk.utils.SimpleFileWriter;
 
 /**
  * Extracts the first lines of the given file.

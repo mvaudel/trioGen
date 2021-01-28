@@ -4,7 +4,7 @@ import java.io.File;
 import java.time.Instant;
 import java.util.HashMap;
 import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.cell_rk.utils.SimpleFileWriter;
 
 /**
  * This script generates a target file from a Bolt results file

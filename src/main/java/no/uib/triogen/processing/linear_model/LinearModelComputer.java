@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.getIndexFile;
-import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import no.uib.triogen.io.genotypes.GenotypesFileType;

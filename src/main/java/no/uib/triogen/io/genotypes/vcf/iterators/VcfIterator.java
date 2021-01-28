@@ -1,4 +1,4 @@
-package no.uib.triogen.io.genotypes.vcf.reader;
+package no.uib.triogen.io.genotypes.vcf.iterators;
 
 import htsjdk.samtools.util.CloseableIterator;
 import htsjdk.variant.variantcontext.VariantContext;
@@ -6,6 +6,7 @@ import htsjdk.variant.vcf.VCFFileReader;
 import java.io.Closeable;
 import java.io.File;
 import java.time.Instant;
+import no.uib.triogen.io.genotypes.vcf.reader.VcfVariant;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
