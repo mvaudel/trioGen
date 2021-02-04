@@ -324,6 +324,12 @@ public class BgenVariantData {
 
         }
     }
+    
+    public boolean isMissing(String sampleId) {
+        
+        return missing.contains(sampleId);
+        
+    }
 
     public int getPloidy(
             String sampleId

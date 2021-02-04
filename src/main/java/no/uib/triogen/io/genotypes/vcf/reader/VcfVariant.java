@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.genome.VariantInformation;
-import no.uib.triogen.model.mendelian_error.MendelianErrorEstimator;
 
 /**
  * The VcfVariant provides genotypes for a variant from a vcf file.

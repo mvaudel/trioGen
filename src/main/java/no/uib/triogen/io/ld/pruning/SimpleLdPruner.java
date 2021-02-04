@@ -1,26 +1,25 @@
 package no.uib.triogen.io.ld.pruning;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.ld.LdMatrixReader;
+import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.utils.Utils;
 
 /**
- * Simple class for LD pruning.
+ * Simple LD pruning.
  *
  * @author Marc Vaudel
  */
-public class LdPruner {
+public class SimpleLdPruner {
 
     /**
      * The ld matrix file path.
@@ -65,7 +64,7 @@ public class LdPruner {
 
     private LdMatrixReader defaultLdMatrixReader;
 
-    public LdPruner(
+    public SimpleLdPruner(
             String ldMatrixFilePath,
             File resultsFile,
             File destinationFile,
@@ -361,15 +360,15 @@ public class LdPruner {
 
                     }
 
-                    HashMap<String, Double> variantLdMap = ldMatrixReader.getR2(variantId);
+                    ArrayList<R2> r2s = ldMatrixReader.getR2(variantId);
 
-                    if (variantLdMap != null) {
+                    if (r2s != null && r2s.size() > 0) {
 
-                        for (Entry<String, Double> entry3 : variantLdMap.entrySet()) {
+                        for (R2 r2 : r2s) {
 
-                            if (entry3.getValue() >= minR2) {
+                            if (r2.r2Value >= minR2) {
 
-                                inspectedSnp.add(entry3.getKey());
+                                inspectedSnp.add(ldMatrixReader.getId(r2.variantB));
 
                             }
                         }

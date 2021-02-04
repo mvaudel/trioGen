@@ -28,7 +28,7 @@ public class LdMatrixUtils {
 
         try {
 
-            String magicName = "Triogen.ldMatrix.1";
+            String magicName = "Triogen.ldMatrix.1.1";
             return magicName.getBytes(ENCODING);
 
         } catch (UnsupportedEncodingException e) {

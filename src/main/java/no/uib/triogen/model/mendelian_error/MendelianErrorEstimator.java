@@ -35,12 +35,22 @@ public class MendelianErrorEstimator {
 
             double[] hs = genotypesProvider.getHaplotypes(childId, motherId, fatherId, testedAlleleIndex);
 
-            if (hs[1] <= -0.5 || hs[3] <= -0.5) {
+            if (hs[0] <= -0.5) {
 
                 minusOne += 1;
 
-            } 
-            if (hs[1] >= 1.5 || hs[3] >= 1.5) {
+            }
+            if (hs[3] <= -0.5) {
+
+                minusOne += 1;
+
+            }
+            if (hs[0] >= 1.5) {
+
+                two += 1;
+
+            }
+            if (hs[3] >= 1.5) {
 
                 two += 1;
 

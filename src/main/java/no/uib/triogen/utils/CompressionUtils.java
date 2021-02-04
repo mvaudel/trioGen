@@ -1,8 +1,6 @@
 package no.uib.triogen.utils;
 
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
+import com.github.luben.zstd.Zstd;
 
 /**
  * Functions needed for compression and decompression.
@@ -10,7 +8,6 @@ import java.util.zip.Inflater;
  * @author Marc Vaudel
  */
 public class CompressionUtils {
-    
 
     /**
      * Uncompresses the given byte array.
@@ -25,83 +22,39 @@ public class CompressionUtils {
             int uncompressedLength
     ) {
 
-        try {
+        byte[] uncompressedByteAray = new byte[(int) uncompressedLength];
 
-            byte[] uncompressedByteAray = new byte[uncompressedLength];
+        long decompressedBytes = Zstd.decompress(uncompressedByteAray, compressedByteArray);
 
-            Inflater inflater = new Inflater(true);
+        if (decompressedBytes != uncompressedLength) {
 
-            inflater.setInput(compressedByteArray);
-            int bytesUncompressed = inflater.inflate(uncompressedByteAray);
-
-            if (bytesUncompressed == 0) {
-
-                throw new IllegalArgumentException("Missing input or dictionary.");
-
-            } else if (bytesUncompressed != uncompressedLength) {
-
-//                String debug = new String(uncompressedByteAray, 0, uncompressedByteAray.length, encoding);
-                throw new IllegalArgumentException("Unexpected number of bytes uncompressed " + bytesUncompressed + " (expected: " + uncompressedLength + ")");
-
-            }
-
-            return uncompressedByteAray;
-
-        } catch (DataFormatException e) {
-
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(decompressedBytes + " bytes decompressed where " + uncompressedLength + " expected.");
 
         }
+
+        return uncompressedByteAray;
+
     }
 
     /**
      * Compresses the given byte array.
      *
      * @param uncompressedData The uncompressed data.
-     * @param deflater The deflater to compress parts of the file.
      *
      * @return The compressed data.
      */
     public static TempByteArray compress(
-            byte[] uncompressedData,
-            Deflater deflater
+            byte[] uncompressedData
     ) {
 
-        byte[] compressedData = new byte[uncompressedData.length];
+        int maxLength = (int) Zstd.compressBound(uncompressedData.length);
 
-        int outputLength = compressedData.length;
+        byte[] destinationArray = new byte[maxLength];
 
-        deflater.setInput(uncompressedData);
-        int compressedByteLength = deflater.deflate(
-                compressedData,
-                0,
-                compressedData.length,
-                Deflater.FULL_FLUSH
-        );
-        int compressedDataLength = compressedByteLength;
+        int compressedArrayLength = (int) Zstd.compress(destinationArray, uncompressedData, 1);
 
-        while (compressedByteLength == outputLength) {
-
-            byte[] output2 = new byte[outputLength];
-            compressedByteLength = deflater.deflate(
-                    output2,
-                    0,
-                    outputLength,
-                    Deflater.FULL_FLUSH
-            );
-
-            compressedData = Utils.mergeArrays(
-                    compressedData,
-                    output2,
-                    compressedByteLength
-            );
-            compressedDataLength += compressedByteLength;
-
-        }
-
-        return new TempByteArray(compressedData, compressedDataLength);
+        return new TempByteArray(destinationArray, compressedArrayLength);
 
     }
-    
-    
+
 }

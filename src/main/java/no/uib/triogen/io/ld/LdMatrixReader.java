@@ -5,11 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.ENCODING;
 import no.uib.triogen.io.flat.mapping.MemoryMappedFile;
+import no.uib.triogen.model.ld.R2;
 import static no.uib.triogen.utils.CompressionUtils.uncompress;
 
 /**
@@ -117,7 +119,7 @@ public class LdMatrixReader implements AutoCloseable {
      *
      * @return The id to r2 map.
      */
-    public HashMap<String, Double> getR2(
+    public ArrayList<R2> getR2(
             String variantA
     ) {
 
@@ -132,41 +134,58 @@ public class LdMatrixReader implements AutoCloseable {
         int nVariants;
         byte[] compressedData;
 
-        try ( MemoryMappedFile.MiniBuffer buffer = memoryMappedFile.getBuffer(index)) {
+        try (MemoryMappedFile.MiniBuffer buffer = memoryMappedFile.getBuffer(index)) {
 
             nVariants = buffer.getInt();
+
+            if (nVariants == 0) {
+
+                return new ArrayList<>(0);
+
+            }
+
             int compressedLength = buffer.getInt();
-            
+
             compressedData = new byte[compressedLength];
             buffer.get(compressedData);
 
         }
 
-        int uncompressedLength = nVariants * Integer.BYTES + nVariants * Double.BYTES;
+        int uncompressedLength = nVariants * Integer.BYTES + 2 * nVariants * Short.BYTES + nVariants * Float.BYTES;
 
         byte[] uncompressedData = uncompress(compressedData, uncompressedLength);
         ByteBuffer byteBuffer = ByteBuffer.wrap(uncompressedData);
 
-        HashMap<String, Double> result = new HashMap<>(nVariants);
+        ArrayList<R2> r2s = new ArrayList<>(nVariants);
 
         for (int i = 0; i < nVariants; i++) {
 
             int variantIndex = byteBuffer.getInt();
-            String variantB = variantIds[variantIndex];
-            double r2 = byteBuffer.getDouble();
+            short alleleA = byteBuffer.getShort();
+            short alleleB = byteBuffer.getShort();
+            float r2 = byteBuffer.getFloat();
 
-            result.put(variantB, r2);
-
+            r2s.add(
+                    new R2(variantIndex, alleleA, alleleB, r2)
+            );
         }
 
-        return result;
+        return r2s;
+
+    }
+
+    public String getId(
+            int variantIndex
+    ) {
+
+        return variantIds[variantIndex];
 
     }
 
     @Override
     public void close() throws Exception {
-        
+
         memoryMappedFile.close();
-        
+
     }
 }
