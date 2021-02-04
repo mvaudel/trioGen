@@ -1,8 +1,7 @@
 package no.uib.triogen.io.genotypes.bgen.VariantIterator;
 
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
-import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
-import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
+import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.genome.VariantInformation;
 import no.uib.triogen.utils.SimpleSemaphore;
 
@@ -13,6 +12,9 @@ import no.uib.triogen.utils.SimpleSemaphore;
  */
 public class VariantIterator {
 
+    private static final int nProgress = 100000;
+    private final SimpleCliLogger logger;
+    private final String logPrefix;
     private final BgenIndex bgenIndex;
     private final int start;
     private final int end;
@@ -24,12 +26,36 @@ public class VariantIterator {
     public VariantIterator(
             BgenIndex bgenIndex,
             int start,
-            int end
+            int end,
+            SimpleCliLogger logger,
+            String logPrefix
     ) {
 
         this.bgenIndex = bgenIndex;
         this.start = start;
         this.end = end;
+        this.logger = logger;
+        this.logPrefix = logPrefix;
+
+    }
+
+    public VariantIterator(
+            BgenIndex bgenIndex,
+            int start,
+            int end
+    ) {
+
+        this(bgenIndex, start, end, null, null);
+
+    }
+
+    public VariantIterator(
+            BgenIndex bgenIndex,
+            SimpleCliLogger logger,
+            String logPrefix
+    ) {
+
+        this(bgenIndex, -1, -1, null, null);
 
     }
 
@@ -37,7 +63,7 @@ public class VariantIterator {
             BgenIndex bgenIndex
     ) {
 
-        this(bgenIndex, -1, -1);
+        this(bgenIndex, -1, -1, null, null);
 
     }
 
@@ -50,6 +76,14 @@ public class VariantIterator {
         while (start != -1 && variantInformation.position < start || end != -1 && variantInformation.position > end) {
 
             currentVariantIndex++;
+
+            if (logger != null && currentVariantIndex % nProgress == 0) {
+
+                double progress = ((double) (Math.round(10000.0 * currentVariantIndex) / bgenIndex.variantInformationArray.length)) / 100;
+
+                logger.logMessage(logPrefix + " " + currentVariantIndex + " processed of " + bgenIndex.variantInformationArray.length + " (" + progress + " %)");
+
+            }
 
             if (currentVariantIndex != bgenIndex.variantInformationArray.length) {
 

@@ -9,6 +9,7 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import no.uib.triogen.io.IoUtils;
+import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.model.genome.VariantInformation;
 import no.uib.triogen.model.trio_genotypes.VariantList;
@@ -37,7 +38,7 @@ public class BgenFileReader implements AutoCloseable {
      * The index of the variant in the bgen file.
      */
     private final int[] variantIndexes;
-    
+
     private final HashMap<Integer, char[]> inheritanceMap;
 
     public BgenFileReader(
@@ -124,6 +125,16 @@ public class BgenFileReader implements AutoCloseable {
         }
     }
 
+    public BgenFileReader(
+            File bgenFile,
+            BgenIndex bgenIndex,
+            HashMap<Integer, char[]> inheritanceMap
+    ) throws IOException {
+
+        this(bgenFile, bgenIndex, null, 0, inheritanceMap);
+        
+    }
+
     public int getNVariants() {
 
         return mappedByteBuffers.length;
@@ -154,31 +165,31 @@ public class BgenFileReader implements AutoCloseable {
         return bgenIndex.variantBlockLengthArray[index];
 
     }
-    
+
     public int nVariants() {
-        
+
         return mappedByteBuffers.length;
-        
+
     }
-    
+
     public BgenVariantData getVariantData(int i) {
-        
+
         VariantInformation variantInformation = getVariantInformation(i);
         ByteBuffer buffer = getDataBlock(i);
         long blockLength = getBlockLength(i);
-        
+
         if (blockLength > Integer.MAX_VALUE) {
-            
+
             throw new IllegalArgumentException("Block length (" + blockLength + ") for variant " + variantInformation.id + " exceeds maximal capacity (" + Integer.MAX_VALUE + ").");
-            
+
         }
-        
+
         return new BgenVariantData(
-                bgenIndex.sampleIds, 
-                variantInformation, 
-                buffer, 
-                (int) blockLength, 
-                bgenIndex.compressionType, 
+                bgenIndex.sampleIds,
+                variantInformation,
+                buffer,
+                (int) blockLength,
+                bgenIndex.compressionType,
                 inheritanceMap
         );
     }

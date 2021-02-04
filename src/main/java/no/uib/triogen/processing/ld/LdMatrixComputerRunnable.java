@@ -51,10 +51,6 @@ public class LdMatrixComputerRunnable implements Runnable {
      */
     private final int maxDistance;
     /**
-     * Boolean indicating whether hard calls should be used.
-     */
-    private final boolean hardCalls;
-    /**
      * Index for the variants.
      */
     private final VariantIndex variantIndex;
@@ -85,8 +81,6 @@ public class LdMatrixComputerRunnable implements Runnable {
      * @param childToParentMap The map of trios.
      * @param maxDistance The maximal number of bp to allow between variants.
      * @param minR2 The minimal ld r2 to report (inclusive).
-     * @param hardCalls Boolean indicating whether hard calls should be used
-     * instead of dosages.
      * @param variantIndex The index to use for the variants.
      * @param p0Cache The cache for the probability of homozygocity.
      * @param threadIndex The index of the thread.
@@ -100,7 +94,6 @@ public class LdMatrixComputerRunnable implements Runnable {
             ChildToParentMap childToParentMap,
             int maxDistance,
             double minR2,
-            boolean hardCalls,
             VariantIndex variantIndex,
             P0Cache p0Cache,
             int threadIndex,
@@ -114,7 +107,6 @@ public class LdMatrixComputerRunnable implements Runnable {
         this.childToParentMap = childToParentMap;
         this.maxDistance = maxDistance;
         this.minR2 = minR2;
-        this.hardCalls = hardCalls;
         this.variantIndex = variantIndex;
         this.p0Cache = p0Cache;
         this.threadIndex = threadIndex;
