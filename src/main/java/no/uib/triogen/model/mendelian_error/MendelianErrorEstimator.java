@@ -11,59 +11,82 @@ import no.uib.triogen.model.family.ChildToParentMap;
 public class MendelianErrorEstimator {
 
     /**
-     * Estimates the prevalence of Mendelian errors by comparing the number of 001*, *100, 110*, *011 resulting in +2 or -1 tested alleles for the parents compared to the number of such trios expected according to the maf.
-     * 
-     * @param genotypesProvider The genotypes provider for the variant to inspect.
+     * Estimates the prevalence of Mendelian errors by comparing the number of
+     * 001*, *100, 110*, *011 resulting in +2 or -1 tested alleles for the
+     * parents compared to the number of such trios expected according to the
+     * maf. The check is only done for diploid children.
+     *
+     * @param variantData The bgen data on this variant.
      * @param childToParentMap The child to parent map to use.
      * @param testedAlleleIndex The index of the tested allele.
-     * 
-     * @return The prevalence as a ratio between the number of observed errors compared to the number of expected trios.
+     *
+     * @return The prevalence as a ratio between the number of observed errors
+     * compared to the number of expected trios.
      */
     public static double estimateMendelianErrorPrevalence(
-            BgenVariantData genotypesProvider,
+            BgenVariantData variantData,
             ChildToParentMap childToParentMap,
             int testedAlleleIndex
     ) {
 
         double minusOne = 0;
         double two = 0;
+        int nDiploidChildren = 0;
 
         for (String childId : childToParentMap.children) {
 
-            String motherId = childToParentMap.getMother(childId);
-            String fatherId = childToParentMap.getFather(childId);
+            if (variantData.getPloidy(childId) == 2) {
 
-            double[] hs = genotypesProvider.getHaplotypes(childId, motherId, fatherId, testedAlleleIndex);
+                nDiploidChildren++;
 
-            if (hs[0] <= -0.5) {
+                String motherId = childToParentMap.getMother(childId);
+                String fatherId = childToParentMap.getFather(childId);
 
-                minusOne += 1;
+                double[] hs = variantData.getHaplotypes(childId, motherId, fatherId, testedAlleleIndex);
 
-            }
-            if (hs[3] <= -0.5) {
+                if (hs[0] <= -0.5) {
 
-                minusOne += 1;
+                    minusOne += 1;
 
-            }
-            if (hs[0] >= 1.5) {
+                }
+                if (hs[3] <= -0.5) {
 
-                two += 1;
+                    minusOne += 1;
 
-            }
-            if (hs[3] >= 1.5) {
+                }
+                if (hs[0] >= 1.5) {
 
-                two += 1;
+                    two += 1;
 
+                }
+                if (hs[3] >= 1.5) {
+
+                    two += 1;
+
+                }
             }
         }
+        
+        if (nDiploidChildren == 0) {
+            
+            return 0;
+            
+        }
 
-        double alleleFrequency = genotypesProvider.getAlleleFrequency(testedAlleleIndex);
+        double alleleFrequency = variantData.getAlleleFrequency(testedAlleleIndex);
 
-        double expectedMinusOne = childToParentMap.children.length * 2 * (1 - alleleFrequency) * (1 - alleleFrequency) * alleleFrequency; // number of trios with 001* *100
-        double expectedTwo = childToParentMap.children.length * 2 * alleleFrequency * alleleFrequency * (1 - alleleFrequency); // number of trios with 110* *011
+        double possibleMinusOne = 2.0 * (1 - alleleFrequency) * (1 - alleleFrequency) * alleleFrequency * nDiploidChildren; // number of trios with 001* *100
+        double possibleTwo = 2.0 * alleleFrequency * alleleFrequency * (1 - alleleFrequency) * nDiploidChildren; // number of trios with 110* *011
+        
+        double measurableErrors = possibleMinusOne + possibleTwo;
+        
+        if (measurableErrors <= 10.0) { // Disable check if less than 10 ground truth values
+            
+            return Double.NaN;
+            
+        }
 
-        return ((double) (minusOne + two)) / (expectedMinusOne + expectedTwo);
+        return ((double) (minusOne + two)) / measurableErrors;
 
     }
-
 }

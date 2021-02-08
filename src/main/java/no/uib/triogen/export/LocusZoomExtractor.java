@@ -140,7 +140,7 @@ public class LocusZoomExtractor {
 
                         for (int variantI = 0; variantI < variantList.variantId.length; variantI++) {
 
-                            if (contig.equals(variantList.chromosome[variantI]) && bp >= variantList.start[variantI] - maxDistance && bp <= variantList.end[variantI] + maxDistance) {
+                            if (contig.equals(variantList.VariantList.this.contig[variantI]) && bp >= variantList.start[variantI] - maxDistance && bp <= variantList.end[variantI] + maxDistance) {
 
                                 String targetVariantId = variantList.variantId[variantI];
 
@@ -238,7 +238,7 @@ public class LocusZoomExtractor {
 
             for (int variantI : variantsFound) {
 
-                String targetContig = variantList.chromosome[variantI];
+                String targetContig = variantList.contig[variantI];
                 int targetBpStart = variantList.start[variantI];
                 int targetBpEnd = variantList.end[variantI];
                 String targetVariantId = variantList.variantId[variantI];

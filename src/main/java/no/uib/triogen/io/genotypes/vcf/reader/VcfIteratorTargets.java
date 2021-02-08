@@ -129,12 +129,12 @@ public class VcfIteratorTargets {
             int windowStart = Math.max(variantList.start[variantListIndex] - maxDistance, 1);
 
             int targetBpEnd = variantList.end[variantListIndex] + maxDistance;
-            Integer chrLength = ChromosomeUtils.chromosomeLength37.get(variantList.chromosome[variantListIndex]);
+            Integer chrLength = ChromosomeUtils.chromosomeLength37.get(variantList.contig[variantListIndex]);
 
             int windowEnd = chrLength != null && chrLength < targetBpEnd ? chrLength : targetBpEnd;
 
             iterator = reader.query(
-                    variantList.chromosome[variantListIndex],
+                    variantList.contig[variantListIndex],
                     windowStart,
                     windowEnd
             );

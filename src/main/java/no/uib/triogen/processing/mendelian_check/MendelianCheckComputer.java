@@ -3,6 +3,7 @@ package no.uib.triogen.processing.mendelian_check;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -10,8 +11,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 import no.uib.triogen.TrioGen;
 import no.uib.cell_rk.utils.SimpleFileWriter;
-import no.uib.triogen.io.genotypes.GenotypesFileType;
-import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
+import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.trio_genotypes.VariantList;
@@ -29,9 +31,9 @@ public class MendelianCheckComputer {
      */
     private final File genotypesFile;
     /**
-     * The type of genotype file.
+     * The inheritance map.
      */
-    private final GenotypesFileType genotypesFileType;
+    private final HashMap<Integer, char[]> inheritanceMap;
     /**
      * The variants to process.
      */
@@ -44,7 +46,7 @@ public class MendelianCheckComputer {
      * The maf threshold. maf is computed in parents and values lower than
      * threshold are not included (inclusive).
      */
-    private final double mafThreshold;
+    private final double alleleFrequencyThreshold;
     /**
      * The path of the file where to write the results.
      */
@@ -62,32 +64,31 @@ public class MendelianCheckComputer {
      * constructor.
      *
      * @param genotypesFile The file containing the genotypes.
-     * @param genotypesFileType The type of genotypes file.
+     * @param inheritanceMap The inheritance map for the given file.
      * @param variantList The variants to process.
      * @param childToParentMap The map of trios.
      * @param destinationFile The path of the file where to write the results.
-     * @param mafThreshold The maf threshold. maf is computed in parents and
-     * values lower than threshold are not included (inclusive).
+     * @param alleleFrequencyThreshold The allele frequency threshold.
      * @param nVariants The number of variants to process in parallel.
      * @param logger The logger.
      */
     public MendelianCheckComputer(
             File genotypesFile,
-            GenotypesFileType genotypesFileType,
+            HashMap<Integer, char[]> inheritanceMap,
             VariantList variantList,
             ChildToParentMap childToParentMap,
             File destinationFile,
-            double mafThreshold,
+            double alleleFrequencyThreshold,
             int nVariants,
             SimpleCliLogger logger
     ) {
 
         this.genotypesFile = genotypesFile;
-        this.genotypesFileType = genotypesFileType;
+        this.inheritanceMap = inheritanceMap;
         this.variantList = variantList;
         this.childToParentMap = childToParentMap;
         this.destinationFile = destinationFile;
-        this.mafThreshold = mafThreshold;
+        this.alleleFrequencyThreshold = alleleFrequencyThreshold;
         this.nVariants = nVariants;
         this.logger = logger;
 
@@ -115,33 +116,44 @@ public class MendelianCheckComputer {
 
         }
 
+        logger.logMessage("Parsing " + genotypesFile.getAbsolutePath());
+
         long start = Instant.now().getEpochSecond();
+
+        BgenIndex bgenIndex = BgenIndex.getBgenIndex(genotypesFile);
+        BgenFileReader bgenFileReader = new BgenFileReader(genotypesFile, bgenIndex, inheritanceMap);
+
+        long end = Instant.now().getEpochSecond();
+        long duration = end - start;
+
+        logger.logMessage("Parsing " + genotypesFile + " done (" + duration + " seconds)");
+
+        start = Instant.now().getEpochSecond();
 
         if (variantList == null) {
 
-            logger.logMessage(genotypesFile.getName() + " Mendelian error check using " + nVariants + " threads.");
+            logger.logMessage("Mendelian error check in " + genotypesFile.getName() + " using " + nVariants + " threads.");
 
-            VariantIterator iterator = GenotypesFileType.getVariantIterator(
-                    genotypesFile,
-                    genotypesFileType,
-                    variantList,
-                    0,
-                    logger
+            VariantIterator iterator = new VariantIterator(
+                    bgenIndex,
+                    logger,
+                    "Mendelian error check in " + genotypesFile.getAbsolutePath()
             );
 
-            try ( SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true)) {
+            try (SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true)) {
 
                 writeHeader(writer);
 
                 ExecutorService pool = Executors.newFixedThreadPool(nVariants);
 
                 IntStream.range(0, nVariants)
-                        .mapToObj(
-                                i -> new MendelianCheckRunnable(
+                        .mapToObj(i -> new MendelianCheckRunnable(
                                         writer,
                                         iterator,
+                                        bgenIndex,
+                                        bgenFileReader,
                                         childToParentMap,
-                                        mafThreshold,
+                                        alleleFrequencyThreshold,
                                         logger
                                 )
                         )
@@ -157,16 +169,12 @@ public class MendelianCheckComputer {
 
                 }
 
-            } finally {
-
-                iterator.close();
-
             }
 
-            long end = Instant.now().getEpochSecond();
-            long duration = end - start;
+            end = Instant.now().getEpochSecond();
+            duration = end - start;
 
-            logger.logMessage(genotypesFile.getName() + " Done (" + iterator.getnVariants() + " variants processed in " + duration + " seconds)");
+            logger.logMessage(genotypesFile.getName() + " Done (" + bgenIndex.variantInformationArray.length + " variants processed in " + duration + " seconds)");
 
         }
     }

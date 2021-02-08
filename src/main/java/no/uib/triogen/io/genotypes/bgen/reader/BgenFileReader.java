@@ -89,7 +89,7 @@ public class BgenFileReader implements AutoCloseable {
 
                     if (variantInformation.position >= variantList.start[j] - distance
                             && variantInformation.position <= variantList.end[j] + distance
-                            && variantInformation.contig.equals(variantList.chromosome[j])) {
+                            && variantInformation.contig.equals(variantList.contig[j])) {
 
                         found = true;
                         break;

@@ -77,7 +77,7 @@ public class LdMatrixComputerRunnable implements Runnable {
      * @param writer The writer to use.
      * @param iterator The variant iterator.
      * @param bgenIndex The index of the bgen file.
-     * @param bgeFileReader The reader for the bgen file.
+     * @param bgenFileReader The reader for the bgen file.
      * @param childToParentMap The map of trios.
      * @param maxDistance The maximal number of bp to allow between variants.
      * @param minR2 The minimal ld r2 to report (inclusive).
@@ -90,7 +90,7 @@ public class LdMatrixComputerRunnable implements Runnable {
             LdMatrixWriter writer,
             VariantIterator iterator,
             BgenIndex bgenIndex,
-            BgenFileReader bgeFileReader,
+            BgenFileReader bgenFileReader,
             ChildToParentMap childToParentMap,
             int maxDistance,
             double minR2,
@@ -103,7 +103,7 @@ public class LdMatrixComputerRunnable implements Runnable {
         this.writer = writer;
         this.iteratorA = iterator;
         this.bgenIndex = bgenIndex;
-        this.bgenFileReader = bgeFileReader;
+        this.bgenFileReader = bgenFileReader;
         this.childToParentMap = childToParentMap;
         this.maxDistance = maxDistance;
         this.minR2 = minR2;

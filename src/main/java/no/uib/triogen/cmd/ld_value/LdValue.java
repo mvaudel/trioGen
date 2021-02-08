@@ -96,7 +96,7 @@ public class LdValue {
 
         ConcurrentHashMap<String, LdMatrixReader> ldMatrixReaderMap = new ConcurrentHashMap<>();
 
-        HashSet<String> contigs = Arrays.stream(variantList.chromosome)
+        HashSet<String> contigs = Arrays.stream(variantList.contig)
                 .filter(
                         contig -> !contig.equals("X") && !contig.equals("23")
                 )
@@ -157,12 +157,12 @@ public class LdValue {
         IntStream.range(0, variantList.variantId.length)
                 .parallel()
                 .filter(
-                        i -> !variantList.chromosome[i].equals("X") && !variantList.chromosome[i].equals("23")
+                        i -> !variantList.contig[i].equals("X") && !variantList.contig[i].equals("23")
                 )
                 .forEach(
                         i -> {
                             String variantId = variantList.variantId[i];
-                            String contig = variantList.chromosome[i];
+                            String contig = variantList.VariantList.this.contig[i];
                             LdMatrixReader ldMatrixReader = ldMatrixReaderMap.get(contig);
                             HashMap<String, Double> result = ldMatrixReader.getR2(variantId);
 

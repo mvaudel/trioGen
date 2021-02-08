@@ -2,12 +2,15 @@ package no.uib.triogen.processing.mendelian_check;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import no.uib.cell_rk.utils.SimpleFileWriter;
-import no.uib.triogen.io.genotypes.GenotypesProvider;
-import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
+import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
+import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
-import no.uib.triogen.model.maf.MafEstimator;
+import no.uib.triogen.model.genome.VariantInformation;
 import no.uib.triogen.model.mendelian_error.MendelianErrorEstimator;
 
 /**
@@ -15,12 +18,20 @@ import no.uib.triogen.model.mendelian_error.MendelianErrorEstimator;
  *
  * @author Marc Vaudel
  */
-public class MendelianCheckRunnable implements Runnable, AutoCloseable {
+public class MendelianCheckRunnable implements Runnable {
 
     /**
      * The iterator.
      */
     private final VariantIterator iterator;
+    /**
+     * The index of the bgen file to process.
+     */
+    private final BgenIndex bgenIndex;
+    /**
+     * The reader for the bgen file to process.
+     */
+    private final BgenFileReader bgenFileReader;
     /**
      * The map of trios.
      */
@@ -41,13 +52,15 @@ public class MendelianCheckRunnable implements Runnable, AutoCloseable {
      * The maf threshold. maf is computed in parents and values lower than
      * threshold are not included (inclusive).
      */
-    private final double mafThreshold;
+    private final double alleleFrequencyThreshold;
 
     /**
      * Constructor.
      *
      * @param writer The writer to use.
      * @param iterator The variant iterator.
+     * @param bgenIndex The index of the bgen file.
+     * @param bgenFileReader The reader for the bgen file.
      * @param childToParentMap The map of trios.
      * @param mafThreshold The maf threshold. maf is computed in parents and
      * values lower than threshold are not included (inclusive).
@@ -56,6 +69,8 @@ public class MendelianCheckRunnable implements Runnable, AutoCloseable {
     public MendelianCheckRunnable(
             SimpleFileWriter writer,
             VariantIterator iterator,
+            BgenIndex bgenIndex,
+            BgenFileReader bgenFileReader,
             ChildToParentMap childToParentMap,
             double mafThreshold,
             SimpleCliLogger logger
@@ -63,8 +78,10 @@ public class MendelianCheckRunnable implements Runnable, AutoCloseable {
 
         this.writer = writer;
         this.iterator = iterator;
+        this.bgenIndex = bgenIndex;
+        this.bgenFileReader = bgenFileReader;
         this.childToParentMap = childToParentMap;
-        this.mafThreshold = mafThreshold;
+        this.alleleFrequencyThreshold = mafThreshold;
         this.logger = logger;
 
     }
@@ -74,88 +91,104 @@ public class MendelianCheckRunnable implements Runnable, AutoCloseable {
 
         try {
 
-            GenotypesProvider genotypesProvider;
-            while ((genotypesProvider = iterator.next()) != null && !canceled) {
-                
-                genotypesProvider.parse(childToParentMap);
+            Integer tempIndex;
+            while ((tempIndex = iterator.next()) != null && !canceled) {
 
-                double maf = MafEstimator.getMaf(genotypesProvider, childToParentMap);
+                int variantIndex = tempIndex;
+                VariantInformation variantInformation = bgenIndex.variantInformationArray[variantIndex];
 
-                if (maf >= mafThreshold) {
+                if (variantInformation.alleles.length > 1) {
 
-                    int freq_h2_1 = 0;
-                    int freq_h2_2 = 0;
-                    int freq_h4_1 = 0;
-                    int freq_h4_2 = 0;
+                    BgenVariantData variantData = bgenFileReader.getVariantData(variantIndex);
+                    variantData.parse(childToParentMap);
 
-                    for (String childId : childToParentMap.children) {
+                    // Check if any allele passes the frequency threshold
+                    int[] testedAlleleIndexes = IntStream.range(1, variantData.getOrderedAlleles().length)
+                            .filter(alleleIndex -> variantData.getAlleleFrequency(alleleIndex) > alleleFrequencyThreshold && variantData.getAlleleFrequency(alleleIndex) < 1.0 - alleleFrequencyThreshold
+                            )
+                            .toArray();
 
-                        String motherId = childToParentMap.getMother(childId);
-                        String fatherId = childToParentMap.getFather(childId);
+                    if (testedAlleleIndexes.length > 0) {
 
-                        short[] hs = genotypesProvider.getNAltH(childId, motherId, fatherId);
+                        for (int alleleI : testedAlleleIndexes) {
 
-                        if (hs[1] == -1) {
+                            int freq_hMnt_1 = 0;
+                            int freq_hMnt_2 = 0;
+                            int freq_hPnt_1 = 0;
+                            int freq_hPnt_2 = 0;
 
-                            freq_h2_1 += 1;
+                            for (String childId : childToParentMap.children) {
 
-                        } 
-                        if (hs[1] == 2) {
+                                String motherId = childToParentMap.getMother(childId);
+                                String fatherId = childToParentMap.getFather(childId);
 
-                            freq_h2_2 += 1;
+                                double[] haplotypes = variantData.getHaplotypes(childId, motherId, fatherId, alleleI);
 
-                        } 
-                        if (hs[3] == -1) {
+                                if (haplotypes[0] <= -0.5) {
 
-                            freq_h4_1 += 1;
+                                    freq_hMnt_1 += 1;
 
-                        } 
-                        if (hs[3] == 2) {
+                                }
+                                if (haplotypes[0] >= 1.5) {
 
-                            freq_h4_2 += 1;
+                                    freq_hMnt_2 += 1;
 
+                                }
+                                if (haplotypes[3] == -1) {
+
+                                    freq_hPnt_1 += 1;
+
+                                }
+                                if (haplotypes[3] == 2) {
+
+                                    freq_hPnt_2 += 1;
+
+                                }
+                            }
+
+                            double alleleFrequency = variantData.getAlleleFrequency(alleleI);
+
+                            double exp_hMnt_1 = (1 - alleleFrequency) * (1 - alleleFrequency) * alleleFrequency * childToParentMap.children.length; // 001*
+                            double exp_hMnt_2 = alleleFrequency * alleleFrequency * (1 - alleleFrequency) * childToParentMap.children.length; // 110*
+                            double exp_hPnt_1 = exp_hMnt_1 * childToParentMap.children.length; // *100
+                            double exp_hPnt_2 = exp_hMnt_2 * childToParentMap.children.length; // *011
+
+                            double p_hMnt_1 = ((double) freq_hMnt_1) / exp_hMnt_1;
+                            double p_hMnt_2 = ((double) freq_hMnt_2) / exp_hMnt_2;
+                            double p_hPnt_1 = ((double) freq_hPnt_1) / exp_hPnt_1;
+                            double p_hPnt_2 = ((double) freq_hPnt_2) / exp_hPnt_2;
+
+                            double prevalenceBefore = MendelianErrorEstimator.estimateMendelianErrorPrevalence(variantData, childToParentMap, alleleI);
+
+                            variantData.swapChildrenAlleles(alleleI);
+
+                            double prevalenceAfter = MendelianErrorEstimator.estimateMendelianErrorPrevalence(variantData, childToParentMap, alleleI);
+
+                            writer.writeLine(
+                                    variantInformation.contig,
+                                    Integer.toString(variantInformation.position),
+                                    variantInformation.id,
+                                    variantInformation.rsId,
+                                    variantInformation.alleles[alleleI],
+                                    variantInformation.getOtherAllele(alleleI),
+                                    Double.toString(alleleFrequency),
+                                    Double.toString(freq_hMnt_1),
+                                    Double.toString(freq_hMnt_2),
+                                    Double.toString(freq_hPnt_1),
+                                    Double.toString(freq_hPnt_2),
+                                    Double.toString(exp_hMnt_1),
+                                    Double.toString(exp_hMnt_2),
+                                    Double.toString(exp_hPnt_1),
+                                    Double.toString(exp_hPnt_2),
+                                    Double.toString(p_hMnt_1),
+                                    Double.toString(p_hMnt_2),
+                                    Double.toString(p_hPnt_1),
+                                    Double.toString(p_hPnt_2),
+                                    Double.toString(prevalenceBefore),
+                                    Double.toString(prevalenceAfter)
+                            );
                         }
                     }
-
-                    double exp_h2_1 = childToParentMap.children.length * (1 - maf) * (1 - maf) * maf; // 001*
-                    double exp_h2_2 = childToParentMap.children.length * maf * maf * (1 - maf); // 110*
-                    double exp_h4_1 = childToParentMap.children.length * exp_h2_1; // *100
-                    double exp_h4_2 = childToParentMap.children.length * exp_h2_2; // *011
-
-                    double p_h2_1 = ((double) freq_h2_1) / exp_h2_1;
-                    double p_h2_2 = ((double) freq_h2_2) / exp_h2_2;
-                    double p_h4_1 = ((double) freq_h4_1) / exp_h4_1;
-                    double p_h4_2 = ((double) freq_h4_2) / exp_h4_2;
-                    
-                    double prevalenceBefore = MendelianErrorEstimator.estimateMendelianErrorPrevalence(genotypesProvider, childToParentMap);
-                    
-                    genotypesProvider.checkMendelianErrors(childToParentMap);
-                    
-                    double prevalenceAfter = MendelianErrorEstimator.estimateMendelianErrorPrevalence(genotypesProvider, childToParentMap);
-
-                    writer.writeLine(
-                            genotypesProvider.getContig(),
-                            Integer.toString(genotypesProvider.getBp()),
-                            genotypesProvider.getVariantID(),
-                            genotypesProvider.getRef(),
-                            genotypesProvider.getAlt(),
-                            genotypesProvider.genotyped() ? "1" : "0",
-                            Double.toString(maf),
-                            Double.toString(freq_h2_1),
-                            Double.toString(freq_h2_2),
-                            Double.toString(freq_h4_1),
-                            Double.toString(freq_h4_2),
-                            Double.toString(exp_h2_1),
-                            Double.toString(exp_h2_2),
-                            Double.toString(exp_h4_1),
-                            Double.toString(exp_h4_2),
-                            Double.toString(p_h2_1),
-                            Double.toString(p_h2_2),
-                            Double.toString(p_h4_1),
-                            Double.toString(p_h4_2),
-                            Double.toString(prevalenceBefore),
-                            Double.toString(prevalenceAfter)
-                    );
                 }
             }
 
@@ -174,10 +207,5 @@ public class MendelianCheckRunnable implements Runnable, AutoCloseable {
             t.printStackTrace();
 
         }
-    }
-
-    @Override
-    public void close() throws Exception {
-
     }
 }

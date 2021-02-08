@@ -2,7 +2,6 @@ package no.uib.triogen.model.simple_score;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.model.trio_genotypes.VariantList;
@@ -33,20 +32,18 @@ public class VariantWeightList {
      * @param variantId the ids of the variant to include
      * @param chromosome the chromosome name where to look for
      * @param effectAllele the effect allele
-     * @param start the position where to start looking for
-     * @param end the position were to stop looking for
+     * @param position the position of the variant
      * @param weights the weights to use for the score
      */
     public VariantWeightList(
             String[] variantId,
             String[] chromosome,
-            int[] start,
-            int[] end,
+            int[] position,
             String[] effectAllele,
             double[] weights
     ) {
         
-        this.variantList = new VariantList(variantId, chromosome, start, end);
+        this.variantList = new VariantList(variantId, chromosome, position);
         this.effectAllele = effectAllele;
         this.weights = weights;
         
@@ -66,8 +63,7 @@ public class VariantWeightList {
 
         ArrayList<String> variantIdList = new ArrayList<>();
         ArrayList<String> chromosomeList = new ArrayList<>();
-        ArrayList<Integer> startList = new ArrayList<>();
-        ArrayList<Integer> endList = new ArrayList<>();
+        ArrayList<Integer> positionList = new ArrayList<>();
         ArrayList<String> effectAlleleList = new ArrayList<>();
         ArrayList<Double> weightList = new ArrayList<>();
 
@@ -102,30 +98,18 @@ public class VariantWeightList {
 
                     String variantId = lineSplit[0];
                     String chromosome = lineSplit[1];
-                    String startString = lineSplit[2];
-                    String endString = lineSplit[3];
-                    String effectAlleleString = lineSplit[4];
-                    String weightString = lineSplit[5];
+                    String positionString = lineSplit[2];
+                    String effectAlleleString = lineSplit[3];
+                    String weightString = lineSplit[4];
 
-                    int start;
+                    int position;
                     try {
 
-                        start = Integer.parseInt(startString);
+                        position = Integer.parseInt(positionString);
 
                     } catch (Exception e) {
 
-                        throw new IllegalArgumentException("Start position (" + startString + ") could not be parsed as integer for variant " + variantId + " at line " + lineNumber + ".");
-
-                    }
-
-                    int end;
-                    try {
-
-                        end = Integer.parseInt(endString);
-
-                    } catch (Exception e) {
-
-                        throw new IllegalArgumentException("End position (" + endString + ") could not be parsed as integer for variant " + variantId + " at line " + lineNumber + ".");
+                        throw new IllegalArgumentException("Position (" + positionString + ") could not be parsed as integer for variant " + variantId + " at line " + lineNumber + ".");
 
                     }
 
@@ -142,8 +126,7 @@ public class VariantWeightList {
 
                     variantIdList.add(variantId);
                     chromosomeList.add(chromosome);
-                    startList.add(start);
-                    endList.add(end);
+                    positionList.add(position);
                     effectAlleleList.add(effectAlleleString);
                     weightList.add(weight);
 
@@ -160,10 +143,7 @@ public class VariantWeightList {
         return new VariantWeightList(
                 variantIdList.toArray(new String[variantIdList.size()]),
                 chromosomeList.toArray(new String[chromosomeList.size()]),
-                startList.stream()
-                        .mapToInt(a -> a)
-                        .toArray(),
-                endList.stream()
+                positionList.stream()
                         .mapToInt(a -> a)
                         .toArray(),
                 effectAlleleList.toArray(new String[effectAlleleList.size()]),

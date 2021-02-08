@@ -15,113 +15,127 @@ public enum Model {
 
     h(
             "h",
-            "Regression on the h as defined by Chen et al..",
-            "y = β1 h1 + β2 h2 + β3 h3 + β4 h4 + ε",
+            "Regression on the haplotyes.",
+            "y = βmnt hmnt + βmt hmt + βft hft + βfnt hfnt + ε",
             new String[0],
-            new String[]{"B1", "B2", "B3", "B4"}
+            new String[]{"Bmnt", "Bmt", "Bft", "Bfnt"}
     ),
     cmf(
             "child-mother-father",
             "Regression against the number of alternative alleles of the child, mother, and father.",
-            "y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + ε",
+            "y = βm (hmnt + hmt) + βc (hmt + hft) + βf (hft + hfnt) + ε",
             new String[]{"h", "cmf_mt", "cmf_mnt", "cmf_ft", "cmf_fnt"},
             new String[]{"Bc", "Bm", "Bf"}
     ),
     cmf_mt(
             "child-mother-father_mother-transmitted",
             "Regression against the number of alternative alleles of the child, mother, and father, and transmitted maternal allele.",
-            "y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + βmt h1 + ε",
+            "y = βm (hmnt + hmt) + βc (hmt + hft) + βf (hft + hfnt) + βmt hmt + ε",
             new String[0],
             new String[]{"Bc", "Bm", "Bf", "Bmt"}
     ),
     cmf_ft(
             "child-mother-father_father-transmitted",
             "Regression against the number of alternative alleles of the child, mother, and father, and transmitted paternal allele.",
-            "y = βm (h1 + h2) + βc (h1 + h3) + βf (h3 + h4) + βft h3 + ε",
+            "y = βm (hmnt + hmt) + βc (hmt + hft) + βf (hft + hfnt) + βft hft + ε",
             new String[0],
             new String[]{"Bc", "Bm", "Bf", "Bft"}
     ),
     cm(
             "child-mother",
             "Regression against the number of alternative alleles of the child and mother.",
-            "y = βm (h1 + h2) + βc (h1 + h3) + ε",
-            new String[]{"h", "cmf", "cm_mt"},
+            "y = βm (hmnt + hmt) + βc (hmt + hft) + ε",
+            new String[]{"h", "cmf", "cm_mt", "cm_ft"},
             new String[]{"Bc", "Bm"}
     ),
     cm_mt(
             "child-mother_mother-transmitted",
             "Regression against the number of alternative alleles of the child and mother, and transmitted maternal allele.",
-            "y = βm (h1 + h2) + βc (h1 + h3) + βmt h1 + ε",
+            "y = βm (hmnt + hmt) + βc (hmt + hft) + βmt hmt + ε",
             new String[]{"h", "cmf_mt"},
             new String[]{"Bc", "Bm", "Bmt"}
+    ),
+    cm_ft(
+            "child-mother_mother-transmitted",
+            "Regression against the number of alternative alleles of the child and mother, and transmitted maternal allele.",
+            "y = βm (hmnt + hmt) + βc (hmt + hft) + βft hft + ε",
+            new String[]{"h", "cmf_ft"},
+            new String[]{"Bc", "Bm", "Bft"}
     ),
     cf(
             "child-father",
             "Regression against the number of alternative alleles of the child and father.",
-            "y = βc (h1 + h3) + βf (h3 + h4) + ε",
-            new String[]{"h", "cmf", "cf_ft"},
+            "y = βc (hmt + hft) + βf (hft + hfnt) + ε",
+            new String[]{"h", "cmf", "cf_mt", "cf_ft"},
             new String[]{"Bc", "Bf"}
+    ),
+    cf_mt(
+            "child-father_father-transmitted",
+            "Regression against the number of alternative alleles of the child and father, and transmitted paternal allele.",
+            "y = βc (hmt + hft) + βf (hfnt + hft) + βmt hmt + ε",
+            new String[]{"h", "cmf_mt"},
+            new String[]{"Bc", "Bf", "Bmt"}
     ),
     cf_ft(
             "child-father_father-transmitted",
             "Regression against the number of alternative alleles of the child and father, and transmitted paternal allele.",
-            "y = βc (h1 + h3) + βf (h3 + h4) + βft h3 + ε",
+            "y = βc (hmt + hft) + βf (hft + hfnt) + βft hft + ε",
             new String[]{"h", "cmf_ft"},
             new String[]{"Bc", "Bf", "Bft"}
     ),
     mf(
             "mother-father",
             "Regression against the number of alternative alleles of the mother and father.",
-            "y = βm (h1 + h2) + βf (h3 + h4) + ε",
+            "y = βm (hmnt + hmt) + βf (hft + hfnt) + ε",
             new String[]{"h", "cmf"},
             new String[]{"Bm", "Bf"}
     ),
     c(
             "child",
             "Regression against the number of alternative alleles of the child.",
-            "y = βc (h1 + h3) + ε",
+            "y = βc (hmt + hft) + ε",
             new String[]{"h", "cmf", "cm", "cf"},
             new String[]{"Bc"}
     ),
     c_mt(
             "child_mother-transmitted",
             "Regression against the number of alternative alleles of the child and transmitted maternal allele.",
-            "y = βc (h1 + h3) + βmt h1 + ε",
+            "y = βc (hmt + hft) + βmt hmt + ε",
             new String[]{"h", "cmf_mt", "cm_mt"},
             new String[]{"Bc", "Bmt"}
     ),
     c_ft(
             "child_father-transmitted",
             "Regression against the number of alternative alleles of the child and transmitted paternal allele.",
-            "y = βc (h1 + h3) + βft h3 + ε",
+            "y = βc (hmt + hft) + βft hft + ε",
             new String[]{"h", "cmf_ft", "cf_ft"},
             new String[]{"Bc", "Bft"}
     ),
     m(
             "mother",
             "Regression against the number of alternative alleles of the mother.",
-            "y = βm (h1 + h2) + ε",
+            "y = βm (hmnt + hmt) + ε",
             new String[]{"h", "cmf", "cm", "mf"},
             new String[]{"Bm"}
     ),
     m_mt(
             "mother_mother-transmitted",
             "Regression against the number of alternative alleles of the mother and transmitted maternal allele.",
-            "y = βm (h1 + h2) + βmt h1 + ε",
+            "y = βm (hmnt + hmt) + βmt hmt + ε",
             new String[]{"h", "cmf_mt", "cm_mt"},
             new String[]{"Bm", "Bmt"}
     ),
     f(
             "father",
             "Regression against the number of alternative alleles of the father.",
-            "y = βf (h3 + h4) + ε",
+            "y = βf (hft + hfnt) + ε",
             new String[]{"h", "cmf", "cf", "mf"},
             new String[]{"Bf"}
     ),
     f_ft(
             "father",
             "Regression against the number of alternative alleles of the father.",
-            "y = βf (h3 + h4) + βft h3 + ε",
+            "y = βf (hft + hfnt) + βft hft + ε",
             new String[]{"h", "cmf_ft", "cf_ft"},
             new String[]{"Bf", "Bft"}
     );
@@ -201,7 +215,7 @@ public enum Model {
      */
     public static String[] getDefaultOption() {
 
-        return new String[]{"h", "cmf_mt", "cmf"};
+        return new String[]{"h", "cmf_mt", "cmf_pt", "cmf"};
 
     }
 
@@ -231,7 +245,7 @@ public enum Model {
         double[] haplotypes = bgenVariantData.getHaplotypes(
                 childId,
                 motherId,
-                fatherId, 
+                fatherId,
                 index
         );
         double child = haplotypes[1] + haplotypes[2];
@@ -279,9 +293,21 @@ public enum Model {
                 x[index][2] = haplotypes[1];
                 return;
 
+            case cm_ft:
+                x[index][0] = child;
+                x[index][1] = mother;
+                x[index][2] = haplotypes[2];
+                return;
+
             case cf:
                 x[index][0] = child;
                 x[index][1] = father;
+                return;
+
+            case cf_mt:
+                x[index][0] = child;
+                x[index][1] = father;
+                x[index][2] = haplotypes[1];
                 return;
 
             case cf_ft:
@@ -337,62 +363,86 @@ public enum Model {
     /**
      * Returns a boolean indicating whether the matrix is likely not singular.
      *
-     * @param model the model
-     * @param hNotSingluar boolean indicating whether the h matrix is likely not
-     * singular
-     * @param childNotSingular boolean indicating whether the child matrix is
-     * likely not singular
-     * @param motherNotSingular boolean indicating whether the mother matrix is
-     * likely not singular
-     * @param fatherNotSingular boolean indicating whether the father matrix is
-     * likely not singular
+     * @param model The model.
+     * @param hMntMin The minimal number of maternal non-transmitted alleles.
+     * @param hMntMax The maximal number of maternal non-transmitted alleles.
+     * @param hMtMin The minimal number of maternal transmitted alleles.
+     * @param hMtMax The maximal number of maternal transmitted alleles.
+     * @param hFtMin The minimal number of paternal transmitted alleles.
+     * @param hFtMax The maximal number of paternal transmitted alleles.
+     * @param hFntMin The minimal number of paternal non-transmitted alleles.
+     * @param hFntMax The maximal number of paternal non-transmitted alleles.
      *
      * @return a boolean indicating whether the matrix is likely not singular
      */
     public static boolean likelyNotSingular(
             Model model,
-            boolean hNotSingluar,
-            boolean childNotSingular,
-            boolean motherNotSingular,
-            boolean fatherNotSingular
+            double hMntMin,
+            double hMntMax,
+            double hMtMin,
+            double hMtMax,
+            double hFtMin,
+            double hFtMax,
+            double hFntMin,
+            double hFntMax
     ) {
 
         switch (model) {
 
             case h:
 
-                return hNotSingluar;
+                return hMntMax - hMntMin > 0.5 && hMtMax - hMtMin > 0.5 && hFtMax - hFtMin > 0.5 && hFntMax - hFntMin > 0.5;
 
             case cmf:
-                return childNotSingular && motherNotSingular && fatherNotSingular;
+                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5;
 
             case cmf_mt:
+                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5 && hMtMax - hMtMin > 0.5;
+
             case cmf_ft:
-                return childNotSingular && motherNotSingular && fatherNotSingular && hNotSingluar;
+                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5 && hFtMax - hFtMin > 0.5;
 
             case cm:
+                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5;
+
             case cm_mt:
-                return childNotSingular && motherNotSingular;
+                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && hMtMax - hMtMin > 0.5;
+
+            case cm_ft:
+                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && hFtMax - hFtMin > 0.5;
 
             case cf:
+                return Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5;
+
             case cf_ft:
-                return childNotSingular && fatherNotSingular;
+                return Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5 && hFtMax - hFtMin > 0.5;
+
+            case cf_mt:
+                return Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5 && hMtMax - hMtMin > 0.5;
 
             case mf:
-                return motherNotSingular && fatherNotSingular;
+                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5;
 
             case c:
+                return Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5;
+
             case c_mt:
+                return Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && hMtMax - hMtMin > 0.5;
+
             case c_ft:
-                return childNotSingular;
+                return Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && hFtMax - hFtMin > 0.5;
 
             case m:
+                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5;
+
             case m_mt:
-                return motherNotSingular;
+                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && hMtMax - hMtMin > 0.5;
 
             case f:
+                return Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5;
+
             case f_ft:
-                return fatherNotSingular;
+                return Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5 && hFtMax - hFtMin > 0.5;
 
             default:
 

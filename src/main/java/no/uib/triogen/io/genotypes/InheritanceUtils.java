@@ -9,11 +9,25 @@ import java.util.HashMap;
  */
 public class InheritanceUtils {
 
+    /**
+     * The key for mothers.
+     */
     public static final char MOTHER = 'M';
+    /**
+     * The key for fathers.
+     */
     public static final char FATHER = 'F';
 
+    /**
+     * The default chromosome inheritance map for children.
+     */
     public static final HashMap<String, HashMap<Integer, char[]>> DEFAULT_CHROMOSOME_INHERITANCE_MAP = getDefaultChromosomeInheritanceMap();
 
+    /**
+     * Returns the default chromosome inheritance map for children.
+     *
+     * @return The default chromosome inheritance map for children.
+     */
     private static HashMap<String, HashMap<Integer, char[]>> getDefaultChromosomeInheritanceMap() {
 
         HashMap<String, HashMap<Integer, char[]>> defaultMap = new HashMap<>(25);
@@ -31,6 +45,7 @@ public class InheritanceUtils {
 
         HashMap<Integer, char[]> y = new HashMap<>(1);
         y.put(1, father);
+        x.put(2, motherFather);
 
         for (int i = 1; i <= 22; i++) {
 
@@ -46,6 +61,27 @@ public class InheritanceUtils {
 
         return defaultMap;
 
+    }
+
+    /**
+     * Swap mother and father.
+     * 
+     * @param parent The parent to swap.
+     * 
+     * @return The swapped parent.
+     */
+    public static char swap(
+            char parent
+    ) {
+        switch (parent) {
+            case MOTHER:
+                return FATHER;
+            case FATHER:
+                return MOTHER;
+            default:
+                throw new IllegalArgumentException("Parent " + parent + " not recognized, should be either " + MOTHER + " or " + FATHER + ".");
+
+        }
     }
 
 }

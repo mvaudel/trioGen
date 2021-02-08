@@ -2,10 +2,13 @@ package no.uib.triogen.io.genotypes.bgen.reader;
 
 import com.github.luben.zstd.Zstd;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeMap;
 import java.util.zip.Inflater;
+import no.uib.triogen.io.genotypes.InheritanceUtils;
 import static no.uib.triogen.io.genotypes.InheritanceUtils.FATHER;
 import static no.uib.triogen.io.genotypes.InheritanceUtils.MOTHER;
 import no.uib.triogen.model.family.ChildToParentMap;
@@ -29,7 +32,9 @@ public class BgenVariantData {
     private HashSet<String> missing = null;
     private int nAlleles = -1;
     private final int compressionType;
-    private double[] alleleFrequencyChildren;
+    private double[] alleleFrequencyParents;
+    private int[] orderedAlleleIndex;
+    private final boolean[] swappedAlleles;
     private int nChildrenGenotyped;
 
     private final HashMap<Integer, char[]> inheritanceMap;
@@ -49,9 +54,15 @@ public class BgenVariantData {
         this.blockLength = blockLength;
         this.compressionType = compressionType;
         this.inheritanceMap = inheritanceMap;
+        this.swappedAlleles = new boolean[variantInformation.alleles.length];
 
     }
 
+    /**
+     * Parses the variant data.
+     *
+     * @param childToParentMap The child to parent map.
+     */
     public void parse(ChildToParentMap childToParentMap) {
 
         haplotypeProbabilities = new HashMap<>(childToParentMap.children.length);
@@ -288,8 +299,8 @@ public class BgenVariantData {
 
                 }
 
-                double[] nAltChildren = new double[variantInformation.alleles.length];
-                double[] nContigChildren = new double[variantInformation.alleles.length];
+                double[] nAltParents = new double[variantInformation.alleles.length];
+                double[] nContigParents = new double[variantInformation.alleles.length];
                 int nChildren = 0;
 
                 for (String childId : childToParentMap.children) {
@@ -297,11 +308,40 @@ public class BgenVariantData {
                     if (!missing.contains(childId)) {
 
                         nChildren++;
+                    }
+
+                    String motherId = childToParentMap.getMother(childId);
+                    String fatherId = childToParentMap.getMother(childId);
+
+                    boolean motherMissing = missing.contains(motherId);
+                    boolean fatherMissing = missing.contains(fatherId);
+
+                    if (!motherMissing) {
 
                         for (int alleleI = 0; alleleI < variantInformation.alleles.length; alleleI++) {
 
-                            nAltChildren[alleleI] += getProbability(childId, alleleI);
-                            nContigChildren[alleleI] += getPloidy(childId);
+                            nAltParents[alleleI] += getProbability(motherId, alleleI);
+                            nContigParents[alleleI] += getPloidy(motherId);
+
+                        }
+                    }
+
+                    if (!fatherMissing) {
+
+                        for (int alleleI = 0; alleleI < variantInformation.alleles.length; alleleI++) {
+
+                            nAltParents[alleleI] += getProbability(fatherId, alleleI);
+                            nContigParents[alleleI] += getPloidy(fatherId);
+
+                        }
+                    }
+
+                    if (motherMissing && fatherMissing) {
+
+                        for (int alleleI = 0; alleleI < variantInformation.alleles.length; alleleI++) {
+
+                            nAltParents[alleleI] += getProbability(childId, alleleI);
+                            nContigParents[alleleI] += getPloidy(childId);
 
                         }
                     }
@@ -309,13 +349,36 @@ public class BgenVariantData {
 
                 nChildrenGenotyped = nChildren;
 
-                alleleFrequencyChildren = new double[variantInformation.alleles.length];
+                alleleFrequencyParents = new double[variantInformation.alleles.length];
+                TreeMap<Double, ArrayList<Integer>> frequencyToAlleleIndexMap = new TreeMap<>();
 
                 for (int alleleI = 0; alleleI < variantInformation.alleles.length; alleleI++) {
 
-                    alleleFrequencyChildren[alleleI] = nAltChildren[alleleI] / nContigChildren[alleleI];
+                    double frequency = nAltParents[alleleI] / nContigParents[alleleI];
+                    alleleFrequencyParents[alleleI] = frequency;
+
+                    ArrayList<Integer> allelesAtFrequency = frequencyToAlleleIndexMap.get(frequency);
+
+                    if (allelesAtFrequency == null) {
+
+                        allelesAtFrequency = new ArrayList<>(1);
+                        frequencyToAlleleIndexMap.put(frequency, allelesAtFrequency);
+
+                    }
+
+                    allelesAtFrequency.add(alleleI);
 
                 }
+
+                orderedAlleleIndex = frequencyToAlleleIndexMap.descendingMap().entrySet().stream()
+                        .flatMap(
+                                entry -> entry.getValue().stream()
+                        )
+                        .mapToInt(
+                                a -> a
+                        )
+                        .toArray();
+
             }
 
         } catch (Exception e) {
@@ -324,13 +387,27 @@ public class BgenVariantData {
 
         }
     }
-    
+
+    /**
+     * Returns a boolean indicating whether the give sample is missing.
+     *
+     * @param sampleId The id of the sample.
+     *
+     * @return A boolean indicating whether the give sample is missing.
+     */
     public boolean isMissing(String sampleId) {
-        
+
         return missing.contains(sampleId);
-        
+
     }
 
+    /**
+     * Returns the ploidy for the given sample.
+     *
+     * @param sampleId The id of the sample.
+     *
+     * @return The ploidy for the given sample.
+     */
     public int getPloidy(
             String sampleId
     ) {
@@ -340,6 +417,47 @@ public class BgenVariantData {
 
     }
 
+    /**
+     * Indicate that children alleles should be swapped.
+     *
+     * @param alleleI The index of the allele.
+     */
+    public void swapChildrenAlleles(
+            int alleleI
+    ) {
+
+        swappedAlleles[alleleI] = !swappedAlleles[alleleI];
+
+    }
+
+    /**
+     * Returns a boolean indicating whether the given allele should be swapped
+     * in children.
+     *
+     * @param alleleI The index of the allele.
+     *
+     * @return A boolean indicating whether the given allele is swapped in
+     * children.
+     */
+    public boolean isSwappedChildrenAlleles(
+            int alleleI
+    ) {
+
+        return swappedAlleles[alleleI];
+
+    }
+
+    /**
+     * Returns the probability for the given allele in the given contig and
+     * sample.
+     *
+     * @param sampleId The id of the sample.
+     * @param z The index of the contig.
+     * @param alleleIndex The index of the allele.
+     *
+     * @return The probability for the given allele in the given contig and
+     * sample.
+     */
     public double getProbability(
             String sampleId,
             int z,
@@ -371,6 +489,16 @@ public class BgenVariantData {
         }
     }
 
+    /**
+     * Returns the sum of probabilities for the given allele and sample over all
+     * contigs.
+     *
+     * @param sampleId The id of the sample.
+     * @param alleleIndex The index of the allele.
+     *
+     * @return The sum of probabilities for the given allele and sample over all
+     * contigs.
+     */
     public double getProbability(
             String sampleId,
             int alleleIndex
@@ -394,6 +522,20 @@ public class BgenVariantData {
 
     }
 
+    /**
+     * Returns the haplotypes in an array: {motherNonTransmitted,
+     * motherTransmitted, fatherTransmitted, fatherNonTransmitted}. Null if the
+     * child or both parents are missing. If a parent is missing, haplotypes are
+     * distributed according to the maf.
+     *
+     * @param childId The child id.
+     * @param motherId The mother id.
+     * @param fatherId The father id.
+     * @param testedAlleleIndex The index of the allele tested in the variant
+     * information.
+     *
+     * @return The haplotypes in an array.
+     */
     public double[] getHaplotypes(
             String childId,
             String motherId,
@@ -416,6 +558,12 @@ public class BgenVariantData {
 
                 char parent = inheritance[z];
 
+                if (ploidyChild == 2 && swappedAlleles[testedAlleleIndex]) {
+
+                    parent = InheritanceUtils.swap(parent);
+
+                }
+
                 switch (parent) {
 
                     case MOTHER:
@@ -431,11 +579,11 @@ public class BgenVariantData {
                 }
             }
 
-            double mother = missing.contains(motherId) ? alleleFrequencyChildren[testedAlleleIndex] * getPloidy(motherId) : getProbability(motherId, testedAlleleIndex);
+            double mother = missing.contains(motherId) ? alleleFrequencyParents[testedAlleleIndex] * getPloidy(motherId) : getProbability(motherId, testedAlleleIndex);
 
             double motherNonTransmitted = mother - motherTransmitted;
 
-            double father = missing.contains(fatherId) ? alleleFrequencyChildren[testedAlleleIndex] * getPloidy(fatherId) : getProbability(fatherId, testedAlleleIndex);
+            double father = missing.contains(fatherId) ? alleleFrequencyParents[testedAlleleIndex] * getPloidy(fatherId) : getProbability(fatherId, testedAlleleIndex);
 
             double fatherNonTransmitted = father - fatherTransmitted;
 
@@ -447,14 +595,36 @@ public class BgenVariantData {
 
     }
 
+    /**
+     * Returns the frequency for the given allele among genotyped parents.
+     *
+     * @param testedAlleleIndex The index of the allele of interest.
+     *
+     * @return The frequency for the given allele among genotyped parents.
+     */
     public double getAlleleFrequency(
             int testedAlleleIndex
     ) {
-        return alleleFrequencyChildren[testedAlleleIndex];
+        return alleleFrequencyParents[testedAlleleIndex];
     }
 
+    /**
+     * Returns the indexes of the alleles ordered by decreasing frequency.
+     *
+     * @return The indexes of the alleles ordered by decreasing frequency.
+     */
+    public int[] getOrderedAlleles() {
+
+        return orderedAlleleIndex;
+
+    }
+
+    /**
+     * Returns the number of genotyped children.
+     *
+     * @return the number of genotyped children
+     */
     public int getnChildrenGenotyped() {
         return nChildrenGenotyped;
     }
-
 }
