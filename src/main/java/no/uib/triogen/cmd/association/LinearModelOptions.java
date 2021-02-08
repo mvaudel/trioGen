@@ -28,7 +28,6 @@ public enum LinearModelOptions {
     out("o", "out", "The file where to write the results.", true, true),
     nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is 8.", false, true),
     timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true),
-    test("t", "test", "If present, runs only othe first 1000 variants.", false, false),
     variantLog("vl", "variantLog", "If present, writes a log for every variant next to the results file.", false, false);
 
     /**

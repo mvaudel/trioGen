@@ -102,9 +102,6 @@ public class LdMatrixComputer {
      * Runs the matrix export.
      *
      * @param timeOutDays The time out time in days.
-     * @param testIteration In testIteration mode LD calculations will not be
-     * computed.
-     * @param test In test mode only a few variants will be processed.
      *
      * @throws InterruptedException exception thrown if the process was
      * interrupted
@@ -112,16 +109,8 @@ public class LdMatrixComputer {
      * @throws IOException exception thrown if an i/o error occurred
      */
     public void run(
-            int timeOutDays,
-            boolean testIteration,
-            boolean test
+            int timeOutDays
     ) throws InterruptedException, TimeoutException, IOException {
-
-        if (test) {
-
-            logger.logMessage("*** TEST MODE ***");
-
-        }
 
         logger.logMessage("Parsing " + genotypesFile.getAbsolutePath());
 

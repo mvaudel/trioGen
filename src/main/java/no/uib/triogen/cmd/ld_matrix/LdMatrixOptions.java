@@ -2,7 +2,6 @@ package no.uib.triogen.cmd.ld_matrix;
 
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
-import no.uib.triogen.io.genotypes.GenotypesFileType;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 
 /**
@@ -13,20 +12,16 @@ import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 public enum LdMatrixOptions {
 
     geno("g", "geno", "The genotypes file.", true, true),
-    genoFormat("gf", "genoFormat", "The genotypes file format to use when iterating the entire file. " + GenotypesFileType.getCommandLineOptions() + ". Default: " + GenotypesFileType.vcf.index + ".", false, true),
+    chromosome("c", "chromosome", "The chromosome name.", true, true),
     variantId("vi", "variantId", "File listing the variants to include in the analysis. Default: process all variants in the genotypes file.", false, true),
     maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Default: 500000.", false, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not. Consider including only unrelated samples and controling for admixture.", true, true),
     minR2("r", "minR2", "The minimal ld r2 to report (inclusive). Default: 1e-6.", false, true),
-    maf("maf", "mafThreshold", "Minor allele frequency threshold. 0.05 excludes all variants with a maf < 5% among all parents belonging to trios. Default: 0.05.", false, true),
+    af("af", "alleleFrequencyThreshold", "Allele frequency threshold. 0.005 excludes all alleles of variants with frequency < 0.5% or > 99.5%. Default: 0.001.", false, true),
     hardCalls("hc", "hard_calls", "If present, use hard calls instead of dosages.", false, false),
     out("o", "out", "The file where to write the matrix. The extension '.tld' will be added if not present.", true, true),
     nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is the number of cores on the machine.", false, true),
-    downstreamLoadingFactor("dlf", "downstreamLoadingFactor", "The downstream loading factor, see documentation for details. Default: 1.1.", false, true),
-    upstreamLoadingFactor("ulf", "upstreamLoadingFactor", "The upstream loading factor, see documentation for details. Default: 1.2.", false, true),
-    timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true),
-    test("t", "test", "If present, runs only othe first 1000 variants.", false, false),
-    testIteration("ti", "testIteration", "If present, iterate through the variants but do not compute LD calculations.", false, false);
+    timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true);
 
     /**
      * The short option.

@@ -154,7 +154,6 @@ public class LinearModelComputer {
      * Runs the linear association.
      *
      * @param timeOutDays The time out time in days.
-     * @param test In test mode only a few variants will be processed.
      *
      * @throws InterruptedException Exception thrown if the process was.
      * interrupted
@@ -162,15 +161,8 @@ public class LinearModelComputer {
      * @throws IOException Exception thrown if an i/o error occurred.
      */
     public void run(
-            int timeOutDays,
-            boolean test
+            int timeOutDays
     ) throws InterruptedException, TimeoutException, IOException {
-
-        if (test) {
-
-            logger.logMessage("*** TEST MODE ***");
-
-        }
 
         logger.logMessage("Parsing " + genotypesFile.getAbsolutePath());
 

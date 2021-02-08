@@ -76,10 +76,6 @@ public class LinearModelOptionsBean {
      */
     public int timeOut = 365;
     /**
-     * Test mode.
-     */
-    public final boolean test;
-    /**
      * Variant log.
      */
     public final boolean variantLog;
@@ -146,7 +142,7 @@ public class LinearModelOptionsBean {
             }
         }
 
-        // The maf threshold
+        // The allele frequency threshold
         if (aLine.hasOption(LinearModelOptions.af.opt)) {
 
             String option = aLine.getOptionValue(LinearModelOptions.af.opt);
@@ -158,7 +154,7 @@ public class LinearModelOptionsBean {
                 if (alleleFrequencyThreshold < 0.0 || alleleFrequencyThreshold > 1.0) {
 
                     throw new IllegalArgumentException(
-                            "Input for maf (" + option + ") must be a number between 0 and 1."
+                            "Input for allele frequency (" + option + ") must be a number between 0 and 1."
                     );
                 }
 
@@ -381,9 +377,6 @@ public class LinearModelOptionsBean {
 
             }
         }
-
-        // Test
-        test = aLine.hasOption(LinearModelOptions.test.opt);
 
         // Variant log
         variantLog = aLine.hasOption(LinearModelOptions.variantLog.opt);

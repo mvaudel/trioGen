@@ -82,24 +82,24 @@ public class LinearModel {
     ) {
 
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
-        
+
         VariantList variantList = null;
-        
+
         if (bean.variantFile != null) {
-            
+
             variantList = VariantList.getVariantList(bean.variantFile);
-        variantList.index(bean.maxDistance);
-            
+            variantList.index(bean.maxDistance);
+
         }
-        
+
         HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
-        
+
         if (inheritanceMap == null) {
-            
+
             throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
-            
+
         }
-        
+
         Model[] models = Arrays.stream(bean.modelNames)
                 .map(
                         modelName -> Model.valueOf(modelName)
@@ -144,8 +144,7 @@ public class LinearModel {
         try {
 
             linearModelComputer.run(
-                    bean.timeOut,
-                    bean.test
+                    bean.timeOut
             );
 
         } catch (Throwable e) {
