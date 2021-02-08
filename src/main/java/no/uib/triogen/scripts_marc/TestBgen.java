@@ -2,6 +2,7 @@ package no.uib.triogen.scripts_marc;
 
 import java.io.File;
 import java.time.Instant;
+import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
@@ -33,7 +34,7 @@ public class TestBgen {
 
             System.out.println(Instant.now() + " Index created.");
 
-            BgenFileReader reader = new BgenFileReader(bgenFile, index, null, 0);
+            BgenFileReader reader = new BgenFileReader(bgenFile, index, null, 0, InheritanceUtils.getDefaultInheritanceMap("23"));
 
             int phased = 0;
             int previousProgress = 0;

@@ -1,17 +1,21 @@
 package no.uib.triogen.processing.simple_score;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
 import no.uib.cell_rk.utils.SimpleFileWriter;
-import no.uib.triogen.io.genotypes.GenotypesFileType;
-import no.uib.triogen.io.genotypes.GenotypesProvider;
-import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
+import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
+import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.genome.VariantInformation;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
 import no.uib.triogen.model.simple_score.VariantWeightList;
 
@@ -27,9 +31,9 @@ public class SimpleScoreComputer {
      */
     private final File genotypesFile;
     /**
-     * The type of genotype file.
+     * The inheritance map.
      */
-    private final GenotypesFileType genotypesFileType;
+    private final HashMap<Integer, char[]> inheritanceMap;
     /**
      * The map of trios.
      */
@@ -57,7 +61,7 @@ public class SimpleScoreComputer {
 
     public SimpleScoreComputer(
             File genotypesFile,
-            GenotypesFileType genotypesFileType,
+            HashMap<Integer, char[]> inheritanceMap,
             ChildToParentMap childToParentMap,
             VariantWeightList variantWeightList,
             File phenotypesFile,
@@ -67,7 +71,7 @@ public class SimpleScoreComputer {
     ) {
 
         this.genotypesFile = genotypesFile;
-        this.genotypesFileType = genotypesFileType;
+        this.inheritanceMap = inheritanceMap;
         this.childToParentMap = childToParentMap;
         this.variantWeightList = variantWeightList;
         this.phenotypesFile = phenotypesFile;
@@ -77,11 +81,23 @@ public class SimpleScoreComputer {
 
     }
 
-    public void computeScore() {
+    public void computeScore() throws IOException {
+
+        logger.logMessage("Parsing " + genotypesFile.getAbsolutePath());
+
+        long start = Instant.now().getEpochSecond();
+
+        BgenIndex bgenIndex = BgenIndex.getBgenIndex(genotypesFile);
+        BgenFileReader bgenFileReader = new BgenFileReader(genotypesFile, bgenIndex, inheritanceMap);
+
+        long end = Instant.now().getEpochSecond();
+        long duration = end - start;
+
+        logger.logMessage("Parsing " + genotypesFile + " done (" + duration + " seconds)");
 
         logger.logMessage("Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath());
 
-        long start = Instant.now().getEpochSecond();
+        start = Instant.now().getEpochSecond();
 
         HashSet<String> allPhenoColumns = Arrays.stream(phenoNames)
                 .collect(
@@ -94,8 +110,8 @@ public class SimpleScoreComputer {
                 allPhenoColumns
         );
 
-        long end = Instant.now().getEpochSecond();
-        long duration = end - start;
+        end = Instant.now().getEpochSecond();
+        duration = end - start;
 
         logger.logMessage("Done (" + phenoNames.length + " phenotypes for " + phenotypesHandler.nChildren + " children imported in " + duration + " seconds)");
 
@@ -103,56 +119,73 @@ public class SimpleScoreComputer {
 
         start = Instant.now().getEpochSecond();
 
-        VariantIterator iterator = GenotypesFileType.getVariantIterator(
-                genotypesFile,
-                genotypesFileType,
-                variantWeightList.variantList,
-                0,
-                logger
+        VariantIterator iterator = new VariantIterator(
+                bgenIndex,
+                logger,
+                "Simple score in " + genotypesFile.getAbsolutePath()
         );
 
         double[][] scores = new double[childToParentMap.children.length][4];
 
-        GenotypesProvider tempGenotypesProvider;
-        while ((tempGenotypesProvider = iterator.next()) != null) {
+        Integer tempIndex;
+        while ((tempIndex = iterator.next()) != null) {
 
-            GenotypesProvider genotypesProvider = tempGenotypesProvider;
-            genotypesProvider.parse(childToParentMap);
+            int variantIndex = tempIndex;
+            VariantInformation variantInformation = bgenIndex.variantInformationArray[variantIndex];
 
-            String variantId = genotypesProvider.getVariantID();
+            if (variantInformation.alleles.length > 1) {
 
-            int variantIndex = variantWeightList.variantList.getIndex(variantId);
-            String effectAllele = variantWeightList.effectAllele[variantIndex];
-            double weight = variantWeightList.weights[variantIndex];
+                BgenVariantData variantData = bgenFileReader.getVariantData(variantIndex);
+                variantData.parse(childToParentMap);
 
-            boolean swapAlleles = effectAllele.equals(genotypesProvider.getRef());
+                String variantId = variantInformation.id;
+                boolean found = false;
 
-            if (swapAlleles || effectAllele.equals(genotypesProvider.getAlt())) {
+                if (variantWeightList.variantList.contains(variantId)) {
 
-                for (int childIndex = 0; childIndex < childToParentMap.children.length; childIndex++) {
+                    found = true;
 
-                    String childId = childToParentMap.children[childIndex];
-                    String motherId = childToParentMap.getMother(childId);
-                    String fatherId = childToParentMap.getFather(childId);
+                }
 
-                    short[] hs = genotypesProvider.getNAltH(childId, motherId, fatherId);
+                if (!found) {
 
-                    if (!swapAlleles) {
+                    variantId = variantInformation.rsId;
 
-                        for (int haplotypeI = 0; haplotypeI < 4; haplotypeI++) {
+                    if (variantWeightList.variantList.contains(variantId)) {
 
-                            scores[childIndex][haplotypeI] += weight * hs[haplotypeI];
+                        found = true;
 
+                    }
+                }
+
+                if (found) {
+
+                    int variantWeightIndex = variantWeightList.variantList.getIndex(variantId);
+                    String effectAllele = variantWeightList.effectAllele[variantWeightIndex];
+                    double weight = variantWeightList.weights[variantWeightIndex];
+
+                    for (int childIndex = 0; childIndex < childToParentMap.children.length; childIndex++) {
+
+                        String childId = childToParentMap.children[childIndex];
+                        String motherId = childToParentMap.getMother(childId);
+                        String fatherId = childToParentMap.getFather(childId);
+
+                        for (int alleleI = 0; alleleI < variantInformation.alleles.length; alleleI++) {
+
+                            if (effectAllele.equals(variantInformation.alleles[alleleI])) {
+
+                                double[] haplotypes = variantData.getHaplotypes(childId, motherId, fatherId, alleleI);
+
+                                for (int haplotypeI = 0; haplotypeI < 4; haplotypeI++) {
+
+                                    if (effectAllele.equals(variantInformation.alleles[alleleI])) {
+
+                                        scores[childIndex][haplotypeI] += weight * haplotypes[haplotypeI];
+
+                                    }
+                                }
+                            }
                         }
-
-                    } else {
-
-                        for (int haplotypeI = 0; haplotypeI < 4; haplotypeI++) {
-
-                            scores[childIndex][haplotypeI] += weight * (1 - hs[haplotypeI]);
-
-                        }
-
                     }
                 }
             }
@@ -224,5 +257,4 @@ public class SimpleScoreComputer {
         logger.logMessage("Done (Score for " + genotypesFile.getName() + " exported in " + duration + " seconds)");
 
     }
-
 }

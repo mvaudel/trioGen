@@ -65,9 +65,9 @@ public class InheritanceUtils {
 
     /**
      * Swap mother and father.
-     * 
+     *
      * @param parent The parent to swap.
-     * 
+     *
      * @return The swapped parent.
      */
     public static char swap(
@@ -82,6 +82,21 @@ public class InheritanceUtils {
                 throw new IllegalArgumentException("Parent " + parent + " not recognized, should be either " + MOTHER + " or " + FATHER + ".");
 
         }
+    }
+
+    /**
+     * Returns the default inheritance map for the given contig name.
+     *
+     * @param contigName The contig name.
+     *
+     * @return The default inheritance map for the given contig name.
+     */
+    public static HashMap<Integer, char[]> getDefaultInheritanceMap(
+            String contigName
+    ) {
+
+        return DEFAULT_CHROMOSOME_INHERITANCE_MAP.get(contigName);
+
     }
 
 }

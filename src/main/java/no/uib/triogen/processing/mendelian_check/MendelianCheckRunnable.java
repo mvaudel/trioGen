@@ -49,8 +49,7 @@ public class MendelianCheckRunnable implements Runnable {
      */
     private final SimpleFileWriter writer;
     /**
-     * The maf threshold. maf is computed in parents and values lower than
-     * threshold are not included (inclusive).
+     * The allele frequency threshold.
      */
     private final double alleleFrequencyThreshold;
 
@@ -62,7 +61,7 @@ public class MendelianCheckRunnable implements Runnable {
      * @param bgenIndex The index of the bgen file.
      * @param bgenFileReader The reader for the bgen file.
      * @param childToParentMap The map of trios.
-     * @param mafThreshold The maf threshold. maf is computed in parents and
+     * @param alleleFrequencyThreshold The allele frequency threshold.
      * values lower than threshold are not included (inclusive).
      * @param logger The logger.
      */
@@ -72,7 +71,7 @@ public class MendelianCheckRunnable implements Runnable {
             BgenIndex bgenIndex,
             BgenFileReader bgenFileReader,
             ChildToParentMap childToParentMap,
-            double mafThreshold,
+            double alleleFrequencyThreshold,
             SimpleCliLogger logger
     ) {
 
@@ -81,7 +80,7 @@ public class MendelianCheckRunnable implements Runnable {
         this.bgenIndex = bgenIndex;
         this.bgenFileReader = bgenFileReader;
         this.childToParentMap = childToParentMap;
-        this.alleleFrequencyThreshold = mafThreshold;
+        this.alleleFrequencyThreshold = alleleFrequencyThreshold;
         this.logger = logger;
 
     }

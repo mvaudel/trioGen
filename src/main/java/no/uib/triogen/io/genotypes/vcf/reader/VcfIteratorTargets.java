@@ -126,9 +126,9 @@ public class VcfIteratorTargets {
 
             }
 
-            int windowStart = Math.max(variantList.start[variantListIndex] - maxDistance, 1);
+            int windowStart = Math.max(variantList.position[variantListIndex] - maxDistance, 1);
 
-            int targetBpEnd = variantList.end[variantListIndex] + maxDistance;
+            int targetBpEnd = variantList.position[variantListIndex] + maxDistance;
             Integer chrLength = ChromosomeUtils.chromosomeLength37.get(variantList.contig[variantListIndex]);
 
             int windowEnd = chrLength != null && chrLength < targetBpEnd ? chrLength : targetBpEnd;
@@ -157,7 +157,7 @@ public class VcfIteratorTargets {
         int variantBpEnd = variantContext.getEnd();
 
         if (maxDistance == 0 && !variantId.equals(variantList.variantId[variantListIndex])
-                || variantBpStart < variantList.start[variantListIndex] - maxDistance || variantBpEnd > variantList.end[variantListIndex] + maxDistance) {
+                || variantBpStart < variantList.position[variantListIndex] - maxDistance || variantBpEnd > variantList.position[variantListIndex] + maxDistance) {
 
             mutex.release();
             return next();

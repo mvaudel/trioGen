@@ -1,6 +1,7 @@
 package no.uib.triogen.processing.variant_data;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,19 +11,21 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import static no.uib.triogen.io.IoUtils.SEPARATOR;
 import no.uib.cell_rk.utils.SimpleFileWriter;
-import no.uib.triogen.io.genotypes.GenotypesFileType;
-import no.uib.triogen.io.genotypes.GenotypesProvider;
-import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
+import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
+import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.covariates.CovariatesHandler;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.genome.VariantInformation;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 
 /**
  * This class extracts data for a given sets of variants.
  *
- * @author Maec Vaudel
+ * @author Marc Vaudel
  */
 public class VariantDataExtractor {
 
@@ -31,9 +34,9 @@ public class VariantDataExtractor {
      */
     private final File genotypesFile;
     /**
-     * The type of genotype file.
+     * The inheritance map.
      */
-    private final GenotypesFileType genotypesFileType;
+    private final HashMap<Integer, char[]> inheritanceMap;
     /**
      * The variants to process.
      */
@@ -71,7 +74,7 @@ public class VariantDataExtractor {
      * Constructor.
      *
      * @param genotypesFile The file containing the genotypes.
-     * @param genotypesFileType The type of genotypes file.
+     * @param inheritanceMap The inheritance map for the given file.
      * @param variantList The variants to process.
      * @param childToParentMap The map of trios.
      * @param phenotypesFile The file containing the phenotypes.
@@ -85,7 +88,7 @@ public class VariantDataExtractor {
      */
     public VariantDataExtractor(
             File genotypesFile,
-            GenotypesFileType genotypesFileType,
+            HashMap<Integer, char[]> inheritanceMap,
             VariantList variantList,
             ChildToParentMap childToParentMap,
             File phenotypesFile,
@@ -97,7 +100,7 @@ public class VariantDataExtractor {
     ) {
 
         this.genotypesFile = genotypesFile;
-        this.genotypesFileType = genotypesFileType;
+        this.inheritanceMap = inheritanceMap;
         this.variantList = variantList;
         this.childToParentMap = childToParentMap;
         this.phenotypesFile = phenotypesFile;
@@ -112,12 +115,26 @@ public class VariantDataExtractor {
     /**
      * Goes through the list of provided variants and extracts the values of the
      * adjusted phenotypes.
+     * 
+     * @throws java.io.IOException Exception thrown if an error occurs while reading or writing a file.
      */
-    public void run() {
+    public void run() throws IOException {
+
+        logger.logMessage("Parsing " + genotypesFile.getAbsolutePath());
+
+        long start = Instant.now().getEpochSecond();
+
+        BgenIndex bgenIndex = BgenIndex.getBgenIndex(genotypesFile);
+        BgenFileReader bgenFileReader = new BgenFileReader(genotypesFile, bgenIndex, inheritanceMap);
+
+        long end = Instant.now().getEpochSecond();
+        long duration = end - start;
+
+        logger.logMessage("Parsing " + genotypesFile + " done (" + duration + " seconds)");
 
         logger.logMessage("Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath());
 
-        long start = Instant.now().getEpochSecond();
+        start = Instant.now().getEpochSecond();
 
         HashSet<String> allPhenoColumns = Stream.concat(
                 Arrays.stream(phenoNames),
@@ -141,8 +158,8 @@ public class VariantDataExtractor {
                 allPhenoColumns
         );
 
-        long end = Instant.now().getEpochSecond();
-        long duration = end - start;
+        end = Instant.now().getEpochSecond();
+        duration = end - start;
 
         logger.logMessage("Done (" + phenoNames.length + " phenotypes for " + phenotypesHandler.nChildren + " children imported in " + duration + " seconds)");
 
@@ -178,90 +195,102 @@ public class VariantDataExtractor {
 
         start = Instant.now().getEpochSecond();
 
-        VariantIterator iterator = GenotypesFileType.getVariantIterator(
-                genotypesFile,
-                genotypesFileType,
-                variantList,
-                0,
-                logger
+        VariantIterator iterator = new VariantIterator(
+                bgenIndex,
+                logger,
+                "Mendelian error check in " + genotypesFile.getAbsolutePath()
         );
 
         try (SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true)) {
 
             writer.writeLine(
-                    "VariantId",
-                    "dosC",
-                    "dosM",
-                    "dosF",
-                    "genMT",
-                    "genMnT",
-                    "genFT",
-                    "genFnT",
-                    String.join(SEPARATOR,
-                            phenoNames)
+                    "contig",
+                    "position",
+                    "variantId",
+                    "rsId",
+                    "allele",
+                    "otherAllele",
+                    "motherNonTransmitted",
+                    "motherTransmitted",
+                    "fatherTransmitted",
+                    "fatherNonTransmitted",
+                    String.join(
+                            SEPARATOR,
+                            phenoNames
+                    )
             );
 
-            GenotypesProvider genotypesProvider;
-            while ((genotypesProvider = iterator.next()) != null) {
+            Integer tempIndex;
+            while ((tempIndex = iterator.next()) != null) {
 
-                genotypesProvider.parse(childToParentMap);
+                int variantIndex = tempIndex;
+                VariantInformation variantInformation = bgenIndex.variantInformationArray[variantIndex];
 
-                for (int i = 0; i < childToParentMap.children.length; i++) {
+                if (variantInformation.alleles.length > 1) {
 
-                    int trioIndex = i;
-                    String childId = childToParentMap.children[trioIndex];
-                    String motherId = childToParentMap.getMother(childId);
-                    String fatherId = childToParentMap.getFather(childId);
+                    BgenVariantData variantData = bgenFileReader.getVariantData(variantIndex);
+                    variantData.parse(childToParentMap);
 
-                    double nAltChild = genotypesProvider.getNAltGenotypingProbabilities(childId);
-                    double nAltMother = genotypesProvider.getNAltGenotypingProbabilities(motherId);
-                    double nAltFather = genotypesProvider.getNAltGenotypingProbabilities(fatherId);
+                    for (int i = 0; i < childToParentMap.children.length; i++) {
 
-                    short[] h = genotypesProvider.getNAltH(
-                            childId,
-                            motherId,
-                            fatherId
-                    );
+                        int trioIndex = i;
+                        String childId = childToParentMap.children[trioIndex];
+                        String motherId = childToParentMap.getMother(childId);
+                        String fatherId = childToParentMap.getFather(childId);
 
-                    StringBuilder phenoValues = new StringBuilder();
+                        for (int alleleI = 0; alleleI < variantInformation.alleles.length; alleleI++) {
 
-                    for (String phenoName : phenoNames) {
+                            double[] haplotypes = variantData.getHaplotypes(childId, motherId, fatherId, alleleI);
 
-                        if (phenoValues.length() > 0) {
+                            StringBuilder phenoValues = new StringBuilder();
 
-                            phenoValues.append(SEPARATOR);
+                            for (String phenoName : phenoNames) {
 
-                        }
+                                if (phenoValues.length() > 0) {
 
-                        int adjustedIndex = covariatesHandler.adjustedIndexMap.get(phenoName)[trioIndex];
+                                    phenoValues.append(SEPARATOR);
 
-                        if (adjustedIndex != -1) {
+                                }
 
-                            double[] adjustedValues = phenotypesHandler.phenoMap.get(phenoName);
-                            double phenoValue = adjustedValues[adjustedIndex];
+                                int adjustedIndex = covariatesHandler.adjustedIndexMap.get(phenoName)[trioIndex];
 
-                            phenoValues.append(phenoValue);
+                                if (adjustedIndex != -1) {
 
-                        } else {
+                                    double[] adjustedValues = phenotypesHandler.phenoMap.get(phenoName);
+                                    double phenoValue = adjustedValues[adjustedIndex];
 
-                            phenoValues.append(Double.NaN);
+                                    phenoValues.append(phenoValue);
 
+                                } else {
+
+                                    phenoValues.append(Double.NaN);
+
+                                }
+                            }
+
+                            writer.writeLine(
+                                    variantInformation.contig,
+                                    Integer.toString(variantInformation.position),
+                                    variantInformation.id,
+                                    variantInformation.rsId,
+                                    variantInformation.alleles[alleleI],
+                                    variantInformation.getOtherAllele(alleleI),
+                                    Double.toString(haplotypes[0]),
+                                    Double.toString(haplotypes[1]),
+                                    Double.toString(haplotypes[2]),
+                                    Double.toString(haplotypes[3]),
+                                    phenoValues.toString()
+                            );
                         }
                     }
-
-                    writer.writeLine(
-                            genotypesProvider.getVariantID(),
-                            Double.toString(nAltChild),
-                            Double.toString(nAltMother),
-                            Double.toString(nAltFather),
-                            Short.toString(h[0]),
-                            Short.toString(h[1]),
-                            Short.toString(h[2]),
-                            Short.toString(h[3]),
-                            phenoValues.toString()
-                    );
                 }
             }
         }
+
+        end = Instant.now().getEpochSecond();
+        duration = end - start;
+
+        logger.logMessage("Done (Mendelian error check in " + duration + " seconds)");
+        
     }
 }

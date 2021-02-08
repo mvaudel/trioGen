@@ -18,8 +18,6 @@ import no.uib.triogen.model.trio_genotypes.VariantIndex;
 public class LdMatrixTest extends TestCase {
 
     public void testParsing() {
-        
-        Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION, true);
 
         boolean success = false;
 
@@ -58,7 +56,7 @@ public class LdMatrixTest extends TestCase {
 
                 int variantAI = variantIndex.getIndex(variant);
 
-                writer.addVariant(variantAI, variantBs, r2s, deflater);
+                writer.addVariant(variantAI, variantBs, r2s);
 
             }
 
@@ -67,7 +65,7 @@ public class LdMatrixTest extends TestCase {
             // Check data retrieval
             LdMatrixReader ldMatrixReader = new LdMatrixReader(matrixFile);
 
-            HashMap<String, Double> dummyMapping = ldMatrixReader.getR2("DUMMY");
+            ArrayList<R2> dummyMapping = ldMatrixReader.getR2("DUMMY");
             Assert.assertTrue(dummyMapping == null);
 
             for (String variantA : ldMap.keySet()) {

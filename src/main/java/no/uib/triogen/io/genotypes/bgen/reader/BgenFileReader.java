@@ -9,7 +9,6 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import no.uib.triogen.io.IoUtils;
-import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.model.genome.VariantInformation;
 import no.uib.triogen.model.trio_genotypes.VariantList;
@@ -87,8 +86,8 @@ public class BgenFileReader implements AutoCloseable {
 
                 for (int j = 0; j < variantList.variantId.length; j++) {
 
-                    if (variantInformation.position >= variantList.start[j] - distance
-                            && variantInformation.position <= variantList.end[j] + distance
+                    if (variantInformation.position >= variantList.position[j] - distance
+                            && variantInformation.position <= variantList.position[j] + distance
                             && variantInformation.contig.equals(variantList.contig[j])) {
 
                         found = true;

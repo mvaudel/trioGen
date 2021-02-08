@@ -1,9 +1,11 @@
 package no.uib.triogen.scripts_marc;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import no.uib.triogen.io.ld.LdMatrixReader;
+import no.uib.triogen.model.ld.R2;
 
 /**
  * Tests the compression and decompression methods.
@@ -28,13 +30,13 @@ public class CompressionTest {
 
             for (String variantId : variantIds) {
 
-                HashMap<String, Double> variantLdMap = ldMatrixReader.getR2(variantId);
+                ArrayList<R2> variantLdMap = ldMatrixReader.getR2(variantId);
 
                 if (variantLdMap != null) {
 
-                    for (Entry<String, Double> entry : variantLdMap.entrySet()) {
+                    for (R2 r2 : variantLdMap) {
 
-                        if (entry.getValue() < 0.0 || entry.getValue() > 1.0) {
+                        if (r2.r2Value < 0.0 || r2.r2Value > 1.0) {
                             
                             int debug = 1;
                         

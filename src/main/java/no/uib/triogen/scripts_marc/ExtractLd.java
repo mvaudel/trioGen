@@ -2,10 +2,12 @@ package no.uib.triogen.scripts_marc;
 
 import java.io.File;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import no.uib.triogen.io.ld.LdMatrixReader;
+import no.uib.triogen.model.ld.R2;
 
 /**
  * Extracts specific lines of a file.
@@ -30,13 +32,13 @@ public class ExtractLd {
 
             for (String variantId : variantIds) {
 
-                HashMap<String, Double> variantLdMap = ldMatrixReader.getR2(variantId);
+                ArrayList<R2> variantLdMap = ldMatrixReader.getR2(variantId);
 
                 if (variantLdMap != null) {
 
-                    for (Entry<String, Double> entry : variantLdMap.entrySet()) {
+                    for (R2 r2 : variantLdMap) {
 
-                        if (entry.getValue() < -0.001 || entry.getValue() > 1.001) {
+                        if (r2.r2Value < -0.001 || r2.r2Value > 1.001) {
 
                             throw new IllegalArgumentException("Incorrect r2");
 
