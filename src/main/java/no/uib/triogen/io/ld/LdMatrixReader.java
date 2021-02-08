@@ -166,7 +166,12 @@ public class LdMatrixReader implements AutoCloseable {
             float r2 = byteBuffer.getFloat();
 
             r2s.add(
-                    new R2(variantIndex, alleleA, alleleB, r2)
+                    new R2(
+                            variantIndex, 
+                            alleleA, 
+                            alleleB, 
+                            r2
+                    )
             );
         }
 
@@ -174,6 +179,13 @@ public class LdMatrixReader implements AutoCloseable {
 
     }
 
+    /**
+     * Returns the id corresponding to a given variant index.
+     * 
+     * @param variantIndex The index of the variant.
+     * 
+     * @return The id of the variant.
+     */
     public String getId(
             int variantIndex
     ) {

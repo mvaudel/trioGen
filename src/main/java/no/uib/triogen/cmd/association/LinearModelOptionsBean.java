@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.covariates.SpecificCovariatesFile;
-import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
 import no.uib.triogen.processing.linear_model.LinearModelRunnable;
@@ -25,9 +24,9 @@ public class LinearModelOptionsBean {
      */
     public final File genotypesFile;
     /**
-     * The genotypes file type.
+     * The chromosome name.
      */
-    public GenotypesFileType genotypesFileType = GenotypesFileType.vcf;
+    public final String chromosome;
     /**
      * the trio file.
      */
@@ -53,17 +52,13 @@ public class LinearModelOptionsBean {
      */
     public File variantFile = null;
     /**
-     * The max distance to allow between snps for ld computation.
+     * The max distance to allow between snps.
      */
     public int maxDistance = 500000;
     /**
-     * The maf threshold.
+     * The allele frequency threshold.
      */
-    public double maf = 0.05;
-    /**
-     * If true, dosages will be used where possible, hard calls otherwise.
-     */
-    public boolean useDosages = false;
+    public double alleleFrequencyThreshold = 0.005;
     /**
      * List of the names of the models to use.
      */
@@ -116,30 +111,12 @@ public class LinearModelOptionsBean {
 
         if (!genotypesFile.exists()) {
 
-            throw new IllegalArgumentException("Vcf file (" + genotypesFile + ") not found.");
+            throw new IllegalArgumentException("Genotypes file (" + genotypesFile + ") not found.");
 
         }
 
-        // The genotypes file type
-        if (aLine.hasOption(LinearModelOptions.genoFormat.opt)) {
-
-            String option = aLine.getOptionValue(LinearModelOptions.genoFormat.opt);
-            int genoFormat;
-
-            try {
-
-                genoFormat = Integer.valueOf(option);
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-                throw new IllegalArgumentException("Genotype file formant could not be parsed. Found: " + option + ". Expected input: " + GenotypesFileType.getCommandLineOptions() + ".");
-
-            }
-
-            genotypesFileType = GenotypesFileType.getGenotypesFileType(genoFormat);
-
-        }
+        // The genotypes file
+        chromosome = aLine.getOptionValue(LinearModelOptions.chromosome.opt);
 
         // The variant ids
         if (aLine.hasOption(LinearModelOptions.variantId.opt)) {
@@ -170,15 +147,15 @@ public class LinearModelOptionsBean {
         }
 
         // The maf threshold
-        if (aLine.hasOption(LinearModelOptions.maf.opt)) {
+        if (aLine.hasOption(LinearModelOptions.af.opt)) {
 
-            String option = aLine.getOptionValue(LinearModelOptions.maf.opt);
+            String option = aLine.getOptionValue(LinearModelOptions.af.opt);
 
             try {
 
-                maf = Double.parseDouble(option);
+                alleleFrequencyThreshold = Double.parseDouble(option);
 
-                if (maf < 0.0 || maf > 1.0) {
+                if (alleleFrequencyThreshold < 0.0 || alleleFrequencyThreshold > 1.0) {
 
                     throw new IllegalArgumentException(
                             "Input for maf (" + option + ") must be a number between 0 and 1."
@@ -194,12 +171,6 @@ public class LinearModelOptionsBean {
                 );
 
             }
-        }
-
-        // Dosages
-        if (aLine.hasOption(LinearModelOptions.dosages.opt)) {
-
-            useDosages = true;
         }
 
         // the trio file
