@@ -44,9 +44,9 @@ public class LdMatrixTest extends TestCase {
                     variantIndex.add(variantB);
 
                     int variantBI = variantIndex.getIndex(variantB);
-                    
+
                     R2 r2 = new R2(variantBI, (short) (100 - j), (short) j, (float) r2Value);
-                    
+
                     r2s.add(r2);
 
                 }
@@ -76,17 +76,17 @@ public class LdMatrixTest extends TestCase {
                 Assert.assertTrue(r2s != null);
                 Assert.assertTrue(r2s.size() == groundTruth.size());
 
-                for (int i = 0 ; i < r2s.size() ; i++) {
-                    
+                for (int i = 0; i < r2s.size(); i++) {
+
                     R2 fileR2 = r2s.get(i);
                     R2 groundTruthR2 = groundTruth.get(i);
-                    
-                Assert.assertTrue(fileR2.variantB == groundTruthR2.variantB);
-                Assert.assertTrue(fileR2.alleleA == groundTruthR2.alleleA);
-                Assert.assertTrue(fileR2.alleleB == groundTruthR2.alleleB);
-                
-                Assert.assertTrue(Math.abs(fileR2.r2Value - groundTruthR2.r2Value) <= 1e-6);
-                
+
+                    Assert.assertTrue(fileR2.variantB == groundTruthR2.variantB);
+                    Assert.assertTrue(fileR2.alleleA == groundTruthR2.alleleA);
+                    Assert.assertTrue(fileR2.alleleB == groundTruthR2.alleleB);
+
+                    Assert.assertTrue(Math.abs(fileR2.r2Value - groundTruthR2.r2Value) <= 1e-6);
+
                 }
             }
 

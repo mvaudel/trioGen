@@ -71,36 +71,41 @@ public class VariantIterator {
 
         simpleSemaphore.acquire();
 
-        VariantInformation variantInformation = bgenIndex.variantInformationArray[currentVariantIndex];
+        if ((start != -1 || end != -1) && currentVariantIndex < bgenIndex.variantInformationArray.length) {
 
-        while (start != -1 && variantInformation.position < start || end != -1 && variantInformation.position > end) {
+            VariantInformation variantInformation = bgenIndex.variantInformationArray[currentVariantIndex];
 
-            currentVariantIndex++;
+            while (start != -1 && variantInformation.position < start || end != -1 && variantInformation.position > end) {
 
-            if (logger != null && currentVariantIndex % nProgress == 0) {
+                currentVariantIndex++;
 
-                double progress = ((double) (Math.round(10000.0 * currentVariantIndex) / bgenIndex.variantInformationArray.length)) / 100;
+                if (logger != null && currentVariantIndex % nProgress == 0) {
 
-                logger.logMessage(logPrefix + "    " + currentVariantIndex + " processed of " + bgenIndex.variantInformationArray.length + " (" + progress + " %)");
+                    double progress = ((double) (Math.round(10000.0 * currentVariantIndex) / bgenIndex.variantInformationArray.length)) / 100;
 
-            }
+                    logger.logMessage(logPrefix + "    " + currentVariantIndex + " processed of " + bgenIndex.variantInformationArray.length + " (" + progress + " %)");
 
-            if (currentVariantIndex != bgenIndex.variantInformationArray.length) {
+                }
 
-                variantInformation = bgenIndex.variantInformationArray[currentVariantIndex];
+                if (currentVariantIndex != bgenIndex.variantInformationArray.length) {
 
-            } else {
+                    variantInformation = bgenIndex.variantInformationArray[currentVariantIndex];
 
-                break;
+                } else {
 
+                    break;
+
+                }
             }
         }
 
         int index = currentVariantIndex;
 
+        currentVariantIndex++;
+
         simpleSemaphore.release();
 
-        return index != bgenIndex.variantInformationArray.length ? index : null;
+        return index < bgenIndex.variantInformationArray.length ? index : null;
 
     }
 

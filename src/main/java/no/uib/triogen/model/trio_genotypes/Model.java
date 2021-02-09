@@ -215,7 +215,7 @@ public enum Model {
      */
     public static String[] getDefaultOption() {
 
-        return new String[]{"h", "cmf_mt", "cmf_pt", "cmf"};
+        return new String[]{"h", "cmf_mt", "cmf_ft", "cmf"};
 
     }
 
