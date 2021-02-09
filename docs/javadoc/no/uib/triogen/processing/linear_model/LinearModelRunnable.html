@@ -167,16 +167,17 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Runnable.
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/linear_model/LinearModelRunnable.html#LinearModelRunnable-no.uib.triogen.io.genotypes.VariantIterator-no.uib.triogen.model.trio_genotypes.VariantList-double-boolean-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.model.trio_genotypes.Model:A-no.uib.triogen.model.phenotypes.PhenotypesHandler-no.uib.triogen.model.covariates.CovariatesHandler-no.uib.triogen.io.flat.indexed.IndexedGzWriter-no.uib.triogen.io.flat.SimpleFileWriter-no.uib.triogen.utils.SimpleSemaphore-no.uib.triogen.log.SimpleCliLogger-">LinearModelRunnable</a></span>(<a href="../../../../../no/uib/triogen/io/genotypes/VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a>&nbsp;iterator,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/linear_model/LinearModelRunnable.html#LinearModelRunnable-no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader-no.uib.triogen.model.trio_genotypes.VariantList-double-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.model.trio_genotypes.Model:A-no.uib.triogen.model.phenotypes.PhenotypesHandler-no.uib.triogen.model.covariates.CovariatesHandler-no.uib.triogen.io.flat.indexed.IndexedGzWriter-no.uib.cell_rk.utils.SimpleFileWriter-no.uib.triogen.utils.SimpleSemaphore-no.uib.triogen.log.SimpleCliLogger-">LinearModelRunnable</a></span>(<a href="../../../../../no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html" title="class in no.uib.triogen.io.genotypes.bgen.VariantIterator">VariantIterator</a>&nbsp;iterator,
+                   <a href="../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
+                   <a href="../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenFileReader</a>&nbsp;bgenFileReader,
                    <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
-                   double&nbsp;mafThreshold,
-                   boolean&nbsp;useDosages,
+                   double&nbsp;frequencyThreshold,
                    <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                    <a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>[]&nbsp;models,
                    <a href="../../../../../no/uib/triogen/model/phenotypes/PhenotypesHandler.html" title="class in no.uib.triogen.model.phenotypes">PhenotypesHandler</a>&nbsp;phenotypesHandler,
                    <a href="../../../../../no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a>&nbsp;covariatesHandler,
                    <a href="../../../../../no/uib/triogen/io/flat/indexed/IndexedGzWriter.html" title="class in no.uib.triogen.io.flat.indexed">IndexedGzWriter</a>&nbsp;outputWriter,
-                   <a href="../../../../../no/uib/triogen/io/flat/SimpleFileWriter.html" title="class in no.uib.triogen.io.flat">SimpleFileWriter</a>&nbsp;resultsIndex,
+                   no.uib.cell_rk.utils.SimpleFileWriter&nbsp;resultsIndex,
                    <a href="../../../../../no/uib/triogen/utils/SimpleSemaphore.html" title="class in no.uib.triogen.utils">SimpleSemaphore</a>&nbsp;gzIndexSemaphore,
                    <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
 <div class="block">Constructor.</div>
@@ -252,34 +253,35 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Runnable.
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="LinearModelRunnable-no.uib.triogen.io.genotypes.VariantIterator-no.uib.triogen.model.trio_genotypes.VariantList-double-boolean-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.model.trio_genotypes.Model:A-no.uib.triogen.model.phenotypes.PhenotypesHandler-no.uib.triogen.model.covariates.CovariatesHandler-no.uib.triogen.io.flat.indexed.IndexedGzWriter-no.uib.triogen.io.flat.SimpleFileWriter-no.uib.triogen.utils.SimpleSemaphore-no.uib.triogen.log.SimpleCliLogger-">
+<a name="LinearModelRunnable-no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader-no.uib.triogen.model.trio_genotypes.VariantList-double-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.model.trio_genotypes.Model:A-no.uib.triogen.model.phenotypes.PhenotypesHandler-no.uib.triogen.model.covariates.CovariatesHandler-no.uib.triogen.io.flat.indexed.IndexedGzWriter-no.uib.cell_rk.utils.SimpleFileWriter-no.uib.triogen.utils.SimpleSemaphore-no.uib.triogen.log.SimpleCliLogger-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>LinearModelRunnable</h4>
-<pre>public&nbsp;LinearModelRunnable(<a href="../../../../../no/uib/triogen/io/genotypes/VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a>&nbsp;iterator,
+<pre>public&nbsp;LinearModelRunnable(<a href="../../../../../no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html" title="class in no.uib.triogen.io.genotypes.bgen.VariantIterator">VariantIterator</a>&nbsp;iterator,
+                           <a href="../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
+                           <a href="../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenFileReader</a>&nbsp;bgenFileReader,
                            <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
-                           double&nbsp;mafThreshold,
-                           boolean&nbsp;useDosages,
+                           double&nbsp;frequencyThreshold,
                            <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                            <a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>[]&nbsp;models,
                            <a href="../../../../../no/uib/triogen/model/phenotypes/PhenotypesHandler.html" title="class in no.uib.triogen.model.phenotypes">PhenotypesHandler</a>&nbsp;phenotypesHandler,
                            <a href="../../../../../no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a>&nbsp;covariatesHandler,
                            <a href="../../../../../no/uib/triogen/io/flat/indexed/IndexedGzWriter.html" title="class in no.uib.triogen.io.flat.indexed">IndexedGzWriter</a>&nbsp;outputWriter,
-                           <a href="../../../../../no/uib/triogen/io/flat/SimpleFileWriter.html" title="class in no.uib.triogen.io.flat">SimpleFileWriter</a>&nbsp;resultsIndex,
+                           no.uib.cell_rk.utils.SimpleFileWriter&nbsp;resultsIndex,
                            <a href="../../../../../no/uib/triogen/utils/SimpleSemaphore.html" title="class in no.uib.triogen.utils">SimpleSemaphore</a>&nbsp;gzIndexSemaphore,
                            <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</pre>
 <div class="block">Constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>iterator</code> - The variants iterator.</dd>
+<dd><code>bgenIndex</code> - The index of the bgen file.</dd>
+<dd><code>bgenFileReader</code> - The reader for the bgen file.</dd>
 <dd><code>variantList</code> - The variants to process.</dd>
-<dd><code>mafThreshold</code> - The maf threshold. maf is computed in parents for
- trios where a phenotype is available and values lower than threshold are
- not included (inclusive).</dd>
-<dd><code>useDosages</code> - If true, dosages will be used when possible, hard calls
- otherwise.</dd>
+<dd><code>frequencyThreshold</code> - The maf threshold. maf is computed in parents
+ for trios where a phenotype is available and values lower than threshold
+ are not included (inclusive).</dd>
 <dd><code>childToParentMap</code> - The child to parent map.</dd>
 <dd><code>models</code> - The list of the names of the models to use.</dd>
 <dd><code>phenotypesHandler</code> - The phenotypes handler.</dd>
@@ -382,6 +384,6 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Runnable.
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2020. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2021. All rights reserved.</small></p>
 </body>
 </html>

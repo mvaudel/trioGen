@@ -2,8 +2,6 @@ package no.uib.triogen.cmd.variant_data;
 
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
-import no.uib.triogen.io.genotypes.GenotypesFileType;
-import no.uib.triogen.model.trio_genotypes.Model;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 
 /**
@@ -14,7 +12,7 @@ import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 public enum VariantDataOptions {
 
     geno("g", "geno", "The genotypes file.", true, true),
-    genoFormat("gf", "genoFormat", "The genotypes file format to use when iterating the entire file. " + GenotypesFileType.getCommandLineOptions() + ". Default: " + GenotypesFileType.vcf.index + ".", false, true),
+    chromosome("c", "chromosome", "The chromosome name.", true, true),
     variantId("vi", "variantId", "File listing the variants to include in the analysis.", true, true),
     phenoFile("p", "phenoFile", "The phenotypes file.", true, true),
     childId("id", "childId", "The name of the column containing the child id. Default: child_SentrixID.", false, true),

@@ -82,7 +82,7 @@ public class LdMatrixOptionsBean {
 
         }
 
-        // The genotypes file
+        // The chromosome name
         chromosome = aLine.getOptionValue(LdMatrixOptions.chromosome.opt);
 
         // The variant ids

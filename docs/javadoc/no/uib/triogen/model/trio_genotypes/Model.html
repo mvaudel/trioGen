@@ -158,7 +158,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Enum.html?is
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html#cf_ft">cf_ft</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html#cf_mt">cf_mt</a></span></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html#cm">cm</a></span></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html#cm_ft">cm_ft</a></span></code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html#cm_mt">cm_mt</a></span></code>&nbsp;</td>
@@ -258,14 +264,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Enum.html?is
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html#fillX-double:A:A-no.uib.triogen.model.trio_genotypes.Model-int-java.lang.String-java.lang.String-java.lang.String-no.uib.triogen.io.genotypes.GenotypesProvider-boolean-">fillX</a></span>(double[][]&nbsp;x,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html#fillX-double:A:A-no.uib.triogen.model.trio_genotypes.Model-int-java.lang.String-java.lang.String-java.lang.String-no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData-int-">fillX</a></span>(double[][]&nbsp;x,
      <a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
      int&nbsp;index,
      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;childId,
      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;motherId,
      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fatherId,
-     <a href="../../../../../no/uib/triogen/io/genotypes/GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a>&nbsp;genotypesProvider,
-     boolean&nbsp;useDosages)</code>
+     <a href="../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a>&nbsp;bgenVariantData,
+     int&nbsp;testedAlleleIndex)</code>
 <div class="block">Fills the given x matrix based on the model.</div>
 </td>
 </tr>
@@ -290,11 +296,15 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Enum.html?is
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html#likelyNotSingular-no.uib.triogen.model.trio_genotypes.Model-boolean-boolean-boolean-boolean-">likelyNotSingular</a></span>(<a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
-                 boolean&nbsp;hNotSingluar,
-                 boolean&nbsp;childNotSingular,
-                 boolean&nbsp;motherNotSingular,
-                 boolean&nbsp;fatherNotSingular)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html#likelyNotSingular-no.uib.triogen.model.trio_genotypes.Model-double-double-double-double-double-double-double-double-">likelyNotSingular</a></span>(<a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
+                 double&nbsp;hMntMin,
+                 double&nbsp;hMntMax,
+                 double&nbsp;hMtMin,
+                 double&nbsp;hMtMax,
+                 double&nbsp;hFtMin,
+                 double&nbsp;hFtMax,
+                 double&nbsp;hFntMin,
+                 double&nbsp;hFntMax)</code>
 <div class="block">Returns a boolean indicating whether the matrix is likely not singular.</div>
 </td>
 </tr>
@@ -401,6 +411,15 @@ the order they are declared.</div>
 <pre>public static final&nbsp;<a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a> cm_mt</pre>
 </li>
 </ul>
+<a name="cm_ft">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cm_ft</h4>
+<pre>public static final&nbsp;<a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a> cm_ft</pre>
+</li>
+</ul>
 <a name="cf">
 <!--   -->
 </a>
@@ -408,6 +427,15 @@ the order they are declared.</div>
 <li class="blockList">
 <h4>cf</h4>
 <pre>public static final&nbsp;<a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a> cf</pre>
+</li>
+</ul>
+<a name="cf_mt">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cf_mt</h4>
+<pre>public static final&nbsp;<a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a> cf_mt</pre>
 </li>
 </ul>
 <a name="cf_ft">
@@ -638,7 +666,7 @@ not permitted.)</div>
 </dl>
 </li>
 </ul>
-<a name="fillX-double:A:A-no.uib.triogen.model.trio_genotypes.Model-int-java.lang.String-java.lang.String-java.lang.String-no.uib.triogen.io.genotypes.GenotypesProvider-boolean-">
+<a name="fillX-double:A:A-no.uib.triogen.model.trio_genotypes.Model-int-java.lang.String-java.lang.String-java.lang.String-no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData-int-">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -650,8 +678,8 @@ not permitted.)</div>
                          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;childId,
                          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;motherId,
                          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fatherId,
-                         <a href="../../../../../no/uib/triogen/io/genotypes/GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a>&nbsp;genotypesProvider,
-                         boolean&nbsp;useDosages)</pre>
+                         <a href="../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a>&nbsp;bgenVariantData,
+                         int&nbsp;testedAlleleIndex)</pre>
 <div class="block">Fills the given x matrix based on the model.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -661,35 +689,38 @@ not permitted.)</div>
 <dd><code>childId</code> - The id of the child.</dd>
 <dd><code>motherId</code> - The id of the mother.</dd>
 <dd><code>fatherId</code> - The id of the father.</dd>
-<dd><code>genotypesProvider</code> - The genotypes provider to use for this variant.</dd>
-<dd><code>useDosages</code> - If true, dosages will be used when possible, hard calls
- otherwise.</dd>
+<dd><code>bgenVariantData</code> - The genotypes provider to use for this variant.</dd>
+<dd><code>testedAlleleIndex</code> - The index of the tested allele.</dd>
 </dl>
 </li>
 </ul>
-<a name="likelyNotSingular-no.uib.triogen.model.trio_genotypes.Model-boolean-boolean-boolean-boolean-">
+<a name="likelyNotSingular-no.uib.triogen.model.trio_genotypes.Model-double-double-double-double-double-double-double-double-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>likelyNotSingular</h4>
 <pre>public static&nbsp;boolean&nbsp;likelyNotSingular(<a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
-                                        boolean&nbsp;hNotSingluar,
-                                        boolean&nbsp;childNotSingular,
-                                        boolean&nbsp;motherNotSingular,
-                                        boolean&nbsp;fatherNotSingular)</pre>
+                                        double&nbsp;hMntMin,
+                                        double&nbsp;hMntMax,
+                                        double&nbsp;hMtMin,
+                                        double&nbsp;hMtMax,
+                                        double&nbsp;hFtMin,
+                                        double&nbsp;hFtMax,
+                                        double&nbsp;hFntMin,
+                                        double&nbsp;hFntMax)</pre>
 <div class="block">Returns a boolean indicating whether the matrix is likely not singular.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>model</code> - the model</dd>
-<dd><code>hNotSingluar</code> - boolean indicating whether the h matrix is likely not
- singular</dd>
-<dd><code>childNotSingular</code> - boolean indicating whether the child matrix is
- likely not singular</dd>
-<dd><code>motherNotSingular</code> - boolean indicating whether the mother matrix is
- likely not singular</dd>
-<dd><code>fatherNotSingular</code> - boolean indicating whether the father matrix is
- likely not singular</dd>
+<dd><code>model</code> - The model.</dd>
+<dd><code>hMntMin</code> - The minimal number of maternal non-transmitted alleles.</dd>
+<dd><code>hMntMax</code> - The maximal number of maternal non-transmitted alleles.</dd>
+<dd><code>hMtMin</code> - The minimal number of maternal transmitted alleles.</dd>
+<dd><code>hMtMax</code> - The maximal number of maternal transmitted alleles.</dd>
+<dd><code>hFtMin</code> - The minimal number of paternal transmitted alleles.</dd>
+<dd><code>hFtMax</code> - The maximal number of paternal transmitted alleles.</dd>
+<dd><code>hFntMin</code> - The minimal number of paternal non-transmitted alleles.</dd>
+<dd><code>hFntMax</code> - The maximal number of paternal non-transmitted alleles.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a boolean indicating whether the matrix is likely not singular</dd>
 </dl>
@@ -794,6 +825,6 @@ not permitted.)</div>
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2020. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2021. All rights reserved.</small></p>
 </body>
 </html>

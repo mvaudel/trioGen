@@ -12,6 +12,7 @@ import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 public enum SimpleScoreOptions {
 
     geno("g", "geno", "The genotypes file.", true, true),
+    chromosome("c", "chromosome", "The chromosome name.", true, true),
     variantId("vi", "variantId", "File listing the variants to include in the analysis along with the weights.", true, true),
     phenoFile("p", "phenoFile", "The phenotypes file.", true, true),
     childId("id", "childId", "The name of the column containing the child id. Default: child_SentrixID.", false, true),

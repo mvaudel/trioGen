@@ -3,6 +3,7 @@ package no.uib.triogen.cmd.variant_data;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.log.SimpleCliLogger;
@@ -13,6 +14,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.processing.variant_data.VariantDataExtractor;
 
 /**
@@ -80,6 +82,14 @@ public class VariantData {
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
         VariantList variantList = VariantList.getVariantList(bean.variantFile);
 
+        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
+
+        if (inheritanceMap == null) {
+
+            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
+
+        }
+
         String resultStem = bean.destinationFile.getAbsolutePath();
 
         if (resultStem.endsWith(".gz")) {
@@ -100,7 +110,7 @@ public class VariantData {
 
         VariantDataExtractor variantDataExtractor = new VariantDataExtractor(
                 bean.genotypesFile,
-                bean.genotypesFileType,
+                inheritanceMap,
                 variantList,
                 childToParentMap,
                 bean.phenotypesFile,

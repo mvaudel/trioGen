@@ -129,6 +129,18 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/mendelian_check/MendelianCheckOptionsBean.html#alleleFrequencyThreshold">alleleFrequencyThreshold</a></span></code>
+<div class="block">The allele frequency threshold.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/mendelian_check/MendelianCheckOptionsBean.html#chromosome">chromosome</a></span></code>
+<div class="block">The chromosome name.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/mendelian_check/MendelianCheckOptionsBean.html#destinationFile">destinationFile</a></span></code>
 <div class="block">File where to write the output.</div>
@@ -138,18 +150,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/mendelian_check/MendelianCheckOptionsBean.html#genotypesFile">genotypesFile</a></span></code>
 <div class="block">The genotypes file.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code><a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/mendelian_check/MendelianCheckOptionsBean.html#genotypesFileType">genotypesFileType</a></span></code>
-<div class="block">The genotypes file type.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>double</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/mendelian_check/MendelianCheckOptionsBean.html#maf">maf</a></span></code>
-<div class="block">The maf threshold.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -241,14 +241,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="block">The genotypes file.</div>
 </li>
 </ul>
-<a name="genotypesFileType">
+<a name="chromosome">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>genotypesFileType</h4>
-<pre>public&nbsp;<a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a> genotypesFileType</pre>
-<div class="block">The genotypes file type.</div>
+<h4>chromosome</h4>
+<pre>public final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> chromosome</pre>
+<div class="block">The chromosome name.</div>
 </li>
 </ul>
 <a name="variantFile">
@@ -271,14 +271,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="block">The trio file.</div>
 </li>
 </ul>
-<a name="maf">
+<a name="alleleFrequencyThreshold">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>maf</h4>
-<pre>public&nbsp;double maf</pre>
-<div class="block">The maf threshold.</div>
+<h4>alleleFrequencyThreshold</h4>
+<pre>public&nbsp;double alleleFrequencyThreshold</pre>
+<div class="block">The allele frequency threshold.</div>
 </li>
 </ul>
 <a name="destinationFile">
@@ -413,6 +413,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2020. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2021. All rights reserved.</small></p>
 </body>
 </html>

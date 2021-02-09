@@ -111,7 +111,7 @@ public class LinearModelOptionsBean {
 
         }
 
-        // The genotypes file
+        // The chromosome name
         chromosome = aLine.getOptionValue(LinearModelOptions.chromosome.opt);
 
         // The variant ids

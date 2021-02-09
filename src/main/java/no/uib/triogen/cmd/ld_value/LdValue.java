@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.ld.LdMatrixReader;
+import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.utils.Utils;
 import org.json.JSONObject;
@@ -152,42 +154,17 @@ public class LdValue {
 
         begin = Instant.now();
 
-        ConcurrentHashMap<String, HashMap<String, Double>> results = new ConcurrentHashMap<>(variantList.variantId.length);
+        ConcurrentHashMap<String, ArrayList<R2>> results = new ConcurrentHashMap<>(variantList.variantId.length);
 
         IntStream.range(0, variantList.variantId.length)
                 .parallel()
-                .filter(
-                        i -> !variantList.contig[i].equals("X") && !variantList.contig[i].equals("23")
-                )
                 .forEach(
                         i -> {
                             String variantId = variantList.variantId[i];
-                            String contig = variantList.VariantList.this.contig[i];
+                            String contig = variantList.contig[i];
                             LdMatrixReader ldMatrixReader = ldMatrixReaderMap.get(contig);
-                            HashMap<String, Double> result = ldMatrixReader.getR2(variantId);
-
-                            if (result != null) {
-
-                                if (bean.minR2 != null) {
-
-                                    result = result.entrySet()
-                                            .stream()
-                                            .filter(
-                                                    entry -> entry.getValue() >= bean.minR2
-                                            )
-                                            .collect(
-                                                    Collectors.toMap(
-                                                            Entry::getKey,
-                                                            Entry::getValue,
-                                                            (a, b) -> a,
-                                                            HashMap::new
-                                                    )
-                                            );
-                                }
-
-                                results.put(variantId, result);
-
-                            }
+                            ArrayList<R2> result = ldMatrixReader.getR2(variantId);
+                            results.put(variantId, result);
                         }
                 );
 
@@ -203,9 +180,9 @@ public class LdValue {
 
         JSONObject resultJson = new JSONObject();
 
-        for (Entry<String, HashMap<String, Double>> entry : results.entrySet()) {
+        for (Entry<String, ArrayList<R2>> entry : results.entrySet()) {
 
-            HashMap<String, Double> ldMap = entry.getValue();
+            ArrayList<R2> ldMap = entry.getValue();
 
             if (ldMap != null) {
 

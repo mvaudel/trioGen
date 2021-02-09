@@ -167,10 +167,9 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/simple_score/VariantWeightList.html#VariantWeightList-java.lang.String:A-java.lang.String:A-int:A-int:A-java.lang.String:A-double:A-">VariantWeightList</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variantId,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/simple_score/VariantWeightList.html#VariantWeightList-java.lang.String:A-java.lang.String:A-int:A-java.lang.String:A-double:A-">VariantWeightList</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variantId,
                  <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;chromosome,
-                 int[]&nbsp;start,
-                 int[]&nbsp;end,
+                 int[]&nbsp;position,
                  <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;effectAllele,
                  double[]&nbsp;weights)</code>
 <div class="block">Constructor.</div>
@@ -257,7 +256,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="VariantWeightList-java.lang.String:A-java.lang.String:A-int:A-int:A-java.lang.String:A-double:A-">
+<a name="VariantWeightList-java.lang.String:A-java.lang.String:A-int:A-java.lang.String:A-double:A-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -265,8 +264,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>VariantWeightList</h4>
 <pre>public&nbsp;VariantWeightList(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variantId,
                          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;chromosome,
-                         int[]&nbsp;start,
-                         int[]&nbsp;end,
+                         int[]&nbsp;position,
                          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;effectAllele,
                          double[]&nbsp;weights)</pre>
 <div class="block">Constructor.</div>
@@ -275,8 +273,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dd><code>variantId</code> - the ids of the variant to include</dd>
 <dd><code>chromosome</code> - the chromosome name where to look for</dd>
 <dd><code>effectAllele</code> - the effect allele</dd>
-<dd><code>start</code> - the position where to start looking for</dd>
-<dd><code>end</code> - the position were to stop looking for</dd>
+<dd><code>position</code> - the position of the variant</dd>
 <dd><code>weights</code> - the weights to use for the score</dd>
 </dl>
 </li>
@@ -375,6 +372,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2020. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2021. All rights reserved.</small></p>
 </body>
 </html>

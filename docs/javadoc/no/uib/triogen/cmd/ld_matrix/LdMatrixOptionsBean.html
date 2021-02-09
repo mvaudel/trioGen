@@ -130,14 +130,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#destinationFilePath">destinationFilePath</a></span></code>
-<div class="block">File where to write the output.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#chromosome">chromosome</a></span></code>
+<div class="block">The chromosome name.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>double</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#downstreamLoadingFactor">downstreamLoadingFactor</a></span></code>
-<div class="block">The downstream loading factor.</div>
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#destinationFilePath">destinationFilePath</a></span></code>
+<div class="block">File where to write the output.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -147,21 +147,9 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code><a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#genotypesFileType">genotypesFileType</a></span></code>
-<div class="block">The genotypes file type.</div>
-</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#hardCalls">hardCalls</a></span></code>
 <div class="block">Boolean indicating whether hard calls should be used.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>double</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#maf">maf</a></span></code>
-<div class="block">The maf threshold.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -183,18 +171,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#test">test</a></span></code>
-<div class="block">Test mode.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#testIteration">testIteration</a></span></code>
-<div class="block">Iteration test mode.</div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#timeOut">timeOut</a></span></code>
 <div class="block">The number of days before timeout.</div>
@@ -207,12 +183,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>double</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#upstreamLoadingFactor">upstreamLoadingFactor</a></span></code>
-<div class="block">The upstream loading factor.</div>
-</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#variantFile">variantFile</a></span></code>
 <div class="block">The file listing the variants to process.</div>
@@ -277,14 +247,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="block">The genotypes file.</div>
 </li>
 </ul>
-<a name="genotypesFileType">
+<a name="chromosome">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>genotypesFileType</h4>
-<pre>public&nbsp;<a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a> genotypesFileType</pre>
-<div class="block">The genotypes file type.</div>
+<h4>chromosome</h4>
+<pre>public final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> chromosome</pre>
+<div class="block">The chromosome name.</div>
 </li>
 </ul>
 <a name="variantFile">
@@ -327,16 +297,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="block">The minimal ld r2 to report (inclusive).</div>
 </li>
 </ul>
-<a name="maf">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>maf</h4>
-<pre>public&nbsp;double maf</pre>
-<div class="block">The maf threshold.</div>
-</li>
-</ul>
 <a name="hardCalls">
 <!--   -->
 </a>
@@ -367,54 +327,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="block">The number of variants to process simultaneously.</div>
 </li>
 </ul>
-<a name="downstreamLoadingFactor">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>downstreamLoadingFactor</h4>
-<pre>public&nbsp;double downstreamLoadingFactor</pre>
-<div class="block">The downstream loading factor.</div>
-</li>
-</ul>
-<a name="upstreamLoadingFactor">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>upstreamLoadingFactor</h4>
-<pre>public&nbsp;double upstreamLoadingFactor</pre>
-<div class="block">The upstream loading factor.</div>
-</li>
-</ul>
 <a name="timeOut">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>timeOut</h4>
-<pre>public&nbsp;int timeOut</pre>
-<div class="block">The number of days before timeout.</div>
-</li>
-</ul>
-<a name="test">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>test</h4>
-<pre>public final&nbsp;boolean test</pre>
-<div class="block">Test mode.</div>
-</li>
-</ul>
-<a name="testIteration">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>testIteration</h4>
-<pre>public final&nbsp;boolean testIteration</pre>
-<div class="block">Iteration test mode.</div>
+<h4>timeOut</h4>
+<pre>public&nbsp;int timeOut</pre>
+<div class="block">The number of days before timeout.</div>
 </li>
 </ul>
 </li>
@@ -509,6 +429,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2020. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2021. All rights reserved.</small></p>
 </body>
 </html>
