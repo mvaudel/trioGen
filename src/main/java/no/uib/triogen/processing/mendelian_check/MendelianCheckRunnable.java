@@ -159,9 +159,11 @@ public class MendelianCheckRunnable implements Runnable {
 
                             double prevalenceBefore = MendelianErrorEstimator.estimateMendelianErrorPrevalence(variantData, childToParentMap, alleleI);
 
-                            variantData.swapChildrenAlleles(alleleI);
+                            variantData.swapChildrenAlleles();
 
                             double prevalenceAfter = MendelianErrorEstimator.estimateMendelianErrorPrevalence(variantData, childToParentMap, alleleI);
+
+                            variantData.swapChildrenAlleles();
 
                             writer.writeLine(
                                     variantInformation.contig,

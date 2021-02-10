@@ -1,6 +1,7 @@
 package no.uib.triogen.io.genotypes.bgen;
 
 import java.io.UnsupportedEncodingException;
+import java.util.concurrent.ConcurrentHashMap;
 import static no.uib.triogen.io.IoUtils.ENCODING;
 
 /**
@@ -18,6 +19,45 @@ public class BgenUtils {
      * The identifier for the TrioGen formatted files.
      */
     public static final byte[] IDENTIFIER = getIdentifier();
+    /**
+     * Cache for powers of two used in probability encoding.
+     */
+    private static final ConcurrentHashMap<Integer, int[]> powersCache = new ConcurrentHashMap<>(1);
+    
+    /**
+     * Returns the powers of two for probability encoding in an array.
+     * 
+     * @param nBits The number of bits used for encoding.
+     * 
+     * @return The powers of two for probability encoding in an array.
+     */
+    public static int[] getPowers(
+    int nBits
+    ) {
+        
+        int[] powers = powersCache.get(nBits);
+        
+        if (powers == null) {
+            
+            powers = new int[nBits];
+
+                int value = 1;
+
+                for (int i = 0; i < nBits; i++) {
+
+                    powers[i] = value;
+
+                    value *= 2;
+
+                }
+                
+                powersCache.put(nBits, powers);
+            
+        }
+        
+        return powers;
+        
+    }
 
     /**
      * Returns the magic number.

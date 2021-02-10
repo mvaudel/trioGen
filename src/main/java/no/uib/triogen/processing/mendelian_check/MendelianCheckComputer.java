@@ -31,9 +31,17 @@ public class MendelianCheckComputer {
      */
     private final File genotypesFile;
     /**
-     * The inheritance map.
+     * The allele inheritance map.
      */
     private final HashMap<Integer, char[]> inheritanceMap;
+    /**
+     * The default ploidy for mothers.
+     */
+    private final int defaultMotherPloidy;
+    /**
+     * The default ploidy for fathers.
+     */
+    private final int defaultFatherPloidy;
     /**
      * The variants to process.
      */
@@ -65,6 +73,8 @@ public class MendelianCheckComputer {
      *
      * @param genotypesFile The file containing the genotypes.
      * @param inheritanceMap The inheritance map for the given file.
+     * @param defaultMotherPloidy The default ploidy for mothers.
+     * @param defaultFatherPloidy The default ploidy for fathers.
      * @param variantList The variants to process.
      * @param childToParentMap The map of trios.
      * @param destinationFile The path of the file where to write the results.
@@ -75,6 +85,8 @@ public class MendelianCheckComputer {
     public MendelianCheckComputer(
             File genotypesFile,
             HashMap<Integer, char[]> inheritanceMap,
+            int defaultMotherPloidy,
+            int defaultFatherPloidy,
             VariantList variantList,
             ChildToParentMap childToParentMap,
             File destinationFile,
@@ -85,6 +97,8 @@ public class MendelianCheckComputer {
 
         this.genotypesFile = genotypesFile;
         this.inheritanceMap = inheritanceMap;
+        this.defaultMotherPloidy = defaultMotherPloidy;
+        this.defaultFatherPloidy = defaultFatherPloidy;
         this.variantList = variantList;
         this.childToParentMap = childToParentMap;
         this.destinationFile = destinationFile;
@@ -98,7 +112,6 @@ public class MendelianCheckComputer {
      * Runs the matrix export.
      *
      * @param timeOutDays The time out time in days.
-     * @param test In test mode only a few variants will be processed.
      *
      * @throws InterruptedException exception thrown if the process was
      * interrupted
@@ -106,22 +119,21 @@ public class MendelianCheckComputer {
      * @throws IOException exception thrown if an i/o error occurred
      */
     public void run(
-            int timeOutDays,
-            boolean test
+            int timeOutDays
     ) throws InterruptedException, TimeoutException, IOException {
-
-        if (test) {
-
-            logger.logMessage("*** TEST MODE ***");
-
-        }
 
         logger.logMessage("Parsing " + genotypesFile.getAbsolutePath());
 
         long start = Instant.now().getEpochSecond();
 
         BgenIndex bgenIndex = BgenIndex.getBgenIndex(genotypesFile);
-        BgenFileReader bgenFileReader = new BgenFileReader(genotypesFile, bgenIndex, inheritanceMap);
+        BgenFileReader bgenFileReader = new BgenFileReader(
+                genotypesFile, 
+                bgenIndex, 
+                inheritanceMap, 
+                defaultMotherPloidy, 
+                defaultFatherPloidy
+        );
 
         long end = Instant.now().getEpochSecond();
         long duration = end - start;

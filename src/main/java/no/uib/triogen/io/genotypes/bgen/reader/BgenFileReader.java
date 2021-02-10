@@ -20,6 +20,9 @@ import no.uib.triogen.model.trio_genotypes.VariantList;
  */
 public class BgenFileReader implements AutoCloseable {
 
+    /**
+     * The index of the bgen file.
+     */
     private final BgenIndex bgenIndex;
     /**
      * The random access file.
@@ -37,19 +40,46 @@ public class BgenFileReader implements AutoCloseable {
      * The index of the variant in the bgen file.
      */
     private final int[] variantIndexes;
-
+    /**
+     * The allele inheritance map.
+     */
     private final HashMap<Integer, char[]> inheritanceMap;
+    /**
+     * The default ploidy for mothers.
+     */
+    private final int defaultMotherPloidy;
+    /**
+     * The default ploidy for fathers.
+     */
+    private final int defaultFatherPloidy;
 
+    /**
+     * Constructor.
+     * 
+     * @param bgenFile The file to read.
+     * @param bgenIndex The index of the file.
+     * @param variantList The list of variants to read. If null, all variants are included.
+     * @param distance The distance to read around the provided variants.
+     * @param inheritanceMap The allele inheritance map to use.
+     * @param defaultMotherPloidy The default ploidy for mothers.
+     * @param defaultFatherPloidy The default ploidy for fathers.
+     * 
+     * @throws IOException Exception thrown if an error occurs while reading the file.
+     */
     public BgenFileReader(
             File bgenFile,
             BgenIndex bgenIndex,
             VariantList variantList,
             int distance,
-            HashMap<Integer, char[]> inheritanceMap
+            HashMap<Integer, char[]> inheritanceMap,
+            int defaultMotherPloidy,
+            int defaultFatherPloidy
     ) throws IOException {
 
         this.bgenIndex = bgenIndex;
         this.inheritanceMap = inheritanceMap;
+        this.defaultMotherPloidy = defaultMotherPloidy;
+        this.defaultFatherPloidy = defaultFatherPloidy;
 
         raf = new RandomAccessFile(bgenFile, "r");
 
@@ -124,22 +154,43 @@ public class BgenFileReader implements AutoCloseable {
         }
     }
 
+    /**
+     * Constructor.
+     * 
+     * @param bgenFile The file to read.
+     * @param bgenIndex The index of the file.
+     * @param inheritanceMap The allele inheritance map to use.
+     * @param defaultMotherPloidy The default ploidy for mothers.
+     * @param defaultFatherPloidy The default ploidy for fathers.
+     * 
+     * @throws IOException Exception thrown if an error occurs while reading the file.
+     */
     public BgenFileReader(
             File bgenFile,
             BgenIndex bgenIndex,
-            HashMap<Integer, char[]> inheritanceMap
+            HashMap<Integer, char[]> inheritanceMap,
+            int defaultMotherPloidy,
+            int defaultFatherPloidy
     ) throws IOException {
 
-        this(bgenFile, bgenIndex, null, 0, inheritanceMap);
-        
+        this(
+                bgenFile, 
+                bgenIndex, 
+                null, 
+                0, 
+                inheritanceMap, 
+                defaultFatherPloidy, 
+                defaultFatherPloidy
+        );
     }
 
-    public int getNVariants() {
-
-        return mappedByteBuffers.length;
-
-    }
-
+    /**
+     * Returns information on the given variant.
+     * 
+     * @param i The index of the variant of interest.
+     * 
+     * @return Information on the given variant.
+     */
     public VariantInformation getVariantInformation(int i) {
 
         int index = variantIndexes == null ? i : variantIndexes[i];
@@ -148,6 +199,13 @@ public class BgenFileReader implements AutoCloseable {
 
     }
 
+    /**
+     * Returns a buffer wrapped around the data block of the given variant.
+     * 
+     * @param i The index of the variant of interest.
+     * 
+     * @return A buffer wrapped around the data block of the given variant.
+     */
     public ByteBuffer getDataBlock(int i) {
 
         int index = variantIndexes == null ? i : variantIndexes[i];
@@ -157,6 +215,13 @@ public class BgenFileReader implements AutoCloseable {
 
     }
 
+    /**
+     * Returns the length of the block of the given variant.
+     * 
+     * @param i The index of the variant of interest.
+     * 
+     * @return The length of the block of the given variant.
+     */
     public long getBlockLength(int i) {
 
         int index = variantIndexes == null ? i : variantIndexes[i];
@@ -165,12 +230,24 @@ public class BgenFileReader implements AutoCloseable {
 
     }
 
+    /**
+     * The number of variants mapped.
+     * 
+     * @return The number of variants mapped.
+     */
     public int nVariants() {
 
         return mappedByteBuffers.length;
 
     }
 
+    /**
+     * Returns the variant data for the given variant.
+     * 
+     * @param i The index of the variant of interest.
+     * 
+     * @return The variant data for the given variant.
+     */
     public BgenVariantData getVariantData(int i) {
 
         VariantInformation variantInformation = getVariantInformation(i);
@@ -189,7 +266,9 @@ public class BgenFileReader implements AutoCloseable {
                 buffer,
                 (int) blockLength,
                 bgenIndex.compressionType,
-                inheritanceMap
+                inheritanceMap,
+                defaultMotherPloidy,
+                defaultFatherPloidy
         );
     }
 
@@ -204,6 +283,5 @@ public class BgenFileReader implements AutoCloseable {
             IoUtils.closeBuffer(mappedByteBuffer);
 
         }
-
     }
 }

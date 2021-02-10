@@ -180,16 +180,15 @@ public class LinearModelRunnable implements Runnable {
 
                         if (testedAlleleIndexes.length > 0) {
 
-                            for (int alleleI : testedAlleleIndexes) {
+                            int alleleI = testedAlleleIndexes[0];
 
-                                // Estimate the prevalence of Mendelian errors, swap child alleles if >50%
-                                double mendelianErrors = MendelianErrorEstimator.estimateMendelianErrorPrevalence(variantData, childToParentMap, alleleI);
+                            // Estimate the prevalence of Mendelian errors, swap child alleles if >50%
+                            double mendelianErrors = MendelianErrorEstimator.estimateMendelianErrorPrevalence(variantData, childToParentMap, alleleI);
 
-                                if (!Double.isNaN(mendelianErrors) && mendelianErrors > 0.5) {
+                            if (!Double.isNaN(mendelianErrors) && mendelianErrors > 0.5) {
 
-                                    variantData.swapChildrenAlleles(alleleI);
+                                variantData.swapChildrenAlleles();
 
-                                }
                             }
 
                             // Run linear model
@@ -251,14 +250,12 @@ public class LinearModelRunnable implements Runnable {
             int[] childIndexes = covariatesHandler.originalIndexMap.get(phenoName);
 
             // Check transmission
-            double hMntMin = Double.NaN;
-            double hMntMax = Double.NaN;
-            double hMtMin = Double.NaN;
-            double hMtMax = Double.NaN;
-            double hFtMin = Double.NaN;
-            double hFtMax = Double.NaN;
-            double hFntMin = Double.NaN;
-            double hFntMax = Double.NaN;
+            double cMin = Double.NaN;
+            double cMax = Double.NaN;
+            double mMin = Double.NaN;
+            double mMax = Double.NaN;
+            double fMin = Double.NaN;
+            double fMax = Double.NaN;
 
             for (int childIndex : childIndexes) {
 
@@ -266,56 +263,61 @@ public class LinearModelRunnable implements Runnable {
                 String motherId = childToParentMap.getMother(childId);
                 String fatherId = childToParentMap.getFather(childId);
 
-                double[] haplotypes = variantData.getHaplotypes(childId, motherId, fatherId, alleleI);
+                if (variantData.contains(childId)) {
 
-                if (Double.isNaN(hMntMin) || haplotypes[0] < hMntMin) {
+                    double cValue = variantData.getSummedProbability(childId, alleleI);
 
-                    hMntMin = haplotypes[0];
+                    if (Double.isNaN(cMin) || cValue < cMin) {
 
+                        cMin = cValue;
+
+                    }
+                    if (Double.isNaN(cMax) || cValue > cMax) {
+
+                        cMax = cValue;
+
+                    }
                 }
-                if (Double.isNaN(hMntMax) || haplotypes[0] > hMntMax) {
 
-                    hMntMax = haplotypes[0];
+                if (variantData.contains(motherId)) {
 
+                    double mValue = variantData.getSummedProbability(motherId, alleleI);
+
+                    if (Double.isNaN(mMin) || mValue < mMin) {
+
+                        mMin = mValue;
+
+                    }
+                    if (Double.isNaN(mMax) || mValue > mMax) {
+
+                        mMax = mValue;
+
+                    }
                 }
-                if (Double.isNaN(hMtMin) || haplotypes[1] < hMtMin) {
 
-                    hMtMin = haplotypes[1];
+                if (variantData.contains(fatherId)) {
 
-                }
-                if (Double.isNaN(hMtMax) || haplotypes[1] > hMtMax) {
+                    double fValue = variantData.getSummedProbability(fatherId, alleleI);
 
-                    hMtMax = haplotypes[1];
+                    if (Double.isNaN(fMin) || fValue < fMin) {
 
-                }
-                if (Double.isNaN(hFtMin) || haplotypes[2] < hFtMin) {
+                        fMin = fValue;
 
-                    hFtMin = haplotypes[2];
+                    }
+                    if (Double.isNaN(fMax) || fValue > fMax) {
 
-                }
-                if (Double.isNaN(hFtMax) || haplotypes[2] > hFtMax) {
+                        fMax = fValue;
 
-                    hFtMax = haplotypes[2];
-
-                }
-                if (Double.isNaN(hFntMin) || haplotypes[3] < hFntMin) {
-
-                    hFntMin = haplotypes[3];
-
-                }
-                if (Double.isNaN(hFntMax) || haplotypes[3] > hFntMax) {
-
-                    hFntMax = haplotypes[3];
-
+                    }
                 }
             }
 
-            if (!x0 || hMntMax - hMntMin > 0.5 || hMtMax - hMtMin > 0.5 || hFtMax - hFtMin > 0.5 || hFntMax - hFntMin > 0.5) {
+            if (!x0 || cMax - cMin > 0.5 || mMax - mMin > 0.5 || fMax - fMin > 0.5) {
 
                 // Prepare the objects to use for the models, gather values for the histograms
                 double[] phenoValues = phenotypesHandler.phenoMap.get(phenoName);
                 double phenoMean = phenotypesHandler.phenoMeanMap.get(phenoName);
-                double rss0 = 0.0;
+                double[] rss0s = new double[phenoValues.length];
 
                 ArrayList<RegressionResult> regressionResults = new ArrayList<>(models.length);
 
@@ -347,80 +349,90 @@ public class LinearModelRunnable implements Runnable {
 
                     int childIndex = childIndexes[i];
 
-                    double y = phenotypes[i];
-
-                    double distY = y - phenoMean;
-                    rss0 += distY * distY;
-
                     String childId = childToParentMap.children[childIndex];
                     String motherId = childToParentMap.getMother(childId);
                     String fatherId = childToParentMap.getFather(childId);
 
-                    double[] haplotypes = variantData.getHaplotypes(
-                            childId,
-                            motherId,
-                            fatherId,
-                            alleleI
-                    );
+                    if (variantData.contains(childId) && variantData.contains(motherId) && variantData.contains(fatherId)) {
 
-                    for (int j = 0; j < 4; j++) {
+                        double[] haplotypes = variantData.getHaplotypes(
+                                childId,
+                                motherId,
+                                fatherId,
+                                alleleI
+                        );
 
-                        double hJ = haplotypes[j];
+                        double distY = phenotypes[i] - phenoMean;
+                        rss0s[i] = distY * distY;
 
-                        TreeMap<Double, Integer> hHistJ = hHist[j];
-                        Integer frequency = hHistJ.get(hJ);
+                        for (int j = 0; j < 4; j++) {
+
+                            double hJ = haplotypes[j];
+
+                            TreeMap<Double, Integer> hHistJ = hHist[j];
+                            Integer frequency = hHistJ.get(hJ);
+
+                            if (frequency != null) {
+
+                                hHistJ.put(hJ, frequency + 1);
+
+                            } else {
+
+                                hHistJ.put(hJ, 1);
+
+                            }
+                        }
+                    }
+
+                    if (variantData.contains(childId)) {
+
+                        double nAltChild = variantData.getSummedProbability(childId, alleleI);
+
+                        Integer frequency = childHist.get(nAltChild);
 
                         if (frequency != null) {
 
-                            hHistJ.put(hJ, frequency + 1);
+                            childHist.put(nAltChild, frequency + 1);
 
                         } else {
 
-                            hHistJ.put(hJ, 1);
+                            childHist.put(nAltChild, 1);
 
                         }
                     }
 
-                    double nAltChild = haplotypes[1] + haplotypes[2];
+                    if (variantData.contains(motherId)) {
 
-                    Integer frequency = childHist.get(nAltChild);
+                        double nAltMother = variantData.getSummedProbability(motherId, alleleI);
 
-                    if (frequency != null) {
+                        Integer frequency = motherHist.get(nAltMother);
 
-                        childHist.put(nAltChild, frequency + 1);
+                        if (frequency != null) {
 
-                    } else {
+                            motherHist.put(nAltMother, frequency + 1);
 
-                        childHist.put(nAltChild, 1);
+                        } else {
 
+                            motherHist.put(nAltMother, 1);
+
+                        }
                     }
 
-                    double nAltMother = haplotypes[0] + haplotypes[1];
+                    if (variantData.contains(fatherId)) {
 
-                    frequency = motherHist.get(nAltMother);
+                        double nAltFather = variantData.getSummedProbability(fatherId, alleleI);
 
-                    if (frequency != null) {
+                        Integer frequency = fatherHist.get(nAltFather);
 
-                        motherHist.put(nAltMother, frequency + 1);
+                        if (frequency != null) {
 
-                    } else {
+                            fatherHist.put(nAltFather, frequency + 1);
 
-                        motherHist.put(nAltMother, 1);
+                        } else {
 
-                    }
+                            fatherHist.put(nAltFather, 1);
 
-                    double nAltFather = haplotypes[2] + haplotypes[3];
-
-                    frequency = fatherHist.get(nAltFather);
-
-                    if (frequency != null) {
-
-                        fatherHist.put(nAltFather, frequency + 1);
-
-                    } else {
-
-                        fatherHist.put(nAltFather, 1);
-
+                        }
                     }
                 }
 
@@ -446,6 +458,56 @@ public class LinearModelRunnable implements Runnable {
                         ")"
                 );
 
+                // Get matrices for haplotypes and individuals
+                double[][] haplotypeX = new double[childIndexes.length][4];
+                double[][] childX = new double[childIndexes.length][1];
+                double[][] motherX = new double[childIndexes.length][1];
+                double[][] fatherX = new double[childIndexes.length][1];
+
+                for (int i = 0; i < childIndexes.length; i++) {
+
+                    int childIndex = childIndexes[i];
+
+                    String childId = childToParentMap.children[childIndex];
+                    String motherId = childToParentMap.getMother(childId);
+                    String fatherId = childToParentMap.getFather(childId);
+
+                    if (variantData.contains(childId)) {
+
+                        double[] haplotypes = variantData.getHaplotypes(
+                                childId,
+                                motherId,
+                                fatherId,
+                                alleleI
+                        );
+                        haplotypeX[i][0] = haplotypes[0];
+                        haplotypeX[i][1] = haplotypes[1];
+                        haplotypeX[i][2] = haplotypes[2];
+                        haplotypeX[i][3] = haplotypes[3];
+
+                        childX[i][0] = variantData.getSummedProbability(childId, alleleI);
+
+                    }
+
+                    if (variantData.contains(motherId)) {
+
+                        motherX[i][0] = variantData.getSummedProbability(motherId, alleleI);
+
+                    }
+
+                    if (variantData.contains(fatherId)) {
+
+                        fatherX[i][0] = variantData.getSummedProbability(fatherId, alleleI);
+
+                    }
+                }
+
+                // Adjust for covariates
+                haplotypeX = covariatesHandler.getAdjustedValues(phenoName, haplotypeX);
+                childX = covariatesHandler.getAdjustedValues(phenoName, childX);
+                motherX = covariatesHandler.getAdjustedValues(phenoName, motherX);
+                fatherX = covariatesHandler.getAdjustedValues(phenoName, fatherX);
+
                 // Run the regressions
                 OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
                 HashMap<String, RegressionResult> regressionRestultsMap = new HashMap<>(regressionResults.size());
@@ -454,50 +516,92 @@ public class LinearModelRunnable implements Runnable {
 
                     Model model = models[modelI];
 
-                    if (Model.likelyNotSingular(
-                            model,
-                            hMntMin,
-                            hMntMax,
-                            hMtMin,
-                            hMtMax,
-                            hFtMin,
-                            hFtMax,
-                            hFntMin,
-                            hFntMax
-                    )) {
+                    // Get the samples to use
+                    ArrayList<Integer> rowsToRun = new ArrayList<>(childIndexes.length);
 
-                        // Set input
-                        double[][] x = new double[childIndexes.length][model.betaNames.length];
+                    for (int i = 0; i < childIndexes.length; i++) {
 
-                        for (int i = 0; i < childIndexes.length; i++) {
+                        int childIndex = childIndexes[i];
 
-                            int childIndex = childIndexes[i];
+                        String childId = childToParentMap.children[childIndex];
+                        String motherId = childToParentMap.getMother(childId);
+                        String fatherId = childToParentMap.getFather(childId);
 
-                            String childId = childToParentMap.children[childIndex];
-                            String motherId = childToParentMap.getMother(childId);
-                            String fatherId = childToParentMap.getFather(childId);
+                        if (Model.hasData(model, childId, motherId, fatherId, variantData)) {
 
-                            Model.fillX(
-                                    x,
-                                    model,
-                                    i,
-                                    childId,
-                                    motherId,
-                                    fatherId,
-                                    variantData,
-                                    variantIndex
-                            );
+                            rowsToRun.add(i);
+
                         }
+                    }
 
-                        // Adjust for covariates
-                        x = covariatesHandler.getAdjustedValues(phenoName, x);
+                    // Create the matrices to use in the regression.
+                    double[][] x = new double[rowsToRun.size()][model.betaNames.length];
+                    double[] min = new double[model.betaNames.length];
+                    Arrays.fill(min, Double.NaN);
+                    double[] max = new double[model.betaNames.length];
+                    Arrays.fill(max, Double.NaN);
+                    double[] y = new double[rowsToRun.size()];
+                    double rss0 = 0.0;
+
+                    for (int i = 0; i < rowsToRun.size(); i++) {
+
+                        for (int j = 0; j < model.betaNames.length; j++) {
+
+                            int childIndex = rowsToRun.get(i);
+
+                            y[i] = phenoValues[childIndex];
+                            rss0 += rss0s[childIndex];
+
+                            double xValue = Model.getXValueAt(
+                                    model,
+                                    childIndex,
+                                    j,
+                                    haplotypeX,
+                                    childX,
+                                    motherX,
+                                    fatherX
+                            );
+
+                            x[i][j] = xValue;
+
+                            double minValue = min[j];
+
+                            if (Double.isNaN(minValue) || xValue < minValue) {
+
+                                min[j] = xValue;
+
+                            }
+
+                            double maxValue = max[j];
+
+                            if (Double.isNaN(maxValue) || xValue > maxValue) {
+
+                                max[j] = xValue;
+
+                            }
+                        }
+                    }
+
+                    // Check singularities.
+                    boolean singularity = false;
+
+                    for (int betaI = 0; betaI < min.length; betaI++) {
+
+                        if (Double.isNaN(max[betaI]) || Double.isNaN(min[betaI]) || max[betaI] - min[betaI] < 0.1) {
+
+                            singularity = true;
+
+                        }
+                    }
+
+                    if (!singularity) {
 
                         // Run regression
                         RegressionResult regressionResult = regressionResults.get(modelI);
 
                         try {
 
-                            regression.newSampleData(phenoValues, x);
+                            regression.newSampleData(y, x);
                             double[] betas = regression.estimateRegressionParameters();
                             double[] betaStandardErrors = regression.estimateRegressionParametersStandardErrors();
                             double[] betaResiduals = regression.estimateResiduals();
@@ -520,16 +624,7 @@ public class LinearModelRunnable implements Runnable {
                                             model.name(),
                                             phenoName,
                                             "Singularity detected",
-                                            getSingularityDebugReport(
-                                                    hMntMin,
-                                                    hMntMax,
-                                                    hMtMin,
-                                                    hMtMax,
-                                                    hFtMin,
-                                                    hFtMax,
-                                                    hFntMin,
-                                                    hFntMax
-                                            )
+                                            "SinglularityException"
                                     )
                             );
 
@@ -552,87 +647,78 @@ public class LinearModelRunnable implements Runnable {
                                         model.name(),
                                         phenoName,
                                         "Singularity anticipated",
-                                        getSingularityDebugReport(
-                                                hMntMin,
-                                                hMntMax,
-                                                hMtMin,
-                                                hMtMax,
-                                                hFtMin,
-                                                hFtMax,
-                                                hFntMin,
-                                                hFntMax
-                                        )
+                                        "xmax - xmin < 0.5"
                                 )
                         );
                     }
+
+                    // Estimate model significance
+                    regressionRestultsMap.values()
+                            .forEach(
+                                    regressionResult -> regressionResult.computeModelSignificance(
+                                            regressionRestultsMap
+                                    )
+                            );
+
+                    // Estimate the share of mendelian errors
+                    double mendelianErrors = MendelianErrorEstimator.estimateMendelianErrorPrevalence(variantData, childToParentMap, alleleI);
+
+                    // Export
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder
+                            .append(phenoName)
+                            .append(IoUtils.SEPARATOR)
+                            .append(variantInformation.contig)
+                            .append(IoUtils.SEPARATOR)
+                            .append(variantInformation.position)
+                            .append(IoUtils.SEPARATOR)
+                            .append(variantInformation.id)
+                            .append(IoUtils.SEPARATOR)
+                            .append(variantInformation.rsId)
+                            .append(IoUtils.SEPARATOR)
+                            .append(variantInformation.alleles[alleleI])
+                            .append(IoUtils.SEPARATOR)
+                            .append(variantInformation.getOtherAllele(alleleI))
+                            .append(IoUtils.SEPARATOR)
+                            .append(childIndexes.length)
+                            .append(IoUtils.SEPARATOR)
+                            .append(altHistograms)
+                            .append(IoUtils.SEPARATOR)
+                            .append(hHistograms)
+                            .append(IoUtils.SEPARATOR)
+                            .append(mendelianErrors);
+
+                    regressionResults
+                            .forEach(
+                                    regressionResult -> regressionResult.appendResults(stringBuilder)
+                            );
+
+                    String line = stringBuilder
+                            .append(IoUtils.LINE_SEPARATOR)
+                            .toString();
+
+                    gzIndexMutex.acquire();
+
+                    IndexedGzCoordinates coordinates = outputWriter.append(line);
+
+                    resultsIndex.writeLine(
+                            variantInformation.contig,
+                            Integer.toString(variantInformation.position),
+                            variantInformation.id,
+                            variantInformation.rsId,
+                            phenoName,
+                            Integer.toString(coordinates.compressedLength),
+                            Integer.toString(coordinates.uncompressedLength)
+                    );
+
+                    gzIndexMutex.release();
+
                 }
-
-                // Estimate model significance
-                regressionRestultsMap.values()
-                        .forEach(
-                                regressionResult -> regressionResult.computeModelSignificance(
-                                        regressionRestultsMap
-                                )
-                        );
-
-                // Estimate the share of mendelian errors
-                double mendelianErrors = MendelianErrorEstimator.estimateMendelianErrorPrevalence(variantData, childToParentMap, alleleI);
-
-                // Export
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder
-                        .append(phenoName)
-                        .append(IoUtils.SEPARATOR)
-                        .append(variantInformation.contig)
-                        .append(IoUtils.SEPARATOR)
-                        .append(variantInformation.position)
-                        .append(IoUtils.SEPARATOR)
-                        .append(variantInformation.id)
-                        .append(IoUtils.SEPARATOR)
-                        .append(variantInformation.rsId)
-                        .append(IoUtils.SEPARATOR)
-                        .append(variantInformation.alleles[alleleI])
-                        .append(IoUtils.SEPARATOR)
-                        .append(variantInformation.getOtherAllele(alleleI))
-                        .append(IoUtils.SEPARATOR)
-                        .append(childIndexes.length)
-                        .append(IoUtils.SEPARATOR)
-                        .append(altHistograms)
-                        .append(IoUtils.SEPARATOR)
-                        .append(hHistograms)
-                        .append(IoUtils.SEPARATOR)
-                        .append(mendelianErrors);
-
-                regressionResults
-                        .forEach(
-                                regressionResult -> regressionResult.appendResults(stringBuilder)
-                        );
-
-                String line = stringBuilder
-                        .append(IoUtils.LINE_SEPARATOR)
-                        .toString();
-
-                gzIndexMutex.acquire();
-
-                IndexedGzCoordinates coordinates = outputWriter.append(line);
-
-                resultsIndex.writeLine(
-                        variantInformation.contig,
-                        Integer.toString(variantInformation.position),
-                        variantInformation.id,
-                        variantInformation.rsId,
-                        phenoName,
-                        Integer.toString(coordinates.compressedLength),
-                        Integer.toString(coordinates.uncompressedLength)
-                );
-
-                gzIndexMutex.release();
-
             } else {
 
                 logger.logVariant(
                         variantInformation.id,
-                        "no haplotype difference"
+                        "Same alleles in all individuals."
                 );
             }
         }
@@ -660,47 +746,6 @@ public class LinearModelRunnable implements Runnable {
                 .collect(
                         Collectors.joining(",")
                 );
-    }
-
-    /**
-     * Returns a summary of the anticipated singularities.
-     *
-     * @param hMntMin The minimal number of maternal non-transmitted alleles.
-     * @param hMntMax The maximal number of maternal non-transmitted alleles.
-     * @param hMtMin The minimal number of maternal transmitted alleles.
-     * @param hMtMax The maximal number of maternal transmitted alleles.
-     * @param hFtMin The minimal number of paternal transmitted alleles.
-     * @param hFtMax The maximal number of paternal transmitted alleles.
-     * @param hFntMin The minimal number of paternal non-transmitted alleles.
-     * @param hFntMax The maximal number of paternal non-transmitted alleles.
-     *
-     * @return Returns a summary of the anticipated singularities.
-     */
-    private String getSingularityDebugReport(
-            double hMntMin,
-            double hMntMax,
-            double hMtMin,
-            double hMtMax,
-            double hFtMin,
-            double hFtMax,
-            double hFntMin,
-            double hFntMax
-    ) {
-
-        StringBuilder report = new StringBuilder();
-        report.append("(");
-        report.append("hMntMin: ").append(hMntMin).append("; ");
-        report.append("hMntMax: ").append(hMntMax).append("; ");
-        report.append("hMtMin: ").append(hMtMin).append("; ");
-        report.append("hMtMax: ").append(hMtMax).append("; ");
-        report.append("hFtMin: ").append(hFtMin).append("; ");
-        report.append("hFtMax: ").append(hFtMax).append("; ");
-        report.append("hFntMin: ").append(hFntMin).append("; ");
-        report.append("hFntMax: ").append(hFntMax);
-        report.append(")");
-
-        return report.toString();
-
     }
 
     /**

@@ -31,9 +31,17 @@ public class SimpleScoreComputer {
      */
     private final File genotypesFile;
     /**
-     * The inheritance map.
+     * The allele inheritance map.
      */
     private final HashMap<Integer, char[]> inheritanceMap;
+    /**
+     * The default ploidy for mothers.
+     */
+    private final int defaultMotherPloidy;
+    /**
+     * The default ploidy for fathers.
+     */
+    private final int defaultFatherPloidy;
     /**
      * The map of trios.
      */
@@ -62,6 +70,8 @@ public class SimpleScoreComputer {
     public SimpleScoreComputer(
             File genotypesFile,
             HashMap<Integer, char[]> inheritanceMap,
+            int defaultMotherPloidy,
+            int defaultFatherPloidy,
             ChildToParentMap childToParentMap,
             VariantWeightList variantWeightList,
             File phenotypesFile,
@@ -72,6 +82,8 @@ public class SimpleScoreComputer {
 
         this.genotypesFile = genotypesFile;
         this.inheritanceMap = inheritanceMap;
+        this.defaultMotherPloidy = defaultMotherPloidy;
+        this.defaultFatherPloidy = defaultFatherPloidy;
         this.childToParentMap = childToParentMap;
         this.variantWeightList = variantWeightList;
         this.phenotypesFile = phenotypesFile;
@@ -88,7 +100,13 @@ public class SimpleScoreComputer {
         long start = Instant.now().getEpochSecond();
 
         BgenIndex bgenIndex = BgenIndex.getBgenIndex(genotypesFile);
-        BgenFileReader bgenFileReader = new BgenFileReader(genotypesFile, bgenIndex, inheritanceMap);
+        BgenFileReader bgenFileReader  = new BgenFileReader(
+                genotypesFile, 
+                bgenIndex, 
+                inheritanceMap, 
+                defaultMotherPloidy, 
+                defaultFatherPloidy
+        );
 
         long end = Instant.now().getEpochSecond();
         long duration = end - start;

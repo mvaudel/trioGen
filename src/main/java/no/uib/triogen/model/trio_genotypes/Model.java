@@ -1,5 +1,6 @@
 package no.uib.triogen.model.trio_genotypes;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.stream.Collectors;
@@ -220,138 +221,80 @@ public enum Model {
     }
 
     /**
-     * Fills the given x matrix based on the model.
+     * Indicates whether there is enough data to compute the given model.
      *
-     * @param x The x matrix.
      * @param model The model.
-     * @param index The index where to fill the matrix.
      * @param childId The id of the child.
      * @param motherId The id of the mother.
      * @param fatherId The id of the father.
      * @param bgenVariantData The genotypes provider to use for this variant.
-     * @param testedAlleleIndex The index of the tested allele.
+     *
+     * @return A boolean indicating whether there is enough data to compute the
+     * given model.
      */
-    public static void fillX(
-            double[][] x,
+    public static boolean hasData(
             Model model,
-            int index,
             String childId,
             String motherId,
             String fatherId,
-            BgenVariantData bgenVariantData,
-            int testedAlleleIndex
+            BgenVariantData bgenVariantData
     ) {
-
-        double[] haplotypes = bgenVariantData.getHaplotypes(
-                childId,
-                motherId,
-                fatherId,
-                index
-        );
-        double child = haplotypes[1] + haplotypes[2];
-        double mother = haplotypes[0] + haplotypes[1];
-        double father = haplotypes[2] + haplotypes[3];
 
         switch (model) {
 
             case h:
-
-                x[index][0] = haplotypes[0];
-                x[index][1] = haplotypes[1];
-                x[index][2] = haplotypes[2];
-                x[index][3] = haplotypes[3];
-                return;
+                return bgenVariantData.contains(childId) && bgenVariantData.contains(motherId) && bgenVariantData.contains(fatherId);
 
             case cmf:
-                x[index][0] = child;
-                x[index][1] = mother;
-                x[index][2] = father;
-                return;
+                return bgenVariantData.contains(childId) && bgenVariantData.contains(motherId) && bgenVariantData.contains(fatherId);
 
             case cmf_mt:
-                x[index][0] = child;
-                x[index][1] = mother;
-                x[index][2] = father;
-                x[index][3] = haplotypes[1];
-                return;
+                return bgenVariantData.contains(childId) && bgenVariantData.contains(motherId) && bgenVariantData.contains(fatherId);
 
             case cmf_ft:
-                x[index][0] = child;
-                x[index][1] = mother;
-                x[index][2] = father;
-                x[index][3] = haplotypes[2];
-                return;
+                return bgenVariantData.contains(childId) && bgenVariantData.contains(motherId) && bgenVariantData.contains(fatherId);
 
             case cm:
-                x[index][0] = child;
-                x[index][1] = mother;
-                return;
+                return bgenVariantData.contains(childId) && bgenVariantData.contains(motherId);
 
             case cm_mt:
-                x[index][0] = child;
-                x[index][1] = mother;
-                x[index][2] = haplotypes[1];
-                return;
+                return bgenVariantData.contains(childId) && bgenVariantData.contains(motherId);
 
             case cm_ft:
-                x[index][0] = child;
-                x[index][1] = mother;
-                x[index][2] = haplotypes[2];
-                return;
+                return bgenVariantData.contains(childId) && bgenVariantData.contains(motherId);
 
             case cf:
-                x[index][0] = child;
-                x[index][1] = father;
-                return;
+                return bgenVariantData.contains(childId) && bgenVariantData.contains(fatherId);
 
             case cf_mt:
-                x[index][0] = child;
-                x[index][1] = father;
-                x[index][2] = haplotypes[1];
-                return;
+                return bgenVariantData.contains(childId) && bgenVariantData.contains(fatherId);
 
             case cf_ft:
-                x[index][0] = child;
-                x[index][1] = father;
-                x[index][2] = haplotypes[2];
-                return;
+                return bgenVariantData.contains(childId) && bgenVariantData.contains(fatherId);
 
             case mf:
-                x[index][0] = mother;
-                x[index][1] = father;
-                return;
+                return bgenVariantData.contains(motherId) && bgenVariantData.contains(fatherId);
 
             case c:
-                x[index][0] = child;
-                return;
+                return bgenVariantData.contains(childId);
 
             case c_mt:
-                x[index][0] = child;
-                x[index][1] = haplotypes[1];
-                return;
+                return bgenVariantData.contains(childId);
 
             case c_ft:
-                x[index][0] = child;
-                x[index][1] = haplotypes[2];
-                return;
+                return bgenVariantData.contains(childId);
 
             case m:
-                x[index][0] = mother;
-                return;
+                return bgenVariantData.contains(motherId);
 
             case m_mt:
-                x[index][0] = mother;
-                x[index][1] = haplotypes[1];
-                return;
+                return bgenVariantData.contains(childId) && bgenVariantData.contains(motherId);
 
             case f:
-                x[index][0] = father;
-                return;
+                return bgenVariantData.contains(fatherId);
 
             case f_ft:
-                x[index][0] = father;
-                x[index][1] = haplotypes[2];
-                return;
+                return bgenVariantData.contains(childId) && bgenVariantData.contains(fatherId);
 
             default:
 
@@ -361,92 +304,198 @@ public enum Model {
     }
 
     /**
-     * Returns a boolean indicating whether the matrix is likely not singular.
+     * Returns the x matrix to use in the model.
      *
      * @param model The model.
-     * @param hMntMin The minimal number of maternal non-transmitted alleles.
-     * @param hMntMax The maximal number of maternal non-transmitted alleles.
-     * @param hMtMin The minimal number of maternal transmitted alleles.
-     * @param hMtMax The maximal number of maternal transmitted alleles.
-     * @param hFtMin The minimal number of paternal transmitted alleles.
-     * @param hFtMax The maximal number of paternal transmitted alleles.
-     * @param hFntMin The minimal number of paternal non-transmitted alleles.
-     * @param hFntMax The maximal number of paternal non-transmitted alleles.
-     *
-     * @return a boolean indicating whether the matrix is likely not singular
+     * @param i The row index in the matrices.
+     * @param j The column index in the model.
+     * @param haplotypeX The matrix of haplotypes.
+     * @param childX The matrix of child genotypes.
+     * @param motherX The matrix of mother genotypes.
+     * @param fatherX The matrix of father genotypes.
+     * 
+     * @return the matrix to use in the regression.
      */
-    public static boolean likelyNotSingular(
+    public static double getXValueAt(
             Model model,
-            double hMntMin,
-            double hMntMax,
-            double hMtMin,
-            double hMtMax,
-            double hFtMin,
-            double hFtMax,
-            double hFntMin,
-            double hFntMax
+            int i,
+            int j,
+            double[][] haplotypeX,
+            double[][] childX,
+            double[][] motherX,
+            double[][] fatherX
     ) {
 
         switch (model) {
 
             case h:
-
-                return hMntMax - hMntMin > 0.5 && hMtMax - hMtMin > 0.5 && hFtMax - hFtMin > 0.5 && hFntMax - hFntMin > 0.5;
+                
+                return haplotypeX[i][j];
 
             case cmf:
-                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5;
+                
+                switch (j) {
+                    
+                    case 0: return childX[i][0];
+                    case 1: return motherX[i][0];
+                    case 2: return fatherX[i][0];
+                    default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
+                    
+                }
 
             case cmf_mt:
-                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5 && hMtMax - hMtMin > 0.5;
+                
+                switch (j) {
+                    
+                    case 0: return childX[i][0];
+                    case 1: return motherX[i][0];
+                    case 2: return fatherX[i][0];
+                    case 3: return haplotypeX[i][1];
+                    default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
+                    
+                }
 
             case cmf_ft:
-                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5 && hFtMax - hFtMin > 0.5;
+                
+                switch (j) {
+                    
+                    case 0: return childX[i][0];
+                    case 1: return motherX[i][0];
+                    case 2: return fatherX[i][0];
+                    case 3: return haplotypeX[i][2];
+                    default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
+                    
+                }
 
             case cm:
-                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5;
+                
+                switch (j) {
+                    
+                    case 0: return childX[i][0];
+                    case 1: return motherX[i][0];
+                    default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
+                    
+                }
 
             case cm_mt:
-                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && hMtMax - hMtMin > 0.5;
+                
+                switch (j) {
+                    
+                    case 0: return childX[i][0];
+                    case 1: return motherX[i][0];
+                    case 2: return haplotypeX[i][1];
+                    default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
+                    
+                }
 
             case cm_ft:
-                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && hFtMax - hFtMin > 0.5;
+                
+                switch (j) {
+                    
+                    case 0: return childX[i][0];
+                    case 1: return motherX[i][0];
+                    case 2: return haplotypeX[i][2];
+                    default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
+                    
+                }
 
             case cf:
-                return Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5;
-
-            case cf_ft:
-                return Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5 && hFtMax - hFtMin > 0.5;
+                
+                switch (j) {
+                    
+                    case 0: return childX[i][0];
+                    case 1: return fatherX[i][0];
+                    default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
+                    
+                }
 
             case cf_mt:
-                return Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5 && hMtMax - hMtMin > 0.5;
+                
+                switch (j) {
+                    
+                    case 0: return childX[i][0];
+                    case 1: return fatherX[i][0];
+                    case 2: return haplotypeX[i][1];
+                    default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
+                    
+                }
+
+            case cf_ft:
+                
+                switch (j) {
+                    
+                    case 0: return childX[i][0];
+                    case 1: return fatherX[i][0];
+                    case 2: return haplotypeX[i][2];
+                    default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
+                   
+                }
 
             case mf:
-                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5;
+                
+                switch (j) {
+                    
+                    case 0: return motherX[i][0];
+                    case 1: return fatherX[i][0];
+                    default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
+                    
+                }
 
             case c:
-                return Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5;
+                
+                return childX[i][0];
 
             case c_mt:
-                return Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && hMtMax - hMtMin > 0.5;
+                
+                switch (j) {
+                    
+                    case 0: return childX[i][0];
+                    case 2: return haplotypeX[i][1];
+                    default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
+                    
+                }
 
             case c_ft:
-                return Math.max(hMtMax, hFtMax) - Math.min(hMtMin, hFtMin) > 0.5 && hFtMax - hFtMin > 0.5;
+                
+                switch (j) {
+                    
+                    case 0: return childX[i][0];
+                    case 2: return haplotypeX[i][2];
+                    default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
+                    
+                }
 
             case m:
-                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5;
+                
+                return motherX[i][0];
 
             case m_mt:
-                return Math.max(hMntMax, hMtMax) - Math.min(hMntMin, hMtMin) > 0.5 && hMtMax - hMtMin > 0.5;
+                
+                switch (j) {
+                    
+                    case 0: return motherX[i][0];
+                    case 2: return haplotypeX[i][1];
+                    default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
+                    
+                }
 
             case f:
-                return Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5;
+                
+                return fatherX[i][0];
 
             case f_ft:
-                return Math.max(hFntMax, hFtMax) - Math.min(hFntMin, hFtMin) > 0.5 && hFtMax - hFtMin > 0.5;
+                
+                switch (j) {
+                    
+                    case 0: return fatherX[i][0];
+                    case 2: return haplotypeX[i][2];
+                    default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
+                    
+                }
 
             default:
 
-                throw new UnsupportedOperationException("Singularity not implemented for model " + model + ".");
+                throw new UnsupportedOperationException("X matrix not implemented for model " + model + ".");
 
         }
     }

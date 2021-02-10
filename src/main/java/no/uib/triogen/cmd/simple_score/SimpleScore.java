@@ -90,6 +90,9 @@ public class SimpleScore {
             throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
 
         }
+        
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
 
         String resultStem = bean.destinationFile.getAbsolutePath();
 
@@ -112,6 +115,8 @@ public class SimpleScore {
         SimpleScoreComputer scoreComputer = new SimpleScoreComputer(
                 bean.genotypesFile, 
                 inheritanceMap, 
+                defaultMotherPlooidy,
+                defaultFatherPlooidy,
                 childToParentMap, 
                 variantWeightList, 
                 bean.phenotypesFile, 

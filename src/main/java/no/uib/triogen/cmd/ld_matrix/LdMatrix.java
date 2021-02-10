@@ -86,6 +86,9 @@ public class LdMatrix {
             throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
 
         }
+        
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
 
         File logFile = new File(bean.destinationFilePath + ".log.gz");
         SimpleCliLogger logger = new SimpleCliLogger(logFile, null);
@@ -100,6 +103,8 @@ public class LdMatrix {
         LdMatrixComputer computer = new LdMatrixComputer(
                 bean.genotypesFile,
                 inheritanceMap,
+                defaultMotherPlooidy,
+                defaultFatherPlooidy,
                 childToParentMap,
                 bean.destinationFilePath,
                 bean.maxDistance,

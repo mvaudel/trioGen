@@ -99,4 +99,101 @@ public class InheritanceUtils {
 
     }
 
+    /**
+     * Returns the default maternal ploidy for the given contig.
+     * 
+     * @param contigName The contig name.
+     * 
+     * @return The  default maternal ploidy for the given contig.
+     */
+    public static int getDefaultMotherPloidy(
+            String contigName
+    ) {
+
+        if (contigName.equals("X")) {
+
+            return 2;
+
+        } else if (contigName.equals("Y")) {
+
+            return 0;
+
+        }
+
+        try {
+
+            int chromosomeNumber = Integer.parseInt(contigName);
+
+            if (chromosomeNumber < 23) {
+
+                return 2;
+
+            } else if (chromosomeNumber == 23) {
+
+                return 2;
+
+            } else if (chromosomeNumber == 24) {
+
+                return 0;
+
+            }
+
+        } catch (Exception e) {
+
+            throw new IllegalArgumentException("Default maternal ploidy for " + contigName + " not implemented.");
+
+        }
+
+        throw new IllegalArgumentException("Default maternal ploidy for " + contigName + " not implemented.");
+
+    }
+
+    /**
+     * Returns the default paternal ploidy for the given contig.
+     * 
+     * @param contigName The contig name.
+     * 
+     * @return The  default paternal ploidy for the given contig.
+     */
+    public static int getDefaultFatherPloidy(
+            String contigName
+    ) {
+
+        if (contigName.equals("X")) {
+
+            return 1;
+
+        } else if (contigName.equals("Y")) {
+
+            return 1;
+
+        }
+
+        try {
+
+            int chromosomeNumber = Integer.parseInt(contigName);
+
+            if (chromosomeNumber < 23) {
+
+                return 1;
+
+            } else if (chromosomeNumber == 23) {
+
+                return 1;
+
+            } else if (chromosomeNumber == 24) {
+
+                return 1;
+
+            }
+
+        } catch (Exception e) {
+
+            throw new IllegalArgumentException("Default paternal ploidy for " + contigName + " not implemented.");
+
+        }
+
+        throw new IllegalArgumentException("Default paternal ploidy for " + contigName + " not implemented.");
+
+    }
 }

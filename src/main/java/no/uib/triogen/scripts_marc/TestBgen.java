@@ -33,19 +33,22 @@ public class TestBgen {
             BgenIndex index = BgenIndex.getBgenIndex(bgenFile);
 
             System.out.println(Instant.now() + " Index created.");
+        
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy("23");
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy("23");
 
-            BgenFileReader reader = new BgenFileReader(bgenFile, index, null, 0, InheritanceUtils.getDefaultInheritanceMap("23"));
+            BgenFileReader reader = new BgenFileReader(bgenFile, index, null, 0, InheritanceUtils.getDefaultInheritanceMap("23"), defaultMotherPlooidy, defaultFatherPlooidy);
 
             int phased = 0;
             int previousProgress = 0;
 
-            for (int i = 0; i < reader.getNVariants(); i++) {
+            for (int i = 0; i < reader.nVariants(); i++) {
 
-                double progress = (100.0 * i) / reader.getNVariants();
+                double progress = (100.0 * i) / reader.nVariants();
 
                 if (progress >= previousProgress + 1) {
 
-                    System.out.println(Instant.now() + " Parsing variants... " + i + " of " + reader.getNVariants() + " (" + ((int) progress) + "%)");
+                    System.out.println(Instant.now() + " Parsing variants... " + i + " of " + reader.nVariants() + " (" + ((int) progress) + "%)");
 
                     previousProgress = (int) progress;
 

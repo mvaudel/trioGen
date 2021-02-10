@@ -43,10 +43,6 @@ public class MendelianCheckOptionsBean {
      * The number of days before timeout.
      */
     public int timeOut = 365;
-    /**
-     * Test mode.
-     */
-    public final boolean test;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -202,9 +198,6 @@ public class MendelianCheckOptionsBean {
 
             }
         }
-
-        // Test
-        test = aLine.hasOption(MendelianCheckOptions.test.opt);
 
     }
 }

@@ -35,12 +35,12 @@ public class MendelianErrorEstimator {
 
         for (String childId : childToParentMap.children) {
 
-            if (variantData.getPloidy(childId) == 2) {
+            String motherId = childToParentMap.getMother(childId);
+            String fatherId = childToParentMap.getFather(childId);
+
+            if (variantData.contains(childId) && variantData.getPloidy(childId) == 2) {
 
                 nDiploidChildren++;
-
-                String motherId = childToParentMap.getMother(childId);
-                String fatherId = childToParentMap.getFather(childId);
 
                 double[] hs = variantData.getHaplotypes(childId, motherId, fatherId, testedAlleleIndex);
 
@@ -66,24 +66,24 @@ public class MendelianErrorEstimator {
                 }
             }
         }
-        
+
         if (nDiploidChildren == 0) {
-            
+
             return 0;
-            
+
         }
 
         double alleleFrequency = variantData.getAlleleFrequency(testedAlleleIndex);
 
         double possibleMinusOne = 2.0 * (1 - alleleFrequency) * (1 - alleleFrequency) * alleleFrequency * nDiploidChildren; // number of trios with 001* *100
         double possibleTwo = 2.0 * alleleFrequency * alleleFrequency * (1 - alleleFrequency) * nDiploidChildren; // number of trios with 110* *011
-        
+
         double measurableErrors = possibleMinusOne + possibleTwo;
-        
-        if (measurableErrors <= 10.0) { // Disable check if less than 10 ground truth values
-            
+
+        if (measurableErrors <= 10.0) { // Disable if less than 10 cases
+
             return Double.NaN;
-            
+
         }
 
         return ((double) (minusOne + two)) / measurableErrors;

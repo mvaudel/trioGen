@@ -99,6 +99,9 @@ public class LinearModel {
             throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
 
         }
+        
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
 
         Model[] models = Arrays.stream(bean.modelNames)
                 .map(
@@ -127,6 +130,8 @@ public class LinearModel {
         LinearModelComputer linearModelComputer = new LinearModelComputer(
                 bean.genotypesFile,
                 inheritanceMap,
+                defaultMotherPlooidy,
+                defaultFatherPlooidy,
                 variantList,
                 bean.maxDistance,
                 bean.alleleFrequencyThreshold,

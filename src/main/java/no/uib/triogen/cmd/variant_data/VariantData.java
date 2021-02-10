@@ -89,6 +89,9 @@ public class VariantData {
             throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
 
         }
+        
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
 
         String resultStem = bean.destinationFile.getAbsolutePath();
 
@@ -111,6 +114,8 @@ public class VariantData {
         VariantDataExtractor variantDataExtractor = new VariantDataExtractor(
                 bean.genotypesFile,
                 inheritanceMap,
+                defaultMotherPlooidy,
+                defaultFatherPlooidy,
                 variantList,
                 childToParentMap,
                 bean.phenotypesFile,

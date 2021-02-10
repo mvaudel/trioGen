@@ -18,8 +18,7 @@ public enum MendelianCheckOptions {
     af("af", "afThreshold", "Allele frequency threshold. 0.005 excludes all alleles of variants with frequency < 0.5% or > 99.5%. Default: 0.005.", false, true),
     out("o", "out", "The file where to write the matrix. The extension '.tld' will be added if not present.", true, true),
     nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is the number of cores on the machine.", false, true),
-    timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true),
-    test("t", "test", "If present, runs only othe first 1000 variants.", false, false);
+    timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true);
 
     /**
      * The short option.

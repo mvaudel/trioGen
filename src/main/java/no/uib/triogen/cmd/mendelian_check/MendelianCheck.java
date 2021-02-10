@@ -86,6 +86,9 @@ public class MendelianCheck {
             throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
 
         }
+        
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
 
         File logFile = new File(bean.destinationFile.getAbsolutePath() + ".log.gz");
         SimpleCliLogger logger = new SimpleCliLogger(logFile, null);
@@ -100,6 +103,8 @@ public class MendelianCheck {
         MendelianCheckComputer computer = new MendelianCheckComputer(
                 bean.genotypesFile,
                 inheritanceMap,
+                defaultMotherPlooidy,
+                defaultFatherPlooidy,
                 variantList,
                 childToParentMap,
                 bean.destinationFile,
@@ -111,8 +116,7 @@ public class MendelianCheck {
         try {
 
             computer.run(
-                    bean.timeOut,
-                    bean.test
+                    bean.timeOut
             );
 
         } catch (Throwable t) {

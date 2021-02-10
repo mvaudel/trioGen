@@ -85,7 +85,7 @@ public class P0Cache {
 
                 String motherId = childToParentMap.getMother(childId);
 
-                if (!variantData.isMissing(motherId)) {
+                if (variantData.contains(motherId)) {
 
                     float homozygous = 1.0f;
 
@@ -105,7 +105,7 @@ public class P0Cache {
 
                 String fatherId = childToParentMap.getFather(childId);
 
-                if (!variantData.isMissing(motherId)) {
+                if (variantData.contains(motherId)) {
 
                     float homozygous = 1.0f;
 

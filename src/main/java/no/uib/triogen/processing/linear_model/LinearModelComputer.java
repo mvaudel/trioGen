@@ -43,9 +43,17 @@ public class LinearModelComputer {
      */
     private final File genotypesFile;
     /**
-     * The inheritance map.
+     * The allele inheritance map.
      */
     private final HashMap<Integer, char[]> inheritanceMap;
+    /**
+     * The default ploidy for mothers.
+     */
+    private final int defaultMotherPloidy;
+    /**
+     * The default ploidy for fathers.
+     */
+    private final int defaultFatherPloidy;
     /**
      * The variants to process.
      */
@@ -101,6 +109,8 @@ public class LinearModelComputer {
      *
      * @param genotypesFile The file containing the genotypes.
      * @param inheritanceMap The inheritance map for the given file.
+     * @param defaultMotherPloidy The default ploidy for mothers.
+     * @param defaultFatherPloidy The default ploidy for fathers.
      * @param variantList The variants to process.
      * @param maxDistance The maximal number of bp to allow between variants.
      * @param mafThreshold The maf threshold.
@@ -119,6 +129,8 @@ public class LinearModelComputer {
     public LinearModelComputer(
             File genotypesFile,
             HashMap<Integer, char[]> inheritanceMap,
+            int defaultMotherPloidy,
+            int defaultFatherPloidy,
             VariantList variantList,
             int maxDistance,
             double mafThreshold,
@@ -135,6 +147,8 @@ public class LinearModelComputer {
 
         this.genotypesFile = genotypesFile;
         this.inheritanceMap = inheritanceMap;
+        this.defaultMotherPloidy = defaultMotherPloidy;
+        this.defaultFatherPloidy = defaultFatherPloidy;
         this.variantList = variantList;
         this.maxDistance = maxDistance;
         this.alleleFrequencyThreshold = mafThreshold;
@@ -169,7 +183,13 @@ public class LinearModelComputer {
         long start = Instant.now().getEpochSecond();
 
         BgenIndex bgenIndex = BgenIndex.getBgenIndex(genotypesFile);
-        BgenFileReader bgenFileReader = new BgenFileReader(genotypesFile, bgenIndex, inheritanceMap);
+        BgenFileReader bgenFileReader  = new BgenFileReader(
+                genotypesFile, 
+                bgenIndex, 
+                inheritanceMap, 
+                defaultMotherPloidy, 
+                defaultFatherPloidy
+        );
 
         long end = Instant.now().getEpochSecond();
         long duration = end - start;
