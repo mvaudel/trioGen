@@ -129,45 +129,15 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/vcf_to_bgen/VcfToBgenOptionsBean.html#columns">columns</a></span></code>
-<div class="block">The columns.</div>
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/vcf_to_bgen/VcfToBgenOptionsBean.html#bgenFile">bgenFile</a></span></code>
+<div class="block">The bgen file.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/vcf_to_bgen/VcfToBgenOptionsBean.html#inputFile">inputFile</a></span></code>
-<div class="block">The results file to process.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/vcf_to_bgen/VcfToBgenOptionsBean.html#outputStem">outputStem</a></span></code>
-<div class="block">The stem of the output file.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/vcf_to_bgen/VcfToBgenOptionsBean.html#phenoNames">phenoNames</a></span></code>
-<div class="block">The phenotype names.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/vcf_to_bgen/VcfToBgenOptionsBean.html#splitByPheno">splitByPheno</a></span></code>
-<div class="block">Splits the results by phenotype.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/vcf_to_bgen/VcfToBgenOptionsBean.html#splitByVariant">splitByVariant</a></span></code>
-<div class="block">Splits the results by variant.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/vcf_to_bgen/VcfToBgenOptionsBean.html#variantIds">variantIds</a></span></code>
-<div class="block">The variant ids.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/vcf_to_bgen/VcfToBgenOptionsBean.html#vcfFile">vcfFile</a></span></code>
+<div class="block">The vcf file.</div>
 </td>
 </tr>
 </table>
@@ -219,74 +189,24 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Field Detail</h3>
-<a name="inputFile">
+<a name="vcfFile">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>inputFile</h4>
-<pre>public final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a> inputFile</pre>
-<div class="block">The results file to process.</div>
+<h4>vcfFile</h4>
+<pre>public final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a> vcfFile</pre>
+<div class="block">The vcf file.</div>
 </li>
 </ul>
-<a name="splitByVariant">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>splitByVariant</h4>
-<pre>public final&nbsp;boolean splitByVariant</pre>
-<div class="block">Splits the results by variant.</div>
-</li>
-</ul>
-<a name="splitByPheno">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>splitByPheno</h4>
-<pre>public final&nbsp;boolean splitByPheno</pre>
-<div class="block">Splits the results by phenotype.</div>
-</li>
-</ul>
-<a name="columns">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>columns</h4>
-<pre>public final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[] columns</pre>
-<div class="block">The columns.</div>
-</li>
-</ul>
-<a name="variantIds">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>variantIds</h4>
-<pre>public final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[] variantIds</pre>
-<div class="block">The variant ids.</div>
-</li>
-</ul>
-<a name="phenoNames">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>phenoNames</h4>
-<pre>public final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[] phenoNames</pre>
-<div class="block">The phenotype names.</div>
-</li>
-</ul>
-<a name="outputStem">
+<a name="bgenFile">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>outputStem</h4>
-<pre>public final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> outputStem</pre>
-<div class="block">The stem of the output file.</div>
+<h4>bgenFile</h4>
+<pre>public final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a> bgenFile</pre>
+<div class="block">The bgen file.</div>
 </li>
 </ul>
 </li>

@@ -11,13 +11,8 @@ import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
  */
 public enum VcfToBgenOptions {
 
-    input("i", "input", "The results file.", true, true),
-    split_by_variant("sv", "split_by_variant", "Splits the output creating one file per variant. Default: no split.", false, false),
-    split_by_pheno("sp", "split_by_pheno", "Splits the output creating one file per phenotype. Default: no split.", false, false),
-    columns("col", "columns", "The columns containing association summary statistics to include in the results file as comma separated list. Example: h_B1,h_B1_se,h_B1_p. Default: all columns.", false, true),
-    variantId("id", "variantId", "The ids of the variants to include in the results file as comma separated list. Example: rs123,rs456,rs789. Default: all variants.", false, true),
-    phenoName("p", "pheno", "The phenotypes to include in the results file as comma separated list. Example: pheno1,pheno2,pheno3. Default: all phenotypes.", false, true),
-    output("o", "output", "Stem where to write the output", true, true);
+    input("i", "input", "The vcf file.", true, true),
+    output("o", "output", "The bgen file.", true, true);
 
     /**
      * The short option.

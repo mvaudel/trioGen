@@ -651,6 +651,7 @@ public class LinearModelRunnable implements Runnable {
                                 )
                         );
                     }
+                }
 
                     // Estimate model significance
                     regressionRestultsMap.values()
@@ -713,7 +714,6 @@ public class LinearModelRunnable implements Runnable {
 
                     gzIndexMutex.release();
 
-                }
             } else {
 
                 logger.logVariant(

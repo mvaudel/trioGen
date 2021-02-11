@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -134,12 +134,16 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#BgenVariantData-java.lang.String:A-no.uib.triogen.model.genome.VariantInformation-java.nio.ByteBuffer-int-int-java.util.HashMap-">BgenVariantData</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;sampleIds,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#BgenVariantData-java.lang.String:A-no.uib.triogen.model.genome.VariantInformation-java.nio.ByteBuffer-int-int-java.util.HashMap-int-int-">BgenVariantData</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;sampleIds,
                <a href="../../../../../../../no/uib/triogen/model/genome/VariantInformation.html" title="class in no.uib.triogen.model.genome">VariantInformation</a>&nbsp;variantInformation,
                <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html?is-external=true" title="class or interface in java.nio">ByteBuffer</a>&nbsp;dataBlockContent,
                int&nbsp;blockLength,
                int&nbsp;compressionType,
-               <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap)</code>&nbsp;</td>
+               <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+               int&nbsp;defaultMotherPloidy,
+               int&nbsp;defaultFatherPloidy)</code>
+<div class="block">Constructor.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -157,45 +161,46 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>double</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getAlleleFrequency-int-">getAlleleFrequency</a></span>(int&nbsp;testedAlleleIndex)</code>
-<div class="block">Returns the frequency for the given allele among genotyped parents.</div>
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#contains-java.lang.String-">contains</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sampleId)</code>
+<div class="block">Returns a boolean indicating whether genotyping information is available
+ for the given sample.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getAlleleFrequency-int-">getAlleleFrequency</a></span>(int&nbsp;testedAlleleIndex)</code>
+<div class="block">Returns the estimate of the frequency of the given allele.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>double[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getHaplotypes-java.lang.String-java.lang.String-java.lang.String-int-">getHaplotypes</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;childId,
              <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;motherId,
              <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fatherId,
              int&nbsp;testedAlleleIndex)</code>
 <div class="block">Returns the haplotypes in an array: {motherNonTransmitted,
- motherTransmitted, fatherTransmitted, fatherNonTransmitted}.</div>
+ motherTransmitted, fatherTransmitted, fatherNonTransmitted}.Null if the
+ child or both parents are missing.If a parent is missing, haplotypes are
+ distributed according to the maf.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getnChildrenGenotyped--">getnChildrenGenotyped</a></span>()</code>
 <div class="block">Returns the number of genotyped children.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>int[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getOrderedAlleles--">getOrderedAlleles</a></span>()</code>
 <div class="block">Returns the indexes of the alleles ordered by decreasing frequency.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getPloidy-java.lang.String-">getPloidy</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sampleId)</code>
 <div class="block">Returns the ploidy for the given sample.</div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>double</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getProbability-java.lang.String-int-">getProbability</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sampleId,
-              int&nbsp;alleleIndex)</code>
-<div class="block">Returns the sum of probabilities for the given allele and sample over all
- contigs.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
@@ -208,31 +213,44 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </td>
 </tr>
 <tr id="i7" class="rowColor">
-<td class="colFirst"><code><a href="../../../../../../../no/uib/triogen/model/genome/VariantInformation.html" title="class in no.uib.triogen.model.genome">VariantInformation</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getVariantInformation--">getVariantInformation</a></span>()</code>&nbsp;</td>
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getSummedProbability-java.lang.String-int-">getSummedProbability</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sampleId,
+                    int&nbsp;alleleIndex)</code>
+<div class="block">Returns the sum of probabilities for the given allele and sample over all
+ contigs.</div>
+</td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#isMissing-java.lang.String-">isMissing</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sampleId)</code>
-<div class="block">Returns a boolean indicating whether the give sample is missing.</div>
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getSummedProbability-java.lang.String-int-int-">getSummedProbability</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sampleId,
+                    int&nbsp;alleleIndex,
+                    int&nbsp;ploidy)</code>
+<div class="block">Returns the sum of probabilities for the given allele and sample over all
+ contigs.</div>
 </td>
 </tr>
 <tr id="i9" class="rowColor">
+<td class="colFirst"><code><a href="../../../../../../../no/uib/triogen/model/genome/VariantInformation.html" title="class in no.uib.triogen.model.genome">VariantInformation</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getVariantInformation--">getVariantInformation</a></span>()</code>
+<div class="block">Returns information on the variant.</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#isSwappedChildrenAlleles-int-">isSwappedChildrenAlleles</a></span>(int&nbsp;alleleI)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#isSwappedChildrenAlleles--">isSwappedChildrenAlleles</a></span>()</code>
 <div class="block">Returns a boolean indicating whether the given allele should be swapped
  in children.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#parse-no.uib.triogen.model.family.ChildToParentMap-">parse</a></span>(<a href="../../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</code>
 <div class="block">Parses the variant data.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#swapChildrenAlleles-int-">swapChildrenAlleles</a></span>(int&nbsp;alleleI)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#swapChildrenAlleles--">swapChildrenAlleles</a></span>()</code>
 <div class="block">Indicate that children alleles should be swapped.</div>
 </td>
 </tr>
@@ -258,7 +276,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="BgenVariantData-java.lang.String:A-no.uib.triogen.model.genome.VariantInformation-java.nio.ByteBuffer-int-int-java.util.HashMap-">
+<a name="BgenVariantData-java.lang.String:A-no.uib.triogen.model.genome.VariantInformation-java.nio.ByteBuffer-int-int-java.util.HashMap-int-int-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -269,7 +287,21 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                        <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html?is-external=true" title="class or interface in java.nio">ByteBuffer</a>&nbsp;dataBlockContent,
                        int&nbsp;blockLength,
                        int&nbsp;compressionType,
-                       <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap)</pre>
+                       <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                       int&nbsp;defaultMotherPloidy,
+                       int&nbsp;defaultFatherPloidy)</pre>
+<div class="block">Constructor.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>sampleIds</code> - The sample ids of the bgen file.</dd>
+<dd><code>variantInformation</code> - Information on the variant.</dd>
+<dd><code>dataBlockContent</code> - The content of the data block.</dd>
+<dd><code>blockLength</code> - The total block length.</dd>
+<dd><code>compressionType</code> - The type of compression used.</dd>
+<dd><code>inheritanceMap</code> - The allele inheritance map to use.</dd>
+<dd><code>defaultMotherPloidy</code> - The default ploidy for mothers.</dd>
+<dd><code>defaultFatherPloidy</code> - The default ploidy for fathers.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -294,19 +326,21 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </dl>
 </li>
 </ul>
-<a name="isMissing-java.lang.String-">
+<a name="contains-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>isMissing</h4>
-<pre>public&nbsp;boolean&nbsp;isMissing(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sampleId)</pre>
-<div class="block">Returns a boolean indicating whether the give sample is missing.</div>
+<h4>contains</h4>
+<pre>public&nbsp;boolean&nbsp;contains(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sampleId)</pre>
+<div class="block">Returns a boolean indicating whether genotyping information is available
+ for the given sample.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>sampleId</code> - The id of the sample.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A boolean indicating whether the give sample is missing.</dd>
+<dd>A boolean indicating whether genotyping information is available
+ for the give sample is missing.</dd>
 </dl>
 </li>
 </ul>
@@ -326,32 +360,26 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </dl>
 </li>
 </ul>
-<a name="swapChildrenAlleles-int-">
+<a name="swapChildrenAlleles--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>swapChildrenAlleles</h4>
-<pre>public&nbsp;void&nbsp;swapChildrenAlleles(int&nbsp;alleleI)</pre>
+<pre>public&nbsp;void&nbsp;swapChildrenAlleles()</pre>
 <div class="block">Indicate that children alleles should be swapped.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>alleleI</code> - The index of the allele.</dd>
-</dl>
 </li>
 </ul>
-<a name="isSwappedChildrenAlleles-int-">
+<a name="isSwappedChildrenAlleles--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>isSwappedChildrenAlleles</h4>
-<pre>public&nbsp;boolean&nbsp;isSwappedChildrenAlleles(int&nbsp;alleleI)</pre>
+<pre>public&nbsp;boolean&nbsp;isSwappedChildrenAlleles()</pre>
 <div class="block">Returns a boolean indicating whether the given allele should be swapped
  in children.</div>
 <dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>alleleI</code> - The index of the allele.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A boolean indicating whether the given allele is swapped in
  children.</dd>
@@ -380,20 +408,42 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </dl>
 </li>
 </ul>
-<a name="getProbability-java.lang.String-int-">
+<a name="getSummedProbability-java.lang.String-int-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getProbability</h4>
-<pre>public&nbsp;double&nbsp;getProbability(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sampleId,
-                             int&nbsp;alleleIndex)</pre>
+<h4>getSummedProbability</h4>
+<pre>public&nbsp;double&nbsp;getSummedProbability(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sampleId,
+                                   int&nbsp;alleleIndex)</pre>
 <div class="block">Returns the sum of probabilities for the given allele and sample over all
  contigs.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>sampleId</code> - The id of the sample.</dd>
 <dd><code>alleleIndex</code> - The index of the allele.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The sum of probabilities for the given allele and sample over all
+ contigs.</dd>
+</dl>
+</li>
+</ul>
+<a name="getSummedProbability-java.lang.String-int-int-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSummedProbability</h4>
+<pre>public&nbsp;double&nbsp;getSummedProbability(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sampleId,
+                                   int&nbsp;alleleIndex,
+                                   int&nbsp;ploidy)</pre>
+<div class="block">Returns the sum of probabilities for the given allele and sample over all
+ contigs.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>sampleId</code> - The id of the sample.</dd>
+<dd><code>alleleIndex</code> - The index of the allele.</dd>
+<dd><code>ploidy</code> - The ploidy of the sample.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The sum of probabilities for the given allele and sample over all
  contigs.</dd>
@@ -407,6 +457,11 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>getVariantInformation</h4>
 <pre>public&nbsp;<a href="../../../../../../../no/uib/triogen/model/genome/VariantInformation.html" title="class in no.uib.triogen.model.genome">VariantInformation</a>&nbsp;getVariantInformation()</pre>
+<div class="block">Returns information on the variant.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Information on the variant.</dd>
+</dl>
 </li>
 </ul>
 <a name="getHaplotypes-java.lang.String-java.lang.String-java.lang.String-int-">
@@ -420,8 +475,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fatherId,
                               int&nbsp;testedAlleleIndex)</pre>
 <div class="block">Returns the haplotypes in an array: {motherNonTransmitted,
- motherTransmitted, fatherTransmitted, fatherNonTransmitted}. Null if the
- child or both parents are missing. If a parent is missing, haplotypes are
+ motherTransmitted, fatherTransmitted, fatherNonTransmitted}.Null if the
+ child or both parents are missing.If a parent is missing, haplotypes are
  distributed according to the maf.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -442,12 +497,12 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>getAlleleFrequency</h4>
 <pre>public&nbsp;double&nbsp;getAlleleFrequency(int&nbsp;testedAlleleIndex)</pre>
-<div class="block">Returns the frequency for the given allele among genotyped parents.</div>
+<div class="block">Returns the estimate of the frequency of the given allele.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>testedAlleleIndex</code> - The index of the allele of interest.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The frequency for the given allele among genotyped parents.</dd>
+<dd>The estimate of the frequency of the given allele.</dd>
 </dl>
 </li>
 </ul>

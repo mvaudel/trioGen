@@ -1,6 +1,5 @@
 package no.uib.triogen.cmd.vcf_to_bgen;
 
-import no.uib.triogen.cmd.extract.*;
 import java.io.File;
 import org.apache.commons.cli.CommandLine;
 
@@ -12,33 +11,13 @@ import org.apache.commons.cli.CommandLine;
 public class VcfToBgenOptionsBean {
 
     /**
-     * The results file to process.
+     * The vcf file.
      */
-    public final File inputFile;
+    public final File vcfFile;
     /**
-     * Splits the results by variant.
+     * The bgen file.
      */
-    public final boolean splitByVariant;
-    /**
-     * Splits the results by phenotype.
-     */
-    public final boolean splitByPheno;
-    /**
-     * The columns.
-     */
-    public final String[] columns;
-    /**
-     * The variant ids.
-     */
-    public final String[] variantIds;
-    /**
-     * The phenotype names.
-     */
-    public final String[] phenoNames;
-    /**
-     * The stem of the output file.
-     */
-    public final String outputStem;
+    public final File bgenFile;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -63,70 +42,25 @@ public class VcfToBgenOptionsBean {
         // The input file
         String filePath = aLine.getOptionValue(VcfToBgenOptions.input.opt);
 
-        inputFile = new File(filePath);
+        vcfFile = new File(filePath);
 
-        if (!inputFile.exists()) {
+        if (!vcfFile.exists()) {
 
-            throw new IllegalArgumentException("Input file (" + inputFile + ") not found.");
+            throw new IllegalArgumentException("Vcf file (" + vcfFile + ") not found.");
 
         }
 
         // The output stem
         filePath = aLine.getOptionValue(VcfToBgenOptions.output.opt);
 
-        outputStem = filePath;
+        bgenFile = new File(filePath);
 
-        File destinationFolder = (new File(outputStem)).getParentFile();
+        File destinationFolder = bgenFile.getParentFile();
 
         if (!destinationFolder.exists()) {
 
             throw new IllegalArgumentException("Output folder (" + destinationFolder + ") not found.");
 
-        }
-
-        // Split by variant
-        splitByVariant = aLine.hasOption(VcfToBgenOptions.split_by_variant.opt);
-
-        // Split by pheno
-        splitByPheno = aLine.hasOption(VcfToBgenOptions.split_by_pheno.opt);
-
-        // The values columns
-        if (aLine.hasOption(VcfToBgenOptions.columns.opt)) {
-
-            String option = aLine.getOptionValue(VcfToBgenOptions.columns.opt);
-            
-            columns = option.split(",");
-            
-        } else {
-            
-            columns = null;
-            
-        }
-
-        // The variant ids
-        if (aLine.hasOption(VcfToBgenOptions.variantId.opt)) {
-
-            String option = aLine.getOptionValue(VcfToBgenOptions.variantId.opt);
-            
-            variantIds = option.split(",");
-            
-        } else {
-            
-            variantIds = null;
-            
-        }
-
-        // The pheno names
-        if (aLine.hasOption(VcfToBgenOptions.phenoName.opt)) {
-
-            String option = aLine.getOptionValue(VcfToBgenOptions.phenoName.opt);
-            
-            phenoNames = option.split(",");
-            
-        } else {
-            
-            phenoNames = null;
-            
         }
     }
 }

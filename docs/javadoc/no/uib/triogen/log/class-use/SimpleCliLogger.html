@@ -204,8 +204,10 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputer.html#LdMatrixComputer-java.io.File-java.util.HashMap-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-double-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputer.html#LdMatrixComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-double-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                int&nbsp;defaultMotherPloidy,
+                int&nbsp;defaultFatherPloidy,
                 <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;destinationStem,
                 int&nbsp;maxDistance,
@@ -244,8 +246,10 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/linear_model/LinearModelComputer.html#LinearModelComputer-java.io.File-java.util.HashMap-no.uib.triogen.model.trio_genotypes.VariantList-int-double-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-no.uib.triogen.model.trio_genotypes.Model:A-java.io.File-int-no.uib.triogen.log.SimpleCliLogger-">LinearModelComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/linear_model/LinearModelComputer.html#LinearModelComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.trio_genotypes.VariantList-int-double-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-no.uib.triogen.model.trio_genotypes.Model:A-java.io.File-int-no.uib.triogen.log.SimpleCliLogger-">LinearModelComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
                    <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                   int&nbsp;defaultMotherPloidy,
+                   int&nbsp;defaultFatherPloidy,
                    <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
                    int&nbsp;maxDistance,
                    double&nbsp;mafThreshold,
@@ -292,8 +296,10 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/mendelian_check/MendelianCheckComputer.html#MendelianCheckComputer-java.io.File-java.util.HashMap-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.io.File-double-int-no.uib.triogen.log.SimpleCliLogger-">MendelianCheckComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/mendelian_check/MendelianCheckComputer.html#MendelianCheckComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.io.File-double-int-no.uib.triogen.log.SimpleCliLogger-">MendelianCheckComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                      int&nbsp;defaultMotherPloidy,
+                      int&nbsp;defaultFatherPloidy,
                       <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
                       <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;destinationFile,
@@ -328,8 +334,10 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/simple_score/SimpleScoreComputer.html#SimpleScoreComputer-java.io.File-java.util.HashMap-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.model.simple_score.VariantWeightList-java.io.File-java.lang.String:A-java.io.File-no.uib.triogen.log.SimpleCliLogger-">SimpleScoreComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/simple_score/SimpleScoreComputer.html#SimpleScoreComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.model.simple_score.VariantWeightList-java.io.File-java.lang.String:A-java.io.File-no.uib.triogen.log.SimpleCliLogger-">SimpleScoreComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
                    <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                   int&nbsp;defaultMotherPloidy,
+                   int&nbsp;defaultFatherPloidy,
                    <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                    <a href="../../../../../no/uib/triogen/model/simple_score/VariantWeightList.html" title="class in no.uib.triogen.model.simple_score">VariantWeightList</a>&nbsp;variantWeightList,
                    <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;phenotypesFile,
@@ -351,8 +359,10 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/variant_data/VariantDataExtractor.html#VariantDataExtractor-java.io.File-java.util.HashMap-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-java.io.File-no.uib.triogen.log.SimpleCliLogger-">VariantDataExtractor</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/variant_data/VariantDataExtractor.html#VariantDataExtractor-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-java.io.File-no.uib.triogen.log.SimpleCliLogger-">VariantDataExtractor</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
                     <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                    int&nbsp;defaultMotherPloidy,
+                    int&nbsp;defaultFatherPloidy,
                     <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
                     <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                     <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;phenotypesFile,

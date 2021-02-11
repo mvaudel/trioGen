@@ -134,8 +134,10 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/simple_score/SimpleScoreComputer.html#SimpleScoreComputer-java.io.File-java.util.HashMap-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.model.simple_score.VariantWeightList-java.io.File-java.lang.String:A-java.io.File-no.uib.triogen.log.SimpleCliLogger-">SimpleScoreComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/simple_score/SimpleScoreComputer.html#SimpleScoreComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.model.simple_score.VariantWeightList-java.io.File-java.lang.String:A-java.io.File-no.uib.triogen.log.SimpleCliLogger-">SimpleScoreComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
                    <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                   int&nbsp;defaultMotherPloidy,
+                   int&nbsp;defaultFatherPloidy,
                    <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                    <a href="../../../../../no/uib/triogen/model/simple_score/VariantWeightList.html" title="class in no.uib.triogen.model.simple_score">VariantWeightList</a>&nbsp;variantWeightList,
                    <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;phenotypesFile,
@@ -184,7 +186,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="SimpleScoreComputer-java.io.File-java.util.HashMap-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.model.simple_score.VariantWeightList-java.io.File-java.lang.String:A-java.io.File-no.uib.triogen.log.SimpleCliLogger-">
+<a name="SimpleScoreComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.model.simple_score.VariantWeightList-java.io.File-java.lang.String:A-java.io.File-no.uib.triogen.log.SimpleCliLogger-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -192,6 +194,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>SimpleScoreComputer</h4>
 <pre>public&nbsp;SimpleScoreComputer(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
                            <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                           int&nbsp;defaultMotherPloidy,
+                           int&nbsp;defaultFatherPloidy,
                            <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                            <a href="../../../../../no/uib/triogen/model/simple_score/VariantWeightList.html" title="class in no.uib.triogen.model.simple_score">VariantWeightList</a>&nbsp;variantWeightList,
                            <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;phenotypesFile,

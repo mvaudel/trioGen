@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -139,16 +139,24 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#BgenFileReader-java.io.File-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-java.util.HashMap-">BgenFileReader</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenFile,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#BgenFileReader-java.io.File-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-java.util.HashMap-int-int-">BgenFileReader</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenFile,
               <a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
-              <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap)</code>&nbsp;</td>
+              <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+              int&nbsp;defaultMotherPloidy,
+              int&nbsp;defaultFatherPloidy)</code>
+<div class="block">Constructor.</div>
+</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#BgenFileReader-java.io.File-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.model.trio_genotypes.VariantList-int-java.util.HashMap-">BgenFileReader</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenFile,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#BgenFileReader-java.io.File-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.model.trio_genotypes.VariantList-int-java.util.HashMap-int-int-">BgenFileReader</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenFile,
               <a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
               <a href="../../../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
               int&nbsp;distance,
-              <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap)</code>&nbsp;</td>
+              <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+              int&nbsp;defaultMotherPloidy,
+              int&nbsp;defaultFatherPloidy)</code>
+<div class="block">Constructor.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -171,27 +179,33 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#getBlockLength-int-">getBlockLength</a></span>(int&nbsp;i)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#getBlockLength-int-">getBlockLength</a></span>(int&nbsp;i)</code>
+<div class="block">Returns the length of the block of the given variant.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html?is-external=true" title="class or interface in java.nio">ByteBuffer</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#getDataBlock-int-">getDataBlock</a></span>(int&nbsp;i)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#getDataBlock-int-">getDataBlock</a></span>(int&nbsp;i)</code>
+<div class="block">Returns a buffer wrapped around the data block of the given variant.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#getNVariants--">getNVariants</a></span>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#getVariantData-int-">getVariantData</a></span>(int&nbsp;i)</code>
+<div class="block">Returns the variant data for the given variant.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#getVariantData-int-">getVariantData</a></span>(int&nbsp;i)</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../../../../no/uib/triogen/model/genome/VariantInformation.html" title="class in no.uib.triogen.model.genome">VariantInformation</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#getVariantInformation-int-">getVariantInformation</a></span>(int&nbsp;i)</code>
+<div class="block">Returns information on the given variant.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code><a href="../../../../../../../no/uib/triogen/model/genome/VariantInformation.html" title="class in no.uib.triogen.model.genome">VariantInformation</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#getVariantInformation-int-">getVariantInformation</a></span>(int&nbsp;i)</code>&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
 <td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#nVariants--">nVariants</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#nVariants--">nVariants</a></span>()</code>
+<div class="block">The number of variants mapped.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -215,7 +229,7 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="BgenFileReader-java.io.File-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.model.trio_genotypes.VariantList-int-java.util.HashMap-">
+<a name="BgenFileReader-java.io.File-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.model.trio_genotypes.VariantList-int-java.util.HashMap-int-int-">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -225,15 +239,26 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
                       <a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
                       <a href="../../../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
                       int&nbsp;distance,
-                      <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap)
+                      <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                      int&nbsp;defaultMotherPloidy,
+                      int&nbsp;defaultFatherPloidy)
                throws <a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
+<div class="block">Constructor.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>bgenFile</code> - The file to read.</dd>
+<dd><code>bgenIndex</code> - The index of the file.</dd>
+<dd><code>variantList</code> - The list of variants to read. If null, all variants are included.</dd>
+<dd><code>distance</code> - The distance to read around the provided variants.</dd>
+<dd><code>inheritanceMap</code> - The allele inheritance map to use.</dd>
+<dd><code>defaultMotherPloidy</code> - The default ploidy for mothers.</dd>
+<dd><code>defaultFatherPloidy</code> - The default ploidy for fathers.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code></dd>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code> - Exception thrown if an error occurs while reading the file.</dd>
 </dl>
 </li>
 </ul>
-<a name="BgenFileReader-java.io.File-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-java.util.HashMap-">
+<a name="BgenFileReader-java.io.File-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-java.util.HashMap-int-int-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -241,11 +266,20 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <h4>BgenFileReader</h4>
 <pre>public&nbsp;BgenFileReader(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenFile,
                       <a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
-                      <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap)
+                      <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                      int&nbsp;defaultMotherPloidy,
+                      int&nbsp;defaultFatherPloidy)
                throws <a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
+<div class="block">Constructor.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>bgenFile</code> - The file to read.</dd>
+<dd><code>bgenIndex</code> - The index of the file.</dd>
+<dd><code>inheritanceMap</code> - The allele inheritance map to use.</dd>
+<dd><code>defaultMotherPloidy</code> - The default ploidy for mothers.</dd>
+<dd><code>defaultFatherPloidy</code> - The default ploidy for fathers.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code></dd>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code> - Exception thrown if an error occurs while reading the file.</dd>
 </dl>
 </li>
 </ul>
@@ -257,15 +291,6 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getNVariants--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getNVariants</h4>
-<pre>public&nbsp;int&nbsp;getNVariants()</pre>
-</li>
-</ul>
 <a name="getVariantInformation-int-">
 <!--   -->
 </a>
@@ -273,6 +298,13 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <li class="blockList">
 <h4>getVariantInformation</h4>
 <pre>public&nbsp;<a href="../../../../../../../no/uib/triogen/model/genome/VariantInformation.html" title="class in no.uib.triogen.model.genome">VariantInformation</a>&nbsp;getVariantInformation(int&nbsp;i)</pre>
+<div class="block">Returns information on the given variant.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>i</code> - The index of the variant of interest.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Information on the given variant.</dd>
+</dl>
 </li>
 </ul>
 <a name="getDataBlock-int-">
@@ -282,6 +314,13 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <li class="blockList">
 <h4>getDataBlock</h4>
 <pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html?is-external=true" title="class or interface in java.nio">ByteBuffer</a>&nbsp;getDataBlock(int&nbsp;i)</pre>
+<div class="block">Returns a buffer wrapped around the data block of the given variant.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>i</code> - The index of the variant of interest.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A buffer wrapped around the data block of the given variant.</dd>
+</dl>
 </li>
 </ul>
 <a name="getBlockLength-int-">
@@ -291,6 +330,13 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <li class="blockList">
 <h4>getBlockLength</h4>
 <pre>public&nbsp;long&nbsp;getBlockLength(int&nbsp;i)</pre>
+<div class="block">Returns the length of the block of the given variant.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>i</code> - The index of the variant of interest.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The length of the block of the given variant.</dd>
+</dl>
 </li>
 </ul>
 <a name="nVariants--">
@@ -300,6 +346,11 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <li class="blockList">
 <h4>nVariants</h4>
 <pre>public&nbsp;int&nbsp;nVariants()</pre>
+<div class="block">The number of variants mapped.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The number of variants mapped.</dd>
+</dl>
 </li>
 </ul>
 <a name="getVariantData-int-">
@@ -309,6 +360,13 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <li class="blockList">
 <h4>getVariantData</h4>
 <pre>public&nbsp;<a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a>&nbsp;getVariantData(int&nbsp;i)</pre>
+<div class="block">Returns the variant data for the given variant.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>i</code> - The index of the variant of interest.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The variant data for the given variant.</dd>
+</dl>
 </li>
 </ul>
 <a name="close--">

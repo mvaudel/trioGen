@@ -135,8 +135,10 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputer.html#LdMatrixComputer-java.io.File-java.util.HashMap-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-double-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputer.html#LdMatrixComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-double-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                int&nbsp;defaultMotherPloidy,
+                int&nbsp;defaultFatherPloidy,
                 <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;destinationStem,
                 int&nbsp;maxDistance,
@@ -189,7 +191,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="LdMatrixComputer-java.io.File-java.util.HashMap-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-double-int-no.uib.triogen.log.SimpleCliLogger-">
+<a name="LdMatrixComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-double-int-no.uib.triogen.log.SimpleCliLogger-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -197,6 +199,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>LdMatrixComputer</h4>
 <pre>public&nbsp;LdMatrixComputer(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
                         <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                        int&nbsp;defaultMotherPloidy,
+                        int&nbsp;defaultFatherPloidy,
                         <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                         <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;destinationStem,
                         int&nbsp;maxDistance,
@@ -208,6 +212,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>genotypesFile</code> - The file containing the genotypes.</dd>
 <dd><code>inheritanceMap</code> - The inheritance map for the given file.</dd>
+<dd><code>defaultMotherPloidy</code> - The default ploidy for mothers.</dd>
+<dd><code>defaultFatherPloidy</code> - The default ploidy for fathers.</dd>
 <dd><code>childToParentMap</code> - The map of trios.</dd>
 <dd><code>destinationStem</code> - The stem of the path of the file where to write
  the results.</dd>
