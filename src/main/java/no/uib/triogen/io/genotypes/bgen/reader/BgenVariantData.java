@@ -2,12 +2,14 @@ package no.uib.triogen.io.genotypes.bgen.reader;
 
 import com.github.luben.zstd.Zstd;
 import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.zip.Inflater;
+import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.genotypes.InheritanceUtils;
 import static no.uib.triogen.io.genotypes.InheritanceUtils.FATHER;
 import static no.uib.triogen.io.genotypes.InheritanceUtils.MOTHER;
@@ -33,7 +35,7 @@ public class BgenVariantData {
     /**
      * Byte buffer for the compressed content of the data block.
      */
-    private final ByteBuffer compressedDataBlockContent;
+    private final MappedByteBuffer compressedDataBlockContent;
     /**
      * The block length.
      */
@@ -95,7 +97,7 @@ public class BgenVariantData {
     public BgenVariantData(
             String[] sampleIds,
             VariantInformation variantInformation,
-            ByteBuffer dataBlockContent,
+            MappedByteBuffer dataBlockContent,
             int blockLength,
             int compressionType,
             HashMap<Integer, char[]> inheritanceMap,
@@ -438,6 +440,8 @@ public class BgenVariantData {
                         .toArray();
 
             }
+            
+            IoUtils.closeBuffer(compressedDataBlockContent);
 
         } catch (Exception e) {
 

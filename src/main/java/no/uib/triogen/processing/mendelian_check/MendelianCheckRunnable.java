@@ -103,7 +103,9 @@ public class MendelianCheckRunnable implements Runnable {
 
                     // Check if any allele passes the frequency threshold
                     int[] testedAlleleIndexes = IntStream.range(1, variantData.getOrderedAlleles().length)
-                            .filter(alleleIndex -> variantData.getAlleleFrequency(alleleIndex) > alleleFrequencyThreshold && variantData.getAlleleFrequency(alleleIndex) < 1.0 - alleleFrequencyThreshold
+                            .filter(
+                                    alleleIndex -> variantData.getAlleleFrequency(alleleIndex) > alleleFrequencyThreshold 
+                                            && variantData.getAlleleFrequency(alleleIndex) < 1.0 - alleleFrequencyThreshold
                             )
                             .toArray();
 

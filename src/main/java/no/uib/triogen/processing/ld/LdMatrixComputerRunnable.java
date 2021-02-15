@@ -137,7 +137,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                     variantData.parse(childToParentMap);
 
                     p0Cache.register(variantData, childToParentMap);
-
+                    
                 }
 
                 pHomA = p0Cache.getPHomozygous(variantInformationA.id);

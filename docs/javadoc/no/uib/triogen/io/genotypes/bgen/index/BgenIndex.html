@@ -136,31 +136,45 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#compressionType">compressionType</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#compressionType">compressionType</a></span></code>
+<div class="block">The compression type according to the format specifications.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#FIRST_LINE">FIRST_LINE</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#FIRST_LINE">FIRST_LINE</a></span></code>
+<div class="block">The first line of the index.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#sampleIds">sampleIds</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#sampleIds">sampleIds</a></span></code>
+<div class="block">Array of the ids of the samples.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>long[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#variantBlockLengthArray">variantBlockLengthArray</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#variantBlockLengthArray">variantBlockLengthArray</a></span></code>
+<div class="block">Array of the lengths of the blocks.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#variantIdArray">variantIdArray</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#variantIdArray">variantIdArray</a></span></code>
+<div class="block">Array of the variant ids.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>long[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#variantIndexArray">variantIndexArray</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#variantIndexArray">variantIndexArray</a></span></code>
+<div class="block">Array of the indexes.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../../../no/uib/triogen/model/genome/VariantInformation.html" title="class in no.uib.triogen.model.genome">VariantInformation</a>[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#variantInformationArray">variantInformationArray</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#variantInformationArray">variantInformationArray</a></span></code>
+<div class="block">Array of the information on the variants.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -182,7 +196,9 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
          long[]&nbsp;variantIndexArray,
          long[]&nbsp;variantBlockLengthArray,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;sampleIds,
-         int&nbsp;compressionType)</code>&nbsp;</td>
+         int&nbsp;compressionType)</code>
+<div class="block">Constructor.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -201,25 +217,35 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#getBgenIndex-java.io.File-">getBgenIndex</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenFile)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#getBgenIndex-java.io.File-">getBgenIndex</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenFile)</code>
+<div class="block">Returns an index for the given bgen file.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#getBgenIndex-java.io.File-java.io.File-">getBgenIndex</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenFile,
-            <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;indexFile)</code>&nbsp;</td>
+            <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;indexFile)</code>
+<div class="block">Returns the bgen index for the given file.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#getDefaultIndexFile-java.io.File-">getDefaultIndexFile</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenFile)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#getDefaultIndexFile-java.io.File-">getDefaultIndexFile</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenFile)</code>
+<div class="block">Returns the default index file for the given bgen file.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#readFromFile-java.io.File-">readFromFile</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;indexFile)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#readFromFile-java.io.File-">readFromFile</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;indexFile)</code>
+<div class="block">Reads the bgen index from the given file.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#writeToFile-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-java.io.File-">writeToFile</a></span>(<a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
-           <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;indexFile)</code>&nbsp;</td>
+           <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;indexFile)</code>
+<div class="block">Writes the given index to the given file.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -250,6 +276,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>FIRST_LINE</h4>
 <pre>public static final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> FIRST_LINE</pre>
+<div class="block">The first line of the index.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../../../constant-values.html#no.uib.triogen.io.genotypes.bgen.index.BgenIndex.FIRST_LINE">Constant Field Values</a></dd>
@@ -263,6 +290,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>variantIdArray</h4>
 <pre>public final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[] variantIdArray</pre>
+<div class="block">Array of the variant ids.</div>
 </li>
 </ul>
 <a name="variantInformationArray">
@@ -272,6 +300,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>variantInformationArray</h4>
 <pre>public final&nbsp;<a href="../../../../../../../no/uib/triogen/model/genome/VariantInformation.html" title="class in no.uib.triogen.model.genome">VariantInformation</a>[] variantInformationArray</pre>
+<div class="block">Array of the information on the variants.</div>
 </li>
 </ul>
 <a name="variantIndexArray">
@@ -281,6 +310,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>variantIndexArray</h4>
 <pre>public final&nbsp;long[] variantIndexArray</pre>
+<div class="block">Array of the indexes.</div>
 </li>
 </ul>
 <a name="variantBlockLengthArray">
@@ -290,6 +320,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>variantBlockLengthArray</h4>
 <pre>public final&nbsp;long[] variantBlockLengthArray</pre>
+<div class="block">Array of the lengths of the blocks.</div>
 </li>
 </ul>
 <a name="sampleIds">
@@ -299,6 +330,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>sampleIds</h4>
 <pre>public final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[] sampleIds</pre>
+<div class="block">Array of the ids of the samples.</div>
 </li>
 </ul>
 <a name="compressionType">
@@ -308,6 +340,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>compressionType</h4>
 <pre>public final&nbsp;int compressionType</pre>
+<div class="block">The compression type according to the format specifications.</div>
 </li>
 </ul>
 </li>
@@ -330,6 +363,16 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                  long[]&nbsp;variantBlockLengthArray,
                  <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;sampleIds,
                  int&nbsp;compressionType)</pre>
+<div class="block">Constructor.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>variantIdArray</code> - Array of the variant ids.</dd>
+<dd><code>variantInformationArray</code> - Array of the information on the variants.</dd>
+<dd><code>variantIndexArray</code> - Array of the indexes.</dd>
+<dd><code>variantBlockLengthArray</code> - Array of the lengths of the blocks.</dd>
+<dd><code>sampleIds</code> - Array of the ids of the samples.</dd>
+<dd><code>compressionType</code> - The compression type according to the format specifications.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -348,9 +391,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>getBgenIndex</h4>
 <pre>public static&nbsp;<a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;getBgenIndex(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenFile)
                               throws <a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
+<div class="block">Returns an index for the given bgen file.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>bgenFile</code> - The bgen file to index.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The index.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code></dd>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code> - Exception thrown if an error occurred while reading or writing a file.</dd>
 </dl>
 </li>
 </ul>
@@ -363,9 +411,15 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <pre>public static&nbsp;<a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;getBgenIndex(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenFile,
                                      <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;indexFile)
                               throws <a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
+<div class="block">Returns the bgen index for the given file.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>bgenFile</code> - The bgen file to index.</dd>
+<dd><code>indexFile</code> - The index file where the index should be saved.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The index.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code></dd>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code> - Exception thrown if an error occurred while reading or writing a file.</dd>
 </dl>
 </li>
 </ul>
@@ -377,6 +431,12 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>writeToFile</h4>
 <pre>public static&nbsp;void&nbsp;writeToFile(<a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
                                <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;indexFile)</pre>
+<div class="block">Writes the given index to the given file.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>bgenIndex</code> - The bgen index.</dd>
+<dd><code>indexFile</code> - The file where to save the index.</dd>
+</dl>
 </li>
 </ul>
 <a name="readFromFile-java.io.File-">
@@ -386,6 +446,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>readFromFile</h4>
 <pre>public static&nbsp;<a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;readFromFile(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;indexFile)</pre>
+<div class="block">Reads the bgen index from the given file.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>indexFile</code> - The file where the index is saved.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The index.</dd>
+</dl>
 </li>
 </ul>
 <a name="getDefaultIndexFile-java.io.File-">
@@ -395,6 +462,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>getDefaultIndexFile</h4>
 <pre>public static&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;getDefaultIndexFile(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenFile)</pre>
+<div class="block">Returns the default index file for the given bgen file.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>bgenFile</code> - The bgen file.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The default file where to save the index.</dd>
+</dl>
 </li>
 </ul>
 </li>

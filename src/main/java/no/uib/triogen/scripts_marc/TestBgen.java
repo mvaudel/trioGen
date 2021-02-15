@@ -33,22 +33,22 @@ public class TestBgen {
             BgenIndex index = BgenIndex.getBgenIndex(bgenFile);
 
             System.out.println(Instant.now() + " Index created.");
-        
-        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy("23");
-        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy("23");
 
-            BgenFileReader reader = new BgenFileReader(bgenFile, index, null, 0, InheritanceUtils.getDefaultInheritanceMap("23"), defaultMotherPlooidy, defaultFatherPlooidy);
+            int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy("23");
+            int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy("23");
+
+            BgenFileReader reader = new BgenFileReader(bgenFile, index, InheritanceUtils.getDefaultInheritanceMap("23"), defaultMotherPlooidy, defaultFatherPlooidy);
 
             int phased = 0;
             int previousProgress = 0;
 
-            for (int i = 0; i < reader.nVariants(); i++) {
+            for (int i = 0; i < index.variantInformationArray.length; i++) {
 
-                double progress = (100.0 * i) / reader.nVariants();
+                double progress = (100.0 * i) / index.variantInformationArray.length;
 
                 if (progress >= previousProgress + 1) {
 
-                    System.out.println(Instant.now() + " Parsing variants... " + i + " of " + reader.nVariants() + " (" + ((int) progress) + "%)");
+                    System.out.println(Instant.now() + " Parsing variants... " + i + " of " + index.variantInformationArray.length + " (" + ((int) progress) + "%)");
 
                     previousProgress = (int) progress;
 
@@ -64,7 +64,6 @@ public class TestBgen {
                 } catch (Exception e) {
 
                 }
-
             }
 
             System.out.println(phased + " variants phased.");
@@ -74,7 +73,5 @@ public class TestBgen {
             e.printStackTrace();
 
         }
-
     }
-
 }

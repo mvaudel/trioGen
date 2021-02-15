@@ -174,7 +174,9 @@ public class LinearModelRunnable implements Runnable {
 
                         // Check if any allele passes the frequency threshold
                         int[] testedAlleleIndexes = IntStream.range(1, variantData.getOrderedAlleles().length)
-                                .filter(alleleIndex -> variantData.getAlleleFrequency(alleleIndex) > alleleFrequencyThreshold && variantData.getAlleleFrequency(alleleIndex) < 1.0 - alleleFrequencyThreshold
+                                .filter(
+                                        alleleIndex -> variantData.getAlleleFrequency(alleleIndex) > alleleFrequencyThreshold 
+                                                && variantData.getAlleleFrequency(alleleIndex) < 1.0 - alleleFrequencyThreshold
                                 )
                                 .toArray();
 
@@ -653,66 +655,66 @@ public class LinearModelRunnable implements Runnable {
                     }
                 }
 
-                    // Estimate model significance
-                    regressionRestultsMap.values()
-                            .forEach(
-                                    regressionResult -> regressionResult.computeModelSignificance(
-                                            regressionRestultsMap
-                                    )
-                            );
+                // Estimate model significance
+                regressionRestultsMap.values()
+                        .forEach(
+                                regressionResult -> regressionResult.computeModelSignificance(
+                                        regressionRestultsMap
+                                )
+                        );
 
-                    // Estimate the share of mendelian errors
-                    double mendelianErrors = MendelianErrorEstimator.estimateMendelianErrorPrevalence(variantData, childToParentMap, alleleI);
+                // Estimate the share of mendelian errors
+                double mendelianErrors = MendelianErrorEstimator.estimateMendelianErrorPrevalence(variantData, childToParentMap, alleleI);
 
-                    // Export
-                    StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder
-                            .append(phenoName)
-                            .append(IoUtils.SEPARATOR)
-                            .append(variantInformation.contig)
-                            .append(IoUtils.SEPARATOR)
-                            .append(variantInformation.position)
-                            .append(IoUtils.SEPARATOR)
-                            .append(variantInformation.id)
-                            .append(IoUtils.SEPARATOR)
-                            .append(variantInformation.rsId)
-                            .append(IoUtils.SEPARATOR)
-                            .append(variantInformation.alleles[alleleI])
-                            .append(IoUtils.SEPARATOR)
-                            .append(variantInformation.getOtherAllele(alleleI))
-                            .append(IoUtils.SEPARATOR)
-                            .append(childIndexes.length)
-                            .append(IoUtils.SEPARATOR)
-                            .append(altHistograms)
-                            .append(IoUtils.SEPARATOR)
-                            .append(hHistograms)
-                            .append(IoUtils.SEPARATOR)
-                            .append(mendelianErrors);
+                // Export
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder
+                        .append(phenoName)
+                        .append(IoUtils.SEPARATOR)
+                        .append(variantInformation.contig)
+                        .append(IoUtils.SEPARATOR)
+                        .append(variantInformation.position)
+                        .append(IoUtils.SEPARATOR)
+                        .append(variantInformation.id)
+                        .append(IoUtils.SEPARATOR)
+                        .append(variantInformation.rsId)
+                        .append(IoUtils.SEPARATOR)
+                        .append(variantInformation.alleles[alleleI])
+                        .append(IoUtils.SEPARATOR)
+                        .append(variantInformation.getOtherAllele(alleleI))
+                        .append(IoUtils.SEPARATOR)
+                        .append(childIndexes.length)
+                        .append(IoUtils.SEPARATOR)
+                        .append(altHistograms)
+                        .append(IoUtils.SEPARATOR)
+                        .append(hHistograms)
+                        .append(IoUtils.SEPARATOR)
+                        .append(mendelianErrors);
 
-                    regressionResults
-                            .forEach(
-                                    regressionResult -> regressionResult.appendResults(stringBuilder)
-                            );
+                regressionResults
+                        .forEach(
+                                regressionResult -> regressionResult.appendResults(stringBuilder)
+                        );
 
-                    String line = stringBuilder
-                            .append(IoUtils.LINE_SEPARATOR)
-                            .toString();
+                String line = stringBuilder
+                        .append(IoUtils.LINE_SEPARATOR)
+                        .toString();
 
-                    gzIndexMutex.acquire();
+                gzIndexMutex.acquire();
 
-                    IndexedGzCoordinates coordinates = outputWriter.append(line);
+                IndexedGzCoordinates coordinates = outputWriter.append(line);
 
-                    resultsIndex.writeLine(
-                            variantInformation.contig,
-                            Integer.toString(variantInformation.position),
-                            variantInformation.id,
-                            variantInformation.rsId,
-                            phenoName,
-                            Integer.toString(coordinates.compressedLength),
-                            Integer.toString(coordinates.uncompressedLength)
-                    );
+                resultsIndex.writeLine(
+                        variantInformation.contig,
+                        Integer.toString(variantInformation.position),
+                        variantInformation.id,
+                        variantInformation.rsId,
+                        phenoName,
+                        Integer.toString(coordinates.compressedLength),
+                        Integer.toString(coordinates.uncompressedLength)
+                );
 
-                    gzIndexMutex.release();
+                gzIndexMutex.release();
 
             } else {
 

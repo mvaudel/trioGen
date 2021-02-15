@@ -12,7 +12,6 @@ import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.log.SimpleCliLogger;
-import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.processing.ld.LdMatrixComputer;
 
 /**

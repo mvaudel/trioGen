@@ -100,11 +100,11 @@ public class SimpleScoreComputer {
         long start = Instant.now().getEpochSecond();
 
         BgenIndex bgenIndex = BgenIndex.getBgenIndex(genotypesFile);
-        BgenFileReader bgenFileReader  = new BgenFileReader(
-                genotypesFile, 
-                bgenIndex, 
-                inheritanceMap, 
-                defaultMotherPloidy, 
+        BgenFileReader bgenFileReader = new BgenFileReader(
+                genotypesFile,
+                bgenIndex,
+                inheritanceMap,
+                defaultMotherPloidy,
                 defaultFatherPloidy
         );
 

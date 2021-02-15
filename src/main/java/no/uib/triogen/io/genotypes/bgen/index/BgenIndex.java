@@ -18,20 +18,45 @@ import no.uib.triogen.model.genome.VariantInformation;
  */
 public class BgenIndex {
 
+    /**
+     * The first line of the index.
+     */
     public final static String FIRST_LINE = "# TrioGen_bgen_index_v.1.0.1";
-
+/**
+ * Array of the variant ids.
+ */
     public final String[] variantIdArray;
-
+/**
+ * Array of the information on the variants.
+ */
     public final VariantInformation[] variantInformationArray;
-
+/**
+ * Array of the indexes.
+ */
     public final long[] variantIndexArray;
-
+/**
+ * Array of the lengths of the blocks.
+ */
     public final long[] variantBlockLengthArray;
-
+/**
+ * Array of the ids of the samples.
+ */
     public final String[] sampleIds;
-    
+    /**
+     * The compression type according to the format specifications.
+     */
     public final int compressionType;
 
+    /**
+     * Constructor.
+     * 
+     * @param variantIdArray Array of the variant ids.
+     * @param variantInformationArray Array of the information on the variants.
+     * @param variantIndexArray Array of the indexes.
+     * @param variantBlockLengthArray Array of the lengths of the blocks.
+     * @param sampleIds Array of the ids of the samples.
+     * @param compressionType The compression type according to the format specifications.
+     */
     public BgenIndex(
             String[] variantIdArray,
             VariantInformation[] variantInformationArray,
@@ -50,6 +75,15 @@ public class BgenIndex {
 
     }
 
+    /**
+     * Returns an index for the given bgen file.
+     * 
+     * @param bgenFile The bgen file to index.
+     * 
+     * @return The index.
+     * 
+     * @throws IOException Exception thrown if an error occurred while reading or writing a file.
+     */
     public static BgenIndex getBgenIndex(
             File bgenFile
     ) throws IOException {
@@ -61,6 +95,16 @@ public class BgenIndex {
 
     }
 
+    /**
+     * Returns the bgen index for the given file.
+     * 
+     * @param bgenFile The bgen file to index.
+     * @param indexFile The index file where the index should be saved.
+     * 
+     * @return The index.
+     * 
+     * @throws IOException Exception thrown if an error occurred while reading or writing a file.
+     */
     public static BgenIndex getBgenIndex(
             File bgenFile,
             File indexFile
@@ -81,6 +125,12 @@ public class BgenIndex {
         }
     }
 
+    /**
+     * Writes the given index to the given file.
+     * 
+     * @param bgenIndex The bgen index.
+     * @param indexFile The file where to save the index.
+     */
     public static void writeToFile(
             BgenIndex bgenIndex,
             File indexFile
@@ -120,6 +170,13 @@ public class BgenIndex {
         }
     }
 
+    /**
+     * Reads the bgen index from the given file.
+     * 
+     * @param indexFile The file where the index is saved.
+     * 
+     * @return The index.
+     */
     public static BgenIndex readFromFile(
             File indexFile
     ) {
@@ -186,6 +243,13 @@ public class BgenIndex {
         }
     }
 
+    /**
+     * Returns the default index file for the given bgen file.
+     * 
+     * @param bgenFile The bgen file.
+     * 
+     * @return The default file where to save the index.
+     */
     public static File getDefaultIndexFile(
             File bgenFile
     ) {
@@ -194,6 +258,15 @@ public class BgenIndex {
 
     }
 
+    /**
+     * Builds the bgen index for the given bgen file.
+     * 
+     * @param bgenFile The bgen file.
+     * 
+     * @return The bgen index.
+     * 
+     * @throws IOException Exception thrown if an error occurred while reading or writing a file.
+     */
     private static BgenIndex buidBgenIndex(
             File bgenFile
     ) throws IOException {
@@ -478,5 +551,4 @@ public class BgenIndex {
         return new BgenIndex(variantIdArray, variantInformationArray, variantIndexArray, variantBlockLengthArray, samples, compressionType);
 
     }
-
 }

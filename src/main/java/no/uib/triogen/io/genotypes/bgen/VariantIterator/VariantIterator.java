@@ -71,13 +71,13 @@ public class VariantIterator {
 
         simpleSemaphore.acquire();
 
-                if (logger != null && currentVariantIndex % nProgress == 0) {
+        if (logger != null && currentVariantIndex % nProgress == 0) {
 
-                    double progress = ((double) (Math.round(10000.0 * currentVariantIndex) / bgenIndex.variantInformationArray.length)) / 100;
+            double progress = ((double) (Math.round(10000.0 * currentVariantIndex) / bgenIndex.variantInformationArray.length)) / 100;
 
-                    logger.logMessage(logPrefix + "    " + currentVariantIndex + " processed of " + bgenIndex.variantInformationArray.length + " (" + progress + " %)");
+            logger.logMessage(logPrefix + "    " + currentVariantIndex + " processed of " + bgenIndex.variantInformationArray.length + " (" + progress + " %)");
 
-                }
+        }
 
         if ((start != -1 || end != -1) && currentVariantIndex < bgenIndex.variantInformationArray.length) {
 

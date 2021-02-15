@@ -129,8 +129,9 @@ public class VariantDataExtractor {
     /**
      * Goes through the list of provided variants and extracts the values of the
      * adjusted phenotypes.
-     * 
-     * @throws java.io.IOException Exception thrown if an error occurs while reading or writing a file.
+     *
+     * @throws java.io.IOException Exception thrown if an error occurs while
+     * reading or writing a file.
      */
     public void run() throws IOException {
 
@@ -140,10 +141,10 @@ public class VariantDataExtractor {
 
         BgenIndex bgenIndex = BgenIndex.getBgenIndex(genotypesFile);
         BgenFileReader bgenFileReader = new BgenFileReader(
-                genotypesFile, 
-                bgenIndex, 
-                inheritanceMap, 
-                defaultMotherPloidy, 
+                genotypesFile,
+                bgenIndex,
+                inheritanceMap,
+                defaultMotherPloidy,
                 defaultFatherPloidy
         );
 
@@ -311,6 +312,6 @@ public class VariantDataExtractor {
         duration = end - start;
 
         logger.logMessage("Done (Mendelian error check in " + duration + " seconds)");
-        
+
     }
 }
