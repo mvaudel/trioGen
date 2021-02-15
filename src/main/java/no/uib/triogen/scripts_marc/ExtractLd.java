@@ -25,7 +25,7 @@ public class ExtractLd {
 
         try {
 
-            File ldFile = new File("docs/tmp/ch_chr_7.tld");
+            File ldFile = new File("tmp/23_ld_test.gz.tld");
             LdMatrixReader ldMatrixReader = new LdMatrixReader(ldFile);
 
             String[] variantIds = ldMatrixReader.variantIds;
@@ -42,7 +42,7 @@ public class ExtractLd {
 
                             throw new IllegalArgumentException("Incorrect r2");
 
-                        }
+                        }                        
                     }
                 }
             }

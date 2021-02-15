@@ -78,7 +78,7 @@
 <dd>
 <div class="block">Acquires.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html#add-java.lang.String-">add(String)</a></span> - Method in class no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html" title="class in no.uib.triogen.model.trio_genotypes">VariantIndex</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html#add-java.lang.String-java.lang.String-">add(String, String)</a></span> - Method in class no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html" title="class in no.uib.triogen.model.trio_genotypes">VariantIndex</a></dt>
 <dd>
 <div class="block">Adds a variant to the mapping and returns its index.</div>
 </dd>
@@ -839,9 +839,9 @@
 <dd>
 <div class="block">Returns the identifier for TrioGen-generated files.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html#getIndex-java.lang.String-">getIndex(String)</a></span> - Method in class no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html" title="class in no.uib.triogen.model.trio_genotypes">VariantIndex</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html#getIndex-java.lang.String-java.lang.String-">getIndex(String, String)</a></span> - Method in class no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html" title="class in no.uib.triogen.model.trio_genotypes">VariantIndex</a></dt>
 <dd>
-<div class="block">Returns the index for the given variant.</div>
+<div class="block">Returns the index for the given variant, null if not found.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/VariantList.html#getIndex-java.lang.String-">getIndex(String)</a></span> - Method in class no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a></dt>
 <dd>
@@ -960,7 +960,9 @@
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/reader/VcfVariant.html#getParentsGenotypeP0sCache--">getParentsGenotypeP0sCache()</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.reader.<a href="no/uib/triogen/io/genotypes/vcf/reader/VcfVariant.html" title="class in no.uib.triogen.io.genotypes.vcf.reader">VcfVariant</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/processing/ld/P0Cache.html#getPHomozygous-java.lang.String-">getPHomozygous(String)</a></span> - Method in class no.uib.triogen.processing.ld.<a href="no/uib/triogen/processing/ld/P0Cache.html" title="class in no.uib.triogen.processing.ld">P0Cache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Returns the probability of being homozygous for the given variant.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getPloidy-java.lang.String-">getPloidy(String)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
 <dd>
 <div class="block">Returns the ploidy for the given sample.</div>
@@ -987,6 +989,15 @@
 <dd>
 <div class="block">Returns the response.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/ld/LdMatrixReader.html#getRsId-java.lang.String-">getRsId(String)</a></span> - Method in class no.uib.triogen.io.ld.<a href="no/uib/triogen/io/ld/LdMatrixReader.html" title="class in no.uib.triogen.io.ld">LdMatrixReader</a></dt>
+<dd>
+<div class="block">Returns the rsid for the given variant, null if none set.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html#getRsIds--">getRsIds()</a></span> - Method in class no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html" title="class in no.uib.triogen.model.trio_genotypes">VariantIndex</a></dt>
+<dd>
+<div class="block">Returns the rsids of the variants as array indexed according to the
+ mapping.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/iterators/VcfIterator.html#getSamplesIds--">getSamplesIds()</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.iterators.<a href="no/uib/triogen/io/genotypes/vcf/iterators/VcfIterator.html" title="class in no.uib.triogen.io.genotypes.vcf.iterators">VcfIterator</a></dt>
 <dd>
 <div class="block">Returns the sample ids.</div>
@@ -1009,6 +1020,15 @@
 <dd>
 <div class="block">Returns the variant data for the given variant.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/ld/LdMatrixReader.html#getVariantIds-java.lang.String-">getVariantIds(String)</a></span> - Method in class no.uib.triogen.io.ld.<a href="no/uib/triogen/io/ld/LdMatrixReader.html" title="class in no.uib.triogen.io.ld">LdMatrixReader</a></dt>
+<dd>
+<div class="block">Returns the variant ids for the given rsId, null if none set.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html#getVariantIds--">getVariantIds()</a></span> - Method in class no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html" title="class in no.uib.triogen.model.trio_genotypes">VariantIndex</a></dt>
+<dd>
+<div class="block">Returns the ids of the variants as array indexed according to the
+ mapping.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#getVariantInformation-int-">getVariantInformation(int)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenFileReader</a></dt>
 <dd>
 <div class="block">Returns information on the given variant.</div>
@@ -1024,10 +1044,6 @@
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/VariantList.html#getVariantList-java.io.File-">getVariantList(File)</a></span> - Static method in class no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a></dt>
 <dd>
 <div class="block">Parses a variant list from a file.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html#getVariants--">getVariants()</a></span> - Method in class no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html" title="class in no.uib.triogen.model.trio_genotypes">VariantIndex</a></dt>
-<dd>
-<div class="block">Returns the variants as array indexed according to the mapping.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/simple_score/VariantWeightList.html#getVariantWeightList-java.io.File-">getVariantWeightList(File)</a></span> - Static method in class no.uib.triogen.model.simple_score.<a href="no/uib/triogen/model/simple_score/VariantWeightList.html" title="class in no.uib.triogen.model.simple_score">VariantWeightList</a></dt>
 <dd>
@@ -1059,10 +1075,6 @@
 </a>
 <h2 class="title">H</h2>
 <dl>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#hardCalls">hardCalls</a></span> - Variable in class no.uib.triogen.cmd.ld_matrix.<a href="no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html" title="class in no.uib.triogen.cmd.ld_matrix">LdMatrixOptionsBean</a></dt>
-<dd>
-<div class="block">Boolean indicating whether hard calls should be used.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/association/LinearModelOptions.html#hasArg">hasArg</a></span> - Variable in enum no.uib.triogen.cmd.association.<a href="no/uib/triogen/cmd/association/LinearModelOptions.html" title="enum in no.uib.triogen.cmd.association">LinearModelOptions</a></dt>
 <dd>
 <div class="block">Boolean indicating whether the option has an argument.</div>
@@ -1535,6 +1547,10 @@
 <dd>
 <div class="block">Main method.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/scripts_marc/RunLdConversion.html#main-java.lang.String:A-">main(String[])</a></span> - Static method in class no.uib.triogen.scripts_marc.<a href="no/uib/triogen/scripts_marc/RunLdConversion.html" title="class in no.uib.triogen.scripts_marc">RunLdConversion</a></dt>
+<dd>
+<div class="block">Main method.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/scripts_marc/RunLinearModel.html#main-java.lang.String:A-">main(String[])</a></span> - Static method in class no.uib.triogen.scripts_marc.<a href="no/uib/triogen/scripts_marc/RunLinearModel.html" title="class in no.uib.triogen.scripts_marc">RunLinearModel</a></dt>
 <dd>
 <div class="block">Main method.</div>
@@ -1950,7 +1966,9 @@
 <div class="block">Cache for p0 values.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/processing/ld/P0Cache.html#P0Cache-int-">P0Cache(int)</a></span> - Constructor for class no.uib.triogen.processing.ld.<a href="no/uib/triogen/processing/ld/P0Cache.html" title="class in no.uib.triogen.processing.ld">P0Cache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/Model.html#parentModels">parentModels</a></span> - Variable in enum no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a></dt>
 <dd>
 <div class="block">The models this one is nested in.</div>
@@ -2076,7 +2094,9 @@
 <div class="block">Reads a line of the file.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/processing/ld/P0Cache.html#register-no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData-no.uib.triogen.model.family.ChildToParentMap-">register(BgenVariantData, ChildToParentMap)</a></span> - Method in class no.uib.triogen.processing.ld.<a href="no/uib/triogen/processing/ld/P0Cache.html" title="class in no.uib.triogen.processing.ld">P0Cache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Saves the information needed for LD calculation in cache.</div>
+</dd>
 <dt><a href="no/uib/triogen/processing/linear_model/RegressionResult.html" title="class in no.uib.triogen.processing.linear_model"><span class="typeNameLink">RegressionResult</span></a> - Class in <a href="no/uib/triogen/processing/linear_model/package-summary.html">no.uib.triogen.processing.linear_model</a></dt>
 <dd>
 <div class="block">Placeholder for the results of a regression.</div>
@@ -2086,7 +2106,9 @@
 <div class="block">Constructor.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/processing/ld/P0Cache.html#release-int-int-">release(int, int)</a></span> - Method in class no.uib.triogen.processing.ld.<a href="no/uib/triogen/processing/ld/P0Cache.html" title="class in no.uib.triogen.processing.ld">P0Cache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Releases the given position for the given thread.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/utils/SimpleSemaphore.html#release--">release()</a></span> - Method in class no.uib.triogen.utils.<a href="no/uib/triogen/utils/SimpleSemaphore.html" title="class in no.uib.triogen.utils">SimpleSemaphore</a></dt>
 <dd>
 <div class="block">Releases.</div>
@@ -2119,6 +2141,10 @@
 <dd>
 <div class="block">Runs the command.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/ld_matrix/LdMatrix.html#run-no.uib.triogen.cmd.ld_matrix.LdMatrixOptionsBean-java.lang.String-">run(LdMatrixOptionsBean, String)</a></span> - Static method in class no.uib.triogen.cmd.ld_matrix.<a href="no/uib/triogen/cmd/ld_matrix/LdMatrix.html" title="class in no.uib.triogen.cmd.ld_matrix">LdMatrix</a></dt>
+<dd>
+<div class="block">Runs the command.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/processing/ld/LdMatrixComputer.html#run-int-">run(int)</a></span> - Method in class no.uib.triogen.processing.ld.<a href="no/uib/triogen/processing/ld/LdMatrixComputer.html" title="class in no.uib.triogen.processing.ld">LdMatrixComputer</a></dt>
 <dd>
 <div class="block">Runs the matrix export.</div>
@@ -2142,6 +2168,12 @@
 <div class="block">Goes through the list of provided variants and extracts the values of the
  adjusted phenotypes.</div>
 </dd>
+<dt><a href="no/uib/triogen/scripts_marc/RunLdConversion.html" title="class in no.uib.triogen.scripts_marc"><span class="typeNameLink">RunLdConversion</span></a> - Class in <a href="no/uib/triogen/scripts_marc/package-summary.html">no.uib.triogen.scripts_marc</a></dt>
+<dd>
+<div class="block">Do not commit</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/scripts_marc/RunLdConversion.html#RunLdConversion--">RunLdConversion()</a></span> - Constructor for class no.uib.triogen.scripts_marc.<a href="no/uib/triogen/scripts_marc/RunLdConversion.html" title="class in no.uib.triogen.scripts_marc">RunLdConversion</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="no/uib/triogen/scripts_marc/RunLinearModel.html" title="class in no.uib.triogen.scripts_marc"><span class="typeNameLink">RunLinearModel</span></a> - Class in <a href="no/uib/triogen/scripts_marc/package-summary.html">no.uib.triogen.scripts_marc</a></dt>
 <dd>
 <div class="block">Do not commit</div>
@@ -2548,10 +2580,6 @@ the order they are declared.</div>
 <dd>
 <div class="block">The file listing the variants to process.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#variantFile">variantFile</a></span> - Variable in class no.uib.triogen.cmd.ld_matrix.<a href="no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html" title="class in no.uib.triogen.cmd.ld_matrix">LdMatrixOptionsBean</a></dt>
-<dd>
-<div class="block">The file listing the variants to process.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/ld_value/LdValueOptionsBean.html#variantFile">variantFile</a></span> - Variable in class no.uib.triogen.cmd.ld_value.<a href="no/uib/triogen/cmd/ld_value/LdValueOptionsBean.html" title="class in no.uib.triogen.cmd.ld_value">LdValueOptionsBean</a></dt>
 <dd>
 <div class="block">The file listing the variants to process.</div>
@@ -2599,10 +2627,6 @@ the order they are declared.</div>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html#VariantIndex--">VariantIndex()</a></span> - Constructor for class no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html" title="class in no.uib.triogen.model.trio_genotypes">VariantIndex</a></dt>
 <dd>
 <div class="block">Constructor for an empty index.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html#VariantIndex-java.lang.String:A-">VariantIndex(String[])</a></span> - Constructor for class no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html" title="class in no.uib.triogen.model.trio_genotypes">VariantIndex</a></dt>
-<dd>
-<div class="block">Constructor taking an array of variants as input.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html#variantIndexArray">variantIndexArray</a></span> - Variable in class no.uib.triogen.io.genotypes.bgen.index.<a href="no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a></dt>
 <dd>&nbsp;</dd>

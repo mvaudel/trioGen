@@ -8,12 +8,14 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.SEPARATOR;
 import no.uib.triogen.utils.TempByteArray;
 import static no.uib.triogen.io.ld.LdMatrixUtils.MAGIC_NUMBER;
 import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.model.trio_genotypes.VariantIndex;
+import no.uib.triogen.utils.CompressionUtils;
 import static no.uib.triogen.utils.CompressionUtils.compress;
 import no.uib.triogen.utils.SimpleSemaphore;
 
@@ -172,14 +174,20 @@ public class LdMatrixWriter implements AutoCloseable {
 
         long footerPosition = raf.getFilePointer();
 
-        String[] variantIds = variantIndex.getVariants();
+        String[] variantIds = variantIndex.getVariantIds();
+        String[] rsIds = variantIndex.getRsIds();
 
         String variantIdsString = Arrays.stream(variantIds)
                 .collect(
                         Collectors.joining(SEPARATOR)
                 );
+        String rsIdsString = Arrays.stream(rsIds)
+                .collect(
+                        Collectors.joining(SEPARATOR)
+                );
+        String ids = variantIdsString + SEPARATOR + rsIdsString;
 
-        byte[] titleBytes = variantIdsString.getBytes(IoUtils.ENCODING);
+        byte[] titleBytes = ids.getBytes(IoUtils.ENCODING);
 
         ByteBuffer buffer = ByteBuffer.allocate(2 * Integer.BYTES + titleBytes.length + indexesInFile.size() * Integer.BYTES + indexesInFile.size() * Long.BYTES);
 

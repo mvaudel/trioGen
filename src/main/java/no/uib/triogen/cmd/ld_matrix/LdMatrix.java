@@ -70,9 +70,10 @@ public class LdMatrix {
     /**
      * Runs the command.
      *
-     * @param bean the bean of command line parameters
+     * @param bean The bean of command line parameters.
+     * @param command The string version of the command.
      */
-    private static void run(
+    public static void run(
             LdMatrixOptionsBean bean,
             String command
     ) {
@@ -97,8 +98,6 @@ public class LdMatrix {
         logger.writeComment("Command", "LinearModel");
         logger.writeComment("Arguments", command);
         logger.writeHeaders();
-        
-        VariantList variantList = bean.variantFile == null ? null : VariantList.getVariantList(bean.variantFile);
 
         LdMatrixComputer computer = new LdMatrixComputer(
                 bean.genotypesFile,

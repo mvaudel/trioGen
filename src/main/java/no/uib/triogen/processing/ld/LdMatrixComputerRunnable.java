@@ -123,7 +123,9 @@ public class LdMatrixComputerRunnable implements Runnable {
             while ((indexA = iteratorA.next()) != null && !canceled) {
 
                 VariantInformation variantInformationA = bgenIndex.variantInformationArray[indexA];
-                int variantIdA = variantIndex.getIndex(variantInformationA.id);
+
+                int variantIdA = variantIndex.getIndex(variantInformationA.id, variantInformationA.rsId);
+                    System.out.println("A: " + variantInformationA.id);
 
                 ArrayList<R2> r2s = new ArrayList<>(2);
 
@@ -146,7 +148,8 @@ public class LdMatrixComputerRunnable implements Runnable {
                 while ((indexB = iteratorB.next()) != null) {
 
                     VariantInformation variantInformationB = bgenIndex.variantInformationArray[indexB];
-                    int variantIdB = variantIndex.getIndex(variantInformationB.id);
+                    int variantIdB = variantIndex.getIndex(variantInformationB.id, variantInformationB.rsId);
+//                    System.out.println("B: " + variantInformationA.id);
 
                     float[][] pHomB = p0Cache.getPHomozygous(variantInformationB.id);
 
@@ -171,7 +174,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                             double n = 0.0;
 
                             float[] allelePHomA = pHomA[alleleIA];
-                            float[] allelePHomB = pHomA[alleleIB];
+                            float[] allelePHomB = pHomB[alleleIB];
 
                             for (int parentI = 0; parentI < allelePHomA.length; parentI++) {
 
@@ -204,6 +207,13 @@ public class LdMatrixComputerRunnable implements Runnable {
                                     R2 r2 = new R2(variantIdB, alleleIA, alleleIB, (float) r2Value);
                                     r2s.add(r2);
 
+                                    if (r2Value > 0.8 && variantIdA != variantIdB) {
+
+                                        System.out.println(variantInformationA.rsId + " (" + variantInformationA.id + "@" + alleleIA + ") - " + variantInformationB.rsId + " (" + variantInformationB.id + "@" + alleleIB + "): " + r2Value);
+
+                                        canceled = true;
+                                    }
+
                                 }
                             }
                         }
@@ -218,6 +228,13 @@ public class LdMatrixComputerRunnable implements Runnable {
                             variantIdA,
                             r2s
                     );
+
+                    System.out.println(variantInformationA.rsId + " " + r2s.size());
+
+                } else {
+
+                    System.out.println(variantInformationA.rsId + " No R2");
+
                 }
             }
 

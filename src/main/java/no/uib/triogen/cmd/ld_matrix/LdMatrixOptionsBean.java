@@ -19,10 +19,6 @@ public class LdMatrixOptionsBean {
      */
     public final String chromosome;
     /**
-     * The file listing the variants to process.
-     */
-    public File variantFile = null;
-    /**
      * The max distance between the snp and the target snp.
      */
     public int maxDistance = 500000;
@@ -34,10 +30,6 @@ public class LdMatrixOptionsBean {
      * The minimal ld r2 to report (inclusive).
      */
     public double minR2 = 1e-6;
-    /**
-     * Boolean indicating whether hard calls should be used.
-     */
-    public boolean hardCalls = false;
     /**
      * File where to write the output.
      */
@@ -84,20 +76,6 @@ public class LdMatrixOptionsBean {
 
         // The chromosome name
         chromosome = aLine.getOptionValue(LdMatrixOptions.chromosome.opt);
-
-        // The variant ids
-        if (aLine.hasOption(LdMatrixOptions.variantId.opt)) {
-
-            filePath = aLine.getOptionValue(LdMatrixOptions.variantId.opt);
-
-            variantFile = new File(filePath);
-
-            if (!variantFile.exists()) {
-
-                throw new IllegalArgumentException("Variant file (" + variantFile + ") not found.");
-
-            }
-        }
 
         // The trio file
         filePath = aLine.getOptionValue(LdMatrixOptions.trio.opt);
@@ -149,12 +127,6 @@ public class LdMatrixOptionsBean {
                 );
 
             }
-        }
-
-        // Hard calls
-        if (aLine.hasOption(LdMatrixOptions.hardCalls.opt)) {
-
-            hardCalls = true;
         }
 
         // The output file

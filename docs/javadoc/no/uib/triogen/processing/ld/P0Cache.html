@@ -134,7 +134,9 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#P0Cache-int-">P0Cache</a></span>(int&nbsp;nThreads)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#P0Cache-int-">P0Cache</a></span>(int&nbsp;nThreads)</code>
+<div class="block">Constructor.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -153,17 +155,23 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>float[][]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#getPHomozygous-java.lang.String-">getPHomozygous</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;id)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#getPHomozygous-java.lang.String-">getPHomozygous</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;id)</code>
+<div class="block">Returns the probability of being homozygous for the given variant.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#register-no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData-no.uib.triogen.model.family.ChildToParentMap-">register</a></span>(<a href="../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a>&nbsp;variantData,
-        <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</code>&nbsp;</td>
+        <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</code>
+<div class="block">Saves the information needed for LD calculation in cache.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#release-int-int-">release</a></span>(int&nbsp;thread,
-       int&nbsp;pos)</code>&nbsp;</td>
+       int&nbsp;pos)</code>
+<div class="block">Releases the given position for the given thread.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -194,6 +202,11 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>P0Cache</h4>
 <pre>public&nbsp;P0Cache(int&nbsp;nThreads)</pre>
+<div class="block">Constructor.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>nThreads</code> - the number of threads using the cache.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -211,6 +224,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>getPHomozygous</h4>
 <pre>public&nbsp;float[][]&nbsp;getPHomozygous(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;id)</pre>
+<div class="block">Returns the probability of being homozygous for the given variant.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>id</code> - The id of the variant.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A map of the probability of being homozygous per allele and per
+ sample.</dd>
+</dl>
 </li>
 </ul>
 <a name="release-int-int-">
@@ -221,6 +242,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>release</h4>
 <pre>public&nbsp;void&nbsp;release(int&nbsp;thread,
                     int&nbsp;pos)</pre>
+<div class="block">Releases the given position for the given thread. Once all threads are
+ done at a given position, previous information is cleared from the cache.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>thread</code> - The thread number.</dd>
+<dd><code>pos</code> - The position on the chromosome.</dd>
+</dl>
 </li>
 </ul>
 <a name="register-no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData-no.uib.triogen.model.family.ChildToParentMap-">
@@ -231,6 +259,12 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>register</h4>
 <pre>public&nbsp;void&nbsp;register(<a href="../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a>&nbsp;variantData,
                      <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</pre>
+<div class="block">Saves the information needed for LD calculation in cache.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>variantData</code> - The genotyping data on this variant.</dd>
+<dd><code>childToParentMap</code> - The child to parent map.</dd>
+</dl>
 </li>
 </ul>
 </li>

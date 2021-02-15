@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.genome.VariantInformation;
+import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
  * Cache for p0 values.
@@ -15,12 +16,30 @@ import no.uib.triogen.model.genome.VariantInformation;
  */
 public class P0Cache {
 
+    /**
+     * The current check-out position for each thread.
+     */
     private final int[] checkOutPosition;
 
+    /**
+     * Map of the position of each variant.
+     */
     private final TreeMap<Integer, ArrayList<String>> positionMap = new TreeMap<>();
+    /**
+     * Semaphore for the edition of the map.
+     */
+    private final SimpleSemaphore positionMapSemaphore = new SimpleSemaphore(1);
 
+    /**
+     * Map of the probability of being homozygous for each variant.
+     */
     private final ConcurrentHashMap<String, float[][]> pHomozygous = new ConcurrentHashMap<>();
 
+    /**
+     * Constructor.
+     *
+     * @param nThreads the number of threads using the cache.
+     */
     public P0Cache(
             int nThreads
     ) {
@@ -29,6 +48,14 @@ public class P0Cache {
 
     }
 
+    /**
+     * Returns the probability of being homozygous for the given variant.
+     *
+     * @param id The id of the variant.
+     *
+     * @return A map of the probability of being homozygous per allele and per
+     * sample.
+     */
     public float[][] getPHomozygous(
             String id
     ) {
@@ -37,6 +64,13 @@ public class P0Cache {
 
     }
 
+    /**
+     * Releases the given position for the given thread. Once all threads are
+     * done at a given position, previous information is cleared from the cache.
+     *
+     * @param thread The thread number.
+     * @param pos The position on the chromosome.
+     */
     public void release(int thread, int pos) {
 
         checkOutPosition[thread] = pos;
@@ -50,11 +84,15 @@ public class P0Cache {
             }
         }
 
+        positionMapSemaphore.acquire();
+
         for (Entry<Integer, ArrayList<String>> entry : positionMap.entrySet()) {
 
             int position = entry.getKey();
 
             if (position > pos) {
+
+                positionMapSemaphore.release();
 
                 return;
 
@@ -66,8 +104,17 @@ public class P0Cache {
 
             }
         }
+
+        positionMapSemaphore.release();
+
     }
 
+    /**
+     * Saves the information needed for LD calculation in cache.
+     *
+     * @param variantData The genotyping data on this variant.
+     * @param childToParentMap The child to parent map.
+     */
     public void register(
             BgenVariantData variantData,
             ChildToParentMap childToParentMap
@@ -77,7 +124,7 @@ public class P0Cache {
 
         float[][] variantPHomozygous = new float[variantInformation.alleles.length][2 * childToParentMap.children.length];
 
-        for (int alleleI = 0; alleleI <= variantInformation.alleles.length; alleleI++) {
+        for (int alleleI = 0; alleleI < variantInformation.alleles.length; alleleI++) {
 
             for (int i = 0; i < childToParentMap.children.length; i++) {
 
@@ -105,7 +152,7 @@ public class P0Cache {
 
                 String fatherId = childToParentMap.getFather(childId);
 
-                if (variantData.contains(motherId)) {
+                if (variantData.contains(fatherId)) {
 
                     float homozygous = 1.0f;
 
@@ -126,6 +173,19 @@ public class P0Cache {
         }
 
         pHomozygous.put(variantInformation.id, variantPHomozygous);
+        
+        savePosition(variantInformation);
+
+    }
+
+    /**
+     * Saves the variant information sorted by position.
+     * 
+     * @param variantInformation 
+     */
+    private void savePosition(VariantInformation variantInformation) {
+
+        positionMapSemaphore.acquire();
 
         ArrayList<String> idsAtPosition = positionMap.get(variantInformation.position);
 
@@ -137,6 +197,8 @@ public class P0Cache {
         }
 
         idsAtPosition.add(variantInformation.id);
+
+        positionMapSemaphore.release();
 
     }
 }

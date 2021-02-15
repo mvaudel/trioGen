@@ -1,11 +1,9 @@
 package no.uib.triogen.io.ld;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.zip.Deflater;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import no.uib.triogen.model.ld.R2;
@@ -18,11 +16,7 @@ import no.uib.triogen.model.trio_genotypes.VariantIndex;
  */
 public class LdMatrixTest extends TestCase {
 
-    public void testParsing() {
-
-        boolean success = false;
-
-        try {
+    public void testParsing() throws IOException {
 
             VariantIndex variantIndex = new VariantIndex();
 
@@ -41,9 +35,9 @@ public class LdMatrixTest extends TestCase {
                     String variantB = "variantB_" + j;
                     double r2Value = ((double) i) / 200 + ((double) j) / 200;
 
-                    variantIndex.add(variantB);
+                    variantIndex.add(variantB, "rs" + variantB);
 
-                    int variantBI = variantIndex.getIndex(variantB);
+                    int variantBI = variantIndex.getIndex(variantB, "rs" + variantB);
 
                     R2 r2 = new R2(variantBI, (short) (100 - j), (short) j, (float) r2Value);
 
@@ -54,7 +48,7 @@ public class LdMatrixTest extends TestCase {
                 String variant = "variantA_" + i;
                 ldMap.put(variant, r2s);
 
-                int variantAI = variantIndex.getIndex(variant);
+                int variantAI = variantIndex.getIndex(variant, "rs" + variant);
 
                 writer.addVariant(variantAI, r2s);
 
@@ -89,16 +83,6 @@ public class LdMatrixTest extends TestCase {
 
                 }
             }
-
-            success = true;
-
-        } catch (Throwable t) {
-
-            t.printStackTrace();
-
-        }
-
-        Assert.assertTrue(success);
 
     }
 

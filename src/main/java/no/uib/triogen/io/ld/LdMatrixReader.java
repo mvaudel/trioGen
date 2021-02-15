@@ -34,6 +34,14 @@ public class LdMatrixReader implements AutoCloseable {
      */
     private final HashMap<String, Long> indexMap;
     /**
+     * rsid to variant id map.
+     */
+    private final HashMap<String, ArrayList<String>> rsidToVariantIdMap;
+    /**
+     * variant id to rsid map.
+     */
+    private final HashMap<String, String> variantIdtoRsIdMap;
+    /**
      * The memory mapped file.
      */
     private final MemoryMappedFile memoryMappedFile;
@@ -77,14 +85,43 @@ public class LdMatrixReader implements AutoCloseable {
             byte[] footer = uncompress(compressedFooter, uncompressedLength);
 
             ByteBuffer byteBuffer = ByteBuffer.wrap(footer);
-
             int idsByteLength = byteBuffer.getInt();
             byte[] idsBytes = new byte[idsByteLength];
             byteBuffer.get(idsBytes);
             String idsString = new String(idsBytes, 0, idsByteLength, ENCODING);
-            variantIds = idsString.split(IoUtils.SEPARATOR);
+            String[] allIds = idsString.split(IoUtils.SEPARATOR);
+            int nIds = allIds.length / 2;
+            variantIds = new String[nIds];
+            variantIdtoRsIdMap = new HashMap<>(nIds);
+            rsidToVariantIdMap = new HashMap<>(nIds);
+
+            for (int i = 0; i < nIds; i++) {
+
+                String id = allIds[i];
+                String rsId = allIds[i + nIds];
+
+                variantIds[i] = id;
+
+                if (!rsId.equals("")) {
+
+                    variantIdtoRsIdMap.put(id, rsId);
+
+                    ArrayList<String> variantIdsForRsId = rsidToVariantIdMap.get(rsId);
+
+                    if (variantIdsForRsId == null) {
+
+                        variantIdsForRsId = new ArrayList<>(1);
+                        rsidToVariantIdMap.put(rsId, variantIdsForRsId);
+
+                    }
+
+                    variantIdsForRsId.add(id);
+
+                }
+            }
 
             int nVariants = byteBuffer.getInt();
+
             indexMap = new HashMap<>(nVariants);
 
             for (int i = 0; i < nVariants; i++) {
@@ -115,7 +152,7 @@ public class LdMatrixReader implements AutoCloseable {
      * Returns a map containing the ids of the variants B in LD with variant A
      * and the corresponding r2.
      *
-     * @param variantA The id of variant A.
+     * @param variantA The id of variant A. It can be the id or the rsid.
      *
      * @return The id to r2 map.
      */
@@ -126,6 +163,30 @@ public class LdMatrixReader implements AutoCloseable {
         Long index = indexMap.get(variantA);
 
         if (index == null) {
+
+            ArrayList<String> tempIds = getVariantIds(variantA); // See if it can be an rsid
+
+            if (tempIds != null) {
+
+                ArrayList<R2> result = new ArrayList<>(0);
+
+                for (String variantId : tempIds) {
+
+                    ArrayList<R2> tempResult = getR2(variantId);
+
+                    if (tempResult != null) {
+
+                        result.addAll(tempResult);
+
+                    }
+                }
+
+                if (!result.isEmpty()) {
+
+                    return result;
+
+                }
+            }
 
             return null;
 
@@ -167,9 +228,9 @@ public class LdMatrixReader implements AutoCloseable {
 
             r2s.add(
                     new R2(
-                            variantIndex, 
-                            alleleA, 
-                            alleleB, 
+                            variantIndex,
+                            alleleA,
+                            alleleB,
                             r2
                     )
             );
@@ -181,9 +242,9 @@ public class LdMatrixReader implements AutoCloseable {
 
     /**
      * Returns the id corresponding to a given variant index.
-     * 
+     *
      * @param variantIndex The index of the variant.
-     * 
+     *
      * @return The id of the variant.
      */
     public String getId(
@@ -191,6 +252,36 @@ public class LdMatrixReader implements AutoCloseable {
     ) {
 
         return variantIds[variantIndex];
+
+    }
+
+    /**
+     * Returns the rsid for the given variant, null if none set.
+     *
+     * @param variantId The id of the variant.
+     *
+     * @return The rsid of the variant.
+     */
+    public String getRsId(
+            String variantId
+    ) {
+
+        return variantIdtoRsIdMap.get(variantId);
+
+    }
+
+    /**
+     * Returns the variant ids for the given rsId, null if none set.
+     *
+     * @param rsid The rsid of the variant.
+     *
+     * @return The variant ids.
+     */
+    public ArrayList<String> getVariantIds(
+            String rsid
+    ) {
+
+        return rsidToVariantIdMap.get(rsid);
 
     }
 
