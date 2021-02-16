@@ -1,6 +1,7 @@
 package no.uib.triogen.utils;
 
-import com.github.luben.zstd.Zstd;
+import io.airlift.compress.zstd.ZstdCompressor;
+import io.airlift.compress.zstd.ZstdDecompressor;
 
 /**
  * Functions needed for compression and decompression.
@@ -10,21 +11,43 @@ import com.github.luben.zstd.Zstd;
 public class CompressionUtils {
 
     /**
-     * Uncompresses the given byte array.
+     * Decompresses the given byte array.
      *
-     * @param compressedByteArray the compressed byte array
-     * @param uncompressedLength the uncompressed length
+     * @param compressedByteArray The compressed byte array.
+     * @param uncompressedLength The uncompressed length.
      *
-     * @return the uncompressed array
+     * @return The decompressed array.
      */
-    public static byte[] uncompress(
+    public static byte[] zstdDecompress(
+            byte[] compressedByteArray,
+            int uncompressedLength
+    ) {
+        
+        return zstdDecompress(
+                new ZstdDecompressor(), 
+                compressedByteArray, 
+                uncompressedLength
+        );
+    }
+
+    /**
+     * Decompresses the given byte array.
+     *
+     * @param decompressor The decompressor to use.
+     * @param compressedByteArray The compressed byte array.
+     * @param uncompressedLength The uncompressed length.
+     *
+     * @return The decompressed array.
+     */
+    public static byte[] zstdDecompress(
+            ZstdDecompressor decompressor,
             byte[] compressedByteArray,
             int uncompressedLength
     ) {
 
         byte[] uncompressedByteAray = new byte[(int) uncompressedLength];
 
-        long decompressedBytes = Zstd.decompress(uncompressedByteAray, compressedByteArray);
+        long decompressedBytes = decompressor.decompress(compressedByteArray, 0, compressedByteArray.length, uncompressedByteAray, 0, uncompressedLength);
 
         if (decompressedBytes != uncompressedLength) {
 
@@ -43,15 +66,42 @@ public class CompressionUtils {
      *
      * @return The compressed data.
      */
-    public static TempByteArray compress(
+    public static TempByteArray zstdCompress(
+            byte[] uncompressedData
+    ) {
+        
+        return zstdCompress(
+                new ZstdCompressor(), 
+                uncompressedData
+        );
+        
+    }
+
+    /**
+     * Compresses the given byte array.
+     *
+     * @param compressor The compressor to use.
+     * @param uncompressedData The uncompressed data.
+     *
+     * @return The compressed data.
+     */
+    public static TempByteArray zstdCompress(
+            ZstdCompressor compressor,
             byte[] uncompressedData
     ) {
 
-        int maxLength = (int) Zstd.compressBound(uncompressedData.length);
+        int maxLength = (int) compressor.maxCompressedLength(uncompressedData.length);
 
         byte[] destinationArray = new byte[maxLength];
 
-        int compressedArrayLength = (int) Zstd.compress(destinationArray, uncompressedData, 1);
+        int compressedArrayLength = (int) compressor.compress(
+                uncompressedData,
+                0,
+                uncompressedData.length,
+                destinationArray,
+                0,
+                maxLength
+        );
 
         return new TempByteArray(destinationArray, compressedArrayLength);
 

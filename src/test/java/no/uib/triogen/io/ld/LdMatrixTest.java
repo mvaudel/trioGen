@@ -1,5 +1,6 @@
 package no.uib.triogen.io.ld;
 
+import io.airlift.compress.zstd.ZstdCompressor;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,7 +51,11 @@ public class LdMatrixTest extends TestCase {
 
                 int variantAI = variantIndex.getIndex(variant, "rs" + variant);
 
-                writer.addVariant(variantAI, r2s);
+                writer.addVariant(
+                        variantAI, 
+                        r2s,
+                        new ZstdCompressor()
+                );
 
             }
 

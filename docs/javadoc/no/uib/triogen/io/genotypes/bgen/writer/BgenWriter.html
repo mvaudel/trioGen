@@ -140,7 +140,9 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/writer/BgenWriter.html#BgenWriter-java.io.File-java.io.File-">BgenWriter</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;destinationFile,
-          <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;indexFile)</code>&nbsp;</td>
+          <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;indexFile)</code>
+<div class="block">Constructor.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -160,7 +162,9 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/writer/BgenWriter.html#addVariant-no.uib.triogen.model.genome.VariantInformation-java.util.ArrayList-">addVariant</a></span>(<a href="../../../../../../../no/uib/triogen/model/genome/VariantInformation.html" title="class in no.uib.triogen.model.genome">VariantInformation</a>&nbsp;variantInformation,
-          <a href="http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html?is-external=true" title="class or interface in java.util">ArrayList</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&gt;&nbsp;genotypedAlleles)</code>&nbsp;</td>
+          <a href="http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html?is-external=true" title="class or interface in java.util">ArrayList</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&gt;&nbsp;genotypedAlleles)</code>
+<div class="block">Adds a variant to the file.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
@@ -205,9 +209,13 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <pre>public&nbsp;BgenWriter(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;destinationFile,
                   <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;indexFile)
            throws <a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
+<div class="block">Constructor.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>destinationFile</code> - The file to write to.</dd>
+<dd><code>indexFile</code> - The index file.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code></dd>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code> - Exception thrown if an error occurred while writing to the file.</dd>
 </dl>
 </li>
 </ul>
@@ -228,9 +236,13 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <pre>public&nbsp;void&nbsp;addVariant(<a href="../../../../../../../no/uib/triogen/model/genome/VariantInformation.html" title="class in no.uib.triogen.model.genome">VariantInformation</a>&nbsp;variantInformation,
                        <a href="http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html?is-external=true" title="class or interface in java.util">ArrayList</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&gt;&nbsp;genotypedAlleles)
                 throws <a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
+<div class="block">Adds a variant to the file.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>variantInformation</code> - The information on the variant.</dd>
+<dd><code>genotypedAlleles</code> - The genotyped alleles.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code></dd>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code> - Exception thrown if an error occurred while writing to the file.</dd>
 </dl>
 </li>
 </ul>

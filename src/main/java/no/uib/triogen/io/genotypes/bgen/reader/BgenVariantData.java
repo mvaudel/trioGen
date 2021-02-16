@@ -1,6 +1,6 @@
 package no.uib.triogen.io.genotypes.bgen.reader;
 
-import com.github.luben.zstd.Zstd;
+import io.airlift.compress.zstd.ZstdDecompressor;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import static no.uib.triogen.io.genotypes.InheritanceUtils.MOTHER;
 import no.uib.triogen.io.genotypes.bgen.BgenUtils;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.genome.VariantInformation;
+import no.uib.triogen.utils.CompressionUtils;
 
 /**
  * Genotypes provider based on a bgen file.
@@ -120,8 +121,12 @@ public class BgenVariantData {
      * Parses the variant data.
      *
      * @param childToParentMap The child to parent map.
+     * @param decompressor The decompressor to use.
      */
-    public void parse(ChildToParentMap childToParentMap) {
+    public void parse(
+            ChildToParentMap childToParentMap,
+            ZstdDecompressor decompressor
+    ) {
 
         haplotypeProbabilities = new HashMap<>(childToParentMap.children.length);
         HashSet<String> missing = new HashSet<>();
@@ -148,15 +153,11 @@ public class BgenVariantData {
 
             if (compressionType == 2) {
 
-                uncompressedByteAray = new byte[(int) uncompressedLength];
-
-                long decompressedBytes = Zstd.decompress(uncompressedByteAray, compressedByteArray);
-
-                if (decompressedBytes != uncompressedLength) {
-
-                    throw new IllegalArgumentException(decompressedBytes + " bytes decompressed where " + uncompressedLength + " expected.");
-
-                }
+                uncompressedByteAray = CompressionUtils.zstdDecompress(
+                        decompressor, 
+                        compressedByteArray, 
+                        uncompressedLength
+                );
 
             } else if (compressionType == 1) {
 

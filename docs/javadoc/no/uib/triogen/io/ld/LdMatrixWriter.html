@@ -182,8 +182,9 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/io/ld/LdMatrixWriter.html#addVariant-int-java.util.ArrayList-">addVariant</a></span>(int&nbsp;variantIndex,
-          <a href="http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html?is-external=true" title="class or interface in java.util">ArrayList</a>&lt;<a href="../../../../../no/uib/triogen/model/ld/R2.html" title="class in no.uib.triogen.model.ld">R2</a>&gt;&nbsp;r2s)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/io/ld/LdMatrixWriter.html#addVariant-int-java.util.ArrayList-io.airlift.compress.zstd.ZstdCompressor-">addVariant</a></span>(int&nbsp;variantIndex,
+          <a href="http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html?is-external=true" title="class or interface in java.util">ArrayList</a>&lt;<a href="../../../../../no/uib/triogen/model/ld/R2.html" title="class in no.uib.triogen.model.ld">R2</a>&gt;&nbsp;r2s,
+          io.airlift.compress.zstd.ZstdCompressor&nbsp;compressor)</code>
 <div class="block">Writes a variant to the file.</div>
 </td>
 </tr>
@@ -262,20 +263,22 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="addVariant-int-java.util.ArrayList-">
+<a name="addVariant-int-java.util.ArrayList-io.airlift.compress.zstd.ZstdCompressor-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>addVariant</h4>
 <pre>public&nbsp;void&nbsp;addVariant(int&nbsp;variantIndex,
-                       <a href="http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html?is-external=true" title="class or interface in java.util">ArrayList</a>&lt;<a href="../../../../../no/uib/triogen/model/ld/R2.html" title="class in no.uib.triogen.model.ld">R2</a>&gt;&nbsp;r2s)
+                       <a href="http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html?is-external=true" title="class or interface in java.util">ArrayList</a>&lt;<a href="../../../../../no/uib/triogen/model/ld/R2.html" title="class in no.uib.triogen.model.ld">R2</a>&gt;&nbsp;r2s,
+                       io.airlift.compress.zstd.ZstdCompressor&nbsp;compressor)
                 throws <a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
 <div class="block">Writes a variant to the file.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>variantIndex</code> - The index of the variant.</dd>
 <dd><code>r2s</code> - The ld r2s between the variant and the other variants.</dd>
+<dd><code>compressor</code> - The compressor to use.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code> - Exception thrown if an error occurred while
  attempting to write to output file.</dd>

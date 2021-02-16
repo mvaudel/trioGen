@@ -1,5 +1,6 @@
 package no.uib.triogen.processing.linear_model;
 
+import io.airlift.compress.zstd.ZstdDecompressor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,6 +102,10 @@ public class LinearModelRunnable implements Runnable {
      * The variants to process.
      */
     private final VariantList variantList;
+    /**
+     * The decompressor to use.
+     */
+    private final ZstdDecompressor decompressor = new ZstdDecompressor();
 
     /**
      * Constructor.
@@ -170,7 +175,10 @@ public class LinearModelRunnable implements Runnable {
                     if (variantList == null || variantList.include(variantInformation.contig, variantInformation.position)) {
 
                         BgenVariantData variantData = bgenFileReader.getVariantData(variantIndex);
-                        variantData.parse(childToParentMap);
+                        variantData.parse(
+                                childToParentMap,
+                                decompressor
+                        );
 
                         // Check if any allele passes the frequency threshold
                         int[] testedAlleleIndexes = IntStream.range(1, variantData.getOrderedAlleles().length)

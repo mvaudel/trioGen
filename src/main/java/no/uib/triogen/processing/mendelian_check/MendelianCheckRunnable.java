@@ -1,5 +1,6 @@
 package no.uib.triogen.processing.mendelian_check;
 
+import io.airlift.compress.zstd.ZstdDecompressor;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -52,6 +53,10 @@ public class MendelianCheckRunnable implements Runnable {
      * The allele frequency threshold.
      */
     private final double alleleFrequencyThreshold;
+    /**
+     * The decompressor to use.
+     */
+    private final ZstdDecompressor decompressor = new ZstdDecompressor();
 
     /**
      * Constructor.
@@ -99,7 +104,10 @@ public class MendelianCheckRunnable implements Runnable {
                 if (variantInformation.alleles.length > 1) {
 
                     BgenVariantData variantData = bgenFileReader.getVariantData(variantIndex);
-                    variantData.parse(childToParentMap);
+                    variantData.parse(
+                            childToParentMap,
+                            decompressor
+                    );
 
                     // Check if any allele passes the frequency threshold
                     int[] testedAlleleIndexes = IntStream.range(1, variantData.getOrderedAlleles().length)

@@ -1,5 +1,6 @@
 package no.uib.triogen.scripts_marc;
 
+import io.airlift.compress.zstd.ZstdDecompressor;
 import java.io.File;
 import java.time.Instant;
 import no.uib.triogen.io.genotypes.InheritanceUtils;
@@ -58,7 +59,10 @@ public class TestBgen {
 
                 try {
 
-                    variantData.parse(childToParentMap);
+                    variantData.parse(
+                            childToParentMap,
+                            new ZstdDecompressor()
+                    );
                     phased++;
 
                 } catch (Exception e) {

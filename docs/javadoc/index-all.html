@@ -69,7 +69,7 @@
 <!--   -->
 </a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-<div class="contentContainer"><a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<a href="#I:X">X</a>&nbsp;<a name="I:A">
+<div class="contentContainer"><a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<a href="#I:X">X</a>&nbsp;<a href="#I:Z">Z</a>&nbsp;<a name="I:A">
 <!--   -->
 </a>
 <h2 class="title">A</h2>
@@ -83,8 +83,10 @@
 <div class="block">Adds a variant to the mapping and returns its index.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/writer/BgenWriter.html#addVariant-no.uib.triogen.model.genome.VariantInformation-java.util.ArrayList-">addVariant(VariantInformation, ArrayList&lt;String[]&gt;)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.writer.<a href="no/uib/triogen/io/genotypes/bgen/writer/BgenWriter.html" title="class in no.uib.triogen.io.genotypes.bgen.writer">BgenWriter</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/ld/LdMatrixWriter.html#addVariant-int-java.util.ArrayList-">addVariant(int, ArrayList&lt;R2&gt;)</a></span> - Method in class no.uib.triogen.io.ld.<a href="no/uib/triogen/io/ld/LdMatrixWriter.html" title="class in no.uib.triogen.io.ld">LdMatrixWriter</a></dt>
+<dd>
+<div class="block">Adds a variant to the file.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/ld/LdMatrixWriter.html#addVariant-int-java.util.ArrayList-io.airlift.compress.zstd.ZstdCompressor-">addVariant(int, ArrayList&lt;R2&gt;, ZstdCompressor)</a></span> - Method in class no.uib.triogen.io.ld.<a href="no/uib/triogen/io/ld/LdMatrixWriter.html" title="class in no.uib.triogen.io.ld">LdMatrixWriter</a></dt>
 <dd>
 <div class="block">Writes a variant to the file.</div>
 </dd>
@@ -190,7 +192,9 @@
 <div class="block">Writer for a bgen file with phased haplotypes.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/writer/BgenWriter.html#BgenWriter-java.io.File-java.io.File-">BgenWriter(File, File)</a></span> - Constructor for class no.uib.triogen.io.genotypes.bgen.writer.<a href="no/uib/triogen/io/genotypes/bgen/writer/BgenWriter.html" title="class in no.uib.triogen.io.genotypes.bgen.writer">BgenWriter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/annotation/GeneCoordinates.html#biotype">biotype</a></span> - Variable in class no.uib.triogen.model.annotation.<a href="no/uib/triogen/model/annotation/GeneCoordinates.html" title="class in no.uib.triogen.model.annotation">GeneCoordinates</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/ld/LdMatrixReader.html#BLOCK_SIZE">BLOCK_SIZE</a></span> - Static variable in class no.uib.triogen.io.ld.<a href="no/uib/triogen/io/ld/LdMatrixReader.html" title="class in no.uib.triogen.io.ld">LdMatrixReader</a></dt>
@@ -308,10 +312,6 @@
 <dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/extract/ExtractOptionsBean.html#columns">columns</a></span> - Variable in class no.uib.triogen.cmd.extract.<a href="no/uib/triogen/cmd/extract/ExtractOptionsBean.html" title="class in no.uib.triogen.cmd.extract">ExtractOptionsBean</a></dt>
 <dd>
 <div class="block">The columns.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/utils/CompressionUtils.html#compress-byte:A-">compress(byte[])</a></span> - Static method in class no.uib.triogen.utils.<a href="no/uib/triogen/utils/CompressionUtils.html" title="class in no.uib.triogen.utils">CompressionUtils</a></dt>
-<dd>
-<div class="block">Compresses the given byte array.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/flat/indexed/IndexedGzCoordinates.html#compressedLength">compressedLength</a></span> - Variable in class no.uib.triogen.io.flat.indexed.<a href="no/uib/triogen/io/flat/indexed/IndexedGzCoordinates.html" title="class in no.uib.triogen.io.flat.indexed">IndexedGzCoordinates</a></dt>
 <dd>
@@ -1977,7 +1977,7 @@
 <dd>
 <div class="block">The models this one is nested in.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#parse-no.uib.triogen.model.family.ChildToParentMap-">parse(ChildToParentMap)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#parse-no.uib.triogen.model.family.ChildToParentMap-io.airlift.compress.zstd.ZstdDecompressor-">parse(ChildToParentMap, ZstdDecompressor)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
 <dd>
 <div class="block">Parses the variant data.</div>
 </dd>
@@ -2431,10 +2431,6 @@
 <dd>
 <div class="block">The u for each phenotype.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/utils/CompressionUtils.html#uncompress-byte:A-int-">uncompress(byte[], int)</a></span> - Static method in class no.uib.triogen.utils.<a href="no/uib/triogen/utils/CompressionUtils.html" title="class in no.uib.triogen.utils">CompressionUtils</a></dt>
-<dd>
-<div class="block">Uncompresses the given byte array.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/flat/indexed/IndexedGzCoordinates.html#uncompressedLength">uncompressedLength</a></span> - Variable in class no.uib.triogen.io.flat.indexed.<a href="no/uib/triogen/io/flat/indexed/IndexedGzCoordinates.html" title="class in no.uib.triogen.io.flat.indexed">IndexedGzCoordinates</a></dt>
 <dd>
 <div class="block">Length of the uncompressed byte array.</div>
@@ -2788,7 +2784,29 @@ the order they are declared.</div>
  when more than one value of x is available.</div>
 </dd>
 </dl>
-<a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<a href="#I:X">X</a>&nbsp;</div>
+<a name="I:Z">
+<!--   -->
+</a>
+<h2 class="title">Z</h2>
+<dl>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/utils/CompressionUtils.html#zstdCompress-byte:A-">zstdCompress(byte[])</a></span> - Static method in class no.uib.triogen.utils.<a href="no/uib/triogen/utils/CompressionUtils.html" title="class in no.uib.triogen.utils">CompressionUtils</a></dt>
+<dd>
+<div class="block">Compresses the given byte array.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/utils/CompressionUtils.html#zstdCompress-io.airlift.compress.zstd.ZstdCompressor-byte:A-">zstdCompress(ZstdCompressor, byte[])</a></span> - Static method in class no.uib.triogen.utils.<a href="no/uib/triogen/utils/CompressionUtils.html" title="class in no.uib.triogen.utils">CompressionUtils</a></dt>
+<dd>
+<div class="block">Compresses the given byte array.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/utils/CompressionUtils.html#zstdDecompress-byte:A-int-">zstdDecompress(byte[], int)</a></span> - Static method in class no.uib.triogen.utils.<a href="no/uib/triogen/utils/CompressionUtils.html" title="class in no.uib.triogen.utils">CompressionUtils</a></dt>
+<dd>
+<div class="block">Decompresses the given byte array.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/utils/CompressionUtils.html#zstdDecompress-io.airlift.compress.zstd.ZstdDecompressor-byte:A-int-">zstdDecompress(ZstdDecompressor, byte[], int)</a></span> - Static method in class no.uib.triogen.utils.<a href="no/uib/triogen/utils/CompressionUtils.html" title="class in no.uib.triogen.utils">CompressionUtils</a></dt>
+<dd>
+<div class="block">Decompresses the given byte array.</div>
+</dd>
+</dl>
+<a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<a href="#I:X">X</a>&nbsp;<a href="#I:Z">Z</a>&nbsp;</div>
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
 <div class="bottomNav"><a name="navbar.bottom">
 <!--   -->

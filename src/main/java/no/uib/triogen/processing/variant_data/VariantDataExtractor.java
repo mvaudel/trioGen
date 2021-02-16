@@ -1,5 +1,6 @@
 package no.uib.triogen.processing.variant_data;
 
+import io.airlift.compress.zstd.ZstdDecompressor;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
@@ -77,6 +78,10 @@ public class VariantDataExtractor {
      * The logger.
      */
     private final SimpleCliLogger logger;
+    /**
+     * The decompressor to use.
+     */
+    private final ZstdDecompressor decompressor = new ZstdDecompressor();
 
     /**
      * Constructor.
@@ -250,7 +255,10 @@ public class VariantDataExtractor {
                 if (variantInformation.alleles.length > 1) {
 
                     BgenVariantData variantData = bgenFileReader.getVariantData(variantIndex);
-                    variantData.parse(childToParentMap);
+                    variantData.parse(
+                            childToParentMap,
+                            decompressor
+                    );
 
                     for (int i = 0; i < childToParentMap.children.length; i++) {
 

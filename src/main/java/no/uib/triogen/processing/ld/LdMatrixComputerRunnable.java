@@ -1,5 +1,7 @@
 package no.uib.triogen.processing.ld;
 
+import io.airlift.compress.zstd.ZstdCompressor;
+import io.airlift.compress.zstd.ZstdDecompressor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -70,6 +72,14 @@ public class LdMatrixComputerRunnable implements Runnable {
      * The minimal ld r2 to report (inclusive).
      */
     private final double minR2;
+    /**
+     * The compressor to use.
+     */
+    private final ZstdCompressor compressor = new ZstdCompressor();
+    /**
+     * The decompressor to use.
+     */
+    private final ZstdDecompressor decompressor = new ZstdDecompressor();
 
     /**
      * Constructor.
@@ -134,7 +144,10 @@ public class LdMatrixComputerRunnable implements Runnable {
                 if (pHomA == null) {
 
                     BgenVariantData variantData = bgenFileReader.getVariantData(indexA);
-                    variantData.parse(childToParentMap);
+                    variantData.parse(
+                            childToParentMap,
+                            decompressor
+                    );
 
                     p0Cache.register(variantData, childToParentMap);
                     
@@ -156,7 +169,10 @@ public class LdMatrixComputerRunnable implements Runnable {
                     if (pHomB == null) {
 
                         BgenVariantData variantData = bgenFileReader.getVariantData(indexB);
-                        variantData.parse(childToParentMap);
+                        variantData.parse(
+                                childToParentMap,
+                                decompressor
+                        );
 
                         p0Cache.register(variantData, childToParentMap);
 
@@ -226,7 +242,8 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                     writer.addVariant(
                             variantIdA,
-                            r2s
+                            r2s,
+                            compressor
                     );
 
                     System.out.println(variantInformationA.rsId + " " + r2s.size());

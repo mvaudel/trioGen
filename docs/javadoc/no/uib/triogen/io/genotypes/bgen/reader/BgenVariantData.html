@@ -244,7 +244,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#parse-no.uib.triogen.model.family.ChildToParentMap-">parse</a></span>(<a href="../../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#parse-no.uib.triogen.model.family.ChildToParentMap-io.airlift.compress.zstd.ZstdDecompressor-">parse</a></span>(<a href="../../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
+     io.airlift.compress.zstd.ZstdDecompressor&nbsp;decompressor)</code>
 <div class="block">Parses the variant data.</div>
 </td>
 </tr>
@@ -312,17 +313,19 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="parse-no.uib.triogen.model.family.ChildToParentMap-">
+<a name="parse-no.uib.triogen.model.family.ChildToParentMap-io.airlift.compress.zstd.ZstdDecompressor-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>parse</h4>
-<pre>public&nbsp;void&nbsp;parse(<a href="../../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</pre>
+<pre>public&nbsp;void&nbsp;parse(<a href="../../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
+                  io.airlift.compress.zstd.ZstdDecompressor&nbsp;decompressor)</pre>
 <div class="block">Parses the variant data.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>childToParentMap</code> - The child to parent map.</dd>
+<dd><code>decompressor</code> - The decompressor to use.</dd>
 </dl>
 </li>
 </ul>

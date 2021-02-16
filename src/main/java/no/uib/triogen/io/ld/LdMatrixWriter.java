@@ -1,5 +1,6 @@
 package no.uib.triogen.io.ld;
 
+import io.airlift.compress.zstd.ZstdCompressor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,16 +9,14 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.SEPARATOR;
 import no.uib.triogen.utils.TempByteArray;
 import static no.uib.triogen.io.ld.LdMatrixUtils.MAGIC_NUMBER;
 import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.model.trio_genotypes.VariantIndex;
-import no.uib.triogen.utils.CompressionUtils;
-import static no.uib.triogen.utils.CompressionUtils.compress;
 import no.uib.triogen.utils.SimpleSemaphore;
+import static no.uib.triogen.utils.CompressionUtils.zstdCompress;
 
 /**
  * Writer for an ld matrix.
@@ -85,13 +84,15 @@ public class LdMatrixWriter implements AutoCloseable {
      *
      * @param variantIndex The index of the variant.
      * @param r2s The ld r2s between the variant and the other variants.
+     * @param compressor The compressor to use.
      *
      * @throws IOException Exception thrown if an error occurred while
      * attempting to write to output file.
      */
     public void addVariant(
             int variantIndex,
-            ArrayList<R2> r2s
+            ArrayList<R2> r2s,
+            ZstdCompressor compressor
     ) throws IOException {
 
         int nVariants = r2s.size();
@@ -126,7 +127,10 @@ public class LdMatrixWriter implements AutoCloseable {
             }
 
             byte[] uncompressedData = buffer.array();
-            TempByteArray compressedData = compress(uncompressedData);
+            TempByteArray compressedData = zstdCompress(
+                    compressor,
+                    uncompressedData
+            );
 
             semaphore.acquire();
 
@@ -142,26 +146,6 @@ public class LdMatrixWriter implements AutoCloseable {
             semaphore.release();
 
         }
-    }
-
-    /**
-     * Compresses and writes the given byte array.
-     *
-     * @param uncompressedData The uncompressed data.
-     *
-     * @throws IOException Exception thrown if an error occurred while
-     * attempting to write to output file.
-     */
-    private void compressAndWrite(
-            byte[] uncompressedData
-    ) throws IOException {
-
-        TempByteArray compressedData = compress(uncompressedData);
-
-        raf.writeInt(compressedData.length);
-        raf.writeInt(uncompressedData.length);
-        raf.write(compressedData.array, 0, compressedData.length);
-
     }
 
     /**
@@ -206,7 +190,12 @@ public class LdMatrixWriter implements AutoCloseable {
 
         }
 
-        compressAndWrite(buffer.array());
+        byte[] uncompressedData = buffer.array();
+        TempByteArray compressedData = zstdCompress(uncompressedData);
+
+        raf.writeInt(compressedData.length);
+        raf.writeInt(uncompressedData.length);
+        raf.write(compressedData.array, 0, compressedData.length);
 
         raf.seek(0);
         raf.write(MAGIC_NUMBER);

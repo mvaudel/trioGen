@@ -1,5 +1,6 @@
 package no.uib.triogen.processing.simple_score;
 
+import io.airlift.compress.zstd.ZstdDecompressor;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
@@ -66,6 +67,10 @@ public class SimpleScoreComputer {
      * The logger.
      */
     private final SimpleCliLogger logger;
+    /**
+     * The decompressor to use.
+     */
+    private final ZstdDecompressor decompressor = new ZstdDecompressor();
 
     public SimpleScoreComputer(
             File genotypesFile,
@@ -154,7 +159,10 @@ public class SimpleScoreComputer {
             if (variantInformation.alleles.length > 1) {
 
                 BgenVariantData variantData = bgenFileReader.getVariantData(variantIndex);
-                variantData.parse(childToParentMap);
+                variantData.parse(
+                        childToParentMap,
+                decompressor
+                );
 
                 String variantId = variantInformation.id;
                 boolean found = false;

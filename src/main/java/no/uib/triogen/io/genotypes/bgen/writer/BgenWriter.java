@@ -1,6 +1,6 @@
 package no.uib.triogen.io.genotypes.bgen.writer;
 
-import com.github.luben.zstd.Zstd;
+import io.airlift.compress.zstd.ZstdCompressor;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -12,6 +12,8 @@ import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.bgen.BgenUtils;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.model.genome.VariantInformation;
+import no.uib.triogen.utils.CompressionUtils;
+import no.uib.triogen.utils.TempByteArray;
 
 /**
  * Writer for a bgen file with phased haplotypes.
@@ -20,23 +22,59 @@ import no.uib.triogen.model.genome.VariantInformation;
  */
 public class BgenWriter implements AutoCloseable {
 
+    /**
+     * The file to write to.
+     */
     private final File destinationFile;
     /**
      * Random access file to the destination file.
      */
     private final RandomAccessFile raf;
+    /**
+     * The index file.
+     */
     private final File indexFile;
-
+/**
+ * The length of the header block.
+ */
     private final int headerBlockLength = 4 + 4 + 4 + 4 + 13 + 4;
+    /**
+     * The offset.
+     */
     private int offset = -1;
+    /**
+     * The number of variants written to the file.
+     */
     private int nVariants = -1;
+    /**
+     * The sample identifiers.
+     */
     private String[] samples;
-
+/**
+ * The entries of the index.
+ */
     private ArrayList<IndexEntry> indexEntries = new ArrayList<>();
-
+/**
+ * The precision used to store the probabilities.
+ */
     private final static int probabilityPrecision = 8;
+    /**
+     * The compressor to use.
+     */
+    private final ZstdCompressor compressor = new ZstdCompressor();
 
-    public BgenWriter(File destinationFile, File indexFile) throws IOException {
+    /**
+     * Constructor.
+     * 
+     * @param destinationFile The file to write to.
+     * @param indexFile The index file.
+     * 
+     * @throws IOException Exception thrown if an error occurred while writing to the file.
+     */
+    public BgenWriter(
+            File destinationFile, 
+            File indexFile
+    ) throws IOException {
 
         this.destinationFile = destinationFile;
         this.indexFile = indexFile;
@@ -45,7 +83,15 @@ public class BgenWriter implements AutoCloseable {
 
     }
 
-    public void addVariant(
+    /**
+     * Adds a variant to the file.
+     * 
+     * @param variantInformation The information on the variant.
+     * @param genotypedAlleles The genotyped alleles.
+     * 
+     * @throws IOException Exception thrown if an error occurred while writing to the file.
+     */
+    public synchronized void addVariant(
             VariantInformation variantInformation,
             ArrayList<String[]> genotypedAlleles
     ) throws IOException {
@@ -155,21 +201,20 @@ public class BgenWriter implements AutoCloseable {
             }
         }
 
-        int maxLength = (int) Zstd.compressBound(probabilityData.length);
+        TempByteArray destinationArray = CompressionUtils.zstdCompress(
+                compressor,
+                probabilityData
+        );
 
-        byte[] destinationArray = new byte[maxLength];
-
-        int compressedArrayLength = (int) Zstd.compress(destinationArray, probabilityData, 1);
-
-        raf.writeInt(Integer.reverseBytes(compressedArrayLength + 4));
+        raf.writeInt(Integer.reverseBytes(destinationArray.length + 4));
 
         long start = raf.getFilePointer();
 
         raf.writeInt(Integer.reverseBytes(probabilityData.length));
 
-        raf.write(destinationArray, 0, compressedArrayLength);
+        raf.write(destinationArray.array, 0, destinationArray.length);
 
-        indexEntries.add(new IndexEntry(variantInformation, start, compressedArrayLength + 4));
+        indexEntries.add(new IndexEntry(variantInformation, start, destinationArray.length + 4));
 
     }
 

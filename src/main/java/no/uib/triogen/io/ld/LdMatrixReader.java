@@ -12,7 +12,7 @@ import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.ENCODING;
 import no.uib.triogen.io.flat.mapping.MemoryMappedFile;
 import no.uib.triogen.model.ld.R2;
-import static no.uib.triogen.utils.CompressionUtils.uncompress;
+import static no.uib.triogen.utils.CompressionUtils.zstdDecompress;
 
 /**
  * Reader for an ld matrix.
@@ -82,7 +82,10 @@ public class LdMatrixReader implements AutoCloseable {
             byte[] compressedFooter = new byte[compressedLength];
             raf.read(compressedFooter);
 
-            byte[] footer = uncompress(compressedFooter, uncompressedLength);
+            byte[] footer = zstdDecompress(
+                    compressedFooter, 
+                    uncompressedLength
+            );
 
             ByteBuffer byteBuffer = ByteBuffer.wrap(footer);
             int idsByteLength = byteBuffer.getInt();
@@ -214,7 +217,7 @@ public class LdMatrixReader implements AutoCloseable {
 
         int uncompressedLength = nVariants * Integer.BYTES + 2 * nVariants * Short.BYTES + nVariants * Float.BYTES;
 
-        byte[] uncompressedData = uncompress(compressedData, uncompressedLength);
+        byte[] uncompressedData = zstdDecompress(compressedData, uncompressedLength);
         ByteBuffer byteBuffer = ByteBuffer.wrap(uncompressedData);
 
         ArrayList<R2> r2s = new ArrayList<>(nVariants);
