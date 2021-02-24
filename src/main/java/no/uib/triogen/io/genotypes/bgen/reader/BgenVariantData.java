@@ -46,6 +46,10 @@ public class BgenVariantData {
      */
     private HashMap<String, double[]> haplotypeProbabilities = null;
     /**
+     * Values for the allele probabilities for the children and parents summed across all contigs.
+     */
+    private HashMap<String, double[]> summedProbabilities = null;
+    /**
      * The number of alleles.
      */
     private int nAlleles = -1;
@@ -128,7 +132,8 @@ public class BgenVariantData {
             ZstdDecompressor decompressor
     ) {
 
-        haplotypeProbabilities = new HashMap<>(childToParentMap.children.length);
+        haplotypeProbabilities = new HashMap<>(3 * childToParentMap.children.length);
+        summedProbabilities = new HashMap<>(3 * childToParentMap.children.length);
         HashSet<String> missing = new HashSet<>();
 
         try {
@@ -313,6 +318,8 @@ public class BgenVariantData {
                     if (!missing.contains(sampleId) || !childToParentMap.sampleIds.contains(sampleId)) {
 
                         double[] probabilities = new double[(nAlleles - 1) * z];
+                        double[] sampleSummedProbabilities = new double[nAlleles];
+                        double totalProbability = 0.0;
 
                         int probabilityI = 0;
 
@@ -340,12 +347,17 @@ public class BgenVariantData {
                                 }
 
                                 probabilities[probabilityI] = p;
+                                sampleSummedProbabilities[allele-1] += p;
+                                totalProbability += p;
 
                                 probabilityI++;
 
                             }
                         }
+                        
+                        sampleSummedProbabilities[nAlleles - 1] = 1.0 - totalProbability;
 
+                        summedProbabilities.put(sampleId, sampleSummedProbabilities);
                         haplotypeProbabilities.put(sampleId, probabilities);
 
                     }
@@ -379,7 +391,7 @@ public class BgenVariantData {
                         for (int alleleI = 0; alleleI < variantInformation.alleles.length; alleleI++) {
 
                             int ploidy = getPloidy(motherId);
-                            nAltParents[alleleI] += getSummedProbability(motherId, alleleI, ploidy);
+                            nAltParents[alleleI] += getSummedProbability(motherId, alleleI);
                             nContigParents[alleleI] += ploidy;
 
                         }
@@ -390,7 +402,7 @@ public class BgenVariantData {
                         for (int alleleI = 0; alleleI < variantInformation.alleles.length; alleleI++) {
 
                             int ploidy = getPloidy(fatherId);
-                            nAltParents[alleleI] += getSummedProbability(fatherId, alleleI, ploidy);
+                            nAltParents[alleleI] += getSummedProbability(fatherId, alleleI);
                             nContigParents[alleleI] += ploidy;
 
                         }
@@ -401,7 +413,7 @@ public class BgenVariantData {
                         for (int alleleI = 0; alleleI < variantInformation.alleles.length; alleleI++) {
 
                             int ploidy = getPloidy(childId);
-                            nAltParents[alleleI] += getSummedProbability(childId, alleleI, ploidy);
+                            nAltParents[alleleI] += getSummedProbability(childId, alleleI);
                             nContigParents[alleleI] += ploidy;
 
                         }
@@ -561,36 +573,8 @@ public class BgenVariantData {
             int alleleIndex
     ) {
 
-        return getSummedProbability(sampleId, alleleIndex, getPloidy(sampleId));
-
-    }
-
-    /**
-     * Returns the sum of probabilities for the given allele and sample over all
-     * contigs.
-     *
-     * @param sampleId The id of the sample.
-     * @param alleleIndex The index of the allele.
-     * @param ploidy The ploidy of the sample.
-     *
-     * @return The sum of probabilities for the given allele and sample over all
-     * contigs.
-     */
-    public double getSummedProbability(
-            String sampleId,
-            int alleleIndex,
-            int ploidy
-    ) {
-
-        double p = 0.0;
-
-        for (int z = 0; z < ploidy; z++) {
-
-            p += getProbability(sampleId, z, alleleIndex);
-
-        }
-
-        return p;
+        double[] sampleProbabilities = summedProbabilities.get(sampleId);
+        return sampleProbabilities[alleleIndex];
 
     }
 

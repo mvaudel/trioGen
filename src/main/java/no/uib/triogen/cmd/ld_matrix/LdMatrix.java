@@ -107,6 +107,7 @@ public class LdMatrix {
                 bean.destinationFilePath,
                 bean.maxDistance,
                 bean.minR2,
+                bean.alleleFrequencyThreshold,
                 bean.nVariants,
                 logger
         );

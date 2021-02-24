@@ -162,12 +162,16 @@
                int&nbsp;start,
                int&nbsp;end,
                <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger,
-               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;logPrefix)</code>&nbsp;</td>
+               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;logPrefix)</code>
+<div class="block">Constructor.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html#VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.log.SimpleCliLogger-java.lang.String-">VariantIterator</a></span>(<a href="../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
                <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger,
-               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;logPrefix)</code>&nbsp;</td>
+               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;logPrefix)</code>
+<div class="block">Constructor.</div>
+</td>
 </tr>
 </tbody>
 </table>
@@ -204,7 +208,7 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputer.html#LdMatrixComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-double-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputer.html#LdMatrixComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-double-double-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
                 int&nbsp;defaultMotherPloidy,
                 int&nbsp;defaultFatherPloidy,
@@ -212,19 +216,21 @@
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;destinationStem,
                 int&nbsp;maxDistance,
                 double&nbsp;minR2,
+                double&nbsp;alleleFrequencyThreshold,
                 int&nbsp;nVariants,
                 <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
 <div class="block">constructor.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputerRunnable.html#LdMatrixComputerRunnable-no.uib.triogen.io.ld.LdMatrixWriter-no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader-no.uib.triogen.model.family.ChildToParentMap-int-double-no.uib.triogen.model.trio_genotypes.VariantIndex-no.uib.triogen.processing.ld.P0Cache-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputerRunnable</a></span>(<a href="../../../../../no/uib/triogen/io/ld/LdMatrixWriter.html" title="class in no.uib.triogen.io.ld">LdMatrixWriter</a>&nbsp;writer,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputerRunnable.html#LdMatrixComputerRunnable-no.uib.triogen.io.ld.LdMatrixWriter-no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader-no.uib.triogen.model.family.ChildToParentMap-int-double-double-no.uib.triogen.model.trio_genotypes.VariantIndex-no.uib.triogen.processing.ld.P0Cache-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputerRunnable</a></span>(<a href="../../../../../no/uib/triogen/io/ld/LdMatrixWriter.html" title="class in no.uib.triogen.io.ld">LdMatrixWriter</a>&nbsp;writer,
                         <a href="../../../../../no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html" title="class in no.uib.triogen.io.genotypes.bgen.VariantIterator">VariantIterator</a>&nbsp;iterator,
                         <a href="../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
                         <a href="../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenFileReader</a>&nbsp;bgenFileReader,
                         <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                         int&nbsp;maxDistance,
                         double&nbsp;minR2,
+                        double&nbsp;alleleFrequencyThreshold,
                         <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantIndex.html" title="class in no.uib.triogen.model.trio_genotypes">VariantIndex</a>&nbsp;variantIndex,
                         <a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html" title="class in no.uib.triogen.processing.ld">P0Cache</a>&nbsp;p0Cache,
                         int&nbsp;threadIndex,

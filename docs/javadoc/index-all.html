@@ -107,6 +107,10 @@
 <dd>
 <div class="block">The allele frequency threshold.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html#alleleFrequencyThreshold">alleleFrequencyThreshold</a></span> - Variable in class no.uib.triogen.cmd.ld_matrix.<a href="no/uib/triogen/cmd/ld_matrix/LdMatrixOptionsBean.html" title="class in no.uib.triogen.cmd.ld_matrix">LdMatrixOptionsBean</a></dt>
+<dd>
+<div class="block">The allele frequency threshold.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/mendelian_check/MendelianCheckOptionsBean.html#alleleFrequencyThreshold">alleleFrequencyThreshold</a></span> - Variable in class no.uib.triogen.cmd.mendelian_check.<a href="no/uib/triogen/cmd/mendelian_check/MendelianCheckOptionsBean.html" title="class in no.uib.triogen.cmd.mendelian_check">MendelianCheckOptionsBean</a></dt>
 <dd>
 <div class="block">The allele frequency threshold.</div>
@@ -1019,11 +1023,6 @@
 <div class="block">Returns the sum of probabilities for the given allele and sample over all
  contigs.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getSummedProbability-java.lang.String-int-int-">getSummedProbability(String, int, int)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
-<dd>
-<div class="block">Returns the sum of probabilities for the given allele and sample over all
- contigs.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html#getVariantData-int-">getVariantData(int)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenFileReader</a></dt>
 <dd>
 <div class="block">Returns the variant data for the given variant.</div>
@@ -1243,7 +1242,7 @@
 <div class="block">This class iterates through genotypes and writes a matrix of ld between
  markers computed using sliding widows of the specified range.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/ld/LdMatrixComputer.html#LdMatrixComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-double-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputer(File, HashMap&lt;Integer, char[]&gt;, int, int, ChildToParentMap, String, int, double, int, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.ld.<a href="no/uib/triogen/processing/ld/LdMatrixComputer.html" title="class in no.uib.triogen.processing.ld">LdMatrixComputer</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/ld/LdMatrixComputer.html#LdMatrixComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-double-double-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputer(File, HashMap&lt;Integer, char[]&gt;, int, int, ChildToParentMap, String, int, double, double, int, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.ld.<a href="no/uib/triogen/processing/ld/LdMatrixComputer.html" title="class in no.uib.triogen.processing.ld">LdMatrixComputer</a></dt>
 <dd>
 <div class="block">constructor.</div>
 </dd>
@@ -1251,7 +1250,7 @@
 <dd>
 <div class="block">Runnable for the LD matrix writer.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/ld/LdMatrixComputerRunnable.html#LdMatrixComputerRunnable-no.uib.triogen.io.ld.LdMatrixWriter-no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader-no.uib.triogen.model.family.ChildToParentMap-int-double-no.uib.triogen.model.trio_genotypes.VariantIndex-no.uib.triogen.processing.ld.P0Cache-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputerRunnable(LdMatrixWriter, VariantIterator, BgenIndex, BgenFileReader, ChildToParentMap, int, double, VariantIndex, P0Cache, int, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.ld.<a href="no/uib/triogen/processing/ld/LdMatrixComputerRunnable.html" title="class in no.uib.triogen.processing.ld">LdMatrixComputerRunnable</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/ld/LdMatrixComputerRunnable.html#LdMatrixComputerRunnable-no.uib.triogen.io.ld.LdMatrixWriter-no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader-no.uib.triogen.model.family.ChildToParentMap-int-double-double-no.uib.triogen.model.trio_genotypes.VariantIndex-no.uib.triogen.processing.ld.P0Cache-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputerRunnable(LdMatrixWriter, VariantIterator, BgenIndex, BgenFileReader, ChildToParentMap, int, double, double, VariantIndex, P0Cache, int, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.ld.<a href="no/uib/triogen/processing/ld/LdMatrixComputerRunnable.html" title="class in no.uib.triogen.processing.ld">LdMatrixComputerRunnable</a></dt>
 <dd>
 <div class="block">Constructor.</div>
 </dd>
@@ -1768,7 +1767,9 @@
 <div class="block">The number of children for which a phenotype was found.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html#next--">next()</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.VariantIterator.<a href="no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html" title="class in no.uib.triogen.io.genotypes.bgen.VariantIterator">VariantIterator</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Returns the next position.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/iterators/VcfIterator.html#next--">next()</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.iterators.<a href="no/uib/triogen/io/genotypes/vcf/iterators/VcfIterator.html" title="class in no.uib.triogen.io.genotypes.vcf.iterators">VcfIterator</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/reader/VcfIteratorTargets.html#next--">next()</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.reader.<a href="no/uib/triogen/io/genotypes/vcf/reader/VcfIteratorTargets.html" title="class in no.uib.triogen.io.genotypes.vcf.reader">VcfIteratorTargets</a></dt>
@@ -2655,13 +2656,21 @@ the order they are declared.</div>
 <div class="block">Iterator for the variants of a bgen file.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html#VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-int-int-no.uib.triogen.log.SimpleCliLogger-java.lang.String-">VariantIterator(BgenIndex, int, int, SimpleCliLogger, String)</a></span> - Constructor for class no.uib.triogen.io.genotypes.bgen.VariantIterator.<a href="no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html" title="class in no.uib.triogen.io.genotypes.bgen.VariantIterator">VariantIterator</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html#VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-int-int-">VariantIterator(BgenIndex, int, int)</a></span> - Constructor for class no.uib.triogen.io.genotypes.bgen.VariantIterator.<a href="no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html" title="class in no.uib.triogen.io.genotypes.bgen.VariantIterator">VariantIterator</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html#VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.log.SimpleCliLogger-java.lang.String-">VariantIterator(BgenIndex, SimpleCliLogger, String)</a></span> - Constructor for class no.uib.triogen.io.genotypes.bgen.VariantIterator.<a href="no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html" title="class in no.uib.triogen.io.genotypes.bgen.VariantIterator">VariantIterator</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html#VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-">VariantIterator(BgenIndex)</a></span> - Constructor for class no.uib.triogen.io.genotypes.bgen.VariantIterator.<a href="no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html" title="class in no.uib.triogen.io.genotypes.bgen.VariantIterator">VariantIterator</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/simple_score/VariantWeightList.html#variantList">variantList</a></span> - Variable in class no.uib.triogen.model.simple_score.<a href="no/uib/triogen/model/simple_score/VariantWeightList.html" title="class in no.uib.triogen.model.simple_score">VariantWeightList</a></dt>
 <dd>
 <div class="block">The variant list.</div>

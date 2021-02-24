@@ -139,13 +139,14 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Runnable.
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputerRunnable.html#LdMatrixComputerRunnable-no.uib.triogen.io.ld.LdMatrixWriter-no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader-no.uib.triogen.model.family.ChildToParentMap-int-double-no.uib.triogen.model.trio_genotypes.VariantIndex-no.uib.triogen.processing.ld.P0Cache-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputerRunnable</a></span>(<a href="../../../../../no/uib/triogen/io/ld/LdMatrixWriter.html" title="class in no.uib.triogen.io.ld">LdMatrixWriter</a>&nbsp;writer,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputerRunnable.html#LdMatrixComputerRunnable-no.uib.triogen.io.ld.LdMatrixWriter-no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader-no.uib.triogen.model.family.ChildToParentMap-int-double-double-no.uib.triogen.model.trio_genotypes.VariantIndex-no.uib.triogen.processing.ld.P0Cache-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputerRunnable</a></span>(<a href="../../../../../no/uib/triogen/io/ld/LdMatrixWriter.html" title="class in no.uib.triogen.io.ld">LdMatrixWriter</a>&nbsp;writer,
                         <a href="../../../../../no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html" title="class in no.uib.triogen.io.genotypes.bgen.VariantIterator">VariantIterator</a>&nbsp;iterator,
                         <a href="../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
                         <a href="../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenFileReader</a>&nbsp;bgenFileReader,
                         <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                         int&nbsp;maxDistance,
                         double&nbsp;minR2,
+                        double&nbsp;alleleFrequencyThreshold,
                         <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantIndex.html" title="class in no.uib.triogen.model.trio_genotypes">VariantIndex</a>&nbsp;variantIndex,
                         <a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html" title="class in no.uib.triogen.processing.ld">P0Cache</a>&nbsp;p0Cache,
                         int&nbsp;threadIndex,
@@ -194,7 +195,7 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Runnable.
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="LdMatrixComputerRunnable-no.uib.triogen.io.ld.LdMatrixWriter-no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader-no.uib.triogen.model.family.ChildToParentMap-int-double-no.uib.triogen.model.trio_genotypes.VariantIndex-no.uib.triogen.processing.ld.P0Cache-int-no.uib.triogen.log.SimpleCliLogger-">
+<a name="LdMatrixComputerRunnable-no.uib.triogen.io.ld.LdMatrixWriter-no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader-no.uib.triogen.model.family.ChildToParentMap-int-double-double-no.uib.triogen.model.trio_genotypes.VariantIndex-no.uib.triogen.processing.ld.P0Cache-int-no.uib.triogen.log.SimpleCliLogger-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -207,6 +208,7 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Runnable.
                                 <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                                 int&nbsp;maxDistance,
                                 double&nbsp;minR2,
+                                double&nbsp;alleleFrequencyThreshold,
                                 <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantIndex.html" title="class in no.uib.triogen.model.trio_genotypes">VariantIndex</a>&nbsp;variantIndex,
                                 <a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html" title="class in no.uib.triogen.processing.ld">P0Cache</a>&nbsp;p0Cache,
                                 int&nbsp;threadIndex,
@@ -221,6 +223,9 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Runnable.
 <dd><code>childToParentMap</code> - The map of trios.</dd>
 <dd><code>maxDistance</code> - The maximal number of bp to allow between variants.</dd>
 <dd><code>minR2</code> - The minimal ld r2 to report (inclusive).</dd>
+<dd><code>alleleFrequencyThreshold</code> - The allele frequency threshold to use.
+ Only variants having at least two alleles passing the threshold will be
+ considered.</dd>
 <dd><code>variantIndex</code> - The index to use for the variants.</dd>
 <dd><code>p0Cache</code> - The cache for the probability of homozygocity.</dd>
 <dd><code>threadIndex</code> - The index of the thread.</dd>

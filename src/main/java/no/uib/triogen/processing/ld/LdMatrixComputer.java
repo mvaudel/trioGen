@@ -67,6 +67,10 @@ public class LdMatrixComputer {
      */
     private final double minR2;
     /**
+     * The allele frequency threshold to use.
+     */
+    private final double alleleFrequencyThreshold;
+    /**
      * The logger.
      */
     private final SimpleCliLogger logger;
@@ -83,6 +87,9 @@ public class LdMatrixComputer {
      * the results.
      * @param maxDistance The maximal number of bp to allow between variants.
      * @param minR2 The minimal ld r2 to report (inclusive).
+     * @param alleleFrequencyThreshold The allele frequency threshold to use.
+     * Only variants having at least two alleles passing the threshold will be
+     * considered.
      * @param nVariants The number of variants to process in parallel.
      * @param logger The logger.
      */
@@ -95,6 +102,7 @@ public class LdMatrixComputer {
             String destinationStem,
             int maxDistance,
             double minR2,
+            double alleleFrequencyThreshold,
             int nVariants,
             SimpleCliLogger logger
     ) {
@@ -107,6 +115,7 @@ public class LdMatrixComputer {
         this.destinationStem = destinationStem;
         this.maxDistance = maxDistance;
         this.minR2 = minR2;
+        this.alleleFrequencyThreshold = alleleFrequencyThreshold;
         this.nVariants = nVariants;
         this.logger = logger;
 
@@ -149,7 +158,11 @@ public class LdMatrixComputer {
 
         start = Instant.now().getEpochSecond();
 
-        VariantIterator iterator = new VariantIterator(bgenIndex);
+        VariantIterator iterator = new VariantIterator(
+                bgenIndex,
+                logger,
+                "    LD " + genotypesFile.getName() + "    "
+        );
 
         P0Cache p0Cache = new P0Cache(nVariants);
 
@@ -173,6 +186,7 @@ public class LdMatrixComputer {
                                     childToParentMap,
                                     maxDistance,
                                     minR2,
+                                    alleleFrequencyThreshold,
                                     variantIndex,
                                     p0Cache,
                                     i,

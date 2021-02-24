@@ -31,6 +31,10 @@ public class LdMatrixOptionsBean {
      */
     public double minR2 = 1e-6;
     /**
+     * The allele frequency threshold.
+     */
+    public double alleleFrequencyThreshold = 0.001;
+    /**
      * File where to write the output.
      */
     public final String destinationFilePath;
@@ -124,6 +128,33 @@ public class LdMatrixOptionsBean {
 
                 throw new IllegalArgumentException(
                         "Input for minR2 could not be parsed as a number: " + option + "."
+                );
+
+            }
+        }
+
+        // The allele frequency threshold
+        if (aLine.hasOption(LdMatrixOptions.af.opt)) {
+
+            String option = aLine.getOptionValue(LdMatrixOptions.af.opt);
+
+            try {
+
+                alleleFrequencyThreshold = Double.parseDouble(option);
+
+                if (alleleFrequencyThreshold < 0.0 || alleleFrequencyThreshold > 1.0) {
+
+                    throw new IllegalArgumentException(
+                            "Input for allele frequency (" + option + ") must be a number between 0 and 1."
+                    );
+                }
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                throw new IllegalArgumentException(
+                        "Input for timeout could not be parsed as a number: " + option + "."
                 );
 
             }

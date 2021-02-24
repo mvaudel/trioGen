@@ -12,17 +12,48 @@ import no.uib.triogen.utils.SimpleSemaphore;
  */
 public class VariantIterator {
 
+    /**
+     * The number of variants to iterate before showing progress.
+     */
     private static final int nProgress = 100000;
-    private final SimpleCliLogger logger;
-    private final String logPrefix;
+    /**
+     * The index of the bgen file to iterate.
+     */
     private final BgenIndex bgenIndex;
+    /**
+     * The position to start the iteration. Ignored if -1.
+     */
     private final int start;
+    /**
+     * The position to end the iteration. Ignored if -1.
+     */
     private final int end;
-
+    /**
+     * A semaphore to synchronize threads.
+     */
     private final SimpleSemaphore simpleSemaphore = new SimpleSemaphore(1);
-
+/**
+ * The current index of the iteration.
+ */
     private int currentVariantIndex = 0;
+    /**
+     * The logger to use. Ignored if null.
+     */
+    private final SimpleCliLogger logger;
+    /**
+     * The prefix to use for the log.
+     */
+    private final String logPrefix;
 
+    /**
+     * Constructor.
+     * 
+     * @param bgenIndex The index of the bgen file to iterate.
+     * @param start The position to start the iteration. Ignored if -1.
+     * @param end The position to end the iteration. Ignored if -1.
+     * @param logger The logger to use. Ignored if null.
+     * @param logPrefix The prefix to use for the log.
+     */
     public VariantIterator(
             BgenIndex bgenIndex,
             int start,
@@ -39,6 +70,13 @@ public class VariantIterator {
 
     }
 
+    /**
+     * Constructor.
+     * 
+     * @param bgenIndex The index of the bgen file to iterate.
+     * @param start The position to start the iteration. Ignored if -1.
+     * @param end The position to end the iteration. Ignored if -1.
+     */
     public VariantIterator(
             BgenIndex bgenIndex,
             int start,
@@ -49,16 +87,28 @@ public class VariantIterator {
 
     }
 
+    /**
+     * Constructor.
+     * 
+     * @param bgenIndex The index of the bgen file to iterate.
+     * @param logger The logger to use. Ignored if null.
+     * @param logPrefix The prefix to use for the log.
+     */
     public VariantIterator(
             BgenIndex bgenIndex,
             SimpleCliLogger logger,
             String logPrefix
     ) {
 
-        this(bgenIndex, -1, -1, null, null);
+        this(bgenIndex, -1, -1, logger, logPrefix);
 
     }
 
+    /**
+     * Constructor.
+     * 
+     * @param bgenIndex The index of the bgen file to iterate.
+     */
     public VariantIterator(
             BgenIndex bgenIndex
     ) {
@@ -67,6 +117,11 @@ public class VariantIterator {
 
     }
 
+    /**
+     * Returns the next position.
+     * 
+     * @return The next position.
+     */
     public Integer next() {
 
         simpleSemaphore.acquire();
@@ -75,7 +130,7 @@ public class VariantIterator {
 
             double progress = ((double) (Math.round(10000.0 * currentVariantIndex) / bgenIndex.variantInformationArray.length)) / 100;
 
-            logger.logMessage(logPrefix + "    " + currentVariantIndex + " processed of " + bgenIndex.variantInformationArray.length + " (" + progress + " %)");
+            logger.logMessage(logPrefix + "    " + currentVariantIndex + " processed of " + bgenIndex.variantInformationArray.length + " (" + progress + "%)");
 
         }
 

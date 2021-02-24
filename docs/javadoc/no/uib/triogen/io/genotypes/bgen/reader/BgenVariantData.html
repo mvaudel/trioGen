@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -221,35 +221,26 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>double</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getSummedProbability-java.lang.String-int-int-">getSummedProbability</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sampleId,
-                    int&nbsp;alleleIndex,
-                    int&nbsp;ploidy)</code>
-<div class="block">Returns the sum of probabilities for the given allele and sample over all
- contigs.</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../../no/uib/triogen/model/genome/VariantInformation.html" title="class in no.uib.triogen.model.genome">VariantInformation</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getVariantInformation--">getVariantInformation</a></span>()</code>
 <div class="block">Returns information on the variant.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#isSwappedChildrenAlleles--">isSwappedChildrenAlleles</a></span>()</code>
 <div class="block">Returns a boolean indicating whether the given allele should be swapped
  in children.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#parse-no.uib.triogen.model.family.ChildToParentMap-io.airlift.compress.zstd.ZstdDecompressor-">parse</a></span>(<a href="../../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
      io.airlift.compress.zstd.ZstdDecompressor&nbsp;decompressor)</code>
 <div class="block">Parses the variant data.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#swapChildrenAlleles--">swapChildrenAlleles</a></span>()</code>
 <div class="block">Indicate that children alleles should be swapped.</div>
@@ -425,28 +416,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>sampleId</code> - The id of the sample.</dd>
 <dd><code>alleleIndex</code> - The index of the allele.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The sum of probabilities for the given allele and sample over all
- contigs.</dd>
-</dl>
-</li>
-</ul>
-<a name="getSummedProbability-java.lang.String-int-int-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getSummedProbability</h4>
-<pre>public&nbsp;double&nbsp;getSummedProbability(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sampleId,
-                                   int&nbsp;alleleIndex,
-                                   int&nbsp;ploidy)</pre>
-<div class="block">Returns the sum of probabilities for the given allele and sample over all
- contigs.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>sampleId</code> - The id of the sample.</dd>
-<dd><code>alleleIndex</code> - The index of the allele.</dd>
-<dd><code>ploidy</code> - The ploidy of the sample.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The sum of probabilities for the given allele and sample over all
  contigs.</dd>

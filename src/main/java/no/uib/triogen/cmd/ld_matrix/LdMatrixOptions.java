@@ -16,7 +16,7 @@ public enum LdMatrixOptions {
     maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Default: 500000.", false, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not. Consider including only unrelated samples and controling for admixture.", true, true),
     minR2("r", "minR2", "The minimal ld r2 to report (inclusive). Default: 1e-6.", false, true),
-    af("af", "alleleFrequencyThreshold", "Allele frequency threshold. 0.005 excludes all alleles of variants with frequency < 0.5% or > 99.5%. Default: 0.001.", false, true),
+    af("af", "alleleFrequencyThreshold", "Allele frequency threshold. 0.001 excludes all alleles of variants with frequency < 0.1% or > 99.9%. Only variants with at least two alleles passing the threshold will be inspected. Default: 0.001.", false, true),
     out("o", "out", "The file where to write the matrix. The extension '.tld' will be added if not present.", true, true),
     nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is the number of cores on the machine.", false, true),
     timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true);
