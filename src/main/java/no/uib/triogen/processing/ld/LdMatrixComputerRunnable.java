@@ -173,10 +173,8 @@ public class LdMatrixComputerRunnable implements Runnable {
                             continue;
 
                         }
-                        
-                        continue;
 
-//                        p0Cache.register(variantData, childToParentMap);
+                        p0Cache.register(variantData, childToParentMap);
 
                     }
 

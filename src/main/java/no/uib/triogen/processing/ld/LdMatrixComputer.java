@@ -161,7 +161,7 @@ public class LdMatrixComputer {
         VariantIterator iterator = new VariantIterator(
                 bgenIndex,
                 logger,
-                "    LD " + genotypesFile.getName() + "    "
+                "LD " + genotypesFile.getName() + "    "
         );
 
         P0Cache p0Cache = new P0Cache(nVariants);
