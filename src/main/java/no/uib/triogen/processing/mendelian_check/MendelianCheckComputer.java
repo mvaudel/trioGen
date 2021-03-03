@@ -128,10 +128,10 @@ public class MendelianCheckComputer {
 
         BgenIndex bgenIndex = BgenIndex.getBgenIndex(genotypesFile);
         BgenFileReader bgenFileReader = new BgenFileReader(
-                genotypesFile, 
-                bgenIndex, 
-                inheritanceMap, 
-                defaultMotherPloidy, 
+                genotypesFile,
+                bgenIndex,
+                inheritanceMap,
+                defaultMotherPloidy,
                 defaultFatherPloidy
         );
 
@@ -149,7 +149,8 @@ public class MendelianCheckComputer {
             VariantIterator iterator = new VariantIterator(
                     bgenIndex,
                     logger,
-                    "Mendelian error check in " + genotypesFile.getAbsolutePath()
+                    "Mendelian error check in " + genotypesFile.getAbsolutePath(),
+                    variantList == null
             );
 
             try (SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true)) {
@@ -160,14 +161,14 @@ public class MendelianCheckComputer {
 
                 IntStream.range(0, nVariants)
                         .mapToObj(i -> new MendelianCheckRunnable(
-                                        writer,
-                                        iterator,
-                                        bgenIndex,
-                                        bgenFileReader,
-                                        childToParentMap,
-                                        alleleFrequencyThreshold,
-                                        logger
-                                )
+                        writer,
+                        iterator,
+                        bgenIndex,
+                        bgenFileReader,
+                        childToParentMap,
+                        alleleFrequencyThreshold,
+                        logger
+                )
                         )
                         .forEach(
                                 worker -> pool.submit(worker)

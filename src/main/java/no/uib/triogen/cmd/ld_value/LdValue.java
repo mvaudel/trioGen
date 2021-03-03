@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -99,9 +98,6 @@ public class LdValue {
         ConcurrentHashMap<String, LdMatrixReader> ldMatrixReaderMap = new ConcurrentHashMap<>();
 
         HashSet<String> contigs = Arrays.stream(variantList.contig)
-                .filter(
-                        contig -> !contig.equals("X") && !contig.equals("23")
-                )
                 .collect(
                         Collectors.toCollection(HashSet::new)
                 );

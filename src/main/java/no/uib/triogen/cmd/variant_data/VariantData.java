@@ -79,20 +79,6 @@ public class VariantData {
             String command
     ) {
 
-        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
-        VariantList variantList = VariantList.getVariantList(bean.variantFile);
-
-        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
-
-        if (inheritanceMap == null) {
-
-            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
-
-        }
-        
-        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
-        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
-
         String resultStem = bean.destinationFile.getAbsolutePath();
 
         if (resultStem.endsWith(".gz")) {
@@ -110,6 +96,38 @@ public class VariantData {
         logger.writeComment("Command", "LinearModel");
         logger.writeComment("Arguments", command);
         logger.writeHeaders();
+
+        VariantList variantList = null;
+
+        if (bean.variantFile != null) {
+
+            variantList = VariantList.getVariantList(
+                    bean.variantFile,
+                    bean.chromosome
+            );
+
+            if (variantList.variantId.length == 0) {
+
+                logger.logMessage("No target variant on chromosome " + bean.chromosome + ".");
+
+            }
+
+            variantList.index(0);
+
+        }
+
+        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
+
+        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
+
+        if (inheritanceMap == null) {
+
+            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
+
+        }
+        
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
 
         VariantDataExtractor variantDataExtractor = new VariantDataExtractor(
                 bean.genotypesFile,
@@ -158,10 +176,10 @@ public class VariantData {
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print("              trioGen             " + LINE_SEPARATOR);
             lPrintWriter.print("               ****               " + LINE_SEPARATOR);
-            lPrintWriter.print("      Linear Model Regression     " + LINE_SEPARATOR);
+            lPrintWriter.print("            Variant Data          " + LINE_SEPARATOR);
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print(LINE_SEPARATOR
-                    + "The linear model regression command performs linear regression using various models." + LINE_SEPARATOR
+                    + "The variant data command extracts standardized values for a set of given variants as used for the regression." + LINE_SEPARATOR
                     + LINE_SEPARATOR
                     + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + LINE_SEPARATOR
                     + LINE_SEPARATOR

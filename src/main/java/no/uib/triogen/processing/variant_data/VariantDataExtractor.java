@@ -224,7 +224,8 @@ public class VariantDataExtractor {
         VariantIterator iterator = new VariantIterator(
                 bgenIndex,
                 logger,
-                "Mendelian error check in " + genotypesFile.getAbsolutePath()
+                "Mendelian error check in " + genotypesFile.getAbsolutePath(),
+                false
         );
 
         try (SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true)) {

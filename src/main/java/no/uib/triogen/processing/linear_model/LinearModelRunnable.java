@@ -183,8 +183,8 @@ public class LinearModelRunnable implements Runnable {
                         // Check if any allele passes the frequency threshold
                         int[] testedAlleleIndexes = IntStream.range(1, variantData.getOrderedAlleles().length)
                                 .filter(
-                                        alleleIndex -> variantData.getAlleleFrequency(alleleIndex) > alleleFrequencyThreshold 
-                                                && variantData.getAlleleFrequency(alleleIndex) < 1.0 - alleleFrequencyThreshold
+                                        alleleIndex -> variantData.getAlleleFrequency(alleleIndex) > alleleFrequencyThreshold
+                                        && variantData.getAlleleFrequency(alleleIndex) < 1.0 - alleleFrequencyThreshold
                                 )
                                 .toArray();
 
@@ -343,7 +343,7 @@ public class LinearModelRunnable implements Runnable {
                     );
                 }
 
-                TreeMap<Double, Integer>[] hHist = new TreeMap[4];
+                TreeMap<Integer, Integer>[] hHist = new TreeMap[4];
 
                 for (int j = 0; j < 4; j++) {
 
@@ -351,9 +351,9 @@ public class LinearModelRunnable implements Runnable {
 
                 }
 
-                TreeMap<Double, Integer> childHist = new TreeMap<>();
-                TreeMap<Double, Integer> motherHist = new TreeMap<>();
-                TreeMap<Double, Integer> fatherHist = new TreeMap<>();
+                TreeMap<Integer, Integer> childHist = new TreeMap<>();
+                TreeMap<Integer, Integer> motherHist = new TreeMap<>();
+                TreeMap<Integer, Integer> fatherHist = new TreeMap<>();
 
                 for (int i = 0; i < childIndexes.length; i++) {
 
@@ -377,9 +377,9 @@ public class LinearModelRunnable implements Runnable {
 
                         for (int j = 0; j < 4; j++) {
 
-                            double hJ = haplotypes[j];
+                            int hJ = (int) Math.round(haplotypes[j]);
 
-                            TreeMap<Double, Integer> hHistJ = hHist[j];
+                            TreeMap<Integer, Integer> hHistJ = hHist[j];
                             Integer frequency = hHistJ.get(hJ);
 
                             if (frequency != null) {
@@ -396,7 +396,7 @@ public class LinearModelRunnable implements Runnable {
 
                     if (variantData.contains(childId)) {
 
-                        double nAltChild = variantData.getSummedProbability(childId, alleleI);
+                        int nAltChild = (int) Math.round(variantData.getSummedProbability(childId, alleleI));
 
                         Integer frequency = childHist.get(nAltChild);
 
@@ -413,7 +413,7 @@ public class LinearModelRunnable implements Runnable {
 
                     if (variantData.contains(motherId)) {
 
-                        double nAltMother = variantData.getSummedProbability(motherId, alleleI);
+                        int nAltMother = (int) Math.round(variantData.getSummedProbability(motherId, alleleI));
 
                         Integer frequency = motherHist.get(nAltMother);
 
@@ -430,7 +430,7 @@ public class LinearModelRunnable implements Runnable {
 
                     if (variantData.contains(fatherId)) {
 
-                        double nAltFather = variantData.getSummedProbability(fatherId, alleleI);
+                        int nAltFather = (int) Math.round(variantData.getSummedProbability(fatherId, alleleI));
 
                         Integer frequency = fatherHist.get(nAltFather);
 
@@ -742,7 +742,7 @@ public class LinearModelRunnable implements Runnable {
      * @return a string for the histogram
      */
     private String getHistogramAsString(
-            TreeMap<Double, Integer> hHist
+            TreeMap<Integer, Integer> hHist
     ) {
 
         return hHist.entrySet().stream()

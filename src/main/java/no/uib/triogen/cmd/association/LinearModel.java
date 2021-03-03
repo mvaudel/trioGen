@@ -81,34 +81,6 @@ public class LinearModel {
             String command
     ) {
 
-        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
-
-        VariantList variantList = null;
-
-        if (bean.variantFile != null) {
-
-            variantList = VariantList.getVariantList(bean.variantFile);
-            variantList.index(bean.maxDistance);
-
-        }
-
-        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
-
-        if (inheritanceMap == null) {
-
-            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
-
-        }
-        
-        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
-        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
-
-        Model[] models = Arrays.stream(bean.modelNames)
-                .map(
-                        modelName -> Model.valueOf(modelName)
-                )
-                .toArray(Model[]::new);
-
         String resultStem = bean.destinationFile.getAbsolutePath();
 
         if (resultStem.endsWith(".gz")) {
@@ -126,6 +98,44 @@ public class LinearModel {
         logger.writeComment("Command", "LinearModel");
         logger.writeComment("Arguments", command);
         logger.writeHeaders();
+
+        VariantList variantList = null;
+
+        if (bean.variantFile != null) {
+
+            variantList = VariantList.getVariantList(
+                    bean.variantFile,
+                    bean.chromosome
+            );
+
+            if (variantList.variantId.length == 0) {
+
+                logger.logMessage("No target variant on chromosome " + bean.chromosome + ".");
+
+            }
+
+            variantList.index(bean.maxDistance);
+
+        }
+
+        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
+
+        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
+
+        if (inheritanceMap == null) {
+
+            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
+
+        }
+
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
+
+        Model[] models = Arrays.stream(bean.modelNames)
+                .map(
+                        modelName -> Model.valueOf(modelName)
+                )
+                .toArray(Model[]::new);
 
         LinearModelComputer linearModelComputer = new LinearModelComputer(
                 bean.genotypesFile,

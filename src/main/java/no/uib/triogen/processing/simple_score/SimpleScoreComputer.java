@@ -145,7 +145,8 @@ public class SimpleScoreComputer {
         VariantIterator iterator = new VariantIterator(
                 bgenIndex,
                 logger,
-                "Simple score in " + genotypesFile.getAbsolutePath()
+                "Simple score in " + genotypesFile.getAbsolutePath(),
+                true
         );
 
         double[][] scores = new double[childToParentMap.children.length][4];
@@ -161,7 +162,7 @@ public class SimpleScoreComputer {
                 BgenVariantData variantData = bgenFileReader.getVariantData(variantIndex);
                 variantData.parse(
                         childToParentMap,
-                decompressor
+                        decompressor
                 );
 
                 String variantId = variantInformation.id;

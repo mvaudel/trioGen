@@ -1,5 +1,6 @@
 package no.uib.triogen.io.genotypes.bgen.VariantIterator;
 
+import java.time.Instant;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.genome.VariantInformation;
@@ -32,9 +33,9 @@ public class VariantIterator {
      * A semaphore to synchronize threads.
      */
     private final SimpleSemaphore simpleSemaphore = new SimpleSemaphore(1);
-/**
- * The current index of the iteration.
- */
+    /**
+     * The current index of the iteration.
+     */
     private int currentVariantIndex = 0;
     /**
      * The logger to use. Ignored if null.
@@ -44,22 +45,34 @@ public class VariantIterator {
      * The prefix to use for the log.
      */
     private final String logPrefix;
+    /**
+     * Instant where the iteration began.
+     */
+    private long startInstant = -1l;
+    /**
+     * Boolean indicating whether estimates for time of completion should be
+     * given.
+     */
+    private final boolean estimateTime;
 
     /**
      * Constructor.
-     * 
+     *
      * @param bgenIndex The index of the bgen file to iterate.
      * @param start The position to start the iteration. Ignored if -1.
      * @param end The position to end the iteration. Ignored if -1.
      * @param logger The logger to use. Ignored if null.
      * @param logPrefix The prefix to use for the log.
+     * @param estimateTime Boolean indicating whether estimates for time of
+     * completion should be given.
      */
     public VariantIterator(
             BgenIndex bgenIndex,
             int start,
             int end,
             SimpleCliLogger logger,
-            String logPrefix
+            String logPrefix,
+            boolean estimateTime
     ) {
 
         this.bgenIndex = bgenIndex;
@@ -67,12 +80,13 @@ public class VariantIterator {
         this.end = end;
         this.logger = logger;
         this.logPrefix = logPrefix;
+        this.estimateTime = estimateTime;
 
     }
 
     /**
      * Constructor.
-     * 
+     *
      * @param bgenIndex The index of the bgen file to iterate.
      * @param start The position to start the iteration. Ignored if -1.
      * @param end The position to end the iteration. Ignored if -1.
@@ -83,43 +97,46 @@ public class VariantIterator {
             int end
     ) {
 
-        this(bgenIndex, start, end, null, null);
+        this(bgenIndex, start, end, null, null, false);
 
     }
 
     /**
      * Constructor.
-     * 
+     *
      * @param bgenIndex The index of the bgen file to iterate.
      * @param logger The logger to use. Ignored if null.
      * @param logPrefix The prefix to use for the log.
+     * @param estimateTime Boolean indicating whether estimates for time of
+     * completion should be given.
      */
     public VariantIterator(
             BgenIndex bgenIndex,
             SimpleCliLogger logger,
-            String logPrefix
+            String logPrefix,
+            boolean estimateTime
     ) {
 
-        this(bgenIndex, -1, -1, logger, logPrefix);
+        this(bgenIndex, -1, -1, logger, logPrefix, estimateTime);
 
     }
 
     /**
      * Constructor.
-     * 
+     *
      * @param bgenIndex The index of the bgen file to iterate.
      */
     public VariantIterator(
             BgenIndex bgenIndex
     ) {
 
-        this(bgenIndex, -1, -1, null, null);
+        this(bgenIndex, -1, -1, null, null, false);
 
     }
 
     /**
      * Returns the next position.
-     * 
+     *
      * @return The next position.
      */
     public Integer next() {
@@ -128,10 +145,31 @@ public class VariantIterator {
 
         if (logger != null && currentVariantIndex % nProgress == 0) {
 
-            double progress = ((double) (Math.round(10000.0 * currentVariantIndex) / bgenIndex.variantInformationArray.length)) / 100;
+            double progress = ((double) (Math.round(1000.0 * currentVariantIndex) / bgenIndex.variantInformationArray.length)) / 10;
 
-            logger.logMessage(logPrefix + "    " + currentVariantIndex + " processed of " + bgenIndex.variantInformationArray.length + " (" + progress + "%)");
+            if (estimateTime) {
 
+                if (startInstant == -1l) {
+
+                    startInstant = Instant.now().getEpochSecond();
+
+                } else {
+
+                    double elapsedTimeHours = ((double) Instant.now().getEpochSecond() - startInstant) / 3600;
+                    double elapsedTimeHoursRounded = Math.round(elapsedTimeHours * 10) / 10;
+
+                    double timeRemaining = ((double) bgenIndex.variantInformationArray.length) / currentVariantIndex * elapsedTimeHours;
+                    double timeRemainingRounded = Math.round(timeRemaining * 10) / 10;
+
+                    logger.logMessage(logPrefix + "    " + currentVariantIndex + " processed of " + bgenIndex.variantInformationArray.length + " (" + progress + "% in " + elapsedTimeHoursRounded + " hours, approx " + timeRemainingRounded + " hours remaining)");
+
+                }
+
+            } else if (currentVariantIndex > 0) {
+
+                logger.logMessage(logPrefix + "    " + currentVariantIndex + " processed of " + bgenIndex.variantInformationArray.length + " (" + progress + "%)");
+
+            }
         }
 
         if ((start != -1 || end != -1) && currentVariantIndex < bgenIndex.variantInformationArray.length) {

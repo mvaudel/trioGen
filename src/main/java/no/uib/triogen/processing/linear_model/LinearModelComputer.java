@@ -264,7 +264,8 @@ public class LinearModelComputer {
         VariantIterator iterator = new VariantIterator(
                 bgenIndex,
                 logger, 
-                "Linear association in " + genotypesFile.getAbsolutePath()
+                "Linear association in " + genotypesFile.getAbsolutePath(),
+                variantList == null
         );
         IndexedGzWriter outputWriter = new IndexedGzWriter(
                 destinationFile

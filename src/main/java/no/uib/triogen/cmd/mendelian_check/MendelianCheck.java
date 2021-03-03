@@ -77,6 +77,33 @@ public class MendelianCheck {
             String command
     ) {
 
+        File logFile = new File(bean.destinationFile.getAbsolutePath() + ".log.gz");
+        SimpleCliLogger logger = new SimpleCliLogger(logFile, null);
+        logger.writeComment("Software", "TrioGen");
+        logger.writeComment("Version", TrioGen.getVersion());
+        logger.writeComment("Command", "LinearModel");
+        logger.writeComment("Arguments", command);
+        logger.writeHeaders();
+
+        VariantList variantList = null;
+
+        if (bean.variantFile != null) {
+
+            variantList = VariantList.getVariantList(
+                    bean.variantFile,
+                    bean.chromosome
+            );
+
+            if (variantList.variantId.length == 0) {
+
+                logger.logMessage("No target variant on chromosome " + bean.chromosome + ".");
+
+            }
+
+            variantList.index(0);
+
+        }
+
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
 
         HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
@@ -89,16 +116,6 @@ public class MendelianCheck {
         
         int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
         int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
-
-        File logFile = new File(bean.destinationFile.getAbsolutePath() + ".log.gz");
-        SimpleCliLogger logger = new SimpleCliLogger(logFile, null);
-        logger.writeComment("Software", "TrioGen");
-        logger.writeComment("Version", TrioGen.getVersion());
-        logger.writeComment("Command", "LinearModel");
-        logger.writeComment("Arguments", command);
-        logger.writeHeaders();
-
-        VariantList variantList = bean.variantFile == null ? null : VariantList.getVariantList(bean.variantFile);
 
         MendelianCheckComputer computer = new MendelianCheckComputer(
                 bean.genotypesFile,

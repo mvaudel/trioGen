@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":9,"i3":9,"i4":10,"i5":10};
+var methods = {"i0":10,"i1":10,"i2":9,"i3":9,"i4":9,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -214,13 +214,21 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#include-java.lang.String-int-">include</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;contig,
-       int&nbsp;position)</code>
-<div class="block">Indicates whether a variant at the given position on the given contig should be included.</div>
+<td class="colFirst"><code>static <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#getVariantList-java.io.File-java.lang.String-">getVariantList</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;variantFile,
+              <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;chromosome)</code>
+<div class="block">Parses a variant list from a file.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#include-java.lang.String-int-">include</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;contig,
+       int&nbsp;position)</code>
+<div class="block">Indicates whether a variant at the given position on the given contig
+ should be included.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#index-int-">index</a></span>(int&nbsp;indexDistance)</code>
 <div class="block">Indexes the given variant list using the given reference distance.</div>
@@ -323,7 +331,26 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
  ignored.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>variantFile</code> - the file</dd>
+<dd><code>variantFile</code> - The file containing the variant information.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>an instance of variant list</dd>
+</dl>
+</li>
+</ul>
+<a name="getVariantList-java.io.File-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getVariantList</h4>
+<pre>public static&nbsp;<a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;getVariantList(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;variantFile,
+                                         <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;chromosome)</pre>
+<div class="block">Parses a variant list from a file. First lines starting with '#' are
+ ignored.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>variantFile</code> - The file containing the variant information.</dd>
+<dd><code>chromosome</code> - The chromosome, ignored if null.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>an instance of variant list</dd>
 </dl>
@@ -383,13 +410,16 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>include</h4>
 <pre>public&nbsp;boolean&nbsp;include(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;contig,
                        int&nbsp;position)</pre>
-<div class="block">Indicates whether a variant at the given position on the given contig should be included. The distance tolerance used is the one that was used to create the index.</div>
+<div class="block">Indicates whether a variant at the given position on the given contig
+ should be included. The distance tolerance used is the one that was used
+ to create the index.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>contig</code> - The name of the contig.</dd>
 <dd><code>position</code> - The position on the contig.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A boolean indicating whether a variant at the given position on the given contig should be included.</dd>
+<dd>A boolean indicating whether a variant at the given position on
+ the given contig should be included.</dd>
 </dl>
 </li>
 </ul>

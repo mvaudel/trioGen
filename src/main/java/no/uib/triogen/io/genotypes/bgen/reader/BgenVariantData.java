@@ -355,7 +355,7 @@ public class BgenVariantData {
                             }
                         }
                         
-                        sampleSummedProbabilities[nAlleles - 1] = 1.0 - totalProbability;
+                        sampleSummedProbabilities[nAlleles - 1] = z - totalProbability;
 
                         summedProbabilities.put(sampleId, sampleSummedProbabilities);
                         haplotypeProbabilities.put(sampleId, probabilities);
