@@ -1,4 +1,4 @@
-package no.uib.triogen.io.genotypes.bgen.VariantIterator;
+package no.uib.triogen.io.genotypes.bgen.iterator;
 
 import java.time.Instant;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;

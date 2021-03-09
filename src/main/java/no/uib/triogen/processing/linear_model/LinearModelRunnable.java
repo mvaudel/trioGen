@@ -12,7 +12,7 @@ import no.uib.triogen.io.IoUtils;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
-import no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;

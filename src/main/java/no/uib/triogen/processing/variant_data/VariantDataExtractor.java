@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import static no.uib.triogen.io.IoUtils.SEPARATOR;
 import no.uib.cell_rk.utils.SimpleFileWriter;
-import no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
@@ -217,7 +217,7 @@ public class VariantDataExtractor {
 
         phenotypesHandler.sanityCheck();
 
-        logger.logMessage("Exctracting data (geno: " + genotypesFile.getAbsolutePath() + variantList.variantId.length + " variants, pheno: " + phenotypesFile.getAbsolutePath() + " " + phenoNames.length + " phenotypes)");
+        logger.logMessage("Exctracting data (geno: " + genotypesFile.getAbsolutePath() + ", " + variantList.variantId.length + " variants, pheno: " + phenotypesFile.getAbsolutePath() + " " + phenoNames.length + " phenotypes)");
 
         start = Instant.now().getEpochSecond();
 
@@ -253,7 +253,7 @@ public class VariantDataExtractor {
                 int variantIndex = tempIndex;
                 VariantInformation variantInformation = bgenIndex.variantInformationArray[variantIndex];
 
-                if (variantInformation.alleles.length > 1) {
+                if (variantInformation.alleles.length > 1 && (variantList.contains(variantInformation.id) || variantList.contains(variantInformation.rsId))) {
 
                     BgenVariantData variantData = bgenFileReader.getVariantData(variantIndex);
                     variantData.parse(

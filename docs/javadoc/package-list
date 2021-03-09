@@ -20,8 +20,8 @@ no.uib.triogen.io.flat.mapping
 no.uib.triogen.io.flat.readers
 no.uib.triogen.io.genotypes
 no.uib.triogen.io.genotypes.bgen
-no.uib.triogen.io.genotypes.bgen.VariantIterator
 no.uib.triogen.io.genotypes.bgen.index
+no.uib.triogen.io.genotypes.bgen.iterator
 no.uib.triogen.io.genotypes.bgen.reader
 no.uib.triogen.io.genotypes.bgen.writer
 no.uib.triogen.io.genotypes.vcf.iterators

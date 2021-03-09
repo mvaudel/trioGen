@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
-import no.uib.triogen.io.genotypes.bgen.VariantIterator.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
 import no.uib.triogen.io.ld.LdMatrixWriter;

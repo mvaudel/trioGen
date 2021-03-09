@@ -203,7 +203,7 @@ public class EnsemblAPI {
 
                         HashSet<Integer> positions = coordinatesMap.get(contig);
 
-                        if (positions.isEmpty()) {
+                        if (positions == null) {
 
                             positions = new HashSet<>(1);
                             coordinatesMap.put(contig, positions);
