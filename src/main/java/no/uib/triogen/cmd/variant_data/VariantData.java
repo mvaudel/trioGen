@@ -18,7 +18,7 @@ import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.processing.variant_data.VariantDataExtractor;
 
 /**
- * Runs multiple linear models for the association with phenotypes.
+ * Extracts standardized genotypes and phenotypes for a set of variants.
  *
  * @author Marc Vaudel
  */

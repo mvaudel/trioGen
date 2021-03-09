@@ -11,6 +11,15 @@ import no.uib.triogen.io.flat.SimpleFileReader;
  */
 public class VariantIdFile {
 
+    /**
+     * Returns the ids of the variant found in the idsColumn.
+     * 
+     * @param file The file to read.
+     * @param separator The column separator to use.
+     * @param idsColumn The name of the column containing the ids.
+     * 
+     * @return The ids of the variant found in the idsColumn.
+     */
     public static String[] parseFromFile(
             File file,
             String separator,

@@ -7,6 +7,8 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map.Entry;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -115,7 +117,7 @@ public class EnsemblAPI {
         } catch (UnirestException e) {
 
             System.out.println("Faulty Request:\n" + request);
-            
+
             throw new RuntimeException(e);
 
         }
@@ -149,7 +151,153 @@ public class EnsemblAPI {
             throw new RuntimeException(e);
 
         }
+    }
 
+    /**
+     * Returns the coordinates of the features found within the given genomic
+     * region as defined as a bp window on a contig.
+     *
+     * @param rsId The rsid of the variant.
+     * @param buildNumber The number of the build, e.g. 38 for GRCh38.
+     *
+     * @return The coordinates of the features found within the given genomic
+     * region.
+     */
+    public static ArrayList<VariantCoordinates> getVariantCoordinates(
+            String rsId,
+            int buildNumber
+    ) {
+
+        String ext = String.join("",
+                "/variant_recoder/homo_sapiens/", rsId, "?fields=vcf_string"
+        );
+        GetRequest request = Unirest.get(getServer(buildNumber) + ext);
+        request.header("Content-Type", "application/json");
+
+        try {
+
+            HttpResponse<JsonNode> jsonResponse = request.asJson();
+
+            JSONArray array = jsonResponse.getBody().getArray();
+
+            HashMap<String, HashSet<Integer>> coordinatesMap = new HashMap<>();
+
+            for (int i = 0; i < array.length(); i++) {
+
+                JSONObject jsonObject = array.getJSONObject(i);
+
+                for (String key : jsonObject.keySet()) {
+
+                    JSONObject jsonObject2 = jsonObject.getJSONObject(key);
+
+                    JSONArray vcfArray = jsonObject2.getJSONArray("vcf_string");
+
+                    for (int j = 0; j < vcfArray.length(); j++) {
+
+                        String vcfString = vcfArray.getString(j);
+
+                        String[] vcfSplit = vcfString.split("-");
+
+                        String contig = vcfSplit[0];
+                        int position = Integer.parseInt(vcfSplit[1]);
+
+                        HashSet<Integer> positions = coordinatesMap.get(contig);
+
+                        if (positions.isEmpty()) {
+
+                            positions = new HashSet<>(1);
+                            coordinatesMap.put(contig, positions);
+
+                        }
+
+                        positions.add(position);
+
+                    }
+                }
+            }
+
+            ArrayList<VariantCoordinates> result = new ArrayList<>(coordinatesMap.size());
+
+            for (Entry<String, HashSet<Integer>> entry : coordinatesMap.entrySet()) {
+
+                String contig = entry.getKey();
+
+                for (int position : entry.getValue()) {
+
+                    VariantCoordinates variantCoordinates = new VariantCoordinates(contig, position);
+                    result.add(variantCoordinates);
+
+                }
+            }
+
+            return result;
+
+        } catch (UnirestException e) {
+
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    /**
+     * Returns the variants in LD with the given SNP.
+     *
+     * @param rsId The rsid of the variant.
+     * @param population The reference population to use.
+     * @param r2Threshold The r2 threshold to use.
+     * @param buildNumber The number of the build, e.g. 38 for GRCh38.
+     *
+     * @return The variants in LD with the given SNP.
+     */
+    public static ArrayList<ProxyCoordinates> getProxies(
+            String rsId,
+            String population,
+            double r2Threshold,
+            int buildNumber
+    ) {
+
+        String ext = String.join("",
+                "/ld/homo_sapiens/", rsId, "/", population, "?r2=", Double.toString(r2Threshold), ";attribs=T"
+        );
+        GetRequest request = Unirest.get(getServer(buildNumber) + ext);
+        request.header("Content-Type", "application/json");
+
+        try {
+
+            HttpResponse<JsonNode> jsonResponse = request.asJson();
+
+            JSONArray array = jsonResponse.getBody().getArray();
+
+            ArrayList<ProxyCoordinates> result = new ArrayList<>(array.length());
+
+            for (int i = 0; i < array.length(); i++) {
+
+                JSONObject jsonObject = array.getJSONObject(i);
+
+                double r2 = jsonObject.getDouble("r2");
+                String contig = jsonObject.getString("chr");
+                String proxy = jsonObject.getString("variation");
+                int start = jsonObject.getInt("start");
+                int end = jsonObject.getInt("end");
+
+                result.add(
+                        new ProxyCoordinates(
+                                proxy,
+                                contig,
+                                start,
+                                end,
+                                r2
+                        )
+                );
+            }
+
+            return result;
+
+        } catch (UnirestException e) {
+
+            throw new RuntimeException(e);
+
+        }
     }
 
 }

@@ -8,6 +8,7 @@ no.uib.triogen.cmd.locus
 no.uib.triogen.cmd.mendelian_check
 no.uib.triogen.cmd.simple_score
 no.uib.triogen.cmd.variant_data
+no.uib.triogen.cmd.variant_file
 no.uib.triogen.cmd.vcf_to_bgen
 no.uib.triogen.export
 no.uib.triogen.io

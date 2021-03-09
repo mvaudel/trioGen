@@ -146,18 +146,20 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html#VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-int-int-no.uib.triogen.log.SimpleCliLogger-java.lang.String-">VariantIterator</a></span>(<a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html#VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-int-int-no.uib.triogen.log.SimpleCliLogger-java.lang.String-boolean-">VariantIterator</a></span>(<a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
                int&nbsp;start,
                int&nbsp;end,
                <a href="../../../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger,
-               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;logPrefix)</code>
+               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;logPrefix,
+               boolean&nbsp;estimateTime)</code>
 <div class="block">Constructor.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html#VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.log.SimpleCliLogger-java.lang.String-">VariantIterator</a></span>(<a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/VariantIterator/VariantIterator.html#VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.log.SimpleCliLogger-java.lang.String-boolean-">VariantIterator</a></span>(<a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
                <a href="../../../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger,
-               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;logPrefix)</code>
+               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;logPrefix,
+               boolean&nbsp;estimateTime)</code>
 <div class="block">Constructor.</div>
 </td>
 </tr>
@@ -204,7 +206,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-int-int-no.uib.triogen.log.SimpleCliLogger-java.lang.String-">
+<a name="VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-int-int-no.uib.triogen.log.SimpleCliLogger-java.lang.String-boolean-">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -214,7 +216,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                        int&nbsp;start,
                        int&nbsp;end,
                        <a href="../../../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger,
-                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;logPrefix)</pre>
+                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;logPrefix,
+                       boolean&nbsp;estimateTime)</pre>
 <div class="block">Constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -223,6 +226,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dd><code>end</code> - The position to end the iteration. Ignored if -1.</dd>
 <dd><code>logger</code> - The logger to use. Ignored if null.</dd>
 <dd><code>logPrefix</code> - The prefix to use for the log.</dd>
+<dd><code>estimateTime</code> - Boolean indicating whether estimates for time of
+ completion should be given.</dd>
 </dl>
 </li>
 </ul>
@@ -244,7 +249,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </dl>
 </li>
 </ul>
-<a name="VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.log.SimpleCliLogger-java.lang.String-">
+<a name="VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.log.SimpleCliLogger-java.lang.String-boolean-">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -252,13 +257,16 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>VariantIterator</h4>
 <pre>public&nbsp;VariantIterator(<a href="../../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
                        <a href="../../../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger,
-                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;logPrefix)</pre>
+                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;logPrefix,
+                       boolean&nbsp;estimateTime)</pre>
 <div class="block">Constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>bgenIndex</code> - The index of the bgen file to iterate.</dd>
 <dd><code>logger</code> - The logger to use. Ignored if null.</dd>
 <dd><code>logPrefix</code> - The prefix to use for the log.</dd>
+<dd><code>estimateTime</code> - Boolean indicating whether estimates for time of
+ completion should be given.</dd>
 </dl>
 </li>
 </ul>

@@ -1,21 +1,9 @@
 package no.uib.triogen.cmd.vcf_to_bgen;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
-import no.uib.triogen.io.IoUtils;
-import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.cell_rk.utils.SimpleFileWriter;
-import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
-import no.uib.triogen.io.flat.indexed.IndexedGzReader;
-import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
