@@ -224,7 +224,7 @@ public class VariantDataExtractor {
         VariantIterator iterator = new VariantIterator(
                 bgenIndex,
                 logger,
-                "Mendelian error check in " + genotypesFile.getAbsolutePath(),
+                "Extracting variants data from " + genotypesFile.getAbsolutePath(),
                 false
         );
 
@@ -320,7 +320,7 @@ public class VariantDataExtractor {
         end = Instant.now().getEpochSecond();
         duration = end - start;
 
-        logger.logMessage("Done (Mendelian error check in " + duration + " seconds)");
+        logger.logMessage("Done (varitant data extracted in " + duration + " seconds)");
 
     }
 }
