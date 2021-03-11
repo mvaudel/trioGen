@@ -146,7 +146,7 @@ public class BoltToMetal {
                 String testedAlleleFreq = lineSplit[6];
                 String beta = lineSplit[10];
                 String se = lineSplit[11];
-                String p = lineSplit[16];
+                String p = lineSplit[15];
 
                 TreeSet<String> alleles = new TreeSet<>();
                 alleles.add(testedAllele);
