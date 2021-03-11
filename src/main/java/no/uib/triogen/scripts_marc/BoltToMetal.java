@@ -24,7 +24,7 @@ public class BoltToMetal {
         String boltResultsFolder = "/mnt/work/marc/moba/run/bolt/bolt_output";
         String metaFolder = "/mnt/work/marc/moba/pwbw/prs/meta/moba_training";
 
-        String[] phenotypes = new String[]{"z_placenta_weight", "z_weight0", "z_pw_bw_ratio"};
+        String[] phenotypes = new String[]{"z_placenta_weight"};
         String[] prefixes = new String[]{"child", "mother", "father"};
 
         for (String phenotype : phenotypes) {
@@ -39,7 +39,7 @@ public class BoltToMetal {
                 try (SimpleFileWriter writer = new SimpleFileWriter(metaFile, true)) {
 
                     writer.writeLine(
-                            "SNP", "SNPID", "EFFECT_ALLELE", "NON_EFFECT_ALLELE", "N", "EAF", "BETA", "SE", "PVAL"
+                            "SNP", "SNPID", "EFFECT_ALLELE", "NON_EFFECT_ALLELE", "N", "EAF", "INFO", "BETA", "SE", "PVAL"
                     );
 
                     File boltResultsFile = new File(boltResultsFolder + "/" + phenotype + "/" + prefix + "Geno_" + phenotype + "-stats-bgen_training.gz");
@@ -144,20 +144,34 @@ public class BoltToMetal {
                 String testedAllele = lineSplit[4];
                 String otherAllele = lineSplit[5];
                 String testedAlleleFreq = lineSplit[6];
+                String info = lineSplit[7];
                 String beta = lineSplit[10];
                 String se = lineSplit[11];
                 String p = lineSplit[15];
 
-                TreeSet<String> alleles = new TreeSet<>();
-                alleles.add(testedAllele);
-                alleles.add(otherAllele);
+                double maf = Double.parseDouble(testedAlleleFreq);
 
-                String snp = chr + ":" + bp + "_" + alleles.stream().collect(Collectors.joining("_"));
+                if (maf > 0.5) {
 
-                writer.writeLine(
-                        snp, rsid, testedAllele, otherAllele, Integer.toString(nSamples), testedAlleleFreq, beta, se, p
-                );
+                    maf = 1.0 - maf;
 
+                }
+
+                double infoValue = Double.parseDouble(info);
+
+                if (infoValue > 0.4 && maf > 0.0001) {
+
+                    TreeSet<String> alleles = new TreeSet<>();
+                    alleles.add(testedAllele);
+                    alleles.add(otherAllele);
+
+                    String snp = chr + ":" + bp + "_" + alleles.stream().collect(Collectors.joining("_"));
+
+                    writer.writeLine(
+                            snp, rsid, testedAllele, otherAllele, Integer.toString(nSamples), testedAlleleFreq, info, beta, se, p
+                    );
+
+                }
             }
         }
     }
