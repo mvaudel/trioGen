@@ -97,7 +97,7 @@ public class BoltToMetal {
 
     private static int getNSamples(File logFile) {
 
-        try (SimpleFileReader reader = SimpleFileReader.getFileReader(logFile)) {
+        try (SimpleFileReader reader = SimpleFileReader.getFileReader(logFile, false)) {
 
             String line;
             while ((line = reader.readLine()) != null) {
@@ -124,7 +124,7 @@ public class BoltToMetal {
             SimpleFileWriter writer
     ) {
 
-        try (SimpleFileReader reader = SimpleFileReader.getFileReader(boltResultsFile)) {
+        try (SimpleFileReader reader = SimpleFileReader.getFileReader(boltResultsFile, false)) {
 
             String line = reader.readLine();
 
