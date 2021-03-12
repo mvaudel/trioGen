@@ -158,8 +158,12 @@ public class BoltToMetal {
                 }
 
                 double infoValue = Double.parseDouble(info);
+                
+                double betaValue = Double.parseDouble(beta);
+                double seValue = Double.parseDouble(se);
+                double pValue = Double.parseDouble(p);
 
-                if (infoValue > 0.4 && maf > 0.0001) {
+                if (infoValue > 0.4 && maf > 0.0001 && !Double.isNaN(betaValue) && !Double.isInfinite(betaValue) && !Double.isNaN(seValue) && !Double.isInfinite(seValue) && !Double.isNaN(pValue) && !Double.isInfinite(pValue)) {
 
                     TreeSet<String> alleles = new TreeSet<>();
                     alleles.add(testedAllele);
