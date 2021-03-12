@@ -148,6 +148,10 @@ public class BoltToMetal {
                 String beta = lineSplit[10];
                 String se = lineSplit[11];
                 String p = lineSplit[15];
+                
+                if (!beta.equals("-nan") && !beta.equals("nan") &&
+                        !se.equals("-nan") && !se.equals("nan") &&
+                        !p.equals("-nan") && !p.equals("-nan")) {
 
                 double maf = Double.parseDouble(testedAlleleFreq);
 
@@ -174,7 +178,7 @@ public class BoltToMetal {
                     writer.writeLine(
                             snp, rsid, testedAllele, otherAllele, Integer.toString(nSamples), testedAlleleFreq, info, beta, se, p
                     );
-
+                }
                 }
             }
         }
