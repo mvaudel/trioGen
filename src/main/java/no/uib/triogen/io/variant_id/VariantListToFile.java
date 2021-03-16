@@ -24,8 +24,26 @@ import no.uib.triogen.model.genome.VariantInformation;
  */
 public class VariantListToFile {
 
+    /**
+     * Chomosome to rsid to position map.
+     */
     private HashMap<String, HashMap<String, Integer>> rsIdCoordinatesMap = new HashMap<>(24);
 
+    /**
+     * Writes the variant file from the given variant list.
+     * 
+     * @param source The value to put in the source column for future reference.
+     * @param bgenFilePath The path to the bgen files.
+     * @param variantListFile The file containing the list of variants to annotate.
+     * @param targetFile The file to write to.
+     * @param missingFile The file where to write the SNPs that were not found.
+     * @param buildNumber The build number to use.
+     * @param ensemblPopulation The Ensembl population to query.
+     * @param minR2 The minimum R2 to use for proxies.
+     * @param logger Logger to display feedback.
+     * 
+     * @throws IOException Exception thrown if an error occurred while reading or writing a file.
+     */
     public void writeVariantFile(
             String source,
             String bgenFilePath,

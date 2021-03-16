@@ -191,7 +191,9 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/io/Closeable.h
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/vcf/iterators/VcfIterator.html#getnVariants--">getnVariants</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/vcf/iterators/VcfIterator.html#getnVariants--">getnVariants</a></span>()</code>
+<div class="block">Returns the number of variants processed.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
@@ -207,11 +209,15 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/io/Closeable.h
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/vcf/iterators/VcfIterator.html#isFinished--">isFinished</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/vcf/iterators/VcfIterator.html#isFinished--">isFinished</a></span>()</code>
+<div class="block">Returns a boolean indicating whether the iteration is finished, ie there is no next variant.</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../../no/uib/triogen/io/genotypes/vcf/reader/VcfVariant.html" title="class in no.uib.triogen.io.genotypes.vcf.reader">VcfVariant</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/vcf/iterators/VcfIterator.html#next--">next</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../no/uib/triogen/io/genotypes/vcf/iterators/VcfIterator.html#next--">next</a></span>()</code>
+<div class="block">Returns the next variant in the vcf file, null if none.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -282,6 +288,11 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/io/Closeable.h
 <li class="blockList">
 <h4>next</h4>
 <pre>public&nbsp;<a href="../../../../../../../no/uib/triogen/io/genotypes/vcf/reader/VcfVariant.html" title="class in no.uib.triogen.io.genotypes.vcf.reader">VcfVariant</a>&nbsp;next()</pre>
+<div class="block">Returns the next variant in the vcf file, null if none.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The next variant in the vcf file, null if none.</dd>
+</dl>
 </li>
 </ul>
 <a name="getnVariantColumns--">
@@ -319,6 +330,11 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/io/Closeable.h
 <li class="blockList">
 <h4>getnVariants</h4>
 <pre>public&nbsp;int&nbsp;getnVariants()</pre>
+<div class="block">Returns the number of variants processed.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The number of variants processed.</dd>
+</dl>
 </li>
 </ul>
 <a name="close--">
@@ -359,6 +375,11 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/io/Closeable.h
 <li class="blockList">
 <h4>isFinished</h4>
 <pre>public&nbsp;boolean&nbsp;isFinished()</pre>
+<div class="block">Returns a boolean indicating whether the iteration is finished, ie there is no next variant.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A boolean indicating whether the iteration is finished, ie there is no next variant.</dd>
+</dl>
 </li>
 </ul>
 </li>

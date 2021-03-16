@@ -28,7 +28,7 @@ public class VcfVariant {
     /**
      * The variant context.
      */
-    private final VariantContext variantContext;
+    public final VariantContext variantContext;
     /**
      * The alternative allele.
      */

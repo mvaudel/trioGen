@@ -71,6 +71,11 @@ public class VcfIterator implements Closeable {
 
     }
 
+    /**
+     * Returns the next variant in the vcf file, null if none.
+     * 
+     * @return The next variant in the vcf file, null if none.
+     */
     public VcfVariant next() {
 
         mutex.acquire();
@@ -126,6 +131,11 @@ public class VcfIterator implements Closeable {
 
     }
 
+    /**
+     * Returns the number of variants processed.
+     * 
+     * @return The number of variants processed.
+     */
     public int getnVariants() {
         return nVariants;
     }
@@ -153,6 +163,11 @@ public class VcfIterator implements Closeable {
 
     }
 
+    /**
+     * Returns a boolean indicating whether the iteration is finished, ie there is no next variant.
+     * 
+     * @return A boolean indicating whether the iteration is finished, ie there is no next variant.
+     */
     public boolean isFinished() {
         
         return !iterator.hasNext();

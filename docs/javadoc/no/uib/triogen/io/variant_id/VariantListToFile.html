@@ -162,7 +162,9 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                 int&nbsp;buildNumber,
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;ensemblPopulation,
                 double&nbsp;minR2,
-                <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>&nbsp;</td>
+                <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
+<div class="block">Writes the variant file from the given variant list.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -219,9 +221,20 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                              double&nbsp;minR2,
                              <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)
                       throws <a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
+<div class="block">Writes the variant file from the given variant list.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>source</code> - The value to put in the source column for future reference.</dd>
+<dd><code>bgenFilePath</code> - The path to the bgen files.</dd>
+<dd><code>variantListFile</code> - The file containing the list of variants to annotate.</dd>
+<dd><code>targetFile</code> - The file to write to.</dd>
+<dd><code>missingFile</code> - The file where to write the SNPs that were not found.</dd>
+<dd><code>buildNumber</code> - The build number to use.</dd>
+<dd><code>ensemblPopulation</code> - The Ensembl population to query.</dd>
+<dd><code>minR2</code> - The minimum R2 to use for proxies.</dd>
+<dd><code>logger</code> - Logger to display feedback.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code></dd>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code> - Exception thrown if an error occurred while reading or writing a file.</dd>
 </dl>
 </li>
 </ul>
