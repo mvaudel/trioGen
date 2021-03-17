@@ -19,6 +19,8 @@ import no.uib.triogen.model.genome.VariantInformation;
  */
 public class AddRsidToMetal {
 
+    private static final int batchSize = 10000000;
+
     /**
      * Main method.
      *
@@ -32,100 +34,211 @@ public class AddRsidToMetal {
 
         String[] genos = new String[]{"child", "mother", "father"};
 
-        // Load variant coordinates
-        System.out.println(Instant.now() + "    Loading variant coordinates from '" + vcfFilePath + "' .");
+        System.out.println(Instant.now() + "    Setting up files.");
 
         Instant begin = Instant.now();
 
-        HashMap<String, String> variantIdMap = new HashMap<>();
+        String fileInPathPattern = "/mnt/work/marc/moba/pwbw/prs/meta/{geno}/{geno}_prs1_rsid.tbl_temp.gz";
+
+        // Process metal results
+        String tempPath = fileInPathPattern;
+        Arrays.stream(genos)
+                .parallel()
+                .forEach(
+                        geno -> setupFile(
+                                metaFilePathPattern,
+                                tempPath,
+                                geno
+                        )
+                );
+
+        Instant end = Instant.now();
+
+        long durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
+
+        int batch = 0;
+
+        System.out.println(Instant.now() + "    Files setup finished (" + durationSeconds + " s)");
 
         try (VcfIterator vcfIterator = new VcfIterator(new File(vcfFilePath))) {
 
             VcfVariant vcfVariant;
             while ((vcfVariant = vcfIterator.next()) != null) {
 
-                VariantInformation variantInformation = vcfVariant.getVariantInformation();
+                batch++;
 
-                String chr = variantInformation.contig;
-                int pos = variantInformation.position;
-                String rsid = variantInformation.rsId;
-                String[] alleles = variantInformation.alleles;
+                System.out.println(Instant.now() + "    Mapping variants for batch " + batch + ".");
 
-                TreeSet<String> orderedAlleles = Arrays.stream(alleles)
-                        .map(
-                                allele -> allele.toUpperCase()
-                        )
-                        .collect(
-                                Collectors.toCollection(
-                                        TreeSet<String>::new
-                                )
-                        );
+                begin = Instant.now();
 
-                StringBuilder sb = new StringBuilder()
-                        .append(chr)
-                        .append(':')
-                        .append(pos);
+                HashMap<String, String> variantIdMap = new HashMap<>();
 
-                for (String allele : orderedAlleles) {
+                while (vcfVariant != null && variantIdMap.size() <= batchSize) {
 
-                    sb
-                            .append('_')
-                            .append(allele);
+                    VariantInformation variantInformation = vcfVariant.getVariantInformation();
+
+                    String chr = variantInformation.contig;
+                    int pos = variantInformation.position;
+                    String rsid = variantInformation.rsId;
+                    String[] alleles = variantInformation.alleles;
+
+                    TreeSet<String> orderedAlleles = Arrays.stream(alleles)
+                            .map(
+                                    allele -> allele.toUpperCase()
+                            )
+                            .collect(
+                                    Collectors.toCollection(
+                                            TreeSet<String>::new
+                                    )
+                            );
+
+                    StringBuilder sb = new StringBuilder()
+                            .append(chr)
+                            .append(':')
+                            .append(pos);
+
+                    for (String allele : orderedAlleles) {
+
+                        sb
+                                .append('_')
+                                .append(allele);
+
+                    }
+
+                    String metalId = sb.toString();
+
+                    variantIdMap.put(metalId, rsid);
+
+                    vcfVariant = vcfIterator.next();
 
                 }
 
-                String metalId = sb.toString();
+                end = Instant.now();
 
-                variantIdMap.put(metalId, rsid);
+                durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
+
+                System.out.println(Instant.now() + "    Loaded variant coordinates for for batch " + batch + ", " + variantIdMap.size() + " variants (" + durationSeconds + " s)");
+
+                System.out.println(Instant.now() + "    Mapping ids for batch " + batch + ".");
+
+                begin = Instant.now();
+
+                String inPath = fileInPathPattern;
+                String fileOutPathPattern = vcfVariant == null ? resultFilePathPattern : "/mnt/work/marc/moba/pwbw/prs/meta/{geno}/{geno}_prs1_rsid.tbl_temp" + batch + ".gz";
+
+                Arrays.stream(genos)
+                        .parallel()
+                        .forEach(
+                                geno -> processFile(
+                                        inPath,
+                                        fileOutPathPattern,
+                                        geno,
+                                        variantIdMap
+                                )
+                        );
+
+                end = Instant.now();
+
+                durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
+
+                System.out.println(Instant.now() + "    Mapped ids for for batch " + batch + ", " + variantIdMap.size() + " variants (" + durationSeconds + " s)");
+
+                System.out.println(Instant.now() + "    Deleting temp file for batch " + batch + ".");
+
+                begin = Instant.now();
+
+                Arrays.stream(genos)
+                        .parallel()
+                        .map(
+                                geno -> new File(inPath.replace("{geno}", geno))
+                        )
+                        .forEach(
+                                file -> file.delete()
+                        );
+
+                fileInPathPattern = fileOutPathPattern;
+
+                end = Instant.now();
+
+                durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
+
+                System.out.println(Instant.now() + "    Temp file deleted for batch " + batch + " (" + durationSeconds + " s)");
 
             }
         }
-
-        Instant end = Instant.now();
-
-        long durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
-
-        System.out.println(Instant.now() + "    Loaded variant coordinates for " + variantIdMap.size() + " variants (" + durationSeconds + " s)");
-
-        // Process metal results
-        Arrays.stream(genos)
-                .parallel()
-                .forEach(
-                        geno -> processFile(
-                                metaFilePathPattern, 
-                                resultFilePathPattern, 
-                                geno, 
-                                variantIdMap
-                        )
-                );
     }
 
     /**
      * Processes a file.
-     * 
-     * @param metaFilePathPattern The meta file name pattern.
+     *
+     * @param tempFilePathPattern The temp file name pattern.
      * @param resultFilePathPattern The result file name pattern.
      * @param geno The geno key.
      * @param variantIdMap The variant id to rsid map.
      */
     private static void processFile(
-            String metaFilePathPattern,
+            String tempFilePathPattern,
             String resultFilePathPattern,
             String geno,
             HashMap<String, String> variantIdMap
     ) {
 
-        Instant begin = Instant.now();
+        String tempFilePath = tempFilePathPattern.replace("{geno}", geno);
+        String resultFilePath = resultFilePathPattern.replace("{geno}", geno);
+
+        File tempFile = new File(tempFilePath);
+        File resultFile = new File(resultFilePath);
+
+        try (SimpleFileReader reader = SimpleFileReader.getFileReader(tempFile)) {
+
+            try (SimpleFileWriter writer = new SimpleFileWriter(resultFile, true)) {
+
+                String line = reader.readLine();
+                writer.writeLine(line);
+
+                while ((line = reader.readLine()) != null) {
+
+                    int index = line.indexOf("\t");
+                    String id = line.substring(0, index);
+
+                    String rsid = variantIdMap.get(id);
+
+                    if (rsid != null) {
+
+                        String rest = line.substring(index);
+                        index = rest.indexOf("\t");
+                        rest = line.substring(index);
+                        writer.writeLine(id, rsid, rest);
+
+                    } else {
+
+                        writer.writeLine(line);
+
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Processes a file.
+     *
+     * @param metaFilePathPattern The meta file name pattern.
+     * @param resultFilePathPattern The result file name pattern.
+     * @param geno The geno key.
+     * @param variantIdMap The variant id to rsid map.
+     */
+    private static void setupFile(
+            String metaFilePathPattern,
+            String resultFilePathPattern,
+            String geno
+    ) {
 
         String metaFilePath = metaFilePathPattern.replace("{geno}", geno);
         String resultFilePath = resultFilePathPattern.replace("{geno}", geno);
 
-        System.out.println(Instant.now() + "    Processing '" + metaFilePath + "' .");
-
         File metaFile = new File(metaFilePath);
         File resultFile = new File(resultFilePath);
-        
-        int found = 0;
 
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(metaFile)) {
 
@@ -144,29 +257,12 @@ public class AddRsidToMetal {
                     id = line.substring(0, index);
                     rest = line.substring(index);
 
-                    String rsid = variantIdMap.get(id);
-
-                    if (rsid == null) {
-
-                        rsid = ".";
-
-                    } else {
-                        
-                        found++;
-                        
-                    }
+                    String rsid = ".";
 
                     writer.writeLine(id, rsid, rest);
 
                 }
             }
         }
-
-        Instant end = Instant.now();
-
-        long durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
-
-        System.out.println(Instant.now() + "    " + found + " rsids mapped in  '" + metaFilePath + "' (" + durationSeconds + " s)");
-
     }
 }
