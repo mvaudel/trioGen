@@ -58,6 +58,8 @@ public class AddRsidToMetal {
 
         int batch = 0;
 
+                HashMap<String, String> variantIdMap = new HashMap<>(0);
+
         System.out.println(Instant.now() + "    Files setup finished (" + durationSeconds + " s)");
 
         try (VcfIterator vcfIterator = new VcfIterator(new File(vcfFilePath))) {
@@ -66,12 +68,11 @@ public class AddRsidToMetal {
             while ((vcfVariant = vcfIterator.next()) != null) {
 
                 batch++;
+                variantIdMap.clear();
 
                 System.out.println(Instant.now() + "    Mapping variants for batch " + batch + ".");
 
                 begin = Instant.now();
-
-                HashMap<String, String> variantIdMap = new HashMap<>();
 
                 while (vcfVariant != null && variantIdMap.size() <= batchSize) {
 
@@ -207,7 +208,7 @@ public class AddRsidToMetal {
 
                         String rest = line.substring(index);
                         index = rest.indexOf("\t");
-                        rest = line.substring(index);
+                        rest = rest.substring(index);
                         writer.writeLine(id, rsid, rest);
 
                     } else {
