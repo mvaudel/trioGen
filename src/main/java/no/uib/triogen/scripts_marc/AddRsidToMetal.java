@@ -19,7 +19,7 @@ import no.uib.triogen.model.genome.VariantInformation;
  */
 public class AddRsidToMetal {
 
-    private static final int batchSize = 10000000;
+    private static final String missing = ".";
 
     /**
      * Main method.
@@ -38,135 +38,111 @@ public class AddRsidToMetal {
 
         Instant begin = Instant.now();
 
-        String fileInPathPattern = "/mnt/work/marc/moba/pwbw/prs/meta/{geno}/{geno}_prs1_rsid.tbl_temp.gz";
+        // Load snp ids from metal
+        HashMap<String, String> variantIdMap = new HashMap<>(0);
 
-        // Process metal results
-        String tempPath = fileInPathPattern;
-        Arrays.stream(genos)
-                .parallel()
-                .forEach(
-                        geno -> setupFile(
-                                metaFilePathPattern,
-                                tempPath,
-                                geno
-                        )
-                );
+        for (String geno : genos) {
+
+            String metaFilePath = metaFilePathPattern.replace("{geno}", geno);
+
+            File metaFile = new File(metaFilePath);
+
+            try (SimpleFileReader reader = SimpleFileReader.getFileReader(metaFile)) {
+
+                String line = reader.readLine();
+
+                int index = line.indexOf("\t");
+                String id = line.substring(0, index);
+
+                variantIdMap.put(id, null);
+
+            }
+        }
 
         Instant end = Instant.now();
 
         long durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
 
-        int batch = 0;
-
-                HashMap<String, String> variantIdMap = new HashMap<>(0);
-
         System.out.println(Instant.now() + "    Files setup finished (" + durationSeconds + " s)");
+
+        System.out.println(Instant.now() + "    Mapping variants in " + vcfFilePath + ".");
+
+        begin = Instant.now();
+
+        int found = 0;
 
         try (VcfIterator vcfIterator = new VcfIterator(new File(vcfFilePath))) {
 
             VcfVariant vcfVariant;
             while ((vcfVariant = vcfIterator.next()) != null) {
 
-                batch++;
-                variantIdMap.clear();
+                VariantInformation variantInformation = vcfVariant.getVariantInformation();
 
-                System.out.println(Instant.now() + "    Mapping variants for batch " + batch + ".");
+                String chr = variantInformation.contig;
+                int pos = variantInformation.position;
+                String rsid = variantInformation.rsId;
+                String[] alleles = variantInformation.alleles;
 
-                begin = Instant.now();
-
-                while (vcfVariant != null && variantIdMap.size() <= batchSize) {
-
-                    VariantInformation variantInformation = vcfVariant.getVariantInformation();
-
-                    String chr = variantInformation.contig;
-                    int pos = variantInformation.position;
-                    String rsid = variantInformation.rsId;
-                    String[] alleles = variantInformation.alleles;
-
-                    TreeSet<String> orderedAlleles = Arrays.stream(alleles)
-                            .map(
-                                    allele -> allele.toUpperCase()
-                            )
-                            .collect(
-                                    Collectors.toCollection(
-                                            TreeSet<String>::new
-                                    )
-                            );
-
-                    StringBuilder sb = new StringBuilder()
-                            .append(chr)
-                            .append(':')
-                            .append(pos);
-
-                    for (String allele : orderedAlleles) {
-
-                        sb
-                                .append('_')
-                                .append(allele);
-
-                    }
-
-                    String metalId = sb.toString();
-
-                    variantIdMap.put(metalId, rsid);
-
-                    vcfVariant = vcfIterator.next();
-
-                }
-
-                end = Instant.now();
-
-                durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
-
-                System.out.println(Instant.now() + "    Loaded variant coordinates for for batch " + batch + ", " + variantIdMap.size() + " variants (" + durationSeconds + " s)");
-
-                System.out.println(Instant.now() + "    Mapping ids for batch " + batch + ".");
-
-                begin = Instant.now();
-
-                String inPath = fileInPathPattern;
-                String fileOutPathPattern = vcfVariant == null ? resultFilePathPattern : "/mnt/work/marc/moba/pwbw/prs/meta/{geno}/{geno}_prs1_rsid.tbl_temp" + batch + ".gz";
-
-                Arrays.stream(genos)
-                        .parallel()
-                        .forEach(
-                                geno -> processFile(
-                                        inPath,
-                                        fileOutPathPattern,
-                                        geno,
-                                        variantIdMap
+                TreeSet<String> orderedAlleles = Arrays.stream(alleles)
+                        .map(
+                                allele -> allele.toUpperCase()
+                        )
+                        .collect(
+                                Collectors.toCollection(
+                                        TreeSet<String>::new
                                 )
                         );
 
-                end = Instant.now();
+                StringBuilder sb = new StringBuilder()
+                        .append(chr)
+                        .append(':')
+                        .append(pos);
 
-                durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
+                for (String allele : orderedAlleles) {
 
-                System.out.println(Instant.now() + "    Mapped ids for for batch " + batch + ", " + variantIdMap.size() + " variants (" + durationSeconds + " s)");
+                    sb
+                            .append('_')
+                            .append(allele);
 
-                System.out.println(Instant.now() + "    Deleting temp file for batch " + batch + ".");
+                }
 
-                begin = Instant.now();
+                String metalId = sb.toString();
 
-                Arrays.stream(genos)
-                        .parallel()
-                        .map(
-                                geno -> new File(inPath.replace("{geno}", geno))
-                        )
-                        .forEach(
-                                file -> file.delete()
-                        );
+                if (variantIdMap.containsKey(metalId)) {
 
-                fileInPathPattern = fileOutPathPattern;
+                    variantIdMap.put(metalId, rsid);
 
-                end = Instant.now();
+                    found++;
 
-                durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
-
-                System.out.println(Instant.now() + "    Temp file deleted for batch " + batch + " (" + durationSeconds + " s)");
-
+                }
             }
         }
+
+        end = Instant.now();
+
+        durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
+
+        System.out.println(Instant.now() + "    Loaded variant rsids, " + found + " variants found (" + durationSeconds + " s)");
+
+        begin = Instant.now();
+
+        Arrays.stream(genos)
+                .parallel()
+                .forEach(
+                        geno -> processFile(
+                                metaFilePathPattern,
+                                resultFilePathPattern,
+                                geno,
+                                variantIdMap
+                        )
+                );
+
+        end = Instant.now();
+
+        durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
+
+        System.out.println(Instant.now() + "    Mapped ids finished (" + durationSeconds + " s)");
+
     }
 
     /**
@@ -195,58 +171,6 @@ public class AddRsidToMetal {
             try (SimpleFileWriter writer = new SimpleFileWriter(resultFile, true)) {
 
                 String line = reader.readLine();
-                writer.writeLine(line);
-
-                while ((line = reader.readLine()) != null) {
-
-                    int index = line.indexOf("\t");
-                    String id = line.substring(0, index);
-
-                    String rsid = variantIdMap.get(id);
-
-                    if (rsid != null) {
-
-                        String rest = line.substring(index);
-                        index = rest.indexOf("\t");
-                        rest = rest.substring(index);
-                        writer.writeLine(id, rsid, rest);
-
-                    } else {
-
-                        writer.writeLine(line);
-
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Processes a file.
-     *
-     * @param metaFilePathPattern The meta file name pattern.
-     * @param resultFilePathPattern The result file name pattern.
-     * @param geno The geno key.
-     * @param variantIdMap The variant id to rsid map.
-     */
-    private static void setupFile(
-            String metaFilePathPattern,
-            String resultFilePathPattern,
-            String geno
-    ) {
-
-        String metaFilePath = metaFilePathPattern.replace("{geno}", geno);
-        String resultFilePath = resultFilePathPattern.replace("{geno}", geno);
-
-        File metaFile = new File(metaFilePath);
-        File resultFile = new File(resultFilePath);
-
-        try (SimpleFileReader reader = SimpleFileReader.getFileReader(metaFile)) {
-
-            try (SimpleFileWriter writer = new SimpleFileWriter(resultFile, true)) {
-
-                String line = reader.readLine();
-
                 int index = line.indexOf("\t");
                 String id = line.substring(0, index);
                 String rest = line.substring(index);
@@ -258,7 +182,13 @@ public class AddRsidToMetal {
                     id = line.substring(0, index);
                     rest = line.substring(index);
 
-                    String rsid = ".";
+                    String rsid = variantIdMap.get(id);
+
+                    if (rsid != null) {
+
+                        rsid = missing;
+
+                    }
 
                     writer.writeLine(id, rsid, rest);
 
