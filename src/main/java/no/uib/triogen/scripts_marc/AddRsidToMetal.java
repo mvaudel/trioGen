@@ -34,7 +34,7 @@ public class AddRsidToMetal {
 
         String[] genos = new String[]{"child", "mother", "father"};
 
-        System.out.println(Instant.now() + "    Setting up files.");
+        System.out.println(Instant.now() + "    Loading variants.");
 
         Instant begin = Instant.now();
 
@@ -51,11 +51,14 @@ public class AddRsidToMetal {
 
                 String line = reader.readLine();
 
-                int index = line.indexOf("\t");
-                String id = line.substring(0, index);
+                while ((line = reader.readLine()) != null) {
 
-                variantIdMap.put(id, null);
+                    int index = line.indexOf("\t");
+                    String id = line.substring(0, index);
 
+                    variantIdMap.put(id, null);
+
+                }
             }
         }
 
@@ -63,7 +66,7 @@ public class AddRsidToMetal {
 
         long durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
 
-        System.out.println(Instant.now() + "    Files setup finished (" + durationSeconds + " s)");
+        System.out.println(Instant.now() + "    Variants lodaed, " + variantIdMap.size() + " variants to map (" + durationSeconds + " s)");
 
         System.out.println(Instant.now() + "    Mapping variants in " + vcfFilePath + ".");
 
