@@ -187,7 +187,7 @@ public class AddRsidToMetal {
 
                     String rsid = variantIdMap.get(id);
 
-                    if (rsid != null) {
+                    if (rsid == null) {
 
                         rsid = missing;
 
