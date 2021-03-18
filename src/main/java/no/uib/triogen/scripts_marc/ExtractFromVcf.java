@@ -5,16 +5,8 @@ import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.vcf.VCFFileReader;
 import java.io.File;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
-import no.uib.cell_rk.utils.SimpleFileWriter;
-import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.triogen.io.genotypes.vcf.iterators.VcfIterator;
 import static no.uib.triogen.io.genotypes.vcf.iterators.VcfIterator.getVcfIndexFile;
-import no.uib.triogen.io.genotypes.vcf.reader.VcfVariant;
-import no.uib.triogen.model.genome.VariantInformation;
 
 /**
  * Extract data from vcf files.
@@ -35,7 +27,7 @@ public class ExtractFromVcf {
         System.out.println(Instant.now() + "    Querying " + vcfFilePath + ".");
 
         String targetChr = "2";
-        int bp = 46340137;
+        int bp = 46567276;
 
         Instant begin = Instant.now();
 
