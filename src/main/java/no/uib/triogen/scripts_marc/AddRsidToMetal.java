@@ -86,37 +86,43 @@ public class AddRsidToMetal {
                 String rsid = variantInformation.rsId;
                 String[] alleles = variantInformation.alleles;
 
-                TreeSet<String> orderedAlleles = Arrays.stream(alleles)
-                        .map(
-                                allele -> allele.toUpperCase()
-                        )
-                        .collect(
-                                Collectors.toCollection(
-                                        TreeSet<String>::new
-                                )
-                        );
+                if (alleles.length >= 2) {
 
-                StringBuilder sb = new StringBuilder()
-                        .append(chr)
-                        .append(':')
-                        .append(pos);
+                    String[] orderedAlleles = Arrays.stream(alleles)
+                            .map(
+                                    allele -> allele.toUpperCase()
+                            )
+                            .sorted()
+                            .toArray(
+                                    String[]::new
+                            );
 
-                for (String allele : orderedAlleles) {
+                    String baseId = new StringBuilder()
+                            .append(chr)
+                            .append(':')
+                            .append(pos)
+                            .toString();
 
-                    sb
-                            .append('_')
-                            .append(allele);
+                    for (int i = 0; i < orderedAlleles.length - 1; i++) {
 
-                }
+                        for (int j = 1; j < orderedAlleles.length; j++) {
 
-                String metalId = sb.toString();
+                            String metalId = new StringBuilder(baseId)
+                                    .append('_')
+                                    .append(orderedAlleles[i])
+                                    .append('_')
+                                    .append(orderedAlleles[j])
+                                    .toString();
 
-                if (variantIdMap.containsKey(metalId)) {
+                            if (variantIdMap.containsKey(metalId)) {
 
-                    variantIdMap.put(metalId, rsid);
+                                variantIdMap.put(metalId, rsid);
 
-                    found++;
+                                found++;
 
+                            }
+                        }
+                    }
                 }
             }
         }
