@@ -45,5 +45,12 @@ no.uib.triogen.processing.linear_model
 no.uib.triogen.processing.mendelian_check
 no.uib.triogen.processing.simple_score
 no.uib.triogen.processing.variant_data
-no.uib.triogen.scripts_marc
+no.uib.triogen.scripts_marc.bgen
+no.uib.triogen.scripts_marc.bolt
+no.uib.triogen.scripts_marc.ensembl
+no.uib.triogen.scripts_marc.ld
+no.uib.triogen.scripts_marc.ld_hub
+no.uib.triogen.scripts_marc.metal
+no.uib.triogen.scripts_marc.target
+no.uib.triogen.scripts_marc.vcf
 no.uib.triogen.utils

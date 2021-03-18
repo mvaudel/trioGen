@@ -97,7 +97,7 @@ public class LdValue {
 
         ConcurrentHashMap<String, LdMatrixReader> ldMatrixReaderMap = new ConcurrentHashMap<>();
 
-        HashSet<String> contigs = Arrays.stream(variantList.contig)
+        HashSet<String> contigs = Arrays.stream(variantList.chromosome)
                 .collect(
                         Collectors.toCollection(HashSet::new)
                 );
@@ -157,7 +157,7 @@ public class LdValue {
                 .forEach(
                         i -> {
                             String variantId = variantList.variantId[i];
-                            String contig = variantList.contig[i];
+                            String contig = variantList.chromosome[i];
                             LdMatrixReader ldMatrixReader = ldMatrixReaderMap.get(contig);
                             ArrayList<R2> result = ldMatrixReader.getR2(variantId);
                             results.put(variantId, result);

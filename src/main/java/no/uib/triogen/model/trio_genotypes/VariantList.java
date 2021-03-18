@@ -20,7 +20,7 @@ public class VariantList {
     /**
      * The name of the contig.
      */
-    public final String[] contig;
+    public final String[] chromosome;
     /**
      * The position where to look for.
      */
@@ -51,7 +51,7 @@ public class VariantList {
             int[] position
     ) {
         this.variantId = variantId;
-        this.contig = contig;
+        this.chromosome = contig;
         this.position = position;
 
         variantIdsMap = new HashMap<>(variantId.length);
@@ -213,7 +213,7 @@ public class VariantList {
         for (int variantI = 0; variantI < variantId.length; variantI++) {
 
             int positionI = this.position[variantI];
-            String contigI = this.contig[variantI];
+            String contigI = this.chromosome[variantI];
 
             HashMap<Integer, ArrayList<Integer>> contigIndex = positionToVariantMap.get(contigI);
 
