@@ -1,4 +1,4 @@
-package no.uib.triogen.scripts_marc;
+package no.uib.triogen.scripts_marc.bgen;
 
 import java.io.File;
 import no.uib.triogen.io.conversion.VcfToBgenConverter;

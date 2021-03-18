@@ -1,4 +1,4 @@
-package no.uib.triogen.scripts_marc;
+package no.uib.triogen.scripts_marc.ensembl;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;

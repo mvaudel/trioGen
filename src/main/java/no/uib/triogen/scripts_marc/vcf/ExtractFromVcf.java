@@ -1,4 +1,4 @@
-package no.uib.triogen.scripts_marc;
+package no.uib.triogen.scripts_marc.vcf;
 
 import htsjdk.samtools.util.CloseableIterator;
 import htsjdk.variant.variantcontext.VariantContext;

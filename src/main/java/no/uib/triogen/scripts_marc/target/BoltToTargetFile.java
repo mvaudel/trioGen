@@ -1,4 +1,4 @@
-package no.uib.triogen.scripts_marc;
+package no.uib.triogen.scripts_marc.target;
 
 import java.io.File;
 import java.time.Instant;

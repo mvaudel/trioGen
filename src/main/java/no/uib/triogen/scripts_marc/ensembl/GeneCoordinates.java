@@ -1,9 +1,8 @@
-package no.uib.triogen.scripts_marc;
+package no.uib.triogen.scripts_marc.ensembl;
 
 import java.io.File;
 import java.util.ArrayList;
 import no.uib.cell_rk.utils.SimpleFileWriter;
-import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.model.annotation.EnsemblAPI;
 
 /**

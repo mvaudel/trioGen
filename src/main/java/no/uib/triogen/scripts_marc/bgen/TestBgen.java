@@ -1,4 +1,4 @@
-package no.uib.triogen.scripts_marc;
+package no.uib.triogen.scripts_marc.bgen;
 
 import io.airlift.compress.zstd.ZstdDecompressor;
 import java.io.File;

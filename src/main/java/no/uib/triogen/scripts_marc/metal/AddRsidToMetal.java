@@ -1,11 +1,9 @@
-package no.uib.triogen.scripts_marc;
+package no.uib.triogen.scripts_marc.metal;
 
 import java.io.File;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.genotypes.vcf.iterators.VcfIterator;
