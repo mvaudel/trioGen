@@ -115,7 +115,7 @@ public class ExtractBolt {
 
         long durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
 
-        System.out.println(Instant.now() + "    " + ageI + " variants to map (" + durationSeconds + " s)");
+        System.out.println(Instant.now() + "    " + ageI + " finished (" + durationSeconds + " s)");
 
     }
 }
