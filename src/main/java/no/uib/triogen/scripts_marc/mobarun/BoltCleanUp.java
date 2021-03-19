@@ -259,9 +259,12 @@ public class BoltCleanUp {
                     }
                 }
             }
+            
         } catch (Exception e) {
 
+            boltFile.delete();
             trimmedFile.delete();
+
             success = false;
 
         }
