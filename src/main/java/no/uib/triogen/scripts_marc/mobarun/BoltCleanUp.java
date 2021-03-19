@@ -65,7 +65,7 @@ public class BoltCleanUp {
                         Arrays.stream(fileTemplates)
                                 .parallel()
                                 .forEach(
-                                        fileTemplate -> processBoltFile(fileName, geno, pheno, boltResultsFolder, phenoFolder)
+                                        fileTemplate -> processBoltFile(fileTemplate, geno, pheno, boltResultsFolder, phenoFolder)
                                 );
 
                         Instant end = Instant.now();
@@ -90,11 +90,11 @@ public class BoltCleanUp {
 
         try {
 
-            String boltFilePath = fileTemplate
+            String boltFileName = fileTemplate
                     .replace("{geno}", geno)
                     .replace("{pheno}", pheno);
 
-            File boltFile = new File(boltResultsFolder, boltFilePath);
+            File boltFile = new File(boltResultsFolder, boltFileName);
             File destinationFile = new File(phenoFolder, boltFile.getName());
 
             if (boltFile.exists()) {
