@@ -7,7 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 
@@ -18,6 +20,8 @@ import no.uib.cell_rk.utils.SimpleFileWriter;
  */
 public class BoltCleanUp {
 
+    public final static double MAF_THRESHOLD = 0.001;
+
     /**
      * Main method.
      *
@@ -25,93 +29,238 @@ public class BoltCleanUp {
      */
     public static void main(String[] args) {
 
-        // Check that every file is in its own folder
+        // Iterate all phenos check which analyses are finished, which are incomplete or failed
         File boltResultsFolder = new File("/mnt/work/marc/moba/run/bolt/bolt_output");
+        File incompleteFileList = new File("/mnt/work/marc/moba/run/bolt/bolt_output/incomplete");
+        File failedFileList = new File("/mnt/work/marc/moba/run/bolt/bolt_output/failed");
+
         String[] genos = new String[]{"child", "mother", "father"};
-        String[] fileTemplates = new String[]{
-            "{geno}Geno_{pheno}-runlog.log",
-            "{geno}Geno_{pheno}-runlog-chrX.log",
-            "{geno}Geno_{pheno}-stats-bgen.gz",
-            "{geno}Geno_{pheno}-stats-bgen-chrX.gz",
-            "{geno}Geno_{pheno}-stats.tab",
-            "{geno}Geno_{pheno}-stats-chrX.tab"
-        };
+        String[] boltFileTemplates = new String[]{"{geno}Geno_{pheno}-stats-bgen.gz", "{geno}Geno_{pheno}-stats-bgen-chrX.gz"};
+        String[] boltTabFileTemplates = new String[]{"{geno}Geno_{pheno}-stats.tab", "{geno}Geno_{pheno}-stats-chrX.tab"};
+        String[] logFileTemplates = new String[]{"{geno}Geno_{pheno}-runlog.log", "{geno}Geno_{pheno}-runlog-chrX.log"};
+        String[] trimmedFileTemplates = new String[]{"{geno}Geno_{pheno}_maf_" + MAF_THRESHOLD + ".gz", "{geno}Geno_{pheno}_maf_" + MAF_THRESHOLD + "-chrX.gz"};
+        String[] chrLabels = new String[]{"1:22", "X"};
 
-        for (File file : boltResultsFolder.listFiles()) {
+        String trimmedLabel = "maf_" + MAF_THRESHOLD;
+        ArrayList<File[]> rowBoltFilesToTrim = new ArrayList<>();
 
-            if (file.exists()) {
+        try (SimpleFileWriter incompleteWriter = new SimpleFileWriter(incompleteFileList, false)) {
 
-                String fileName = file.getName();
+            incompleteWriter.writeLine("# Incomplete analyes" + Instant.now());
+            incompleteWriter.writeLine("Phenotype", "Individual", "Chromosome");
 
-                if (fileName.endsWith("stats-bgen.gz")) {
+            try (SimpleFileWriter failedWriter = new SimpleFileWriter(failedFileList, false)) {
 
-                    String pheno = fileName
-                            .substring(fileName.indexOf("_") + 1, fileName.length() - 14);
+                incompleteWriter.writeLine("# Failed analyses" + Instant.now());
+                incompleteWriter.writeLine("Phenotype", "Individual", "Chromosome");
 
-                    for (String geno : genos) {
+                for (File phenoFolder : boltResultsFolder.listFiles()) {
 
-                        System.out.println(Instant.now() + "    Processing " + pheno + ".");
+                    if (phenoFolder.isDirectory()) {
+
+                        String pheno = phenoFolder.getName();
+
+                        System.out.println(Instant.now() + "    Inspecting files for " + pheno + ".");
 
                         Instant begin = Instant.now();
 
-                        File phenoFolder = new File(boltResultsFolder, pheno);
+                        StringBuilder report = new StringBuilder();
 
-                        if (!phenoFolder.exists()) {
+                        for (String geno : genos) {
 
-                            phenoFolder.mkdir();
+                            for (int chrI = 0; chrI < 2; chrI++) {
 
+                                String chrLabel = chrLabels[chrI];
+                                String logFileName = logFileTemplates[chrI]
+                                        .replace("{geno}", geno)
+                                        .replace("{pheno}", pheno);
+                                String boltFileName = boltFileTemplates[chrI]
+                                        .replace("{geno}", geno)
+                                        .replace("{pheno}", pheno);
+                                String boltTabFileName = boltTabFileTemplates[chrI]
+                                        .replace("{geno}", geno)
+                                        .replace("{pheno}", pheno);
+                                String trimmedFileName = trimmedFileTemplates[chrI]
+                                        .replace("{geno}", geno)
+                                        .replace("{pheno}", pheno);
+
+                                File logFile = new File(phenoFolder, logFileName);
+                                File boltFile = new File(phenoFolder, boltFileName);
+                                File boltTabFile = new File(phenoFolder, boltTabFileName);
+
+                                if (logFile.exists()) {
+
+                                    if (boltFile.exists() && boltTabFile.exists()) {
+
+                                        File trimmedFolder = new File(phenoFolder, trimmedLabel);
+
+                                        if (!trimmedFolder.exists()) {
+
+                                            trimmedFolder.mkdir();
+
+                                        }
+
+                                        File trimmedFile = new File(trimmedFolder, trimmedFileName);
+
+                                        if (!trimmedFile.exists()) {
+
+                                            rowBoltFilesToTrim.add(
+                                                    new File[]{boltFile, trimmedFile}
+                                            );
+
+                                            if (report.length() > 0) {
+
+                                                report.append(", ");
+
+                                            }
+                                            report.append(geno + " chr" + chrLabel + " to trim");
+
+                                        }
+
+                                        if (report.length() > 0) {
+
+                                            report.append(", ");
+
+                                        }
+                                        report.append(geno + " chr" + chrLabel + " done");
+
+                                    } else {
+
+                                        failedWriter.writeLine(pheno, geno, chrLabel);
+
+                                        if (report.length() > 0) {
+
+                                            report.append(", ");
+
+                                        }
+                                        report.append(geno + " chr" + chrLabel + " failed");
+
+                                        logFile.delete();
+                                        boltFile.delete();
+                                        boltTabFile.delete();
+
+                                    }
+
+                                } else {
+
+                                    incompleteWriter.writeLine(pheno, geno, chrLabel);
+
+                                    if (report.length() > 0) {
+
+                                        report.append(", ");
+
+                                    }
+                                    report.append(geno + " chr" + chrLabel + " missing");
+
+                                }
+                            }
                         }
 
-                        Arrays.stream(fileTemplates)
-                                .parallel()
-                                .forEach(
-                                        fileTemplate -> processBoltFile(fileTemplate, geno, pheno, boltResultsFolder, phenoFolder)
-                                );
-
                         Instant end = Instant.now();
-
                         long durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
 
-                        System.out.println(Instant.now() + "    Processing " + pheno + " finished (" + durationSeconds + " s)");
+                        System.out.println(Instant.now() + "    " + pheno + ": " + report + " (" + durationSeconds + " s)");
 
                     }
                 }
             }
         }
+
+        // Trim bolt results by maf and info score
+        IntStream.range(0, rowBoltFilesToTrim.size())
+                .parallel()
+                .forEach(
+                        i -> processBoltFile(
+                                rowBoltFilesToTrim.get(i)[0],
+                                rowBoltFilesToTrim.get(i)[1],
+                                i,
+                                rowBoltFilesToTrim.size()
+                        )
+                );
+
     }
 
     private static void processBoltFile(
-            String fileTemplate,
-            String geno,
-            String pheno,
-            File boltResultsFolder,
-            File phenoFolder
+            File boltFile,
+            File trimmedFile,
+            int fileI,
+            int nFiles
     ) {
 
-        try {
+        System.out.println(Instant.now() + "    Trimming " + boltFile + " (" + fileI + " of " + nFiles + ").");
 
-            String boltFileName = fileTemplate
-                    .replace("{geno}", geno)
-                    .replace("{pheno}", pheno);
+        Instant begin = Instant.now();
 
-            File boltFile = new File(boltResultsFolder, boltFileName);
-            File destinationFile = new File(phenoFolder, boltFile.getName());
+        int nVariants = 0;
 
-            if (boltFile.exists()) {
+        try (SimpleFileReader reader = SimpleFileReader.getFileReader(boltFile, false)) {
 
-                Files.move(
-                        boltFile.toPath(), 
-                        destinationFile.toPath(), 
-                        StandardCopyOption.ATOMIC_MOVE, 
-                        StandardCopyOption.REPLACE_EXISTING
-                );
+            try (SimpleFileWriter writer = new SimpleFileWriter(trimmedFile, true)) {
 
+                String line = reader.readLine();
+                writer.writeLine(line);
+
+                while ((line = reader.readLine()) != null) {
+
+                    String[] lineSplit = line.split("\t");
+
+                    if (!lineSplit[11].equals("-nan") && !lineSplit[11].equals("nan")) {
+
+                        double maf = Double.parseDouble(lineSplit[6]);
+
+                        if (maf >= MAF_THRESHOLD && maf <= 1.0 - MAF_THRESHOLD) {
+
+                            boolean summaryStatsOK = true;
+
+                            try {
+
+                                double beta = Double.parseDouble(lineSplit[10]);
+
+                                if (Double.isNaN(beta) || Double.isInfinite(beta)) {
+
+                                    summaryStatsOK = false;
+
+                                }
+
+                                double se = Double.parseDouble(lineSplit[11]);
+
+                                if (Double.isNaN(se) || Double.isInfinite(se)) {
+
+                                    summaryStatsOK = false;
+
+                                }
+
+                                double p = Double.parseDouble(lineSplit[15]);
+
+                                if (Double.isNaN(p) || Double.isInfinite(p)) {
+
+                                    summaryStatsOK = false;
+
+                                }
+
+                            } catch (Exception e) {
+
+                                summaryStatsOK = false;
+
+                            }
+
+                            if (summaryStatsOK) {
+
+                                writer.writeLine(line);
+
+                                nVariants++;
+
+                            }
+                        }
+                    }
+                }
             }
-
-        } catch (IOException e) {
-
-            throw new RuntimeException(e);
-
         }
+
+        Instant end = Instant.now();
+        long durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
+
+        System.out.println(Instant.now() + "    Trimming " + boltFile + " done, " + nVariants + " variants remaining (" + durationSeconds + " s)");
+
     }
 }
