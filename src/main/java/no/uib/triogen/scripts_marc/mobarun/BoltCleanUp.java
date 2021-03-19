@@ -21,7 +21,7 @@ import no.uib.cell_rk.utils.SimpleFileWriter;
 public class BoltCleanUp {
 
     public final static double MAF_THRESHOLD = 0.001;
-    
+
     private static int trimmingProgress = 0;
 
     /**
@@ -195,6 +195,8 @@ public class BoltCleanUp {
 
         int nVariants = 0;
 
+        boolean success = true;
+
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(boltFile, false)) {
 
             try (SimpleFileWriter writer = new SimpleFileWriter(trimmedFile, true)) {
@@ -258,15 +260,26 @@ public class BoltCleanUp {
                 }
             }
         } catch (Exception e) {
-            
+
             trimmedFile.delete();
-            
+            success = false;
+
         }
 
-        Instant end = Instant.now();
-        long durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
+        if (success) {
 
-        System.out.println(Instant.now() + "    Trimming " + boltFile + " done, " + nVariants + " variants remaining (" + durationSeconds + " s)");
+            Instant end = Instant.now();
+            long durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
 
+            System.out.println(Instant.now() + "    Trimming " + boltFile + " done, " + nVariants + " variants remaining (" + durationSeconds + " s)");
+
+        } else {
+
+            Instant end = Instant.now();
+            long durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
+
+            System.out.println(Instant.now() + "    Trimming " + boltFile + " failed (" + durationSeconds + " s)");
+
+        }
     }
 }
