@@ -29,12 +29,12 @@ public class BoltCleanUp {
         File boltResultsFolder = new File("/mnt/work/marc/moba/run/bolt/bolt_output");
         String[] genos = new String[]{"child", "mother", "father"};
         String[] fileTemplates = new String[]{
-            "{geno}_{pheno}-runlog.log",
-            "{geno}_{pheno}-runlog-chrX.log",
-            "{geno}_{pheno}-stats-bgen.gz",
-            "{geno}_{pheno}-stats-bgen-chrX.gz",
-            "{geno}_{pheno}-stats.tab",
-            "{geno}_{pheno}-stats-chrX.tab"
+            "{geno}Geno_{pheno}-runlog.log",
+            "{geno}Geno_{pheno}-runlog-chrX.log",
+            "{geno}Geno_{pheno}-stats-bgen.gz",
+            "{geno}Geno_{pheno}-stats-bgen-chrX.gz",
+            "{geno}Geno_{pheno}-stats.tab",
+            "{geno}Geno_{pheno}-stats-chrX.tab"
         };
 
         for (File file : boltResultsFolder.listFiles()) {
