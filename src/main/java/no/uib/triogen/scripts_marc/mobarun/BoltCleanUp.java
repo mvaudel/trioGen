@@ -21,6 +21,8 @@ import no.uib.cell_rk.utils.SimpleFileWriter;
 public class BoltCleanUp {
 
     public final static double MAF_THRESHOLD = 0.001;
+    
+    private static int trimmingProgress = 0;
 
     /**
      * Main method.
@@ -102,7 +104,7 @@ public class BoltCleanUp {
 
                                         File trimmedFile = new File(trimmedFolder, trimmedFileName);
 
-                                        if (!trimmedFile.exists()) {
+                                        if (true || !trimmedFile.exists()) {
 
                                             rowBoltFilesToTrim.add(
                                                     new File[]{boltFile, trimmedFile}
@@ -115,14 +117,16 @@ public class BoltCleanUp {
                                             }
                                             report.append(geno + " chr" + chrLabel + " to trim");
 
+                                        } else {
+
+                                            if (report.length() > 0) {
+
+                                                report.append(", ");
+
+                                            }
+                                            report.append(geno + " chr" + chrLabel + " done");
+
                                         }
-
-                                        if (report.length() > 0) {
-
-                                            report.append(", ");
-
-                                        }
-                                        report.append(geno + " chr" + chrLabel + " done");
 
                                     } else {
 
@@ -167,13 +171,12 @@ public class BoltCleanUp {
         }
 
         // Trim bolt results by maf and info score
-        IntStream.range(0, rowBoltFilesToTrim.size())
+        rowBoltFilesToTrim.stream()
                 .parallel()
                 .forEach(
-                        i -> processBoltFile(
-                                rowBoltFilesToTrim.get(i)[0],
-                                rowBoltFilesToTrim.get(i)[1],
-                                i,
+                        filePair -> processBoltFile(
+                                filePair[0],
+                                filePair[1],
                                 rowBoltFilesToTrim.size()
                         )
                 );
@@ -183,11 +186,10 @@ public class BoltCleanUp {
     private static void processBoltFile(
             File boltFile,
             File trimmedFile,
-            int fileI,
             int nFiles
     ) {
 
-        System.out.println(Instant.now() + "    Trimming " + boltFile + " (" + fileI + " of " + nFiles + ").");
+        System.out.println(Instant.now() + "    Trimming " + boltFile + " (" + trimmingProgress++ + " of " + nFiles + ").");
 
         Instant begin = Instant.now();
 
@@ -255,6 +257,10 @@ public class BoltCleanUp {
                     }
                 }
             }
+        } catch (Exception e) {
+            
+            trimmedFile.delete();
+            
         }
 
         Instant end = Instant.now();
