@@ -15,6 +15,15 @@ import no.uib.triogen.io.flat.SimpleFileReader;
 public class BoltToMetal {
 
     /**
+     * Minor allele count should be strictly higher than this value.
+     */
+    public final static double acThreshold = 10;
+    /**
+     * Info score should be strictly higher than this value.
+     */
+    public final static double infoThreshold = 0.4;
+
+    /**
      * Main method.
      *
      * @param args the command line arguments
@@ -148,37 +157,39 @@ public class BoltToMetal {
                 String beta = lineSplit[10];
                 String se = lineSplit[11];
                 String p = lineSplit[15];
-                
-                if (!beta.equals("-nan") && !beta.equals("nan") &&
-                        !se.equals("-nan") && !se.equals("nan") &&
-                        !p.equals("-nan") && !p.equals("-nan")) {
 
-                double maf = Double.parseDouble(testedAlleleFreq);
+                if (!beta.equals("-nan") && !beta.equals("nan")
+                        && !se.equals("-nan") && !se.equals("nan")
+                        && !p.equals("-nan") && !p.equals("-nan")) {
 
-                if (maf > 0.5) {
+                    double maf = Double.parseDouble(testedAlleleFreq);
 
-                    maf = 1.0 - maf;
+                    if (maf > 0.5) {
 
-                }
+                        maf = 1.0 - maf;
 
-                double infoValue = Double.parseDouble(info);
-                
-                double betaValue = Double.parseDouble(beta);
-                double seValue = Double.parseDouble(se);
-                double pValue = Double.parseDouble(p);
+                    }
 
-                if (infoValue > 0.4 && maf > 0.0001 && !Double.isNaN(betaValue) && !Double.isInfinite(betaValue) && !Double.isNaN(seValue) && !Double.isInfinite(seValue) && !Double.isNaN(pValue) && !Double.isInfinite(pValue)) {
+                    double infoValue = Double.parseDouble(info);
 
-                    TreeSet<String> alleles = new TreeSet<>();
-                    alleles.add(testedAllele);
-                    alleles.add(otherAllele);
+                    double minorAlleleCount = maf * nSamples;
 
-                    String snp = chr + ":" + bp + "_" + alleles.stream().collect(Collectors.joining("_"));
+                    double betaValue = Double.parseDouble(beta);
+                    double seValue = Double.parseDouble(se);
+                    double pValue = Double.parseDouble(p);
 
-                    writer.writeLine(
-                            snp, rsid, testedAllele, otherAllele, Integer.toString(nSamples), testedAlleleFreq, info, beta, se, p
-                    );
-                }
+                    if (infoValue > infoThreshold && minorAlleleCount > acThreshold && !Double.isNaN(betaValue) && !Double.isInfinite(betaValue) && !Double.isNaN(seValue) && !Double.isInfinite(seValue) && !Double.isNaN(pValue) && !Double.isInfinite(pValue)) {
+
+                        TreeSet<String> alleles = new TreeSet<>();
+                        alleles.add(testedAllele);
+                        alleles.add(otherAllele);
+
+                        String snp = chr + ":" + bp + "_" + alleles.stream().collect(Collectors.joining("_"));
+
+                        writer.writeLine(
+                                snp, rsid, testedAllele, otherAllele, Integer.toString(nSamples), testedAlleleFreq, info, beta, se, p
+                        );
+                    }
                 }
             }
         }

@@ -1,15 +1,8 @@
 package no.uib.triogen.scripts_marc.mobarun;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.IntStream;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 
@@ -33,8 +26,8 @@ public class BoltCleanUp {
 
         // Iterate all phenos check which analyses are finished, which are incomplete or failed
         File boltResultsFolder = new File("/mnt/work/marc/moba/run/bolt/bolt_output");
-        File incompleteFileList = new File("/mnt/work/marc/moba/run/bolt/bolt_output/incomplete");
-        File failedFileList = new File("/mnt/work/marc/moba/run/bolt/bolt_output/failed");
+        File incompleteFileList = new File(boltResultsFolder, "incomplete");
+        File failedFileList = new File(boltResultsFolder, "failed");
 
         String[] genos = new String[]{"child", "mother", "father"};
         String[] boltFileTemplates = new String[]{"{geno}Geno_{pheno}-stats-bgen.gz", "{geno}Geno_{pheno}-stats-bgen-chrX.gz"};
@@ -53,8 +46,8 @@ public class BoltCleanUp {
 
             try (SimpleFileWriter failedWriter = new SimpleFileWriter(failedFileList, false)) {
 
-                incompleteWriter.writeLine("# Failed analyses" + Instant.now());
-                incompleteWriter.writeLine("Phenotype", "Individual", "Chromosome");
+                failedWriter.writeLine("# Failed analyses" + Instant.now());
+                failedWriter.writeLine("Phenotype", "Individual", "Chromosome");
 
                 for (File phenoFolder : boltResultsFolder.listFiles()) {
 
@@ -115,7 +108,7 @@ public class BoltCleanUp {
                                                 report.append(", ");
 
                                             }
-                                            report.append(geno + " chr" + chrLabel + " to trim");
+                                            report.append(geno).append(" chr").append(chrLabel).append(" to trim");
 
                                         } else {
 
@@ -124,7 +117,7 @@ public class BoltCleanUp {
                                                 report.append(", ");
 
                                             }
-                                            report.append(geno + " chr" + chrLabel + " done");
+                                            report.append(geno).append(" chr").append(chrLabel).append(" done");
 
                                         }
 
@@ -137,9 +130,8 @@ public class BoltCleanUp {
                                             report.append(", ");
 
                                         }
-                                        report.append(geno + " chr" + chrLabel + " failed");
+                                        report.append(geno).append(" chr").append(chrLabel).append(" failed");
 
-                                        logFile.delete();
                                         boltFile.delete();
                                         boltTabFile.delete();
 
@@ -154,7 +146,7 @@ public class BoltCleanUp {
                                         report.append(", ");
 
                                     }
-                                    report.append(geno + " chr" + chrLabel + " missing");
+                                    report.append(geno).append(" chr").append(chrLabel).append(" missing");
 
                                 }
                             }

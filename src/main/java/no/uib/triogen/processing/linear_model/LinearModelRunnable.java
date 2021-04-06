@@ -457,13 +457,13 @@ public class LinearModelRunnable implements Runnable {
                         ")"
                 );
                 String hHistograms = String.join("",
-                        "h1(",
+                        "hmnt(",
                         getHistogramAsString(hHist[0]),
-                        ");h2(",
+                        ");hmt(",
                         getHistogramAsString(hHist[1]),
-                        ");h3(",
+                        ");hft(",
                         getHistogramAsString(hHist[2]),
-                        ");h4(",
+                        ");hfnt(",
                         getHistogramAsString(hHist[3]),
                         ")"
                 );
