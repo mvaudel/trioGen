@@ -179,21 +179,21 @@ public class CleanPwMeta {
 
                             String snp = lineSplit[0];
                             String rsId = lineSplit[1];
-                            String testedAllele = lineSplit[2].toUpperCase();
-                            String otherAllele = lineSplit[3].toUpperCase();
-                            String af = lineSplit[4];
-                            String afSe = lineSplit[5];
-                            String afMin = lineSplit[6];
-                            String afMax = lineSplit[7];
-                            String beta = lineSplit[8];
-                            String se = lineSplit[9];
-                            String p = lineSplit[10];
-                            String direction = lineSplit[11];
-                            String hetI2 = lineSplit[12];
-                            String hetChi2 = lineSplit[13];
-                            String hetDf = lineSplit[14];
-                            String hetP = lineSplit[15];
-                            String n = lineSplit[16];
+                            String testedAllele = lineSplit[3].toUpperCase();
+                            String otherAllele = lineSplit[4].toUpperCase();
+                            String af = lineSplit[5];
+                            String afSe = lineSplit[6];
+                            String afMin = lineSplit[7];
+                            String afMax = lineSplit[8];
+                            String beta = lineSplit[9];
+                            String se = lineSplit[10];
+                            String p = lineSplit[11];
+                            String direction = lineSplit[12];
+                            String hetI2 = lineSplit[13];
+                            String hetChi2 = lineSplit[14];
+                            String hetDf = lineSplit[15];
+                            String hetP = lineSplit[16];
+                            String n = lineSplit[17];
                             
                             String[] tmpSplit = snp.split(":");
                             String chr = tmpSplit[0];

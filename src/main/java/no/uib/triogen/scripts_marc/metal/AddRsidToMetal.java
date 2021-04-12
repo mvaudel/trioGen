@@ -180,7 +180,7 @@ public class AddRsidToMetal {
                 String line = reader.readLine();
                 int index = line.indexOf("\t");
                 String id = line.substring(0, index);
-                String rest = line.substring(index);
+                String rest = line.substring(index + 1);
                 writer.writeLine(id, "RSID", rest);
 
                 while ((line = reader.readLine()) != null) {
