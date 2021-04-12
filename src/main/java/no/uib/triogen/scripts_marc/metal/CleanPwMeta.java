@@ -211,7 +211,14 @@ public class CleanPwMeta {
 
                                 }
                             }
+                                System.out.println(line);
                                 System.out.println(snp + " " + n + "," + nStudies + "," + hetP);
+                                
+                                if (true) {
+                                
+                                return;
+                                
+                                }
 
                             if (Double.parseDouble(n) > MIN_SAMPLE_SIZE
                                     && nStudies >= MIN_STUDIES
