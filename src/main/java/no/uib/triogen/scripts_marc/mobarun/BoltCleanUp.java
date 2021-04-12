@@ -12,6 +12,8 @@ import no.uib.cell_rk.utils.SimpleFileWriter;
  * @author Marc Vaudel
  */
 public class BoltCleanUp {
+    
+    public final static boolean overwriteTrimmedFiles = false;
 
     public final static double MAF_THRESHOLD = 0.001;
 
@@ -97,7 +99,7 @@ public class BoltCleanUp {
 
                                         File trimmedFile = new File(trimmedFolder, trimmedFileName);
 
-                                        if (true || !trimmedFile.exists()) {
+                                        if (overwriteTrimmedFiles || !trimmedFile.exists()) {
 
                                             rowBoltFilesToTrim.add(
                                                     new File[]{boltFile, trimmedFile}
