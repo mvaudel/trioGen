@@ -91,12 +91,11 @@ public class CleanPwMeta {
 
                             for (int i = 0; i < direction.length(); i++) {
 
-                                if (direction.charAt(i) == '?') {
+                                if (direction.charAt(i) != '?') {
 
                                     nStudies++;
 
                                 }
-
                             }
 
                             if (Double.parseDouble(n) > MIN_SAMPLE_SIZE
@@ -124,6 +123,10 @@ public class CleanPwMeta {
                                         n
                                 );
 
+                            } else {
+                                
+                                System.out.println(rsId + " " + n + "," + nStudies + "," + hetP);
+                                
                             }
                         }
                     }
@@ -202,12 +205,11 @@ public class CleanPwMeta {
 
                             for (int i = 0; i < direction.length(); i++) {
 
-                                if (direction.charAt(i) == '?') {
+                                if (direction.charAt(i) != '?') {
 
                                     nStudies++;
 
                                 }
-
                             }
 
                             if (Double.parseDouble(n) > MIN_SAMPLE_SIZE
@@ -236,6 +238,10 @@ public class CleanPwMeta {
                                         n
                                 );
 
+                            } else {
+                                
+                                System.out.println(snp + " " + n + "," + nStudies + "," + hetP);
+                                
                             }
                         }
                     }

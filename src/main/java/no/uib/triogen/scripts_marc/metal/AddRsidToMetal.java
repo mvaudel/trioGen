@@ -30,8 +30,7 @@ public class AddRsidToMetal {
         String metaFilePathPattern = "/mnt/work/marc/moba/pwbw/prs/meta/{geno}/{geno}_prs1.tbl.gz";
         String resultFilePathPattern = "/mnt/work/marc/moba/pwbw/prs/meta/{geno}/{geno}_prs1_rsid.tbl.gz";
 
-//        String[] genos = new String[]{"child", "mother", "father"};
-        String[] genos = new String[]{"mother"};
+        String[] genos = new String[]{"child", "mother", "father"};
 
         System.out.println(Instant.now() + "    Loading variants.");
 
