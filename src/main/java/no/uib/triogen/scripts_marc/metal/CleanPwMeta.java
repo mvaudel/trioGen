@@ -1,6 +1,7 @@
 package no.uib.triogen.scripts_marc.metal;
 
 import java.io.File;
+import java.time.Instant;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.flat.SimpleFileReader;
 
@@ -33,6 +34,8 @@ public class CleanPwMeta {
 
                 File rawFile = new File(rawFilePath.replace("{geno}", geno));
                 File cleanFile = new File(cleanFilePath.replace("{geno}", geno));
+                
+                System.out.println(Instant.now() + "    Processing " + rawFile + ".");
 
                 try (SimpleFileReader reader = SimpleFileReader.getFileReader(rawFile)) {
 
@@ -96,7 +99,7 @@ public class CleanPwMeta {
 
                             }
 
-                            if (Integer.parseInt(n) > MIN_SAMPLE_SIZE
+                            if (Double.parseDouble(n) > MIN_SAMPLE_SIZE
                                     && nStudies >= MIN_STUDIES
                                     && Double.parseDouble(hetP) >= MIN_HET_P) {
 
@@ -136,6 +139,8 @@ public class CleanPwMeta {
 
                 File rawFile = new File(rawFilePath.replace("{geno}", geno));
                 File cleanFile = new File(cleanFilePath.replace("{geno}", geno));
+                
+                System.out.println(Instant.now() + "    Processing " + rawFile + ".");
 
                 try (SimpleFileReader reader = SimpleFileReader.getFileReader(rawFile)) {
 
@@ -205,7 +210,7 @@ public class CleanPwMeta {
 
                             }
 
-                            if (Integer.parseInt(n) > MIN_SAMPLE_SIZE
+                            if (Double.parseDouble(n) > MIN_SAMPLE_SIZE
                                     && nStudies >= MIN_STUDIES
                                     && Double.parseDouble(hetP) >= MIN_HET_P) {
 
