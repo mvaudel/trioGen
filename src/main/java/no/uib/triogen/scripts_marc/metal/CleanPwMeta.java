@@ -125,7 +125,7 @@ public class CleanPwMeta {
 
                             } else {
                                 
-                                System.out.println(rsId + " " + n + "," + nStudies + "," + hetP);
+//                                System.out.println(rsId + " " + n + "," + nStudies + "," + hetP);
                                 
                             }
                         }
@@ -240,7 +240,7 @@ public class CleanPwMeta {
 
                             } else {
                                 
-                                System.out.println(snp + " " + n + "," + nStudies + "," + hetP);
+//                                System.out.println(snp + " " + n + "," + nStudies + "," + hetP);
                                 
                             }
                         }
