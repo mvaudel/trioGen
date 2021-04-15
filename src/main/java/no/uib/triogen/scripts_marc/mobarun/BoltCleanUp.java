@@ -13,7 +13,7 @@ import no.uib.cell_rk.utils.SimpleFileWriter;
  */
 public class BoltCleanUp {
     
-    public final static boolean overwriteTrimmedFiles = false;
+    public final static boolean overwriteTrimmedFiles = true;
 
     public final static double MAF_THRESHOLD = 0.001;
 
@@ -95,6 +95,18 @@ public class BoltCleanUp {
 
                                             trimmedFolder.mkdir();
 
+                                        } else {
+                                            
+                                            for (File file : trimmedFolder.listFiles()) {
+                                                
+                                                if (file.getName().endsWith("pruned.gz")) {
+                                                    
+                                                    file.delete();
+                                                    
+                                                }
+                                                
+                                            }
+                                            
                                         }
 
                                         File trimmedFile = new File(trimmedFolder, trimmedFileName);
