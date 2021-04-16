@@ -352,6 +352,8 @@ public class SimpleLdPruner {
                 for (Entry<String, String> entry2 : entry1.getValue().entrySet()) {
 
                     String variantId = entry2.getKey();
+                    
+                    System.out.println(variantId);
 
                     if (!inspectedSnp.contains(variantId)) {
 
@@ -361,16 +363,23 @@ public class SimpleLdPruner {
                     }
 
                     ArrayList<R2> r2s = ldMatrixReader.getR2(variantId);
+                    
+                    System.out.println(r2s.size());
 
                     if (r2s != null && r2s.size() > 0) {
 
                         for (R2 r2 : r2s) {
+                            
+                    System.out.println(r2.r2Value);
+                    System.out.println(r2.variantB);
 
                             if (r2.r2Value >= minR2) {
 
                                 inspectedSnp.add(ldMatrixReader.getId(r2.variantB));
 
                             }
+                            
+                            throw new IllegalArgumentException("DEBUG");
                         }
                     }
                 }
