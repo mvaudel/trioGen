@@ -12,8 +12,6 @@ import no.uib.cell_rk.utils.SimpleFileWriter;
  * @author Marc Vaudel
  */
 public class BoltCleanUp {
-    
-    public final static boolean overwriteTrimmedFiles = true;
 
     public final static double MAF_THRESHOLD = 0.001;
 
@@ -32,14 +30,15 @@ public class BoltCleanUp {
         File failedFileList = new File(boltResultsFolder, "failed");
 
         String[] genos = new String[]{"child", "mother", "father"};
+
         String[] boltFileTemplates = new String[]{"{geno}Geno_{pheno}-stats-bgen.gz", "{geno}Geno_{pheno}-stats-bgen-chrX.gz"};
         String[] boltTabFileTemplates = new String[]{"{geno}Geno_{pheno}-stats.tab", "{geno}Geno_{pheno}-stats-chrX.tab"};
         String[] logFileTemplates = new String[]{"{geno}Geno_{pheno}-runlog.log", "{geno}Geno_{pheno}-runlog-chrX.log"};
-        String[] trimmedFileTemplates = new String[]{"{geno}Geno_{pheno}_maf_" + MAF_THRESHOLD + ".gz", "{geno}Geno_{pheno}_maf_" + MAF_THRESHOLD + "-chrX.gz"};
+        String[] rareFileTemplates = new String[]{"{geno}Geno_{pheno}_over_maf_" + MAF_THRESHOLD + ".gz", "{geno}Geno_{pheno}_over_maf_" + MAF_THRESHOLD + "-chrX.gz"};
+        String[] commonFileTemplates = new String[]{"{geno}Geno_{pheno}_under_maf_" + MAF_THRESHOLD + ".gz", "{geno}Geno_{pheno}_under_maf_" + MAF_THRESHOLD + "-chrX.gz"};
         String[] chrLabels = new String[]{"1:22", "X"};
 
-        String trimmedLabel = "maf_" + MAF_THRESHOLD;
-        ArrayList<File[]> rowBoltFilesToTrim = new ArrayList<>();
+        ArrayList<File[]> rawBoltFilesToTrim = new ArrayList<>();
 
         try (SimpleFileWriter incompleteWriter = new SimpleFileWriter(incompleteFileList, false)) {
 
@@ -56,6 +55,16 @@ public class BoltCleanUp {
                     if (phenoFolder.isDirectory()) {
 
                         String pheno = phenoFolder.getName();
+
+                        System.out.println(Instant.now() + "    Cleaning up old files for " + pheno + ".");
+
+                        File trimmedFolder = new File(phenoFolder, "maf_0.001");
+
+                        if (trimmedFolder.exists()) {
+
+                            deleteDir(trimmedFolder);
+
+                        }
 
                         System.out.println(Instant.now() + "    Inspecting files for " + pheno + ".");
 
@@ -77,7 +86,10 @@ public class BoltCleanUp {
                                 String boltTabFileName = boltTabFileTemplates[chrI]
                                         .replace("{geno}", geno)
                                         .replace("{pheno}", pheno);
-                                String trimmedFileName = trimmedFileTemplates[chrI]
+                                String rareFileName = rareFileTemplates[chrI]
+                                        .replace("{geno}", geno)
+                                        .replace("{pheno}", pheno);
+                                String commonFileName = commonFileTemplates[chrI]
                                         .replace("{geno}", geno)
                                         .replace("{pheno}", pheno);
 
@@ -89,51 +101,27 @@ public class BoltCleanUp {
 
                                     if (boltFile.exists() && boltTabFile.exists()) {
 
-                                        File trimmedFolder = new File(phenoFolder, trimmedLabel);
+                                        File prunedFolder = new File(phenoFolder, "pruned");
 
-                                        if (!trimmedFolder.exists()) {
+                                        if (prunedFolder.exists()) {
 
-                                            trimmedFolder.mkdir();
-
-                                        } else {
-                                            
-                                            for (File file : trimmedFolder.listFiles()) {
-                                                
-                                                if (file.getName().endsWith("pruned.gz")) {
-                                                    
-                                                    file.delete();
-                                                    
-                                                }
-                                                
-                                            }
-                                            
-                                        }
-
-                                        File trimmedFile = new File(trimmedFolder, trimmedFileName);
-
-                                        if (overwriteTrimmedFiles || !trimmedFile.exists()) {
-
-                                            rowBoltFilesToTrim.add(
-                                                    new File[]{boltFile, trimmedFile}
-                                            );
-
-                                            if (report.length() > 0) {
-
-                                                report.append(", ");
-
-                                            }
-                                            report.append(geno).append(" chr").append(chrLabel).append(" to trim");
-
-                                        } else {
-
-                                            if (report.length() > 0) {
-
-                                                report.append(", ");
-
-                                            }
-                                            report.append(geno).append(" chr").append(chrLabel).append(" done");
+                                            deleteDir(prunedFolder);
 
                                         }
+
+                                        File rareFile = new File(phenoFolder, rareFileName);
+                                        File commonFile = new File(phenoFolder, commonFileName);
+
+                                        rawBoltFilesToTrim.add(
+                                                new File[]{boltFile, rareFile, commonFile}
+                                        );
+
+                                        if (report.length() > 0) {
+
+                                            report.append(", ");
+
+                                        }
+                                        report.append(geno).append(" chr").append(chrLabel).append(" to split");
 
                                     } else {
 
@@ -174,28 +162,31 @@ public class BoltCleanUp {
                     }
                 }
             }
-        }
 
-        // Trim bolt results by maf and info score
-        rowBoltFilesToTrim.stream()
-                .parallel()
-                .forEach(
-                        filePair -> processBoltFile(
-                                filePair[0],
-                                filePair[1],
-                                rowBoltFilesToTrim.size()
-                        )
-                );
+            // Split bolt results by maf
+            rawBoltFilesToTrim.stream()
+                    .parallel()
+                    .forEach(filePair -> processBoltFile(
+                    filePair[0],
+                    filePair[1],
+                    filePair[2],
+                    rawBoltFilesToTrim.size(),
+                    incompleteWriter
+            )
+                    );
+        }
 
     }
 
     private static void processBoltFile(
             File boltFile,
-            File trimmedFile,
-            int nFiles
+            File rareFile,
+            File commonFile,
+            int nFiles,
+            SimpleFileWriter incompleteWriter
     ) {
 
-        System.out.println(Instant.now() + "    Trimming " + boltFile + " (" + trimmingProgress++ + " of " + nFiles + ").");
+        System.out.println(Instant.now() + "    Splitting " + boltFile + " (" + trimmingProgress++ + " of " + nFiles + ").");
 
         Instant begin = Instant.now();
 
@@ -205,71 +196,69 @@ public class BoltCleanUp {
 
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(boltFile, false)) {
 
-            try (SimpleFileWriter writer = new SimpleFileWriter(trimmedFile, true)) {
+            try (SimpleFileWriter rareWriter = new SimpleFileWriter(rareFile, true)) {
 
-                String line = reader.readLine();
-                writer.writeLine(line);
+                try (SimpleFileWriter commonWriter = new SimpleFileWriter(commonFile, true)) {
 
-                while ((line = reader.readLine()) != null) {
+                    String line = reader.readLine();
+                    rareWriter.writeLine(line);
+                    commonWriter.writeLine(line);
 
-                    String[] lineSplit = line.split("\t");
+                    while ((line = reader.readLine()) != null) {
 
-                    if (!lineSplit[11].equals("-nan") && !lineSplit[11].equals("nan")) {
+                        String[] lineSplit = line.split("\t");
 
-                        double maf = Double.parseDouble(lineSplit[6]);
+                        if (!lineSplit[11].equals("-nan") && !lineSplit[11].equals("nan")) {
 
-                        if (maf >= MAF_THRESHOLD && maf <= 1.0 - MAF_THRESHOLD) {
+                            double maf = Double.parseDouble(lineSplit[6]);
 
-                            boolean summaryStatsOK = true;
+                            boolean common = false;
 
-                            try {
+                            if (maf >= MAF_THRESHOLD && maf <= 1.0 - MAF_THRESHOLD) {
 
-                                double beta = Double.parseDouble(lineSplit[10]);
+                                try {
 
-                                if (Double.isNaN(beta) || Double.isInfinite(beta)) {
+                                    double beta = Double.parseDouble(lineSplit[10]);
 
-                                    summaryStatsOK = false;
+                                    if (!Double.isNaN(beta) && !Double.isInfinite(beta)) {
 
+                                        double se = Double.parseDouble(lineSplit[11]);
+
+                                        if (!Double.isNaN(se) && !Double.isInfinite(se)) {
+
+                                            double p = Double.parseDouble(lineSplit[15]);
+
+                                            if (!Double.isNaN(p) && !Double.isInfinite(p)) {
+
+                                                common = true;
+
+                                            }
+                                        }
+                                    }
+
+                                } catch (Exception e) {
+
+                                    // Parsing error - ignore
                                 }
 
-                                double se = Double.parseDouble(lineSplit[11]);
+                                if (common) {
 
-                                if (Double.isNaN(se) || Double.isInfinite(se)) {
+                                    commonWriter.writeLine(line);
 
-                                    summaryStatsOK = false;
+                                    nVariants++;
 
-                                }
+                                } else {
 
-                                double p = Double.parseDouble(lineSplit[15]);
-
-                                if (Double.isNaN(p) || Double.isInfinite(p)) {
-
-                                    summaryStatsOK = false;
+                                    rareWriter.writeLine(line);
 
                                 }
-
-                            } catch (Exception e) {
-
-                                summaryStatsOK = false;
-
-                            }
-
-                            if (summaryStatsOK) {
-
-                                writer.writeLine(line);
-
-                                nVariants++;
-
                             }
                         }
                     }
                 }
             }
-            
-        } catch (Exception e) {
 
-            boltFile.delete();
-            trimmedFile.delete();
+        } catch (Exception e) {
 
             success = false;
 
@@ -277,18 +266,41 @@ public class BoltCleanUp {
 
         if (success) {
 
+            boltFile.delete();
+
             Instant end = Instant.now();
             long durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
 
-            System.out.println(Instant.now() + "    Trimming " + boltFile + " done, " + nVariants + " variants remaining (" + durationSeconds + " s)");
+            System.out.println(Instant.now() + "    Splitting " + boltFile + " done, " + nVariants + " common variants (" + durationSeconds + " s)");
 
         } else {
 
+            boltFile.delete();
+            rareFile.delete();
+            commonFile.delete();
+
+            incompleteWriter.writeLine("Splitting crash: ", boltFile.getAbsolutePath());
+
             Instant end = Instant.now();
             long durationSeconds = end.getEpochSecond() - begin.getEpochSecond();
 
-            System.out.println(Instant.now() + "    Trimming " + boltFile + " failed (" + durationSeconds + " s)");
+            System.out.println(Instant.now() + "    Splitting " + boltFile + " failed (" + durationSeconds + " s)");
 
         }
+    }
+
+    private static void deleteDir(File dir) {
+
+        if (dir.isDirectory()) {
+
+            for (File file : dir.listFiles()) {
+
+                deleteDir(file);
+
+            }
+        }
+
+        dir.delete();
+
     }
 }
