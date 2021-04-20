@@ -61,7 +61,7 @@ public class WLM {
                 double beta = Double.parseDouble(lineSplit[10]);
                 double se = Double.parseDouble(lineSplit[11]);
                 double p = Double.parseDouble(lineSplit[12]);
-                double n = Integer.parseInt(lineSplit[18]);
+                double n = Double.parseDouble(lineSplit[18]);
 
                 if (beta < 0) {
 
@@ -108,7 +108,7 @@ public class WLM {
                     double beta = Double.parseDouble(lineSplit[10]);
                     double se = Double.parseDouble(lineSplit[11]);
                     double p = Double.parseDouble(lineSplit[12]);
-                    double n = Integer.parseInt(lineSplit[18]);
+                    double n = Double.parseDouble(lineSplit[18]);
 
                     if (beta < 0) {
 
@@ -187,7 +187,7 @@ public class WLM {
                     double beta = Double.parseDouble(lineSplit[10]);
                     double se = Double.parseDouble(lineSplit[11]);
                     double p = Double.parseDouble(lineSplit[12]);
-                    double n = Integer.parseInt(lineSplit[18]);
+                    double n = Double.parseDouble(lineSplit[18]);
 
                     if (beta < 0) {
 
