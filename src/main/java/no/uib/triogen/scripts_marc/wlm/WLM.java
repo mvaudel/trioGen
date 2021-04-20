@@ -40,9 +40,8 @@ public class WLM {
         HashMap<String, double[]> nMap = new HashMap<>();
 
         // Load child
-
         System.out.println(Instant.now() + "    Loading child results.");
-        
+
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(gwasChild)) {
 
             String line = reader.readLine();
@@ -87,9 +86,8 @@ public class WLM {
         }
 
         // Load mother
-
         System.out.println(Instant.now() + "    Loading mother results.");
-        
+
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(gwasMother)) {
 
             String line = reader.readLine();
@@ -166,9 +164,8 @@ public class WLM {
         }
 
         // Load father
-
         System.out.println(Instant.now() + "    Loading father results.");
-        
+
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(gwasFather)) {
 
             String line = reader.readLine();
@@ -259,17 +256,16 @@ public class WLM {
         }
 
         // Compute WLM and export to file
-
         System.out.println(Instant.now() + "    Computing WLM");
-        
+
         try (SimpleFileWriter writer = new SimpleFileWriter(resultFile, true)) {
 
             writer.writeLine(
                     "snp", "rsid", "chr", "pos", "tested_allele", "other_allele",
                     "tested_allele_freq_child", "tested_allele_freq_mother", "tested_allele_freq_father",
-                    "beta_child", "se_child", "p_child",
-                    "beta_mother", "se_mother", "p_mother",
-                    "beta_father", "se_father", "p_father",
+                    "beta_child", "se_child", "p_child", "n_child",
+                    "beta_mother", "se_mother", "p_mother", "n_mother",
+                    "beta_father", "se_father", "p_father", "n_father",
                     "beta_wlm_child", "se_wlm_child",
                     "beta_wlm_mother", "se_wlm_mother",
                     "beta_wlm_father", "se_wlm_father"
@@ -277,15 +273,16 @@ public class WLM {
 
             for (String id : variantInfoMap.keySet()) {
 
-                double[] ps = pMap.get(id);
+                double[] betas = betaMap.get(id);
+                double[] ses = seMap.get(id);
 
-                if (!Double.isNaN(ps[0]) && !Double.isNaN(ps[1]) && !Double.isNaN(ps[2])) {
+                if (!Double.isNaN(betas[0]) && !Double.isNaN(betas[1]) && !Double.isNaN(betas[2])
+                        && !Double.isNaN(ses[0]) && !Double.isNaN(ses[1]) && !Double.isNaN(ses[2])) {
 
                     String[] variantInfo = variantInfoMap.get(id);
                     String[] alleles = allelesMap.get(id);
                     double[] testedAlleleFrequencies = frequencyMap.get(id);
-                    double[] betas = betaMap.get(id);
-                    double[] ses = seMap.get(id);
+                    double[] ps = pMap.get(id);
                     double[] ns = nMap.get(id);
 
                     double[] ses2 = Arrays.stream(ses)
@@ -319,9 +316,9 @@ public class WLM {
                     writer.writeLine(
                             id, variantInfo[0], variantInfo[1], variantInfo[2], alleles[1], alleles[0],
                             Double.toString(testedAlleleFrequencies[0]), Double.toString(testedAlleleFrequencies[1]), Double.toString(testedAlleleFrequencies[2]),
-                            Double.toString(betas[0]), Double.toString(ses[0]), Double.toString(ps[0]),
-                            Double.toString(betas[1]), Double.toString(ses[1]), Double.toString(ps[1]),
-                            Double.toString(betas[2]), Double.toString(ses[2]), Double.toString(ps[2]),
+                            Double.toString(betas[0]), Double.toString(ses[0]), Double.toString(ps[0]), Double.toString(ns[0]),
+                            Double.toString(betas[1]), Double.toString(ses[1]), Double.toString(ps[1]), Double.toString(ns[1]),
+                            Double.toString(betas[2]), Double.toString(ses[2]), Double.toString(ps[2]), Double.toString(ns[2]),
                             Double.toString(wlmBetaChild), Double.toString(wlmSeChild),
                             Double.toString(wlmBetaMother), Double.toString(wlmSeMother),
                             Double.toString(wlmBetaFather), Double.toString(wlmSeFather)
