@@ -1,6 +1,7 @@
 package no.uib.triogen.scripts_marc.wlm;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import no.uib.cell_rk.utils.SimpleFileWriter;
@@ -39,6 +40,9 @@ public class WLM {
         HashMap<String, int[]> nMap = new HashMap<>();
 
         // Load child
+
+        System.out.println(Instant.now() + "    Loading child results.");
+        
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(gwasChild)) {
 
             String line = reader.readLine();
@@ -83,6 +87,9 @@ public class WLM {
         }
 
         // Load mother
+
+        System.out.println(Instant.now() + "    Loading mother results.");
+        
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(gwasMother)) {
 
             String line = reader.readLine();
@@ -159,6 +166,9 @@ public class WLM {
         }
 
         // Load father
+
+        System.out.println(Instant.now() + "    Loading father results.");
+        
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(gwasFather)) {
 
             String line = reader.readLine();
@@ -249,6 +259,9 @@ public class WLM {
         }
 
         // Compute WLM and export to file
+
+        System.out.println(Instant.now() + "    Computing WLM");
+        
         try (SimpleFileWriter writer = new SimpleFileWriter(resultFile, true)) {
 
             writer.writeLine(
