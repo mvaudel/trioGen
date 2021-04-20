@@ -37,7 +37,7 @@ public class WLM {
         HashMap<String, double[]> betaMap = new HashMap<>();
         HashMap<String, double[]> seMap = new HashMap<>();
         HashMap<String, double[]> pMap = new HashMap<>();
-        HashMap<String, int[]> nMap = new HashMap<>();
+        HashMap<String, double[]> nMap = new HashMap<>();
 
         // Load child
 
@@ -61,7 +61,7 @@ public class WLM {
                 double beta = Double.parseDouble(lineSplit[10]);
                 double se = Double.parseDouble(lineSplit[11]);
                 double p = Double.parseDouble(lineSplit[12]);
-                int n = Integer.parseInt(lineSplit[18]);
+                double n = Integer.parseInt(lineSplit[18]);
 
                 if (beta < 0) {
 
@@ -81,7 +81,7 @@ public class WLM {
                 betaMap.put(id, new double[]{beta, Double.NaN, Double.NaN});
                 seMap.put(id, new double[]{se, Double.NaN, Double.NaN});
                 pMap.put(id, new double[]{p, Double.NaN, Double.NaN});
-                nMap.put(id, new int[]{n, 0, 0});
+                nMap.put(id, new double[]{n, 0, 0});
 
             }
         }
@@ -108,7 +108,7 @@ public class WLM {
                     double beta = Double.parseDouble(lineSplit[10]);
                     double se = Double.parseDouble(lineSplit[11]);
                     double p = Double.parseDouble(lineSplit[12]);
-                    int n = Integer.parseInt(lineSplit[18]);
+                    double n = Integer.parseInt(lineSplit[18]);
 
                     if (beta < 0) {
 
@@ -127,7 +127,7 @@ public class WLM {
                     double[] ses = seMap.get(id);
                     double[] testedAlleleFrequencies = frequencyMap.get(id);
                     double[] ps = pMap.get(id);
-                    int[] ns = nMap.get(id);
+                    double[] ns = nMap.get(id);
 
                     if (ps[0] <= p) {
 
@@ -187,7 +187,7 @@ public class WLM {
                     double beta = Double.parseDouble(lineSplit[10]);
                     double se = Double.parseDouble(lineSplit[11]);
                     double p = Double.parseDouble(lineSplit[12]);
-                    int n = Integer.parseInt(lineSplit[18]);
+                    double n = Integer.parseInt(lineSplit[18]);
 
                     if (beta < 0) {
 
@@ -206,7 +206,7 @@ public class WLM {
                     double[] ses = seMap.get(id);
                     double[] testedAlleleFrequencies = frequencyMap.get(id);
                     double[] ps = pMap.get(id);
-                    int[] ns = nMap.get(id);
+                    double[] ns = nMap.get(id);
 
                     if (ps[0] <= ps[1] && ps[0] <= p) {
 
@@ -286,7 +286,7 @@ public class WLM {
                     double[] testedAlleleFrequencies = frequencyMap.get(id);
                     double[] betas = betaMap.get(id);
                     double[] ses = seMap.get(id);
-                    int[] ns = nMap.get(id);
+                    double[] ns = nMap.get(id);
 
                     double[] ses2 = Arrays.stream(ses)
                             .map(
