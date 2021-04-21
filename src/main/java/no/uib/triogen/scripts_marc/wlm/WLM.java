@@ -145,6 +145,7 @@ public class WLM {
 
                             betas[0] = -betas[0];
                             testedAlleleFrequencies[0] = 1.0 - testedAlleleFrequencies[0];
+                            allelesMap.put(id, new String[]{otherAllele, testedAllele});
 
                         } else if (!alleles[0].equals(otherAllele) || !alleles[1].equals(testedAllele)) {
 
@@ -237,6 +238,7 @@ public class WLM {
                             betas[1] = -betas[1];
                             testedAlleleFrequencies[0] = 1.0 - testedAlleleFrequencies[0];
                             testedAlleleFrequencies[1] = 1.0 - testedAlleleFrequencies[1];
+                            allelesMap.put(id, new String[]{otherAllele, testedAllele});
 
                         } else if (!alleles[0].equals(otherAllele) || !alleles[1].equals(testedAllele)) {
 
