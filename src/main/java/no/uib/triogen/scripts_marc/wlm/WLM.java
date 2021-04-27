@@ -297,21 +297,21 @@ public class WLM {
                     double wlmSeChild = Math.sqrt(
                             4 * ses2[0] + ses2[1] + ses2[2]
                             - 4 * childMotherOverlap * Math.sqrt(ses2[0] * ses2[1])
-                            - 4 * childFatherOverlap * Math.sqrt(ses[0] * ses2[2])
+                            - 4 * childFatherOverlap * Math.sqrt(ses2[0] * ses2[2])
                             + 2 * motherFatherOverlap * Math.sqrt(ses2[1] * ses2[2])
                     );
                     double wlmBetaMother = (3 * betas[1] - 2 * betas[0] + betas[2]) / 2;
                     double wlmSeMother = Math.sqrt(
                             9 * ses2[1] / 4 + ses2[0] + ses2[2] / 4
                             - 3 * childMotherOverlap * Math.sqrt(ses2[0] * ses2[1])
-                            - childFatherOverlap * Math.sqrt(ses[0] * ses2[2])
+                            - childFatherOverlap * Math.sqrt(ses2[0] * ses2[2])
                             + 3 * motherFatherOverlap * Math.sqrt(ses2[1] * ses2[2]) / 2
                     );
                     double wlmBetaFather = (3 * betas[2] - 2 * betas[0] + betas[1]) / 2;
                     double wlmSeFather = Math.sqrt(
                             9 * ses2[2] / 4 + ses2[0] + ses2[1] / 4
                             - childMotherOverlap * Math.sqrt(ses2[0] * ses2[1])
-                            - 3 * childFatherOverlap * Math.sqrt(ses[0] * ses2[2])
+                            - 3 * childFatherOverlap * Math.sqrt(ses2[0] * ses2[2])
                             + 3 * motherFatherOverlap * Math.sqrt(ses2[1] * ses2[2]) / 2
                     );
 
