@@ -18,7 +18,7 @@ import no.uib.triogen.model.simple_score.VariantWeightList;
 import no.uib.triogen.processing.simple_score.SimpleScoreComputer;
 
 /**
- * Runs multiple linear models for the association with phenotypes.
+ * Computes a simple polygenic risk score based on the sum of a list of betas.
  *
  * @author Marc Vaudel
  */

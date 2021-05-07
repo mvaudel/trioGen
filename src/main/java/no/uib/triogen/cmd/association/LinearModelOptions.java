@@ -17,7 +17,7 @@ public enum LinearModelOptions {
     variantId("vi", "variantId", "File listing the variants to include in the analysis. Default: process all variants in the genotypes file.", false, true),
     maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Default: 500000.", false, true),
     af("af", "afThreshold", "Allele frequency threshold. 0.005 excludes all alleles of variants with frequency < 0.5% or > 99.5%. Default: 0.005.", false, true),
-    phenoFile("p", "phenoFile", "The phenotypes file.", true, true),
+    phenoFile("p", "phenoFile", "The phenotypes and covariates file.", true, true),
     childId("id", "childId", "The name of the column containing the child id. Default: child_SentrixID.", false, true),
     phenoName("pn", "phenoName", "List of the names of the phenotypes to include in the analysis. Example: pheno1,pheno2.", true, true),
     covariate_general("cg", "covariate_general", "List of the names of the covariates to use for all phenotypes. Example: pc1,pc2,pc3,pc4,pc5,pc6.", false, true),

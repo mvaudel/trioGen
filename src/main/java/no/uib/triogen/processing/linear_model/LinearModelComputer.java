@@ -59,11 +59,6 @@ public class LinearModelComputer {
      */
     private final VariantList variantList;
     /**
-     * Variants with a distance to a target variant lower than maxDistance will
-     * be included in the computation.
-     */
-    private final int maxDistance;
-    /**
      * The allele frequency threshold.
      */
     private final double alleleFrequencyThreshold;
@@ -112,7 +107,6 @@ public class LinearModelComputer {
      * @param defaultMotherPloidy The default ploidy for mothers.
      * @param defaultFatherPloidy The default ploidy for fathers.
      * @param variantList The variants to process.
-     * @param maxDistance The maximal number of bp to allow between variants.
      * @param mafThreshold The maf threshold.
      * @param childToParentMap The map of trios.
      * @param phenotypesFile The file containing the phenotypes.
@@ -132,7 +126,6 @@ public class LinearModelComputer {
             int defaultMotherPloidy,
             int defaultFatherPloidy,
             VariantList variantList,
-            int maxDistance,
             double mafThreshold,
             ChildToParentMap childToParentMap,
             File phenotypesFile,
@@ -150,7 +143,6 @@ public class LinearModelComputer {
         this.defaultMotherPloidy = defaultMotherPloidy;
         this.defaultFatherPloidy = defaultFatherPloidy;
         this.variantList = variantList;
-        this.maxDistance = maxDistance;
         this.alleleFrequencyThreshold = mafThreshold;
         this.childToParentMap = childToParentMap;
         this.phenotypesFile = phenotypesFile;

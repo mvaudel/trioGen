@@ -1,4 +1,4 @@
-package no.uib.triogen.cmd.association;
+package no.uib.triogen.cmd.prs;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -8,22 +8,21 @@ import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
-import no.uib.triogen.model.trio_genotypes.Model;
-import no.uib.triogen.model.trio_genotypes.VariantList;
-import no.uib.triogen.processing.linear_model.LinearModelComputer;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.triogen.io.genotypes.InheritanceUtils;
+import no.uib.triogen.model.simple_score.VariantWeightList;
+import no.uib.triogen.processing.simple_score.SimpleScoreComputer;
 
 /**
- * Runs multiple linear models for the association with phenotypes.
+ * Computes a simple polygenic risk score based on the sum of a list of betas.
  *
  * @author Marc Vaudel
  */
-public class LinearModel {
+public class PRS {
 
     /**
      * Main method.
@@ -53,11 +52,11 @@ public class LinearModel {
         try {
 
             Options lOptions = new Options();
-            LinearModelOptions.createOptionsCLI(lOptions);
+            PrsOptions.createOptionsCLI(lOptions);
             CommandLineParser parser = new DefaultParser();
             CommandLine commandLine = parser.parse(lOptions, args);
 
-            LinearModelOptionsBean bean = new LinearModelOptionsBean(commandLine);
+            PrsOptionsBean bean = new PrsOptionsBean(commandLine);
 
             run(
                     bean,
@@ -76,10 +75,24 @@ public class LinearModel {
      * @param bean the bean of command line parameters
      * @param command the command line as string
      */
-    public static void run(
-            LinearModelOptionsBean bean,
+    private static void run(
+            PrsOptionsBean bean,
             String command
     ) {
+
+        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
+        VariantWeightList variantWeightList = VariantWeightList.getVariantWeightList(bean.variantFile);
+
+        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
+
+        if (inheritanceMap == null) {
+
+            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
+
+        }
+        
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
 
         String resultStem = bean.destinationFile.getAbsolutePath();
 
@@ -95,71 +108,26 @@ public class LinearModel {
         SimpleCliLogger logger = new SimpleCliLogger(logFile, variantLogFile);
         logger.writeComment("Software", "TrioGen");
         logger.writeComment("Version", TrioGen.getVersion());
-        logger.writeComment("Command", "LinearModel");
+        logger.writeComment("Command", "SimpleScore");
         logger.writeComment("Arguments", command);
         logger.writeHeaders();
 
-        VariantList variantList = null;
-
-        if (bean.variantFile != null) {
-
-            variantList = VariantList.getVariantList(
-                    bean.variantFile,
-                    bean.chromosome
-            );
-
-            if (variantList.variantId.length == 0) {
-
-                logger.logMessage("No target variant on chromosome " + bean.chromosome + ".");
-
-            }
-
-            variantList.index(bean.maxDistance);
-
-        }
-
-        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
-
-        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
-
-        if (inheritanceMap == null) {
-
-            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
-
-        }
-
-        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
-        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
-
-        Model[] models = Arrays.stream(bean.modelNames)
-                .map(
-                        modelName -> Model.valueOf(modelName)
-                )
-                .toArray(Model[]::new);
-
-        LinearModelComputer linearModelComputer = new LinearModelComputer(
-                bean.genotypesFile,
-                inheritanceMap,
+        SimpleScoreComputer scoreComputer = new SimpleScoreComputer(
+                bean.genotypesFile, 
+                inheritanceMap, 
                 defaultMotherPlooidy,
                 defaultFatherPlooidy,
-                variantList,
-                bean.alleleFrequencyThreshold,
-                childToParentMap,
-                bean.phenotypesFile,
-                bean.phenoNames,
-                bean.covariatesGeneral,
-                bean.covariatesSpecific,
-                models,
-                bean.destinationFile,
-                bean.nVariants,
+                childToParentMap, 
+                variantWeightList, 
+                bean.phenotypesFile, 
+                bean.phenoNames, 
+                bean.destinationFile, 
                 logger
         );
 
         try {
 
-            linearModelComputer.run(
-                    bean.timeOut
-            );
+            scoreComputer.computeScore();
 
         } catch (Throwable e) {
 
@@ -189,10 +157,10 @@ public class LinearModel {
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print("              trioGen             " + LINE_SEPARATOR);
             lPrintWriter.print("               ****               " + LINE_SEPARATOR);
-            lPrintWriter.print("      Linear Model Regression     " + LINE_SEPARATOR);
+            lPrintWriter.print("            Simple Score          " + LINE_SEPARATOR);
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print(LINE_SEPARATOR
-                    + "The linear model regression command performs linear regression using various models." + LINE_SEPARATOR
+                    + "The simple score command computes a simple risk score in trios based on a list of weights." + LINE_SEPARATOR
                     + LINE_SEPARATOR
                     + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + LINE_SEPARATOR
                     + LINE_SEPARATOR
@@ -202,7 +170,7 @@ public class LinearModel {
                     + LINE_SEPARATOR
                     + "----------------------" + LINE_SEPARATOR
                     + LINE_SEPARATOR);
-            lPrintWriter.print(LinearModelOptions.getOptionsAsString());
+            lPrintWriter.print(PrsOptions.getOptionsAsString());
             lPrintWriter.flush();
         }
     }

@@ -1,4 +1,4 @@
-package no.uib.triogen.cmd.ld_matrix;
+package no.uib.triogen.cmd.prs;
 
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
@@ -9,17 +9,18 @@ import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
  *
  * @author Marc Vaudel
  */
-public enum LdMatrixOptions {
+public enum PrsOptions {
 
     geno("g", "geno", "The genotypes file.", true, true),
     chromosome("c", "chromosome", "The chromosome name.", true, true),
-    maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Default: 500000.", false, true),
-    trio("f", "fam", "The trio identifiers file. Can be gzipped or not. Consider including only unrelated samples and controling for admixture.", true, true),
-    minR2("r", "minR2", "The minimal ld r2 to report (inclusive). Default: 1e-6.", false, true),
-    af("af", "afThreshold", "Allele frequency threshold. 0.001 excludes all alleles of variants with frequency < 0.1% or > 99.9%. Only variants with at least two alleles passing the threshold will be inspected. Default: 0.001.", false, true),
-    out("o", "out", "The file where to write the matrix. The extension '.tld' will be added if not present.", true, true),
-    nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is the number of cores on the machine.", false, true),
-    timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true);
+    variantId("vi", "variantId", "File listing the variants to include in the analysis along with the weights.", true, true),
+    phenoFile("p", "phenoFile", "The phenotypes file.", true, true),
+    childId("id", "childId", "The name of the column containing the child id. Default: child_SentrixID.", false, true),
+    phenoName("pn", "phenoName", "List of the names of the phenotypes to include in the export. Example: pheno1,pheno2.", true, true),
+    trio("f", "fam", "The trio identifiers file. Can be gzipped or not.", true, true),
+    out("o", "out", "The file where to write the results.", true, true),
+    timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true),
+    variantLog("vl", "variantLog", "If present, writes a log for every variant next to the results file.", false, false);
 
     /**
      * The short option.
@@ -52,7 +53,7 @@ public enum LdMatrixOptions {
      * @param mandatory is the option mandatory
      * @param hasArg has the option an argument
      */
-    private LdMatrixOptions(
+    private PrsOptions(
             String opt, 
             String longOpt, 
             String description, 
@@ -76,7 +77,7 @@ public enum LdMatrixOptions {
             Options options
     ) {
 
-        for (LdMatrixOptions option : values()) {
+        for (PrsOptions option : values()) {
 
             options.addOption(option.opt, option.longOpt, option.hasArg, option.description);
 

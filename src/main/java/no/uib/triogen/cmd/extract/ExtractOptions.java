@@ -17,7 +17,7 @@ public enum ExtractOptions {
     columns("col", "columns", "The columns containing association summary statistics to include in the results file as comma separated list. Example: h_B1,h_B1_se,h_B1_p. Default: all columns.", false, true),
     variantId("id", "variantId", "The ids of the variants to include in the results file as comma separated list. Example: rs123,rs456,rs789. Default: all variants.", false, true),
     phenoName("p", "pheno", "The phenotypes to include in the results file as comma separated list. Example: pheno1,pheno2,pheno3. Default: all phenotypes.", false, true),
-    output("o", "output", "Stem where to write the output", true, true);
+    output("o", "output", "Stem of the file where to write the output", true, true);
 
     /**
      * The short option.
