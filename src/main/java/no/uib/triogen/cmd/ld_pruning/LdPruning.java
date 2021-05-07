@@ -8,7 +8,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
-import no.uib.triogen.io.ld.pruning.LdPruner;
+import no.uib.triogen.io.ld.pruning.SimpleLdPruner;
 
 /**
  * Computes LD between variants and saves the results in a matrix.
@@ -73,7 +73,7 @@ public class LdPruning {
             LdPruningOptionsBean bean
     ) throws IOException {
 
-        LdPruner pruner = new LdPruner(
+        SimpleLdPruner pruner = new SimpleLdPruner(
                 bean.ldMatrixFilePath,
                 bean.resultsFile,
                 bean.destinationFile,

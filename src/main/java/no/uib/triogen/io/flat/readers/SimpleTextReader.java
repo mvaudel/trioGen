@@ -60,7 +60,7 @@ public class SimpleTextReader implements SimpleFileReader {
             
             while ((line = br.readLine()) != null) {
                 
-                if (!skipComments || line.charAt(0) != COMMENT_CHAR) {
+                if (!skipComments || line.length() == 0 || line.charAt(0) != COMMENT_CHAR) {
                     
                     return line;
                     

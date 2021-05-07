@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.TreeSet;
 import no.uib.triogen.io.covariates.SpecificCovariatesFile;
-import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
 import org.apache.commons.cli.CommandLine;
 
@@ -20,9 +19,9 @@ public class VariantDataOptionsBean {
      */
     public final File genotypesFile;
     /**
-     * The genotypes file type.
+     * The chromosome name.
      */
-    public GenotypesFileType genotypesFileType = GenotypesFileType.vcf;
+    public final String chromosome;
     /**
      * the trio file.
      */
@@ -87,26 +86,8 @@ public class VariantDataOptionsBean {
 
         }
 
-        // The genotypes file type
-        if (aLine.hasOption(VariantDataOptions.genoFormat.opt)) {
-
-            String option = aLine.getOptionValue(VariantDataOptions.genoFormat.opt);
-            int genoFormat;
-
-            try {
-
-                genoFormat = Integer.valueOf(option);
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-                throw new IllegalArgumentException("Genotype file formant could not be parsed. Found: " + option + ". Expected input: " + GenotypesFileType.getCommandLineOptions() + ".");
-
-            }
-
-            genotypesFileType = GenotypesFileType.getGenotypesFileType(genoFormat);
-
-        }
+        // The chromosome name
+        chromosome = aLine.getOptionValue(VariantDataOptions.chromosome.opt);
 
         // The variant ids
         filePath = aLine.getOptionValue(VariantDataOptions.variantId.opt);

@@ -114,7 +114,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="block">This class extracts data for a given sets of variants.</div>
 <dl>
 <dt><span class="simpleTagLabel">Author:</span></dt>
-<dd>Maec Vaudel</dd>
+<dd>Marc Vaudel</dd>
 </dl>
 </li>
 </ul>
@@ -161,8 +161,10 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/variant_data/VariantDataExtractor.html#VariantDataExtractor-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-java.io.File-no.uib.triogen.log.SimpleCliLogger-">VariantDataExtractor</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
-                    <a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/variant_data/VariantDataExtractor.html#VariantDataExtractor-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-java.io.File-no.uib.triogen.log.SimpleCliLogger-">VariantDataExtractor</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+                    <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                    int&nbsp;defaultMotherPloidy,
+                    int&nbsp;defaultFatherPloidy,
                     <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
                     <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                     <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;phenotypesFile,
@@ -246,14 +248,16 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="VariantDataExtractor-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-java.io.File-no.uib.triogen.log.SimpleCliLogger-">
+<a name="VariantDataExtractor-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-java.io.File-no.uib.triogen.log.SimpleCliLogger-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>VariantDataExtractor</h4>
 <pre>public&nbsp;VariantDataExtractor(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
-                            <a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
+                            <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                            int&nbsp;defaultMotherPloidy,
+                            int&nbsp;defaultFatherPloidy,
                             <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
                             <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                             <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;phenotypesFile,
@@ -266,7 +270,9 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>genotypesFile</code> - The file containing the genotypes.</dd>
-<dd><code>genotypesFileType</code> - The type of genotypes file.</dd>
+<dd><code>inheritanceMap</code> - The inheritance map for the given file.</dd>
+<dd><code>defaultMotherPloidy</code> - The default ploidy for mothers.</dd>
+<dd><code>defaultFatherPloidy</code> - The default ploidy for fathers.</dd>
 <dd><code>variantList</code> - The variants to process.</dd>
 <dd><code>childToParentMap</code> - The map of trios.</dd>
 <dd><code>phenotypesFile</code> - The file containing the phenotypes.</dd>
@@ -294,9 +300,15 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <ul class="blockListLast">
 <li class="blockList">
 <h4>run</h4>
-<pre>public&nbsp;void&nbsp;run()</pre>
+<pre>public&nbsp;void&nbsp;run()
+         throws <a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
 <div class="block">Goes through the list of provided variants and extracts the values of the
  adjusted phenotypes.</div>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code> - Exception thrown if an error occurs while
+ reading or writing a file.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -368,6 +380,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2020. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2021. All rights reserved.</small></p>
 </body>
 </html>

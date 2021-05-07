@@ -8,13 +8,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.flat.indexed.IndexedGzReader;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import no.uib.triogen.io.ld.LdMatrixReader;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.annotation.EnsemblAPI;
 import no.uib.triogen.model.annotation.GeneCoordinates;
+import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 
 /**
@@ -55,7 +56,9 @@ public class LocusZoomExtractor {
 
         logger.logMessage("Getting LD values between the target variants and nearby variants.");
 
-        HashMap<String, HashMap<String, Double>> ldMaps = getLdMaps(variantList, ldFile);
+
+        LdMatrixReader ldMatrixReader = new LdMatrixReader(ldFile);
+        HashMap<String, ArrayList<R2>> ldMaps = getLdMaps(variantList, ldMatrixReader);
 
         logger.logMessage("Iterating association results");
 
@@ -71,7 +74,7 @@ public class LocusZoomExtractor {
         ArrayList<String> variables = new ArrayList<>();
         ArrayList<String> models = new ArrayList<>();
 
-        int typedColumn = -1;
+        int rsIdColumn = -1;
         int nColumn = -1;
 
         HashSet<Integer> variantsFound = new HashSet<>();
@@ -123,9 +126,9 @@ public class LocusZoomExtractor {
                                 models.add(model);
                                 variables.add(variable);
 
-                            } else if (lineSplit[i].equals("typed")) {
+                            } else if (lineSplit[i].equals("rsId")) {
 
-                                typedColumn = i;
+                                rsIdColumn = i;
 
                             } else if (lineSplit[i].equals("n")) {
 
@@ -140,7 +143,9 @@ public class LocusZoomExtractor {
 
                         for (int variantI = 0; variantI < variantList.variantId.length; variantI++) {
 
-                            if (contig.equals(variantList.chromosome[variantI]) && bp >= variantList.start[variantI] - maxDistance && bp <= variantList.end[variantI] + maxDistance) {
+                            if (contig.equals(variantList.chromosome[variantI]) 
+                                    && bp >= variantList.position[variantI] - maxDistance 
+                                    && bp <= variantList.position[variantI] + maxDistance) {
 
                                 String targetVariantId = variantList.variantId[variantI];
 
@@ -172,7 +177,7 @@ public class LocusZoomExtractor {
                                             "contig",
                                             "position",
                                             "variantId",
-                                            "typed",
+                                            "rsId",
                                             "n",
                                             "ld",
                                             "model",
@@ -184,8 +189,18 @@ public class LocusZoomExtractor {
 
                                 }
 
-                                HashMap<String, Double> ldMap = ldMaps.get(targetVariantId);
-                                double ld = ldMap.getOrDefault(variantId, 0.0);
+                                ArrayList<R2> r2s = ldMaps.get(targetVariantId);
+                                double ld = 0.0;
+                                
+                                for (R2 r2 : r2s) {
+                                    
+                                    if (ldMatrixReader.getId(r2.variantB).equals(variantId)) {
+                                        
+                                        ld = Math.max(ld, r2.r2Value);
+                                        
+                                    }
+                                    
+                                }
 
                                 String resultLine = gzReader.read(position, compressedLength, uncompressedLength);
 
@@ -193,7 +208,7 @@ public class LocusZoomExtractor {
                                         .trim()
                                         .split(IoUtils.SEPARATOR);
 
-                                String typed = lineSplit[typedColumn];
+                                String rsId = lineSplit[rsIdColumn];
                                 String n = lineSplit[nColumn];
 
                                 for (int j = 0; j < pValuesIndexes.size(); j++) {
@@ -206,7 +221,7 @@ public class LocusZoomExtractor {
                                             contig,
                                             Integer.toString(bp),
                                             variantId,
-                                            typed,
+                                            rsId,
                                             n,
                                             Double.toString(ld),
                                             model,
@@ -239,8 +254,8 @@ public class LocusZoomExtractor {
             for (int variantI : variantsFound) {
 
                 String targetContig = variantList.chromosome[variantI];
-                int targetBpStart = variantList.start[variantI];
-                int targetBpEnd = variantList.end[variantI];
+                int targetBpStart = variantList.position[variantI];
+                int targetBpEnd = variantList.position[variantI];
                 String targetVariantId = variantList.variantId[variantI];
 
                 File geneFile = new File(genesFileStem + "_" + targetVariantId + "_LocusZoomGenes.gz");
@@ -289,28 +304,26 @@ public class LocusZoomExtractor {
      * 
      * @throws IOException Exception thrown if an error occurred while retrieving the ld.
      */
-    private static HashMap<String, HashMap<String, Double>> getLdMaps(
+    private static HashMap<String, ArrayList<R2>> getLdMaps(
             VariantList variantList,
-            File ldFile
+            LdMatrixReader ldMatrixReader
     ) throws IOException {
 
-        LdMatrixReader ldMatrixReader = new LdMatrixReader(ldFile);
-
-        HashMap<String, HashMap<String, Double>> result = new HashMap<>(variantList.variantId.length);
+        HashMap<String,  ArrayList<R2>> result = new HashMap<>(variantList.variantId.length);
 
         for (int i = 0; i < variantList.variantId.length; i++) {
 
             String variantId = variantList.variantId[i];
 
-            HashMap<String, Double> ldMap = ldMatrixReader.getR2(variantId);
+            ArrayList<R2> r2s = ldMatrixReader.getR2(variantId);
 
-            if (ldMap == null) {
+            if (r2s == null) {
 
-                ldMap = new HashMap<>(0);
+                r2s = new ArrayList<>(0);
 
             }
 
-            result.put(variantId, ldMap);
+            result.put(variantId, r2s);
 
         }
 

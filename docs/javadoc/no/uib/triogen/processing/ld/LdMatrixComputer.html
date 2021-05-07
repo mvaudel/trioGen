@@ -75,13 +75,13 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -123,27 +123,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- =========== FIELD SUMMARY =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static double</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputer.html#LOADING_FACTOR">LOADING_FACTOR</a></span></code>
-<div class="block">Loading factor used to make sure that the buffer contains the ld range.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.summary">
@@ -156,18 +135,16 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputer.html#LdMatrixComputer-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-double-double-boolean-int-double-double-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
-                <a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
-                <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputer.html#LdMatrixComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-double-double-int-no.uib.triogen.log.SimpleCliLogger-">LdMatrixComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+                <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                int&nbsp;defaultMotherPloidy,
+                int&nbsp;defaultFatherPloidy,
                 <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;destinationStem,
                 int&nbsp;maxDistance,
                 double&nbsp;minR2,
-                double&nbsp;mafThreshold,
-                boolean&nbsp;hardCalls,
+                double&nbsp;alleleFrequencyThreshold,
                 int&nbsp;nVariants,
-                double&nbsp;downstreamLoadingFactor,
-                double&nbsp;upstreamLoadingFactor,
                 <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
 <div class="block">constructor.</div>
 </td>
@@ -189,9 +166,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputer.html#run-int-boolean-boolean-">run</a></span>(int&nbsp;timeOutDays,
-   boolean&nbsp;testIteration,
-   boolean&nbsp;test)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/LdMatrixComputer.html#run-int-">run</a></span>(int&nbsp;timeOutDays)</code>
 <div class="block">Runs the matrix export.</div>
 </td>
 </tr>
@@ -211,74 +186,45 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="LOADING_FACTOR">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>LOADING_FACTOR</h4>
-<pre>public static final&nbsp;double LOADING_FACTOR</pre>
-<div class="block">Loading factor used to make sure that the buffer contains the ld range. A
- loading factor of 2 for a sliding window of 10 bp results in buffering 20
- pb.</div>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#no.uib.triogen.processing.ld.LdMatrixComputer.LOADING_FACTOR">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.detail">
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="LdMatrixComputer-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-double-double-boolean-int-double-double-no.uib.triogen.log.SimpleCliLogger-">
+<a name="LdMatrixComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.family.ChildToParentMap-java.lang.String-int-double-double-int-no.uib.triogen.log.SimpleCliLogger-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>LdMatrixComputer</h4>
 <pre>public&nbsp;LdMatrixComputer(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
-                        <a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
-                        <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
+                        <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                        int&nbsp;defaultMotherPloidy,
+                        int&nbsp;defaultFatherPloidy,
                         <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                         <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;destinationStem,
                         int&nbsp;maxDistance,
                         double&nbsp;minR2,
-                        double&nbsp;mafThreshold,
-                        boolean&nbsp;hardCalls,
+                        double&nbsp;alleleFrequencyThreshold,
                         int&nbsp;nVariants,
-                        double&nbsp;downstreamLoadingFactor,
-                        double&nbsp;upstreamLoadingFactor,
                         <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</pre>
 <div class="block">constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>genotypesFile</code> - The file containing the genotypes.</dd>
-<dd><code>genotypesFileType</code> - The type of genotypes file.</dd>
-<dd><code>variantList</code> - The variants to process.</dd>
+<dd><code>inheritanceMap</code> - The inheritance map for the given file.</dd>
+<dd><code>defaultMotherPloidy</code> - The default ploidy for mothers.</dd>
+<dd><code>defaultFatherPloidy</code> - The default ploidy for fathers.</dd>
 <dd><code>childToParentMap</code> - The map of trios.</dd>
 <dd><code>destinationStem</code> - The stem of the path of the file where to write
  the results.</dd>
 <dd><code>maxDistance</code> - The maximal number of bp to allow between variants.</dd>
 <dd><code>minR2</code> - The minimal ld r2 to report (inclusive).</dd>
-<dd><code>mafThreshold</code> - The maf threshold. maf is computed in parents and
- values lower than threshold are not included (inclusive).</dd>
-<dd><code>hardCalls</code> - Boolean indicating whether hard calls should be used
- instead of dosages.</dd>
+<dd><code>alleleFrequencyThreshold</code> - The allele frequency threshold to use.
+ Only variants having at least two alleles passing the threshold will be
+ considered.</dd>
 <dd><code>nVariants</code> - The number of variants to process in parallel.</dd>
-<dd><code>downstreamLoadingFactor</code> - The loading factor to use when trimming
- the buffer.</dd>
-<dd><code>upstreamLoadingFactor</code> - The loading factor to use when buffering.</dd>
 <dd><code>logger</code> - The logger.</dd>
 </dl>
 </li>
@@ -291,15 +237,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="run-int-boolean-boolean-">
+<a name="run-int-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>run</h4>
-<pre>public&nbsp;void&nbsp;run(int&nbsp;timeOutDays,
-                boolean&nbsp;testIteration,
-                boolean&nbsp;test)
+<pre>public&nbsp;void&nbsp;run(int&nbsp;timeOutDays)
          throws <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/InterruptedException.html?is-external=true" title="class or interface in java.lang">InterruptedException</a>,
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/TimeoutException.html?is-external=true" title="class or interface in java.util.concurrent">TimeoutException</a>,
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
@@ -307,9 +251,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>timeOutDays</code> - The time out time in days.</dd>
-<dd><code>testIteration</code> - In testIteration mode LD calculations will not be
- computed.</dd>
-<dd><code>test</code> - In test mode only a few variants will be processed.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/InterruptedException.html?is-external=true" title="class or interface in java.lang">InterruptedException</a></code> - exception thrown if the process was
  interrupted</dd>
@@ -372,13 +313,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -387,6 +328,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2020. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2021. All rights reserved.</small></p>
 </body>
 </html>

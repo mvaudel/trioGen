@@ -1,7 +1,6 @@
 package no.uib.triogen.cmd.simple_score;
 
 import java.io.File;
-import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
 import org.apache.commons.cli.CommandLine;
 
@@ -17,9 +16,9 @@ public class SimpleScoreOptionsBean {
      */
     public final File genotypesFile;
     /**
-     * The genotypes file type.
+     * The chromosome name.
      */
-    public final GenotypesFileType genotypesFileType = GenotypesFileType.vcf;
+    public final String chromosome;
     /**
      * the trio file.
      */
@@ -80,17 +79,19 @@ public class SimpleScoreOptionsBean {
 
         }
 
+        // The chromosome name
+        chromosome = aLine.getOptionValue(SimpleScoreOptions.chromosome.opt);
+
         // The variant ids
+        filePath = aLine.getOptionValue(SimpleScoreOptions.variantId.opt);
 
-            filePath = aLine.getOptionValue(SimpleScoreOptions.variantId.opt);
+        variantFile = new File(filePath);
 
-            variantFile = new File(filePath);
+        if (!variantFile.exists()) {
 
-            if (!variantFile.exists()) {
+            throw new IllegalArgumentException("Variant file (" + variantFile + ") not found.");
 
-                throw new IllegalArgumentException("Variant file (" + variantFile + ") not found.");
-
-            }
+        }
 
         // the trio file
         filePath = aLine.getOptionValue(SimpleScoreOptions.trio.opt);

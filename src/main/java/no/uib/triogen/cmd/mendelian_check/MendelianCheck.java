@@ -2,14 +2,15 @@ package no.uib.triogen.cmd.mendelian_check;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import no.uib.triogen.TrioGen;
-import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.processing.mendelian_check.MendelianCheckComputer;
@@ -55,12 +56,6 @@ public class MendelianCheck {
 
             MendelianCheckOptionsBean bean = new MendelianCheckOptionsBean(commandLine);
 
-            if (bean.test) {
-
-                CustomVcfIterator.nLimit = 1000;
-
-            }
-
             run(
                     bean,
                     String.join(" ", args)
@@ -82,8 +77,6 @@ public class MendelianCheck {
             String command
     ) {
 
-        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
-
         File logFile = new File(bean.destinationFile.getAbsolutePath() + ".log.gz");
         SimpleCliLogger logger = new SimpleCliLogger(logFile, null);
         logger.writeComment("Software", "TrioGen");
@@ -92,15 +85,47 @@ public class MendelianCheck {
         logger.writeComment("Arguments", command);
         logger.writeHeaders();
 
-        VariantList variantList = bean.variantFile == null ? null : VariantList.getVariantList(bean.variantFile);
+        VariantList variantList = null;
+
+        if (bean.variantFile != null) {
+
+            variantList = VariantList.getVariantList(
+                    bean.variantFile,
+                    bean.chromosome
+            );
+
+            if (variantList.variantId.length == 0) {
+
+                logger.logMessage("No target variant on chromosome " + bean.chromosome + ".");
+
+            }
+
+            variantList.index(0);
+
+        }
+
+        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
+
+        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
+
+        if (inheritanceMap == null) {
+
+            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
+
+        }
+        
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
 
         MendelianCheckComputer computer = new MendelianCheckComputer(
                 bean.genotypesFile,
-                bean.genotypesFileType,
+                inheritanceMap,
+                defaultMotherPlooidy,
+                defaultFatherPlooidy,
                 variantList,
                 childToParentMap,
                 bean.destinationFile,
-                bean.maf,
+                bean.alleleFrequencyThreshold,
                 bean.nVariants,
                 logger
         );
@@ -108,8 +133,7 @@ public class MendelianCheck {
         try {
 
             computer.run(
-                    bean.timeOut,
-                    bean.test
+                    bean.timeOut
             );
 
         } catch (Throwable t) {

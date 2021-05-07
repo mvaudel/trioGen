@@ -1,32 +1,49 @@
 package no.uib.triogen.processing.ld;
 
+import io.airlift.compress.zstd.ZstdCompressor;
+import io.airlift.compress.zstd.ZstdDecompressor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.stream.Collectors;
-import java.util.zip.Deflater;
-import no.uib.triogen.io.genotypes.GenotypesProvider;
-import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
+import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
+import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
 import no.uib.triogen.io.ld.LdMatrixWriter;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.genome.VariantInformation;
+import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.model.trio_genotypes.VariantIndex;
-import no.uib.triogen.io.genotypes.WindowGenotypesIterator;
 
 /**
  * Runnable for the LD matrix writer.
  *
  * @author Marc Vaudel
  */
-public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
+public class LdMatrixComputerRunnable implements Runnable {
 
     /**
      * The writer.
      */
     private final LdMatrixWriter writer;
     /**
-     * The buffer.
+     * The index of the bgen file to process.
      */
-    private final WindowGenotypesIterator iteratorA;
+    private final BgenIndex bgenIndex;
+    /**
+     * The reader for the bgen file to process.
+     */
+    private final BgenFileReader bgenFileReader;
+    /**
+     * The iterator.
+     */
+    private final VariantIterator iteratorA;
+    /**
+     * Cache for the probability of homozygocity.
+     */
+    private final P0Cache p0Cache;
     /**
      * The map of trios.
      */
@@ -37,13 +54,13 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
      */
     private final int maxDistance;
     /**
-     * Boolean indicating whether hard calls should be used.
-     */
-    private final boolean hardCalls;
-    /**
      * Index for the variants.
      */
     private final VariantIndex variantIndex;
+    /**
+     * Index of the thread of this runnable.
+     */
+    private final int threadIndex;
     /**
      * The logger.
      */
@@ -53,54 +70,71 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
      */
     private static boolean canceled = false;
     /**
-     * Boolean indicating whether the runnable should only iterate through the
-     * variants and not compute LD calculations.
-     */
-    private final boolean testIteration;
-    /**
      * The minimal ld r2 to report (inclusive).
      */
     private final double minR2;
     /**
-     * The deflater to compress parts of the file.
+     * The compressor to use.
      */
-    private final Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION, true);
+    private final ZstdCompressor compressor = new ZstdCompressor();
+    /**
+     * The decompressor to use.
+     */
+    private final ZstdDecompressor decompressor = new ZstdDecompressor();
+    /**
+     * The allele frequency threshold to use.
+     */
+    private final double alleleFrequencyThreshold;
+    /**
+     * Cache for the variants that have less than two alleles passing the allele
+     * frequency threshold.
+     */
+    private final HashSet<Integer> excludedVariants = new HashSet<>();
 
     /**
      * Constructor.
      *
      * @param writer The writer to use.
      * @param iterator The variant iterator.
+     * @param bgenIndex The index of the bgen file.
+     * @param bgenFileReader The reader for the bgen file.
      * @param childToParentMap The map of trios.
      * @param maxDistance The maximal number of bp to allow between variants.
      * @param minR2 The minimal ld r2 to report (inclusive).
-     * @param hardCalls Boolean indicating whether hard calls should be used
-     * instead of dosages.
+     * @param alleleFrequencyThreshold The allele frequency threshold to use.
+     * Only variants having at least two alleles passing the threshold will be
+     * considered.
      * @param variantIndex The index to use for the variants.
-     * @param testIteration Boolean indicating whether the runnable should only
-     * iterate through the variants and not compute LD calculations.
+     * @param p0Cache The cache for the probability of homozygocity.
+     * @param threadIndex The index of the thread.
      * @param logger The logger.
      */
     public LdMatrixComputerRunnable(
             LdMatrixWriter writer,
-            WindowGenotypesIterator iterator,
+            VariantIterator iterator,
+            BgenIndex bgenIndex,
+            BgenFileReader bgenFileReader,
             ChildToParentMap childToParentMap,
             int maxDistance,
             double minR2,
-            boolean hardCalls,
+            double alleleFrequencyThreshold,
             VariantIndex variantIndex,
-            boolean testIteration,
+            P0Cache p0Cache,
+            int threadIndex,
             SimpleCliLogger logger
     ) {
 
         this.writer = writer;
         this.iteratorA = iterator;
+        this.bgenIndex = bgenIndex;
+        this.bgenFileReader = bgenFileReader;
         this.childToParentMap = childToParentMap;
         this.maxDistance = maxDistance;
         this.minR2 = minR2;
-        this.hardCalls = hardCalls;
+        this.alleleFrequencyThreshold = alleleFrequencyThreshold;
         this.variantIndex = variantIndex;
-        this.testIteration = testIteration;
+        this.p0Cache = p0Cache;
+        this.threadIndex = threadIndex;
         this.logger = logger;
 
     }
@@ -110,115 +144,139 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
 
         try {
 
-            GenotypesProvider genotypesProviderA;
-            while ((genotypesProviderA = iteratorA.next()) != null && !canceled) {
+            Integer indexA;
+            while ((indexA = iteratorA.next()) != null && !canceled) {
 
-                int variantIdA = variantIndex.getIndex(genotypesProviderA.getVariantID());
-                ArrayList<Integer> variantIds = new ArrayList<>();
-                ArrayList<Double> r2s = new ArrayList<>();
+                if (!excludedVariants.contains(indexA)) {
 
-                VariantIterator iteratorB = iteratorA.getGenotypesInRange(
-                        genotypesProviderA.getContig(),
-                        Math.max(genotypesProviderA.getBp() - maxDistance, 0),
-                        genotypesProviderA.getBp() + maxDistance
-                );
+                    VariantInformation variantInformationA = bgenIndex.variantInformationArray[indexA];
 
-                if (!testIteration) {
+                    float[][] pHomA = p0Cache.getPHomozygous(variantInformationA.id);
 
-                    GenotypesProvider genotypesProviderB;
-                    while ((genotypesProviderB = iteratorB.next()) != null) {
+                    if (pHomA == null) {
 
-                        int variantIdB = variantIndex.getIndex(genotypesProviderB.getVariantID());
+                        BgenVariantData variantData = bgenFileReader.getVariantData(indexA);
+                        variantData.parse(
+                                childToParentMap,
+                                decompressor
+                        );
 
-                        if (!hardCalls) {
+                        if (!hasAlleles(variantData)) {
 
-                            double nA = genotypesProviderA.getParentsDosageP0Cache();
-                            double nB = genotypesProviderB.getParentsDosageP0Cache();
-                            double n = 2 * childToParentMap.children.length;
+                            if (excludedVariants.size() > 1000000) {
 
-                            if (nA > 0 && nA < n || nB > 0 && nB < n) {
+                                excludedVariants.clear();
 
-                                float[] p0sA = genotypesProviderA.getParentsDosageP0sCache();
-                                float[] p0sB = genotypesProviderB.getParentsDosageP0sCache();
-                                double nAB = 0.0;
+                            }
 
-                                for (int i = 0; i < p0sA.length; i++) {
+                            excludedVariants.add(indexA);
+                            continue;
 
-                                    nAB += p0sA[i] * p0sB[i];
+                        }
+
+                        p0Cache.register(variantData, childToParentMap);
+
+                    }
+
+                    int variantIdA = variantIndex.getIndex(variantInformationA.id, variantInformationA.rsId);
+
+                    ArrayList<R2> r2s = new ArrayList<>(2);
+
+                    pHomA = p0Cache.getPHomozygous(variantInformationA.id);
+
+                    VariantIterator iteratorB = new VariantIterator(bgenIndex, variantInformationA.position - maxDistance, variantInformationA.position + maxDistance);
+
+                    Integer indexB;
+                    while ((indexB = iteratorB.next()) != null) {
+
+                        if (!excludedVariants.contains(indexB)) {
+
+                            VariantInformation variantInformationB = bgenIndex.variantInformationArray[indexB];
+                            int variantIdB = variantIndex.getIndex(variantInformationB.id, variantInformationB.rsId);
+
+                            float[][] pHomB = p0Cache.getPHomozygous(variantInformationB.id);
+
+                            if (pHomB == null) {
+
+                                BgenVariantData variantData = bgenFileReader.getVariantData(indexB);
+                                variantData.parse(
+                                        childToParentMap,
+                                        decompressor
+                                );
+
+                                if (!hasAlleles(variantData)) {
+
+                                    excludedVariants.add(indexB);
+                                    continue;
 
                                 }
 
-                                if (nAB * n != nA * nB) {
+                                p0Cache.register(variantData, childToParentMap);
 
-                                    double pAB = nAB / n;
-                                    double pA = nA / n;
-                                    double pB = nB / n;
+                            }
 
-                                    double d = pAB - (pA * pB);
+                            pHomB = p0Cache.getPHomozygous(variantInformationB.id);
 
-                                    double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
+                            for (short alleleIA = 0; alleleIA < variantInformationA.alleles.length; alleleIA++) {
 
-                                    if (r2 > minR2) {
+                                for (short alleleIB = 0; alleleIB < variantInformationB.alleles.length; alleleIB++) {
 
-                                        variantIds.add(variantIdB);
-                                        r2s.add(r2);
+                                    double nA = 0.0;
+                                    double nB = 0.0;
+                                    double nAB = 0.0;
+                                    double n = 0.0;
 
+                                    float[] allelePHomA = pHomA[alleleIA];
+                                    float[] allelePHomB = pHomB[alleleIB];
+
+                                    for (int parentI = 0; parentI < allelePHomA.length; parentI++) {
+
+                                        float parentAllelePHomA = allelePHomA[parentI];
+                                        float parentAllelePHomB = allelePHomB[parentI];
+
+                                        if (!Float.isNaN(parentAllelePHomA) && !Float.isNaN(parentAllelePHomB)) {
+
+                                            n += 1;
+
+                                            nA += parentAllelePHomA;
+                                            nB += parentAllelePHomB;
+                                            nAB += parentAllelePHomA * parentAllelePHomB;
+
+                                        }
+                                    }
+
+                                    if (nAB * n != nA * nB) {
+
+                                        double pAB = nAB / n;
+                                        double pA = nA / n;
+                                        double pB = nB / n;
+
+                                        double d = pAB - (pA * pB);
+
+                                        double r2Value = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
+
+                                        if (r2Value > minR2) {
+
+                                            R2 r2 = new R2(variantIdB, alleleIA, alleleIB, (float) r2Value);
+                                            r2s.add(r2);
+
+                                        }
                                     }
                                 }
                             }
-                        } else {
 
-                            double nA = genotypesProviderA.getParentsGenotypeP0Cache();
-                            double nB = genotypesProviderB.getParentsGenotypeP0Cache();
-                            double n = 2 * childToParentMap.children.length;
+                            p0Cache.release(threadIndex, variantInformationA.position - maxDistance);
 
-                            if (nA < n && nA > 0 || nB < n && nB > 0) {
-
-                                boolean[] p0sA = genotypesProviderA.getParentsGenotypeP0sCache();
-                                boolean[] p0sB = genotypesProviderB.getParentsGenotypeP0sCache();
-                                double nAB = 0.0;
-
-                                for (int i = 0; i < p0sA.length; i++) {
-
-                                    if (p0sA[i] && p0sB[i]) {
-
-                                        nAB += 1.0;
-
-                                    }
-                                }
-
-                                if (nA >= 0.0 && nA <= n && nB >= 0 && nB <= n && nAB * n != nA * nB) {
-
-                                    double pAB = nAB / n;
-                                    double pA = nA / n;
-                                    double pB = nB / n;
-
-                                    double d = pAB - (pA * pB);
-
-                                    double r2 = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
-
-                                    if (r2 > minR2) {
-
-                                        variantIds.add(variantIdB);
-                                        r2s.add(r2);
-
-                                    }
-                                }
-                            }
                         }
                     }
-                }
+                    if (!r2s.isEmpty()) {
 
-                iteratorA.releaseMinBp(genotypesProviderA.getContig(), genotypesProviderA.getBp());
-
-                if (!variantIds.isEmpty()) {
-
-                    writer.addVariant(
-                            variantIdA,
-                            variantIds,
-                            r2s,
-                            deflater
-                    );
+                        writer.addVariant(
+                                variantIdA,
+                                r2s,
+                                compressor
+                        );
+                    }
                 }
             }
 
@@ -239,10 +297,37 @@ public class LdMatrixComputerRunnable implements Runnable, AutoCloseable {
         }
     }
 
-    @Override
-    public void close() throws Exception {
+    /**
+     * Returns a boolean indicating whether the variant has at least two alleles
+     * passing the allele frequency.
+     *
+     * @param variantData The data on the variant to process.
+     *
+     * @return A boolean indicating whether the variant has at least two alleles
+     * passing the allele frequency.
+     */
+    private boolean hasAlleles(
+            BgenVariantData variantData
+    ) {
 
-        deflater.end();
+        int nAlleles = 0;
+
+        for (int allele : variantData.getOrderedAlleles()) {
+
+            double frequency = variantData.getAlleleFrequency(allele);
+
+            if (frequency >= alleleFrequencyThreshold) {
+
+                nAlleles++;
+
+            } else {
+
+                break;
+
+            }
+        }
+
+        return nAlleles > 1;
 
     }
 }

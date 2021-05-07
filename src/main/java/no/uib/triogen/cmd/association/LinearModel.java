@@ -3,9 +3,9 @@ package no.uib.triogen.cmd.association;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
-import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.trio_genotypes.Model;
@@ -16,6 +16,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.io.genotypes.InheritanceUtils;
 
 /**
  * Runs multiple linear models for the association with phenotypes.
@@ -58,12 +59,6 @@ public class LinearModel {
 
             LinearModelOptionsBean bean = new LinearModelOptionsBean(commandLine);
 
-            if (bean.test) {
-
-                CustomVcfIterator.nLimit = 1000;
-
-            }
-
             run(
                     bean,
                     String.join(" ", args)
@@ -81,18 +76,10 @@ public class LinearModel {
      * @param bean the bean of command line parameters
      * @param command the command line as string
      */
-    private static void run(
+    public static void run(
             LinearModelOptionsBean bean,
             String command
     ) {
-
-        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
-        VariantList variantList = bean.variantFile == null ? null : VariantList.getVariantList(bean.variantFile);
-        Model[] models = Arrays.stream(bean.modelNames)
-                .map(
-                        modelName -> Model.valueOf(modelName)
-                )
-                .toArray(Model[]::new);
 
         String resultStem = bean.destinationFile.getAbsolutePath();
 
@@ -112,13 +99,51 @@ public class LinearModel {
         logger.writeComment("Arguments", command);
         logger.writeHeaders();
 
+        VariantList variantList = null;
+
+        if (bean.variantFile != null) {
+
+            variantList = VariantList.getVariantList(
+                    bean.variantFile,
+                    bean.chromosome
+            );
+
+            if (variantList.variantId.length == 0) {
+
+                logger.logMessage("No target variant on chromosome " + bean.chromosome + ".");
+
+            }
+
+            variantList.index(bean.maxDistance);
+
+        }
+
+        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
+
+        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
+
+        if (inheritanceMap == null) {
+
+            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
+
+        }
+
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
+
+        Model[] models = Arrays.stream(bean.modelNames)
+                .map(
+                        modelName -> Model.valueOf(modelName)
+                )
+                .toArray(Model[]::new);
+
         LinearModelComputer linearModelComputer = new LinearModelComputer(
                 bean.genotypesFile,
-                bean.genotypesFileType,
+                inheritanceMap,
+                defaultMotherPlooidy,
+                defaultFatherPlooidy,
                 variantList,
-                bean.maxDistance,
-                bean.maf,
-                bean.useDosages,
+                bean.alleleFrequencyThreshold,
                 childToParentMap,
                 bean.phenotypesFile,
                 bean.phenoNames,
@@ -133,8 +158,7 @@ public class LinearModel {
         try {
 
             linearModelComputer.run(
-                    bean.timeOut,
-                    bean.test
+                    bean.timeOut
             );
 
         } catch (Throwable e) {

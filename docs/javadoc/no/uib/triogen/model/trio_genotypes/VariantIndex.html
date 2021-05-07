@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -138,11 +138,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="block">Constructor for an empty index.</div>
 </td>
 </tr>
-<tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantIndex.html#VariantIndex-java.lang.String:A-">VariantIndex</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variants)</code>
-<div class="block">Constructor taking an array of variants as input.</div>
-</td>
-</tr>
 </table>
 </li>
 </ul>
@@ -160,20 +155,30 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantIndex.html#add-java.lang.String-">add</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantId)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantIndex.html#add-java.lang.String-java.lang.String-">add</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantId,
+   <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;rsId)</code>
 <div class="block">Adds a variant to the mapping and returns its index.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantIndex.html#getIndex-java.lang.String-">getIndex</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantId)</code>
-<div class="block">Returns the index for the given variant.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantIndex.html#getIndex-java.lang.String-java.lang.String-">getIndex</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantId,
+        <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;rsId)</code>
+<div class="block">Returns the index for the given variant, null if not found.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantIndex.html#getVariants--">getVariants</a></span>()</code>
-<div class="block">Returns the variants as array indexed according to the mapping.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantIndex.html#getRsIds--">getRsIds</a></span>()</code>
+<div class="block">Returns the rsids of the variants as array indexed according to the
+ mapping.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantIndex.html#getVariantIds--">getVariantIds</a></span>()</code>
+<div class="block">Returns the ids of the variants as array indexed according to the
+ mapping.</div>
 </td>
 </tr>
 </table>
@@ -201,25 +206,11 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <a name="VariantIndex--">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>VariantIndex</h4>
 <pre>public&nbsp;VariantIndex()</pre>
 <div class="block">Constructor for an empty index.</div>
-</li>
-</ul>
-<a name="VariantIndex-java.lang.String:A-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>VariantIndex</h4>
-<pre>public&nbsp;VariantIndex(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variants)</pre>
-<div class="block">Constructor taking an array of variants as input.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>variants</code> - The array of variants to index.</dd>
-</dl>
 </li>
 </ul>
 </li>
@@ -230,49 +221,71 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="add-java.lang.String-">
+<a name="add-java.lang.String-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>add</h4>
-<pre>public&nbsp;int&nbsp;add(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantId)</pre>
+<pre>public&nbsp;int&nbsp;add(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantId,
+               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;rsId)</pre>
 <div class="block">Adds a variant to the mapping and returns its index.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>variantId</code> - The id of the variant.</dd>
+<dd><code>rsId</code> - The rsid of the variant.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The index of the variant.</dd>
 </dl>
 </li>
 </ul>
-<a name="getIndex-java.lang.String-">
+<a name="getIndex-java.lang.String-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getIndex</h4>
-<pre>public&nbsp;int&nbsp;getIndex(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantId)</pre>
-<div class="block">Returns the index for the given variant.</div>
+<pre>public&nbsp;int&nbsp;getIndex(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantId,
+                    <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;rsId)</pre>
+<div class="block">Returns the index for the given variant, null if not found.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>variantId</code> - The id of the variant.</dd>
+<dd><code>rsId</code> - The rsid of the variant.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The corresponding index.</dd>
 </dl>
 </li>
 </ul>
-<a name="getVariants--">
+<a name="getVariantIds--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getVariantIds</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;getVariantIds()</pre>
+<div class="block">Returns the ids of the variants as array indexed according to the
+ mapping.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The ids of the variants as array indexed according to the
+ mapping.</dd>
+</dl>
+</li>
+</ul>
+<a name="getRsIds--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>getVariants</h4>
-<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;getVariants()</pre>
-<div class="block">Returns the variants as array indexed according to the mapping.</div>
+<h4>getRsIds</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;getRsIds()</pre>
+<div class="block">Returns the rsids of the variants as array indexed according to the
+ mapping.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The variants as array indexed according to the mapping.</dd>
+<dd>The rsids of the variants as array indexed according to the
+ mapping.</dd>
 </dl>
 </li>
 </ul>
@@ -345,6 +358,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2020. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2021. All rights reserved.</small></p>
 </body>
 </html>

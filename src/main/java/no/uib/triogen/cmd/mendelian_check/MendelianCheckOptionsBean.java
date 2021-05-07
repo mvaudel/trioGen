@@ -1,7 +1,7 @@
 package no.uib.triogen.cmd.mendelian_check;
 
 import java.io.File;
-import no.uib.triogen.io.genotypes.GenotypesFileType;
+import no.uib.triogen.cmd.ld_matrix.LdMatrixOptions;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -16,9 +16,9 @@ public class MendelianCheckOptionsBean {
      */
     public final File genotypesFile;
     /**
-     * The genotypes file type.
+     * The chromosome name.
      */
-    public GenotypesFileType genotypesFileType = GenotypesFileType.vcf;
+    public final String chromosome;
     /**
      * The file listing the variants to process.
      */
@@ -28,9 +28,9 @@ public class MendelianCheckOptionsBean {
      */
     public final File trioFile;
     /**
-     * The maf threshold.
+     * The allele frequency threshold.
      */
-    public double maf = 0.05;
+    public double alleleFrequencyThreshold = 0.005;
     /**
      * File where to write the output.
      */
@@ -43,10 +43,6 @@ public class MendelianCheckOptionsBean {
      * The number of days before timeout.
      */
     public int timeOut = 365;
-    /**
-     * Test mode.
-     */
-    public final boolean test;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -79,26 +75,8 @@ public class MendelianCheckOptionsBean {
 
         }
 
-        // The genotypes file type
-        if (aLine.hasOption(MendelianCheckOptions.genoFormat.opt)) {
-
-            String option = aLine.getOptionValue(MendelianCheckOptions.genoFormat.opt);
-            int genoFormat;
-
-            try {
-
-                genoFormat = Integer.valueOf(option);
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-                throw new IllegalArgumentException("Genotype file formant could not be parsed. Found: " + option + ". Expected input: " + GenotypesFileType.getCommandLineOptions() + ".");
-
-            }
-
-            genotypesFileType = GenotypesFileType.getGenotypesFileType(genoFormat);
-
-        }
+        // The chromosome name
+        chromosome = aLine.getOptionValue(LdMatrixOptions.chromosome.opt);
 
         // The variant ids
         if (aLine.hasOption(MendelianCheckOptions.variantId.opt)) {
@@ -125,19 +103,19 @@ public class MendelianCheckOptionsBean {
 
         }
 
-        // The maf threshold
-        if (aLine.hasOption(MendelianCheckOptions.maf.opt)) {
+        // The allele frequency threshold
+        if (aLine.hasOption(MendelianCheckOptions.af.opt)) {
             
-            String option = aLine.getOptionValue(MendelianCheckOptions.maf.opt);
+            String option = aLine.getOptionValue(MendelianCheckOptions.af.opt);
 
             try {
 
-                maf = Double.parseDouble(option);
+                alleleFrequencyThreshold = Double.parseDouble(option);
 
-                if (maf < 0.0 || maf > 1.0) {
+                if (alleleFrequencyThreshold < 0.0 || alleleFrequencyThreshold > 1.0) {
 
                     throw new IllegalArgumentException(
-                            "Input for maf (" + option + ") must be a number between 0 and 1."
+                            "Input for allele frequency threshold (" + option + ") must be a number between 0 and 1."
                     );
                 }
 
@@ -146,7 +124,7 @@ public class MendelianCheckOptionsBean {
                 e.printStackTrace();
 
                 throw new IllegalArgumentException(
-                        "Input for maf could not be parsed as a number: " + option + "."
+                        "Input for allele frequency threshold could not be parsed as a number: " + option + "."
                 );
 
             }
@@ -220,9 +198,6 @@ public class MendelianCheckOptionsBean {
 
             }
         }
-
-        // Test
-        test = aLine.hasOption(MendelianCheckOptions.test.opt);
 
     }
 }

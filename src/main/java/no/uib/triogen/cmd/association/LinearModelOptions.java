@@ -2,7 +2,6 @@ package no.uib.triogen.cmd.association;
 
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
-import no.uib.triogen.io.genotypes.GenotypesFileType;
 import no.uib.triogen.model.trio_genotypes.Model;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 
@@ -14,12 +13,11 @@ import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 public enum LinearModelOptions {
 
     geno("g", "geno", "The genotypes file.", true, true),
-    genoFormat("gf", "genoFormat", "The genotypes file format to use when iterating the entire file. " + GenotypesFileType.getCommandLineOptions() + ". Default: " + GenotypesFileType.vcf.index + ".", false, true),
+    chromosome("c", "chromosome", "The chromosome name.", true, true),
     variantId("vi", "variantId", "File listing the variants to include in the analysis. Default: process all variants in the genotypes file.", false, true),
     maxDistance("d", "dist", "The maximum distance in bp to consider around a variant. Default: 500000.", false, true),
-    maf("maf", "mafThreshold", "Minor allele frequency threshold. 0.05 excludes all variants with a maf < 5% among all parents belonging to trios where a phenotype is available for the regression. Default: 0.05.", false, true),
-    dosages("dos", "dosages", "If present, use dosages where possible, hard calls otherwise.", false, false),
-    phenoFile("p", "phenoFile", "The phenotypes file.", true, true),
+    af("af", "afThreshold", "Allele frequency threshold. 0.005 excludes all alleles of variants with frequency < 0.5% or > 99.5%. Default: 0.005.", false, true),
+    phenoFile("p", "phenoFile", "The phenotypes and covariates file.", true, true),
     childId("id", "childId", "The name of the column containing the child id. Default: child_SentrixID.", false, true),
     phenoName("pn", "phenoName", "List of the names of the phenotypes to include in the analysis. Example: pheno1,pheno2.", true, true),
     covariate_general("cg", "covariate_general", "List of the names of the covariates to use for all phenotypes. Example: pc1,pc2,pc3,pc4,pc5,pc6.", false, true),
@@ -30,7 +28,6 @@ public enum LinearModelOptions {
     out("o", "out", "The file where to write the results.", true, true),
     nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is 8.", false, true),
     timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true),
-    test("t", "test", "If present, runs only othe first 1000 variants.", false, false),
     variantLog("vl", "variantLog", "If present, writes a log for every variant next to the results file.", false, false);
 
     /**

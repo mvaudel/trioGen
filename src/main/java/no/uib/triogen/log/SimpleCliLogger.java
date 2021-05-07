@@ -4,7 +4,7 @@ import java.io.File;
 import java.time.Instant;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.IoUtils;
-import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.cell_rk.utils.SimpleFileWriter;
 
 /**
  * Simple logger.

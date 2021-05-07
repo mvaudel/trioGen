@@ -9,10 +9,6 @@ import java.io.InputStream;
  */
 public class TrioGen {
 
-    /**
-     * The line separator.
-     */
-    public static final String lineSeparator = System.getProperty("line.separator");
 
     /**
      * Retrieves the version number set in the pom file.
@@ -20,23 +16,23 @@ public class TrioGen {
      * @return the version number
      */
     public static String getVersion() {
-//
-//        java.util.Properties p = new java.util.Properties();
-//
-//        try {
-//
-//            InputStream is = (new TrioGen()).getClass().getClassLoader().getResourceAsStream("trioGen.properties");
-//            p.load(is);
-//
-//        } catch (IOException e) {
-//
-//            e.printStackTrace();
-//
-//        }
-//
-//        return p.getProperty("triogen.version");
 
-        return "0.5.0-beta";
+        java.util.Properties p = new java.util.Properties();
+
+        try {
+
+            InputStream is = (new TrioGen()).getClass().getClassLoader().getResourceAsStream("triogen.properties");
+            p.load(is);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        }
+
+        return p.getProperty("triogen.version");
+
+//        return "0.5.0-beta";
 
     }
 

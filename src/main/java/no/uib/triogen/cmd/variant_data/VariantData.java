@@ -3,6 +3,7 @@ package no.uib.triogen.cmd.variant_data;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.log.SimpleCliLogger;
@@ -13,10 +14,11 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.processing.variant_data.VariantDataExtractor;
 
 /**
- * Runs multiple linear models for the association with phenotypes.
+ * Extracts standardized genotypes and phenotypes for a set of variants.
  *
  * @author Marc Vaudel
  */
@@ -77,9 +79,6 @@ public class VariantData {
             String command
     ) {
 
-        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
-        VariantList variantList = VariantList.getVariantList(bean.variantFile);
-
         String resultStem = bean.destinationFile.getAbsolutePath();
 
         if (resultStem.endsWith(".gz")) {
@@ -98,9 +97,43 @@ public class VariantData {
         logger.writeComment("Arguments", command);
         logger.writeHeaders();
 
+        VariantList variantList = null;
+
+        if (bean.variantFile != null) {
+
+            variantList = VariantList.getVariantList(
+                    bean.variantFile,
+                    bean.chromosome
+            );
+
+            if (variantList.variantId.length == 0) {
+
+                logger.logMessage("No target variant on chromosome " + bean.chromosome + ".");
+
+            }
+
+            variantList.index(0);
+
+        }
+
+        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
+
+        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
+
+        if (inheritanceMap == null) {
+
+            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
+
+        }
+        
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
+
         VariantDataExtractor variantDataExtractor = new VariantDataExtractor(
                 bean.genotypesFile,
-                bean.genotypesFileType,
+                inheritanceMap,
+                defaultMotherPlooidy,
+                defaultFatherPlooidy,
                 variantList,
                 childToParentMap,
                 bean.phenotypesFile,
@@ -143,10 +176,10 @@ public class VariantData {
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print("              trioGen             " + LINE_SEPARATOR);
             lPrintWriter.print("               ****               " + LINE_SEPARATOR);
-            lPrintWriter.print("      Linear Model Regression     " + LINE_SEPARATOR);
+            lPrintWriter.print("            Variant Data          " + LINE_SEPARATOR);
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print(LINE_SEPARATOR
-                    + "The linear model regression command performs linear regression using various models." + LINE_SEPARATOR
+                    + "The variant data command extracts standardized values for a set of given variants as used for the regression." + LINE_SEPARATOR
                     + LINE_SEPARATOR
                     + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + LINE_SEPARATOR
                     + LINE_SEPARATOR

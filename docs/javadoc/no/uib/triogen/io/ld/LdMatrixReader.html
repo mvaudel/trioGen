@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -190,10 +190,28 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/io/ld/LdMatrixReader.html#close--">close</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;</code></td>
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/io/ld/LdMatrixReader.html#getId-int-">getId</a></span>(int&nbsp;variantIndex)</code>
+<div class="block">Returns the id corresponding to a given variant index.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html?is-external=true" title="class or interface in java.util">ArrayList</a>&lt;<a href="../../../../../no/uib/triogen/model/ld/R2.html" title="class in no.uib.triogen.model.ld">R2</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/io/ld/LdMatrixReader.html#getR2-java.lang.String-">getR2</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantA)</code>
 <div class="block">Returns a map containing the ids of the variants B in LD with variant A
  and the corresponding r2.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/io/ld/LdMatrixReader.html#getRsId-java.lang.String-">getRsId</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantId)</code>
+<div class="block">Returns the rsid for the given variant, null if none set.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html?is-external=true" title="class or interface in java.util">ArrayList</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/io/ld/LdMatrixReader.html#getVariantIds-java.lang.String-">getVariantIds</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;rsid)</code>
+<div class="block">Returns the variant ids for the given rsId, null if none set.</div>
 </td>
 </tr>
 </table>
@@ -284,14 +302,62 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <ul class="blockList">
 <li class="blockList">
 <h4>getR2</h4>
-<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;&nbsp;getR2(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantA)</pre>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html?is-external=true" title="class or interface in java.util">ArrayList</a>&lt;<a href="../../../../../no/uib/triogen/model/ld/R2.html" title="class in no.uib.triogen.model.ld">R2</a>&gt;&nbsp;getR2(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantA)</pre>
 <div class="block">Returns a map containing the ids of the variants B in LD with variant A
  and the corresponding r2.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>variantA</code> - The id of variant A.</dd>
+<dd><code>variantA</code> - The id of variant A. It can be the id or the rsid.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The id to r2 map.</dd>
+</dl>
+</li>
+</ul>
+<a name="getId-int-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getId</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getId(int&nbsp;variantIndex)</pre>
+<div class="block">Returns the id corresponding to a given variant index.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>variantIndex</code> - The index of the variant.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The id of the variant.</dd>
+</dl>
+</li>
+</ul>
+<a name="getRsId-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getRsId</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getRsId(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantId)</pre>
+<div class="block">Returns the rsid for the given variant, null if none set.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>variantId</code> - The id of the variant.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The rsid of the variant.</dd>
+</dl>
+</li>
+</ul>
+<a name="getVariantIds-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getVariantIds</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html?is-external=true" title="class or interface in java.util">ArrayList</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;getVariantIds(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;rsid)</pre>
+<div class="block">Returns the variant ids for the given rsId, null if none set.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>rsid</code> - The rsid of the variant.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The variant ids.</dd>
 </dl>
 </li>
 </ul>
@@ -380,6 +446,6 @@ implements <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoClose
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2020. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2021. All rights reserved.</small></p>
 </body>
 </html>

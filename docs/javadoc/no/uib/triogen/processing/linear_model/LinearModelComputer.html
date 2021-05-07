@@ -161,12 +161,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/linear_model/LinearModelComputer.html#LinearModelComputer-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-int-double-boolean-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-no.uib.triogen.model.trio_genotypes.Model:A-java.io.File-int-no.uib.triogen.log.SimpleCliLogger-">LinearModelComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
-                   <a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/linear_model/LinearModelComputer.html#LinearModelComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.trio_genotypes.VariantList-int-double-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-no.uib.triogen.model.trio_genotypes.Model:A-java.io.File-int-no.uib.triogen.log.SimpleCliLogger-">LinearModelComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+                   <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                   int&nbsp;defaultMotherPloidy,
+                   int&nbsp;defaultFatherPloidy,
                    <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
                    int&nbsp;maxDistance,
                    double&nbsp;mafThreshold,
-                   boolean&nbsp;useDosages,
                    <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                    <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;phenotypesFile,
                    <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;phenoNames,
@@ -196,8 +197,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/linear_model/LinearModelComputer.html#run-int-boolean-">run</a></span>(int&nbsp;timeOutDays,
-   boolean&nbsp;test)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/linear_model/LinearModelComputer.html#run-int-">run</a></span>(int&nbsp;timeOutDays)</code>
 <div class="block">Runs the linear association.</div>
 </td>
 </tr>
@@ -251,18 +251,19 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="LinearModelComputer-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-int-double-boolean-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-no.uib.triogen.model.trio_genotypes.Model:A-java.io.File-int-no.uib.triogen.log.SimpleCliLogger-">
+<a name="LinearModelComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.trio_genotypes.VariantList-int-double-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-no.uib.triogen.model.trio_genotypes.Model:A-java.io.File-int-no.uib.triogen.log.SimpleCliLogger-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>LinearModelComputer</h4>
 <pre>public&nbsp;LinearModelComputer(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
-                           <a href="../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
+                           <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                           int&nbsp;defaultMotherPloidy,
+                           int&nbsp;defaultFatherPloidy,
                            <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
                            int&nbsp;maxDistance,
                            double&nbsp;mafThreshold,
-                           boolean&nbsp;useDosages,
                            <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                            <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;phenotypesFile,
                            <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;phenoNames,
@@ -276,12 +277,12 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>genotypesFile</code> - The file containing the genotypes.</dd>
-<dd><code>genotypesFileType</code> - The type of genotypes file.</dd>
+<dd><code>inheritanceMap</code> - The inheritance map for the given file.</dd>
+<dd><code>defaultMotherPloidy</code> - The default ploidy for mothers.</dd>
+<dd><code>defaultFatherPloidy</code> - The default ploidy for fathers.</dd>
 <dd><code>variantList</code> - The variants to process.</dd>
 <dd><code>maxDistance</code> - The maximal number of bp to allow between variants.</dd>
 <dd><code>mafThreshold</code> - The maf threshold.</dd>
-<dd><code>useDosages</code> - If true, dosages will be used when possible, hard calls
- otherwise.</dd>
 <dd><code>childToParentMap</code> - The map of trios.</dd>
 <dd><code>phenotypesFile</code> - The file containing the phenotypes.</dd>
 <dd><code>phenoNames</code> - The names of the phenotypes to use.</dd>
@@ -304,14 +305,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="run-int-boolean-">
+<a name="run-int-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>run</h4>
-<pre>public&nbsp;void&nbsp;run(int&nbsp;timeOutDays,
-                boolean&nbsp;test)
+<pre>public&nbsp;void&nbsp;run(int&nbsp;timeOutDays)
          throws <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/InterruptedException.html?is-external=true" title="class or interface in java.lang">InterruptedException</a>,
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/TimeoutException.html?is-external=true" title="class or interface in java.util.concurrent">TimeoutException</a>,
                 <a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
@@ -319,7 +319,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>timeOutDays</code> - The time out time in days.</dd>
-<dd><code>test</code> - In test mode only a few variants will be processed.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/InterruptedException.html?is-external=true" title="class or interface in java.lang">InterruptedException</a></code> - Exception thrown if the process was.
  interrupted</dd>
@@ -397,6 +396,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2020. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2021. All rights reserved.</small></p>
 </body>
 </html>

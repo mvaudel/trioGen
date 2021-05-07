@@ -2,16 +2,16 @@ package no.uib.triogen.cmd.ld_matrix;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import no.uib.triogen.TrioGen;
-import no.uib.triogen.io.genotypes.vcf.custom.CustomVcfIterator;
 import no.uib.triogen.model.family.ChildToParentMap;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.log.SimpleCliLogger;
-import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.processing.ld.LdMatrixComputer;
 
 /**
@@ -55,12 +55,6 @@ public class LdMatrix {
 
             LdMatrixOptionsBean bean = new LdMatrixOptionsBean(commandLine);
 
-            if (bean.test) {
-
-                CustomVcfIterator.nLimit = 1000;
-
-            }
-
             run(
                     bean,
                     String.join(" ", args)
@@ -75,14 +69,26 @@ public class LdMatrix {
     /**
      * Runs the command.
      *
-     * @param bean the bean of command line parameters
+     * @param bean The bean of command line parameters.
+     * @param command The string version of the command.
      */
-    private static void run(
+    public static void run(
             LdMatrixOptionsBean bean,
             String command
     ) {
 
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
+
+        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
+
+        if (inheritanceMap == null) {
+
+            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
+
+        }
+        
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
 
         File logFile = new File(bean.destinationFilePath + ".log.gz");
         SimpleCliLogger logger = new SimpleCliLogger(logFile, null);
@@ -91,31 +97,25 @@ public class LdMatrix {
         logger.writeComment("Command", "LinearModel");
         logger.writeComment("Arguments", command);
         logger.writeHeaders();
-        
-        VariantList variantList = bean.variantFile == null ? null : VariantList.getVariantList(bean.variantFile);
 
         LdMatrixComputer computer = new LdMatrixComputer(
                 bean.genotypesFile,
-                bean.genotypesFileType,
-                variantList,
+                inheritanceMap,
+                defaultMotherPlooidy,
+                defaultFatherPlooidy,
                 childToParentMap,
                 bean.destinationFilePath,
                 bean.maxDistance,
                 bean.minR2,
-                bean.maf,
-                bean.hardCalls,
+                bean.alleleFrequencyThreshold,
                 bean.nVariants,
-                bean.downstreamLoadingFactor,
-                bean.upstreamLoadingFactor,
                 logger
         );
 
         try {
 
             computer.run(
-                    bean.timeOut,
-                    bean.testIteration,
-                    bean.test
+                    bean.timeOut
             );
 
         } catch (Throwable e) {

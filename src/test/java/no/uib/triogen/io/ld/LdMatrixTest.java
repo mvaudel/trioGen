@@ -1,13 +1,13 @@
 package no.uib.triogen.io.ld;
 
+import io.airlift.compress.zstd.ZstdCompressor;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.zip.Deflater;
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.model.trio_genotypes.VariantIndex;
 
 /**
@@ -17,13 +17,7 @@ import no.uib.triogen.model.trio_genotypes.VariantIndex;
  */
 public class LdMatrixTest extends TestCase {
 
-    public void testParsing() {
-        
-        Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION, true);
-
-        boolean success = false;
-
-        try {
+    public void testParsing() throws IOException {
 
             VariantIndex variantIndex = new VariantIndex();
 
@@ -31,34 +25,37 @@ public class LdMatrixTest extends TestCase {
             LdMatrixWriter writer = new LdMatrixWriter(variantIndex, matrixFile);
 
             // Create a dummy LD map and store it
-            TreeMap<String, HashMap<String, Double>> ldMap = new TreeMap<>();
+            TreeMap<String, ArrayList<R2>> ldMap = new TreeMap<>();
 
             for (int i = 0; i < 100; i++) {
 
-                HashMap<String, Double> variantMap = new HashMap<>(100);
-                ArrayList<Integer> variantBs = new ArrayList<>(100);
-                ArrayList<Double> r2s = new ArrayList<>(100);
+                ArrayList<R2> r2s = new ArrayList<>(100);
 
                 for (int j = 0; j < 100; j++) {
 
                     String variantB = "variantB_" + j;
-                    double r2 = ((double) i) / 200 + ((double) j) / 200;
-                    variantMap.put(variantB, r2);
+                    double r2Value = ((double) i) / 200 + ((double) j) / 200;
 
-                    variantIndex.add(variantB);
+                    variantIndex.add(variantB, "rs" + variantB);
 
-                    int variantBI = variantIndex.getIndex(variantB);
-                    variantBs.add(variantBI);
+                    int variantBI = variantIndex.getIndex(variantB, "rs" + variantB);
+
+                    R2 r2 = new R2(variantBI, (short) (100 - j), (short) j, (float) r2Value);
+
                     r2s.add(r2);
 
                 }
 
                 String variant = "variantA_" + i;
-                ldMap.put(variant, variantMap);
+                ldMap.put(variant, r2s);
 
-                int variantAI = variantIndex.getIndex(variant);
+                int variantAI = variantIndex.getIndex(variant, "rs" + variant);
 
-                writer.addVariant(variantAI, variantBs, r2s, deflater);
+                writer.addVariant(
+                        variantAI, 
+                        r2s,
+                        new ZstdCompressor()
+                );
 
             }
 
@@ -67,42 +64,30 @@ public class LdMatrixTest extends TestCase {
             // Check data retrieval
             LdMatrixReader ldMatrixReader = new LdMatrixReader(matrixFile);
 
-            HashMap<String, Double> dummyMapping = ldMatrixReader.getR2("DUMMY");
+            ArrayList<R2> dummyMapping = ldMatrixReader.getR2("DUMMY");
             Assert.assertTrue(dummyMapping == null);
 
             for (String variantA : ldMap.keySet()) {
 
-                HashMap<String, Double> groundTruth = ldMap.get(variantA);
+                ArrayList<R2> groundTruth = ldMap.get(variantA);
 
-                HashMap<String, Double> ldMapping = ldMatrixReader.getR2(variantA);
-                Assert.assertTrue(ldMapping != null);
+                ArrayList<R2> r2s = ldMatrixReader.getR2(variantA);
+                Assert.assertTrue(r2s != null);
+                Assert.assertTrue(r2s.size() == groundTruth.size());
 
-                for (Entry<String, Double> entry : groundTruth.entrySet()) {
+                for (int i = 0; i < r2s.size(); i++) {
 
-                    String variantB = entry.getKey();
-                    double r2GT = entry.getValue();
+                    R2 fileR2 = r2s.get(i);
+                    R2 groundTruthR2 = groundTruth.get(i);
 
-                    Assert.assertTrue(ldMapping.containsKey(variantB));
+                    Assert.assertTrue(fileR2.variantB == groundTruthR2.variantB);
+                    Assert.assertTrue(fileR2.alleleA == groundTruthR2.alleleA);
+                    Assert.assertTrue(fileR2.alleleB == groundTruthR2.alleleB);
 
-                    double r2File = ldMapping.get(variantB);
-
-                    Assert.assertTrue(r2GT == r2File);
-
-                    dummyMapping = ldMatrixReader.getR2(variantB);
-                    Assert.assertTrue(dummyMapping == null);
+                    Assert.assertTrue(Math.abs(fileR2.r2Value - groundTruthR2.r2Value) <= 1e-6);
 
                 }
             }
-
-            success = true;
-
-        } catch (Throwable t) {
-
-            t.printStackTrace();
-
-        }
-
-        Assert.assertTrue(success);
 
     }
 

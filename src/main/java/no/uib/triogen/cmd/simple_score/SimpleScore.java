@@ -3,21 +3,22 @@ package no.uib.triogen.cmd.simple_score;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
-import no.uib.triogen.processing.linear_model.LinearModelComputer;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.model.simple_score.VariantWeightList;
 import no.uib.triogen.processing.simple_score.SimpleScoreComputer;
 
 /**
- * Runs multiple linear models for the association with phenotypes.
+ * Computes a simple polygenic risk score based on the sum of a list of betas.
  *
  * @author Marc Vaudel
  */
@@ -82,6 +83,17 @@ public class SimpleScore {
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
         VariantWeightList variantWeightList = VariantWeightList.getVariantWeightList(bean.variantFile);
 
+        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
+
+        if (inheritanceMap == null) {
+
+            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
+
+        }
+        
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
+
         String resultStem = bean.destinationFile.getAbsolutePath();
 
         if (resultStem.endsWith(".gz")) {
@@ -102,7 +114,9 @@ public class SimpleScore {
 
         SimpleScoreComputer scoreComputer = new SimpleScoreComputer(
                 bean.genotypesFile, 
-                bean.genotypesFileType, 
+                inheritanceMap, 
+                defaultMotherPlooidy,
+                defaultFatherPlooidy,
                 childToParentMap, 
                 variantWeightList, 
                 bean.phenotypesFile, 

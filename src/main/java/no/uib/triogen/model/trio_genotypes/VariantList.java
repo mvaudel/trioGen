@@ -18,40 +18,41 @@ public class VariantList {
      */
     public final String[] variantId;
     /**
-     * The chromosome name where to look for.
+     * The name of the contig.
      */
     public final String[] chromosome;
     /**
-     * The position where to start looking for.
+     * The position where to look for.
      */
-    public final int[] start;
-    /**
-     * The position were to stop looking for.
-     */
-    public final int[] end;
+    public final int[] position;
     /**
      * Set of the ids of the variants in the list.
      */
     private final HashMap<String, Integer> variantIdsMap;
+    /**
+     * Map of the variants indexed by contig and position.
+     */
+    private HashMap<String, HashMap<Integer, ArrayList<Integer>>> positionToVariantMap;
+    /**
+     * The distance used to make the index.
+     */
+    private int indexDistance;
 
     /**
      * Constructor.
      *
-     * @param variantId the ids of the variant to include
-     * @param chromosome the chromosome name where to look for
-     * @param start the position where to start looking for
-     * @param end the position were to stop looking for
+     * @param variantId The ids of the variant to include.
+     * @param contig The name of the contig.
+     * @param position The position of the variant.
      */
     public VariantList(
             String[] variantId,
-            String[] chromosome,
-            int[] start,
-            int[] end
+            String[] contig,
+            int[] position
     ) {
         this.variantId = variantId;
-        this.chromosome = chromosome;
-        this.start = start;
-        this.end = end;
+        this.chromosome = contig;
+        this.position = position;
 
         variantIdsMap = new HashMap<>(variantId.length);
 
@@ -66,22 +67,39 @@ public class VariantList {
      * Parses a variant list from a file. First lines starting with '#' are
      * ignored.
      *
-     * @param variantFile the file
+     * @param variantFile The file containing the variant information.
      *
      * @return an instance of variant list
      */
     public static VariantList getVariantList(
             File variantFile
     ) {
+        
+        return getVariantList(variantFile, null);
+        
+    }
+
+    /**
+     * Parses a variant list from a file. First lines starting with '#' are
+     * ignored.
+     *
+     * @param variantFile The file containing the variant information.
+     * @param chromosome The chromosome, ignored if null.
+     *
+     * @return an instance of variant list
+     */
+    public static VariantList getVariantList(
+            File variantFile,
+            String chromosome
+    ) {
 
         ArrayList<String> variantIdList = new ArrayList<>();
-        ArrayList<String> chromosomeList = new ArrayList<>();
-        ArrayList<Integer> startList = new ArrayList<>();
-        ArrayList<Integer> endList = new ArrayList<>();
+        ArrayList<String> contigList = new ArrayList<>();
+        ArrayList<Integer> positionList = new ArrayList<>();
 
         int lineNumber = 0;
 
-        try ( SimpleFileReader reader = SimpleFileReader.getFileReader(variantFile)) {
+        try (SimpleFileReader reader = SimpleFileReader.getFileReader(variantFile)) {
 
             String line;
             while ((line = reader.readLine()) != null
@@ -101,62 +119,44 @@ public class VariantList {
 
                     String[] lineSplit = line.split(IoUtils.SEPARATOR);
 
-                    if (lineSplit.length < 4) {
+                    if (lineSplit.length < 3) {
 
                         throw new IllegalArgumentException(
-                                lineSplit.length + " elements found at line " + lineNumber + " where at least 4 expected. Please make sure that the file is tab-separated.\n" + line
+                                lineSplit.length + " elements found at line " + lineNumber + " where at least 3 expected. Please make sure that the file is tab-separated.\n" + line
                         );
                     }
 
                     String variantId = lineSplit[0];
-                    String chromosome = lineSplit[1];
-                    String startString = lineSplit[2];
-                    String endString = lineSplit[3];
+                    String contig = lineSplit[1];
 
-                    int start;
-                    try {
+                    if (chromosome == null || contig.equals(chromosome)) {
 
-                        start = Integer.parseInt(startString);
+                        String positionString = lineSplit[2];
 
-                    } catch (Exception e) {
+                        int position;
+                        try {
 
-                        throw new IllegalArgumentException("Start position (" + startString + ") could not be parsed as integer for variant " + variantId + " at line " + lineNumber + ".");
+                            position = Integer.parseInt(positionString);
 
-                    }
+                        } catch (Exception e) {
 
-                    int end;
-                    try {
+                            throw new IllegalArgumentException("Position (" + positionString + ") could not be parsed as integer for variant " + variantId + " at line " + lineNumber + ".");
 
-                        end = Integer.parseInt(endString);
+                        }
 
-                    } catch (Exception e) {
-
-                        throw new IllegalArgumentException("End position (" + endString + ") could not be parsed as integer for variant " + variantId + " at line " + lineNumber + ".");
+                        variantIdList.add(variantId);
+                        contigList.add(contig);
+                        positionList.add(position);
 
                     }
-
-                    variantIdList.add(variantId);
-                    chromosomeList.add(chromosome);
-                    startList.add(start);
-                    endList.add(end);
-
                 }
             }
         }
 
-        if (variantIdList.isEmpty()) {
-            
-            System.out.println("Warning: No variant found in " + variantFile + ". Please verify that the header is not commented by \"#\"");
-
-        }
-
         return new VariantList(
                 variantIdList.toArray(new String[variantIdList.size()]),
-                chromosomeList.toArray(new String[chromosomeList.size()]),
-                startList.stream()
-                        .mapToInt(a -> a)
-                        .toArray(),
-                endList.stream()
+                contigList.toArray(new String[contigList.size()]),
+                positionList.stream()
                         .mapToInt(a -> a)
                         .toArray()
         );
@@ -189,6 +189,115 @@ public class VariantList {
     ) {
 
         return variantIdsMap.get(variantId);
+
+    }
+
+    /**
+     * Indexes the given variant list using the given reference distance.
+     *
+     * @param indexDistance The reference distance.
+     */
+    public void index(
+            int indexDistance
+    ) {
+
+        if (indexDistance == 0) {
+
+            indexDistance = 1;
+
+        }
+
+        positionToVariantMap = new HashMap<>(4);
+        this.indexDistance = indexDistance;
+
+        for (int variantI = 0; variantI < variantId.length; variantI++) {
+
+            int positionI = this.position[variantI];
+            String contigI = this.chromosome[variantI];
+
+            HashMap<Integer, ArrayList<Integer>> contigIndex = positionToVariantMap.get(contigI);
+
+            if (contigIndex == null) {
+
+                contigIndex = new HashMap<>(2);
+                positionToVariantMap.put(contigI, contigIndex);
+
+            }
+
+            int refIndex = getPositionIndex(positionI, indexDistance);
+
+            ArrayList<Integer> variantsAtIndex = contigIndex.get(refIndex);
+
+            if (variantsAtIndex == null) {
+
+                variantsAtIndex = new ArrayList<>(1);
+                contigIndex.put(refIndex, variantsAtIndex);
+
+            }
+
+            variantsAtIndex.add(variantI);
+
+        }
+    }
+
+    /**
+     * Indicates whether a variant at the given position on the given contig
+     * should be included. The distance tolerance used is the one that was used
+     * to create the index.
+     *
+     * @param contig The name of the contig.
+     * @param position The position on the contig.
+     *
+     * @return A boolean indicating whether a variant at the given position on
+     * the given contig should be included.
+     */
+    public boolean include(
+            String contig, 
+            int position
+    ) {
+
+        HashMap<Integer, ArrayList<Integer>> contigIndex = positionToVariantMap.get(contig);
+
+        if (contigIndex != null) {
+
+            int index = getPositionIndex(position, indexDistance);
+
+            for (int testIndex = index - 1; testIndex <= index + 2; testIndex++) {
+
+                ArrayList<Integer> tempIndexes = contigIndex.get(testIndex);
+
+                if (tempIndexes != null) {
+
+                    for (int variantI : tempIndexes) {
+
+                        if (Math.abs(this.position[variantI] - position) <= indexDistance) {
+
+                            return true;
+
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+
+    }
+
+    /**
+     * Returns the index for the given position.
+     *
+     * @param position The position on the contig.
+     * @param indexDistance The reference distance to use in the index.
+     *
+     * @return The index for the given position.
+     */
+    public static int getPositionIndex(
+            int position,
+            int indexDistance
+    ) {
+
+        return position / indexDistance;
 
     }
 }

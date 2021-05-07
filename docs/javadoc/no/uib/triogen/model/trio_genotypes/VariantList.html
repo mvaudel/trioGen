@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":9};
+var methods = {"i0":10,"i1":10,"i2":9,"i3":9,"i4":9,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -137,22 +137,16 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#chromosome">chromosome</a></span></code>
-<div class="block">The chromosome name where to look for.</div>
+<div class="block">The name of the contig.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>int[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#end">end</a></span></code>
-<div class="block">The position were to stop looking for.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#position">position</a></span></code>
+<div class="block">The position where to look for.</div>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>int[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#start">start</a></span></code>
-<div class="block">The position where to start looking for.</div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#variantId">variantId</a></span></code>
 <div class="block">The ids of the variant to include.</div>
@@ -173,10 +167,9 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#VariantList-java.lang.String:A-java.lang.String:A-int:A-int:A-">VariantList</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variantId,
-           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;chromosome,
-           int[]&nbsp;start,
-           int[]&nbsp;end)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#VariantList-java.lang.String:A-java.lang.String:A-int:A-">VariantList</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variantId,
+           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;contig,
+           int[]&nbsp;position)</code>
 <div class="block">Constructor.</div>
 </td>
 </tr>
@@ -208,9 +201,37 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#getPositionIndex-int-int-">getPositionIndex</a></span>(int&nbsp;position,
+                int&nbsp;indexDistance)</code>
+<div class="block">Returns the index for the given position.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#getVariantList-java.io.File-">getVariantList</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;variantFile)</code>
 <div class="block">Parses a variant list from a file.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#getVariantList-java.io.File-java.lang.String-">getVariantList</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;variantFile,
+              <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;chromosome)</code>
+<div class="block">Parses a variant list from a file.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#include-java.lang.String-int-">include</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;contig,
+       int&nbsp;position)</code>
+<div class="block">Indicates whether a variant at the given position on the given contig
+ should be included.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html#index-int-">index</a></span>(int&nbsp;indexDistance)</code>
+<div class="block">Indexes the given variant list using the given reference distance.</div>
 </td>
 </tr>
 </table>
@@ -252,27 +273,17 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>chromosome</h4>
 <pre>public final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[] chromosome</pre>
-<div class="block">The chromosome name where to look for.</div>
+<div class="block">The name of the contig.</div>
 </li>
 </ul>
-<a name="start">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>start</h4>
-<pre>public final&nbsp;int[] start</pre>
-<div class="block">The position where to start looking for.</div>
-</li>
-</ul>
-<a name="end">
+<a name="position">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>end</h4>
-<pre>public final&nbsp;int[] end</pre>
-<div class="block">The position were to stop looking for.</div>
+<h4>position</h4>
+<pre>public final&nbsp;int[] position</pre>
+<div class="block">The position where to look for.</div>
 </li>
 </ul>
 </li>
@@ -283,23 +294,21 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="VariantList-java.lang.String:A-java.lang.String:A-int:A-int:A-">
+<a name="VariantList-java.lang.String:A-java.lang.String:A-int:A-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>VariantList</h4>
 <pre>public&nbsp;VariantList(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variantId,
-                   <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;chromosome,
-                   int[]&nbsp;start,
-                   int[]&nbsp;end)</pre>
+                   <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;contig,
+                   int[]&nbsp;position)</pre>
 <div class="block">Constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>variantId</code> - the ids of the variant to include</dd>
-<dd><code>chromosome</code> - the chromosome name where to look for</dd>
-<dd><code>start</code> - the position where to start looking for</dd>
-<dd><code>end</code> - the position were to stop looking for</dd>
+<dd><code>variantId</code> - The ids of the variant to include.</dd>
+<dd><code>contig</code> - The name of the contig.</dd>
+<dd><code>position</code> - The position of the variant.</dd>
 </dl>
 </li>
 </ul>
@@ -322,7 +331,26 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
  ignored.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>variantFile</code> - the file</dd>
+<dd><code>variantFile</code> - The file containing the variant information.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>an instance of variant list</dd>
+</dl>
+</li>
+</ul>
+<a name="getVariantList-java.io.File-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getVariantList</h4>
+<pre>public static&nbsp;<a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;getVariantList(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;variantFile,
+                                         <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;chromosome)</pre>
+<div class="block">Parses a variant list from a file. First lines starting with '#' are
+ ignored.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>variantFile</code> - The file containing the variant information.</dd>
+<dd><code>chromosome</code> - The chromosome, ignored if null.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>an instance of variant list</dd>
 </dl>
@@ -347,7 +375,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <a name="getIndex-java.lang.String-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getIndex</h4>
 <pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>&nbsp;getIndex(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantId)</pre>
@@ -357,6 +385,59 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dd><code>variantId</code> - The id of the variant of interest.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The index of the given variant id, null if not found.</dd>
+</dl>
+</li>
+</ul>
+<a name="index-int-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>index</h4>
+<pre>public&nbsp;void&nbsp;index(int&nbsp;indexDistance)</pre>
+<div class="block">Indexes the given variant list using the given reference distance.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>indexDistance</code> - The reference distance.</dd>
+</dl>
+</li>
+</ul>
+<a name="include-java.lang.String-int-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>include</h4>
+<pre>public&nbsp;boolean&nbsp;include(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;contig,
+                       int&nbsp;position)</pre>
+<div class="block">Indicates whether a variant at the given position on the given contig
+ should be included. The distance tolerance used is the one that was used
+ to create the index.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>contig</code> - The name of the contig.</dd>
+<dd><code>position</code> - The position on the contig.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A boolean indicating whether a variant at the given position on
+ the given contig should be included.</dd>
+</dl>
+</li>
+</ul>
+<a name="getPositionIndex-int-int-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getPositionIndex</h4>
+<pre>public static&nbsp;int&nbsp;getPositionIndex(int&nbsp;position,
+                                   int&nbsp;indexDistance)</pre>
+<div class="block">Returns the index for the given position.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>position</code> - The position on the contig.</dd>
+<dd><code>indexDistance</code> - The reference distance to use in the index.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The index for the given position.</dd>
 </dl>
 </li>
 </ul>
@@ -429,6 +510,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2020. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2021. All rights reserved.</small></p>
 </body>
 </html>

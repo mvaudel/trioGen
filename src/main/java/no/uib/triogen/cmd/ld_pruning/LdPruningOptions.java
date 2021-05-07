@@ -13,13 +13,13 @@ import no.uib.triogen.utils.Utils;
 public enum LdPruningOptions {
 
     results("res", "results", "The results file to prune.", true, true),
-    ldMatrix("l", "ldMatrix", "The ld matrix file as generated using the LdMatrix command. If ld matrix files are computed per contig, replace the contig name with '" + Utils.CONTIG_WILDCARD + "'.", true, true),
+    ldMatrix("l", "ldMatrix", "The ld matrix file as generated using the LdMatrix command. If LD matrix files are computed per contig, replace the contig name with '" + Utils.CONTIG_WILDCARD + "'.", true, true),
     minR2("r", "minR2", "The minimal ld r2 to consider two markers in LD. Default: 0.05. Min value: value used when generating the tld file.", false, true),
     maxP("p", "maxP", "The maximal p-value to consider. Default: 1e-6.", false, true),
     idColName("id", "idColName", "The name of the variant id column. Default: 'variantId'.", false, true),
     pColName("pn", "pColName", "The name of the p-value column. Default: 'h.intercept.p'.", false, true),
     contigColName("cn", "contigColName", "The name of the contig column. Default: 'contig'.", false, true),
-    phenoColName("phn", "phenoColName", "The name of the contig column. Ignored if not provided.", false, true),
+    phenoColName("phn", "phenoColName", "The name of the phenotype column. Ignored if not provided.", false, true),
     separator("s", "separator", "Separator for the columns. Default: '\t'.", false, true),
     out("o", "out", "The file where to write the results.", true, true);
 

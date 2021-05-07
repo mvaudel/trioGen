@@ -17,11 +17,12 @@ import java.util.stream.Stream;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.getIndexFile;
-import no.uib.triogen.io.flat.SimpleFileWriter;
+import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
-import no.uib.triogen.io.genotypes.GenotypesFileType;
-import no.uib.triogen.io.genotypes.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator;
+import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
+import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.covariates.CovariatesHandler;
 import no.uib.triogen.model.family.ChildToParentMap;
@@ -42,27 +43,25 @@ public class LinearModelComputer {
      */
     private final File genotypesFile;
     /**
-     * The type of genotype file.
+     * The allele inheritance map.
      */
-    private final GenotypesFileType genotypesFileType;
+    private final HashMap<Integer, char[]> inheritanceMap;
+    /**
+     * The default ploidy for mothers.
+     */
+    private final int defaultMotherPloidy;
+    /**
+     * The default ploidy for fathers.
+     */
+    private final int defaultFatherPloidy;
     /**
      * The variants to process.
      */
     private final VariantList variantList;
     /**
-     * Variants with a distance to a target variant lower than maxDistance will
-     * be included in the computation.
+     * The allele frequency threshold.
      */
-    private final int maxDistance;
-    /**
-     * The maf threshold. maf is computed in parents and values lower than
-     * threshold are not included.
-     */
-    private final double mafThreshold;
-    /**
-     * If true, dosages will be used where possible, hard calls otherwise.
-     */
-    private final boolean useDosages;
+    private final double alleleFrequencyThreshold;
     /**
      * The file containing the phenotypes.
      */
@@ -104,12 +103,11 @@ public class LinearModelComputer {
      * Constructor.
      *
      * @param genotypesFile The file containing the genotypes.
-     * @param genotypesFileType The type of genotypes file.
+     * @param inheritanceMap The inheritance map for the given file.
+     * @param defaultMotherPloidy The default ploidy for mothers.
+     * @param defaultFatherPloidy The default ploidy for fathers.
      * @param variantList The variants to process.
-     * @param maxDistance The maximal number of bp to allow between variants.
      * @param mafThreshold The maf threshold.
-     * @param useDosages If true, dosages will be used when possible, hard calls
-     * otherwise.
      * @param childToParentMap The map of trios.
      * @param phenotypesFile The file containing the phenotypes.
      * @param phenoNames The names of the phenotypes to use.
@@ -124,11 +122,11 @@ public class LinearModelComputer {
      */
     public LinearModelComputer(
             File genotypesFile,
-            GenotypesFileType genotypesFileType,
+            HashMap<Integer, char[]> inheritanceMap,
+            int defaultMotherPloidy,
+            int defaultFatherPloidy,
             VariantList variantList,
-            int maxDistance,
             double mafThreshold,
-            boolean useDosages,
             ChildToParentMap childToParentMap,
             File phenotypesFile,
             String[] phenoNames,
@@ -141,11 +139,11 @@ public class LinearModelComputer {
     ) {
 
         this.genotypesFile = genotypesFile;
-        this.genotypesFileType = genotypesFileType;
+        this.inheritanceMap = inheritanceMap;
+        this.defaultMotherPloidy = defaultMotherPloidy;
+        this.defaultFatherPloidy = defaultFatherPloidy;
         this.variantList = variantList;
-        this.maxDistance = maxDistance;
-        this.mafThreshold = mafThreshold;
-        this.useDosages = useDosages;
+        this.alleleFrequencyThreshold = mafThreshold;
         this.childToParentMap = childToParentMap;
         this.phenotypesFile = phenotypesFile;
         this.phenoNames = phenoNames;
@@ -162,7 +160,6 @@ public class LinearModelComputer {
      * Runs the linear association.
      *
      * @param timeOutDays The time out time in days.
-     * @param test In test mode only a few variants will be processed.
      *
      * @throws InterruptedException Exception thrown if the process was.
      * interrupted
@@ -170,19 +167,30 @@ public class LinearModelComputer {
      * @throws IOException Exception thrown if an i/o error occurred.
      */
     public void run(
-            int timeOutDays,
-            boolean test
+            int timeOutDays
     ) throws InterruptedException, TimeoutException, IOException {
 
-        if (test) {
-
-            logger.logMessage("*** TEST MODE ***");
-
-        }
-
-        logger.logMessage("Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath());
+        logger.logMessage("Parsing " + genotypesFile.getAbsolutePath());
 
         long start = Instant.now().getEpochSecond();
+
+        BgenIndex bgenIndex = BgenIndex.getBgenIndex(genotypesFile);
+        BgenFileReader bgenFileReader  = new BgenFileReader(
+                genotypesFile, 
+                bgenIndex, 
+                inheritanceMap, 
+                defaultMotherPloidy, 
+                defaultFatherPloidy
+        );
+
+        long end = Instant.now().getEpochSecond();
+        long duration = end - start;
+
+        logger.logMessage("Parsing " + genotypesFile + " done (" + duration + " seconds)");
+
+        logger.logMessage("Importing " + phenoNames.length + " phenotyes from " + phenotypesFile.getAbsolutePath() + " for association with " + genotypesFile.getName());
+
+        start = Instant.now().getEpochSecond();
 
         HashSet<String> allPhenoColumns = Stream.concat(
                 Arrays.stream(phenoNames),
@@ -206,12 +214,12 @@ public class LinearModelComputer {
                 allPhenoColumns
         );
 
-        long end = Instant.now().getEpochSecond();
-        long duration = end - start;
+        end = Instant.now().getEpochSecond();
+        duration = end - start;
 
         logger.logMessage("Done (" + phenoNames.length + " phenotypes for " + phenotypesHandler.nChildren + " children imported in " + duration + " seconds)");
 
-        logger.logMessage("Adjusting for covariates");
+        logger.logMessage("Adjusting for covariates for association with " + genotypesFile.getName());
 
         start = Instant.now().getEpochSecond();
 
@@ -245,12 +253,11 @@ public class LinearModelComputer {
 
         start = Instant.now().getEpochSecond();
 
-        VariantIterator iterator = GenotypesFileType.getVariantIterator(
-                genotypesFile,
-                genotypesFileType,
-                variantList,
-                maxDistance,
-                logger
+        VariantIterator iterator = new VariantIterator(
+                bgenIndex,
+                logger, 
+                "Linear association in " + genotypesFile.getAbsolutePath(),
+                variantList == null
         );
         IndexedGzWriter outputWriter = new IndexedGzWriter(
                 destinationFile
@@ -262,6 +269,7 @@ public class LinearModelComputer {
                 "contig",
                 "position",
                 "variantId",
+                "rsId",
                 "phenotype",
                 "compressedLength",
                 "uncompressedLength"
@@ -284,9 +292,9 @@ public class LinearModelComputer {
                         "contig",
                         "position",
                         "variantId",
-                        "refAllele",
-                        "altAllele",
-                        "typed",
+                        "rsId",
+                        "testedAllele",
+                        "otherAllele",
                         "n",
                         "nAlt",
                         "nH",
@@ -321,9 +329,10 @@ public class LinearModelComputer {
                     .mapToObj(
                             i -> new LinearModelRunnable(
                                     iterator,
+                                    bgenIndex,
+                                    bgenFileReader,
                                     variantList,
-                                    mafThreshold,
-                                    useDosages,
+                                    alleleFrequencyThreshold,
                                     childToParentMap,
                                     models,
                                     phenotypesHandler,
@@ -350,14 +359,13 @@ public class LinearModelComputer {
 
             outputWriter.close();
             index.close();
-            iterator.close();
 
         }
 
         end = Instant.now().getEpochSecond();
         duration = end - start;
 
-        logger.logMessage("Done (Linear model for " + genotypesFile.getName() + ", " + iterator.getnVariants() + " variants and " + phenoNames.length + " phenoptyes processed in " + duration + " seconds)");
+        logger.logMessage("Done (Linear model for " + genotypesFile.getName() + ", " + bgenIndex.variantInformationArray.length + " variants and " + phenoNames.length + " phenoptyes processed in " + duration + " seconds)");
 
     }
 }

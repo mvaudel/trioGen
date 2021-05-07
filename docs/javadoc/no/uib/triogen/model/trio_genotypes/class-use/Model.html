@@ -129,26 +129,25 @@ the order they are declared.</div>
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><code>static void</code></td>
-<td class="colLast"><span class="typeNameLabel">Model.</span><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html#fillX-double:A:A-no.uib.triogen.model.trio_genotypes.Model-int-java.lang.String-java.lang.String-java.lang.String-no.uib.triogen.io.genotypes.GenotypesProvider-boolean-">fillX</a></span>(double[][]&nbsp;x,
-     <a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
-     int&nbsp;index,
-     <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;childId,
-     <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;motherId,
-     <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fatherId,
-     <a href="../../../../../../no/uib/triogen/io/genotypes/GenotypesProvider.html" title="interface in no.uib.triogen.io.genotypes">GenotypesProvider</a>&nbsp;genotypesProvider,
-     boolean&nbsp;useDosages)</code>
-<div class="block">Fills the given x matrix based on the model.</div>
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><span class="typeNameLabel">Model.</span><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html#getXValueAt-no.uib.triogen.model.trio_genotypes.Model-int-int-double:A:A-double:A:A-double:A:A-double:A:A-">getXValueAt</a></span>(<a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
+           int&nbsp;i,
+           int&nbsp;j,
+           double[][]&nbsp;haplotypeX,
+           double[][]&nbsp;childX,
+           double[][]&nbsp;motherX,
+           double[][]&nbsp;fatherX)</code>
+<div class="block">Returns the x matrix to use in the model.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
-<td class="colLast"><span class="typeNameLabel">Model.</span><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html#likelyNotSingular-no.uib.triogen.model.trio_genotypes.Model-boolean-boolean-boolean-boolean-">likelyNotSingular</a></span>(<a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
-                 boolean&nbsp;hNotSingluar,
-                 boolean&nbsp;childNotSingular,
-                 boolean&nbsp;motherNotSingular,
-                 boolean&nbsp;fatherNotSingular)</code>
-<div class="block">Returns a boolean indicating whether the matrix is likely not singular.</div>
+<td class="colLast"><span class="typeNameLabel">Model.</span><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html#hasData-no.uib.triogen.model.trio_genotypes.Model-java.lang.String-java.lang.String-java.lang.String-no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData-">hasData</a></span>(<a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
+       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;childId,
+       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;motherId,
+       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fatherId,
+       <a href="../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a>&nbsp;bgenVariantData)</code>
+<div class="block">Indicates whether there is enough data to compute the given model.</div>
 </td>
 </tr>
 </tbody>
@@ -186,12 +185,13 @@ the order they are declared.</div>
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/linear_model/LinearModelComputer.html#LinearModelComputer-java.io.File-no.uib.triogen.io.genotypes.GenotypesFileType-no.uib.triogen.model.trio_genotypes.VariantList-int-double-boolean-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-no.uib.triogen.model.trio_genotypes.Model:A-java.io.File-int-no.uib.triogen.log.SimpleCliLogger-">LinearModelComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
-                   <a href="../../../../../../no/uib/triogen/io/genotypes/GenotypesFileType.html" title="enum in no.uib.triogen.io.genotypes">GenotypesFileType</a>&nbsp;genotypesFileType,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/linear_model/LinearModelComputer.html#LinearModelComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.trio_genotypes.VariantList-int-double-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-no.uib.triogen.model.trio_genotypes.Model:A-java.io.File-int-no.uib.triogen.log.SimpleCliLogger-">LinearModelComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+                   <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+                   int&nbsp;defaultMotherPloidy,
+                   int&nbsp;defaultFatherPloidy,
                    <a href="../../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
                    int&nbsp;maxDistance,
                    double&nbsp;mafThreshold,
-                   boolean&nbsp;useDosages,
                    <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                    <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;phenotypesFile,
                    <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;phenoNames,
@@ -205,16 +205,17 @@ the order they are declared.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/linear_model/LinearModelRunnable.html#LinearModelRunnable-no.uib.triogen.io.genotypes.VariantIterator-no.uib.triogen.model.trio_genotypes.VariantList-double-boolean-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.model.trio_genotypes.Model:A-no.uib.triogen.model.phenotypes.PhenotypesHandler-no.uib.triogen.model.covariates.CovariatesHandler-no.uib.triogen.io.flat.indexed.IndexedGzWriter-no.uib.triogen.io.flat.SimpleFileWriter-no.uib.triogen.utils.SimpleSemaphore-no.uib.triogen.log.SimpleCliLogger-">LinearModelRunnable</a></span>(<a href="../../../../../../no/uib/triogen/io/genotypes/VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a>&nbsp;iterator,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/linear_model/LinearModelRunnable.html#LinearModelRunnable-no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader-no.uib.triogen.model.trio_genotypes.VariantList-double-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.model.trio_genotypes.Model:A-no.uib.triogen.model.phenotypes.PhenotypesHandler-no.uib.triogen.model.covariates.CovariatesHandler-no.uib.triogen.io.flat.indexed.IndexedGzWriter-no.uib.cell_rk.utils.SimpleFileWriter-no.uib.triogen.utils.SimpleSemaphore-no.uib.triogen.log.SimpleCliLogger-">LinearModelRunnable</a></span>(<a href="../../../../../../no/uib/triogen/io/genotypes/bgen/iterator/VariantIterator.html" title="class in no.uib.triogen.io.genotypes.bgen.iterator">VariantIterator</a>&nbsp;iterator,
+                   <a href="../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
+                   <a href="../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenFileReader</a>&nbsp;bgenFileReader,
                    <a href="../../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
-                   double&nbsp;mafThreshold,
-                   boolean&nbsp;useDosages,
+                   double&nbsp;frequencyThreshold,
                    <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                    <a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>[]&nbsp;models,
                    <a href="../../../../../../no/uib/triogen/model/phenotypes/PhenotypesHandler.html" title="class in no.uib.triogen.model.phenotypes">PhenotypesHandler</a>&nbsp;phenotypesHandler,
                    <a href="../../../../../../no/uib/triogen/model/covariates/CovariatesHandler.html" title="class in no.uib.triogen.model.covariates">CovariatesHandler</a>&nbsp;covariatesHandler,
                    <a href="../../../../../../no/uib/triogen/io/flat/indexed/IndexedGzWriter.html" title="class in no.uib.triogen.io.flat.indexed">IndexedGzWriter</a>&nbsp;outputWriter,
-                   <a href="../../../../../../no/uib/triogen/io/flat/SimpleFileWriter.html" title="class in no.uib.triogen.io.flat">SimpleFileWriter</a>&nbsp;resultsIndex,
+                   no.uib.cell_rk.utils.SimpleFileWriter&nbsp;resultsIndex,
                    <a href="../../../../../../no/uib/triogen/utils/SimpleSemaphore.html" title="class in no.uib.triogen.utils">SimpleSemaphore</a>&nbsp;gzIndexSemaphore,
                    <a href="../../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
 <div class="block">Constructor.</div>
@@ -280,6 +281,6 @@ the order they are declared.</div>
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2020. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2021. All rights reserved.</small></p>
 </body>
 </html>

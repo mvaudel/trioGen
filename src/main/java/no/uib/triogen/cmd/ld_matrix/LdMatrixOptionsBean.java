@@ -1,7 +1,6 @@
 package no.uib.triogen.cmd.ld_matrix;
 
 import java.io.File;
-import no.uib.triogen.io.genotypes.GenotypesFileType;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -16,13 +15,9 @@ public class LdMatrixOptionsBean {
      */
     public final File genotypesFile;
     /**
-     * The genotypes file type.
+     * The chromosome name.
      */
-    public GenotypesFileType genotypesFileType = GenotypesFileType.vcf;
-    /**
-     * The file listing the variants to process.
-     */
-    public File variantFile = null;
+    public final String chromosome;
     /**
      * The max distance between the snp and the target snp.
      */
@@ -36,13 +31,9 @@ public class LdMatrixOptionsBean {
      */
     public double minR2 = 1e-6;
     /**
-     * The maf threshold.
+     * The allele frequency threshold.
      */
-    public double maf = 0.05;
-    /**
-     * Boolean indicating whether hard calls should be used.
-     */
-    public boolean hardCalls = false;
+    public double alleleFrequencyThreshold = 0.001;
     /**
      * File where to write the output.
      */
@@ -52,25 +43,9 @@ public class LdMatrixOptionsBean {
      */
     public int nVariants = Runtime.getRuntime().availableProcessors();
     /**
-     * The downstream loading factor.
-     */
-    public double downstreamLoadingFactor = 1.05;
-    /**
-     * The upstream loading factor.
-     */
-    public double upstreamLoadingFactor = 1.1;
-    /**
      * The number of days before timeout.
      */
     public int timeOut = 365;
-    /**
-     * Test mode.
-     */
-    public final boolean test;
-    /**
-     * Iteration test mode.
-     */
-    public final boolean testIteration;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -103,40 +78,8 @@ public class LdMatrixOptionsBean {
 
         }
 
-        // The genotypes file type
-        if (aLine.hasOption(LdMatrixOptions.genoFormat.opt)) {
-
-            String option = aLine.getOptionValue(LdMatrixOptions.genoFormat.opt);
-            int genoFormat;
-
-            try {
-
-                genoFormat = Integer.valueOf(option);
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-                throw new IllegalArgumentException("Genotype file formant could not be parsed. Found: " + option + ". Expected input: " + GenotypesFileType.getCommandLineOptions() + ".");
-
-            }
-
-            genotypesFileType = GenotypesFileType.getGenotypesFileType(genoFormat);
-
-        }
-
-        // The variant ids
-        if (aLine.hasOption(LdMatrixOptions.variantId.opt)) {
-
-            filePath = aLine.getOptionValue(LdMatrixOptions.variantId.opt);
-
-            variantFile = new File(filePath);
-
-            if (!variantFile.exists()) {
-
-                throw new IllegalArgumentException("Variant file (" + variantFile + ") not found.");
-
-            }
-        }
+        // The chromosome name
+        chromosome = aLine.getOptionValue(LdMatrixOptions.chromosome.opt);
 
         // The trio file
         filePath = aLine.getOptionValue(LdMatrixOptions.trio.opt);
@@ -163,33 +106,6 @@ public class LdMatrixOptionsBean {
             }
         }
 
-        // The maf threshold
-        if (aLine.hasOption(LdMatrixOptions.maf.opt)) {
-            
-            String option = aLine.getOptionValue(LdMatrixOptions.maf.opt);
-
-            try {
-
-                maf = Double.parseDouble(option);
-
-                if (maf < 0.0 || maf > 1.0) {
-
-                    throw new IllegalArgumentException(
-                            "Input for maf (" + option + ") must be a number between 0 and 1."
-                    );
-                }
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-
-                throw new IllegalArgumentException(
-                        "Input for maf could not be parsed as a number: " + option + "."
-                );
-
-            }
-        }
-
         // The minimal R2
         if (aLine.hasOption(LdMatrixOptions.minR2.opt)) {
             
@@ -202,7 +118,7 @@ public class LdMatrixOptionsBean {
                 if (minR2 <= 0.0 || minR2 >= 1.0) {
 
                     throw new IllegalArgumentException(
-                            "Input for maf (" + option + ") must be a number between 0 and 1 (both excluded)."
+                            "Input for minimal R2 (" + option + ") must be a number between 0 and 1 (both excluded)."
                     );
                 }
 
@@ -217,10 +133,31 @@ public class LdMatrixOptionsBean {
             }
         }
 
-        // Hard calls
-        if (aLine.hasOption(LdMatrixOptions.hardCalls.opt)) {
+        // The allele frequency threshold
+        if (aLine.hasOption(LdMatrixOptions.af.opt)) {
 
-            hardCalls = true;
+            String option = aLine.getOptionValue(LdMatrixOptions.af.opt);
+
+            try {
+
+                alleleFrequencyThreshold = Double.parseDouble(option);
+
+                if (alleleFrequencyThreshold < 0.0 || alleleFrequencyThreshold > 1.0) {
+
+                    throw new IllegalArgumentException(
+                            "Input for allele frequency (" + option + ") must be a number between 0 and 1."
+                    );
+                }
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                throw new IllegalArgumentException(
+                        "Input for timeout could not be parsed as a number: " + option + "."
+                );
+
+            }
         }
 
         // The output file
@@ -270,60 +207,6 @@ public class LdMatrixOptionsBean {
             }
         }
 
-        // The downstream loading factor
-        if (aLine.hasOption(LdMatrixOptions.downstreamLoadingFactor.opt)) {
-
-            String argString = aLine.getOptionValue(LdMatrixOptions.downstreamLoadingFactor.opt);
-
-            try {
-
-                downstreamLoadingFactor = Double.parseDouble(argString);
-
-                if (downstreamLoadingFactor < 1) {
-
-                    throw new IllegalArgumentException(
-                            "Input for downstream loading factor must be higher or equal to one."
-                    );
-
-                }
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-
-                throw new IllegalArgumentException(
-                        "Input for downstream loading factor could not be parsed as a number: " + argString + "."
-                );
-            }
-        }
-
-        // The upstream loading factor
-        if (aLine.hasOption(LdMatrixOptions.upstreamLoadingFactor.opt)) {
-
-            String argString = aLine.getOptionValue(LdMatrixOptions.upstreamLoadingFactor.opt);
-
-            try {
-
-                upstreamLoadingFactor = Double.parseDouble(argString);
-
-                if (upstreamLoadingFactor < 1) {
-
-                    throw new IllegalArgumentException(
-                            "Input for upstream loading factor must be higher or equal to one."
-                    );
-
-                }
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-
-                throw new IllegalArgumentException(
-                        "Input for upstream loading factor could not be parsed as a number: " + argString + "."
-                );
-            }
-        }
-
         // Timeout
         if (aLine.hasOption(LdMatrixOptions.timeOut.opt)) {
 
@@ -351,12 +234,6 @@ public class LdMatrixOptionsBean {
 
             }
         }
-
-        // Test
-        test = aLine.hasOption(LdMatrixOptions.test.opt);
-
-        // Test iteration
-        testIteration = aLine.hasOption(LdMatrixOptions.testIteration.opt);
 
     }
 }
