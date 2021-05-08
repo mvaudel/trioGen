@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.flat.SimpleFileReader;

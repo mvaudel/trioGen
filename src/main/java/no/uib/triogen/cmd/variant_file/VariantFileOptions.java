@@ -13,7 +13,7 @@ public enum VariantFileOptions {
 
     geno("g", "geno", "The genotypes file path with chromosome name indicated as '{chr}'.", true, true),
     variantId("vi", "variantId", "A file containing a list of variant ids to query, one line per variant.", true, true),
-    source("s", "source", "The reference to indicate as 'source'.", true, true),
+    source("s", "source", "A value to write in the column 'source' for future reference.", true, true),
     build("b", "build", "The build to use when querying Ensembl as a number 37: grch37, 38: grch38. Default: 37.", false, true),
     population("p", "population", "The reference population to use as available in Ensembl. See https://rest.ensembl.org/documentation/info/variation_populations for details. Default: 1000GENOMES:phase_3:GBR.", false, true),
     r2("r", "r2", "The minimal r2 to allow for a proxy. Default: 0.2.", false, true),

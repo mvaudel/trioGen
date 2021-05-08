@@ -34,9 +34,9 @@ public class BgenWriter implements AutoCloseable {
      * The index file.
      */
     private final File indexFile;
-/**
- * The length of the header block.
- */
+    /**
+     * The length of the header block.
+     */
     private final int headerBlockLength = 4 + 4 + 4 + 4 + 13 + 4;
     /**
      * The offset.
@@ -50,13 +50,13 @@ public class BgenWriter implements AutoCloseable {
      * The sample identifiers.
      */
     private String[] samples;
-/**
- * The entries of the index.
- */
+    /**
+     * The entries of the index.
+     */
     private ArrayList<IndexEntry> indexEntries = new ArrayList<>();
-/**
- * The precision used to store the probabilities.
- */
+    /**
+     * The precision used to store the probabilities.
+     */
     private final static int probabilityPrecision = 8;
     /**
      * The compressor to use.
@@ -65,14 +65,15 @@ public class BgenWriter implements AutoCloseable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param destinationFile The file to write to.
      * @param indexFile The index file.
-     * 
-     * @throws IOException Exception thrown if an error occurred while writing to the file.
+     *
+     * @throws IOException Exception thrown if an error occurred while writing
+     * to the file.
      */
     public BgenWriter(
-            File destinationFile, 
+            File destinationFile,
             File indexFile
     ) throws IOException {
 
@@ -85,11 +86,12 @@ public class BgenWriter implements AutoCloseable {
 
     /**
      * Adds a variant to the file.
-     * 
+     *
      * @param variantInformation The information on the variant.
      * @param genotypedAlleles The genotyped alleles.
-     * 
-     * @throws IOException Exception thrown if an error occurred while writing to the file.
+     *
+     * @throws IOException Exception thrown if an error occurred while writing
+     * to the file.
      */
     public synchronized void addVariant(
             VariantInformation variantInformation,
@@ -218,6 +220,14 @@ public class BgenWriter implements AutoCloseable {
 
     }
 
+    /**
+     * Initiates the writer.
+     * 
+     * @param samples The identifiers of the samples to include.
+     * 
+     * @throws IOException Exception thrown if an error occurred while writing
+     * to the file.
+     */
     public void initiate(String[] samples) throws IOException {
 
         this.samples = samples;
@@ -234,6 +244,12 @@ public class BgenWriter implements AutoCloseable {
 
     }
 
+    /**
+     * Finalizes the file.
+     * 
+     * @throws IOException Exception thrown if an error occurred while writing
+     * to the file.
+     */
     public void finalize() throws IOException {
 
         raf.seek(8);
@@ -275,6 +291,12 @@ public class BgenWriter implements AutoCloseable {
         }
     }
 
+    /**
+     * Writes the header block.
+     * 
+     * @throws IOException Exception thrown if an error occurred while writing
+     * to the file.
+     */
     private void writeHeaderBlock() throws IOException {
 
         raf.writeInt(Integer.reverseBytes(headerBlockLength));
@@ -296,6 +318,12 @@ public class BgenWriter implements AutoCloseable {
 
     }
 
+    /**
+     * Writes the sample identifiers block.
+     * 
+     * @throws IOException Exception thrown if an error occurred while writing
+     * to the file.
+     */
     private void writeSampleIdentifierBlock() throws IOException {
 
         int nBytes = 8 + 2 * samples.length;
@@ -335,14 +363,31 @@ public class BgenWriter implements AutoCloseable {
 
     }
 
+    /**
+     * Convenience class to store the index of an entry.
+     */
     private class IndexEntry {
 
+        /**
+         * The information on the variant.
+         */
         public final VariantInformation variantInformation;
-
+/**
+ * Index in the file.
+ */
         public final long index;
-
+/**
+ * Block size.
+ */
         public final long blockSize;
 
+        /**
+         * Constructor.
+         * 
+         * @param variantInformation The information on the variant.
+         * @param index The index in the file.
+         * @param blockSize The size of the block.
+         */
         public IndexEntry(
                 VariantInformation variantInformation,
                 long index,
