@@ -29,7 +29,7 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 
 ```
 -res/results              The results file to prune. Can be any text file, gzipped or not.
--l/--ldMatrix             The ld matrix file as generated using the [_LdMatrix_](LdMatrix.md) command. If LD matrix files are computed per chromosome, replace the chromosome name with '{contig}'.
+-l/--ldMatrix             The LD matrix file as generated using the [_LdMatrix_](LdMatrix.md) command. If LD matrix files are computed per chromosome, replace the chromosome name with '{contig}'.
 -f/--fam                  The trio identifiers file.
 -o/--out                  The file where to write the results.
 ```
@@ -38,7 +38,7 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 #### Additional Parameters
 
 ```
--r/--minR2                The minimal ld r2 to consider two markers in LD. Default: 0.05. Min value: value used when generating the LD matrix file.
+-r/--minR2                The minimal LD r2 to consider two markers in LD. Default: 0.05. Min value: value used when generating the LD matrix file.
 -p/--maxP                 The maximal p-value to consider. Default: 1e-6.
 -id/--idColName           The name of the variant id column. Default: 'variantId'.
 -pn/--pColName            The name of the p-value column. Default: 'h.intercept.p'.

@@ -16,7 +16,7 @@ public enum MendelianCheckOptions {
     variantId("vi", "variantId", "File listing the variants to include in the analysis. Default: process all variants in the genotypes file.", false, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not. Consider including only unrelated samples and controling for admixture.", true, true),
     af("af", "afThreshold", "Allele frequency threshold. 0.005 excludes all alleles of variants with frequency < 0.5% or > 99.5%. Default: 0.005.", false, true),
-    out("o", "out", "The file where to write the matrix. The extension '.tld' will be added if not present.", true, true),
+    out("o", "out", "The file where to write the results.", true, true),
     nVariants("nv", "nVariants", "The number of variants to process in parallel. Default is the number of cores on the machine.", false, true),
     timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true);
 

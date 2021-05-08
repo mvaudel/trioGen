@@ -13,7 +13,7 @@ import no.uib.triogen.utils.Utils;
 public enum LdValueOptions {
 
     ldMatrix("l", "ldMatrix", "The ld matrix file as generated using the LdMatrix command. If ld matrix files are computed per contig, replace the contig name with '" + Utils.CONTIG_WILDCARD + "'.", true, true),
-    variantId("vi", "variantId", "File listing the variants to include in the analysis.", true, true),
+    variantId("vi", "variantId", "File listing the variants to query.", true, true),
     out("o", "out", "The file where to write the results.", true, true);
 
     /**

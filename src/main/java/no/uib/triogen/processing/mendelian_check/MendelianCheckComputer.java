@@ -160,15 +160,16 @@ public class MendelianCheckComputer {
                 ExecutorService pool = Executors.newFixedThreadPool(nVariants);
 
                 IntStream.range(0, nVariants)
-                        .mapToObj(i -> new MendelianCheckRunnable(
-                        writer,
-                        iterator,
-                        bgenIndex,
-                        bgenFileReader,
-                        childToParentMap,
-                        alleleFrequencyThreshold,
-                        logger
-                )
+                        .mapToObj(
+                                i -> new MendelianCheckRunnable(
+                                        writer,
+                                        iterator,
+                                        bgenIndex,
+                                        bgenFileReader,
+                                        childToParentMap,
+                                        alleleFrequencyThreshold,
+                                        logger
+                                )
                         )
                         .forEach(
                                 worker -> pool.submit(worker)
