@@ -16,6 +16,15 @@ import no.uib.triogen.model.genome.VariantInformation;
  */
 public class VcfToBgenConverter {
 
+    /**
+     * Converts a vcf file to a bgen file.
+     * 
+     * @param vcfFile The vcf file to read.
+     * @param bgenFile The bgen file to write.
+     * 
+     * @throws IOException Exception thrown if an error occurred while writing
+     * to the file.
+     */
     public void convert(
             File vcfFile,
             File bgenFile

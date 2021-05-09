@@ -1,68 +1,96 @@
 ## Files and Formats
 
 > **Warning: only minimal sanity check is conducted.**
-
-- Phased genotypes in the bgen 1.3 format, one per chromosome. This can be obtained using the [_VcfToBgen_](cli/VcfToBgen.md) command line.
-- Phenotypes in a tab-separated text file.
-- 
+> **Warning: for multithreaded operations, please expect some stochasticity in the order of the lines in the output, and a different order between runs.**
 
 ### Paths
 
 It is recommended to use absolute paths. The output folder must exist.
 
 
-### Input and Output
+### Compression
 
 Input files can be gzipped or not. Output files are gzipped. 
 
-> **Warning: there is not guarantee that the order of the lines or columns in the output is the same as in the input.**
 
 ### Genotyping files
 
-Currently, only monoallelic variants from diploid chromosomes are supported. Each variant must have a unique identifier. Genotypes of the children must be phased, with the `A|B` notation representing the allele inherited from the mother to the left (`A`) and from the father to the right (`B`). Genotyping files must be in a valid [_vcf_ format](https://www.htslib.org/doc/vcf.html). All samples should be in the same vcf files. One vcf file is processed at a time, if genotypes are spread among multiple vcf files, _e.g._ one per chromosome, use multiple command lines.
+Genotypes files must be in the bgen 1.3 format, one per chromosome, with the haplotypes phased and compressed using zstd. All samples must be in the same file. This can be obtained using the [_VcfToBgen_](cli/VcfToBgen.md) command line.
 
-Two parsers are available and can be selected when running the command lines (see details on each command line).
+Each variant must have a unique identifier, different variants can have the same rsid.
 
-1. VCF: This option uses the generic [htslib](https://www.htslib.org/) parser and can parse [all vcf files supported by htslib](https://github.com/samtools/hts-specs). The vcf file must be [compressed and indexed](https://genometoolbox.blogspot.com/2014/09/how-to-index-vcf-file.html).
+Indels are currently not supported. If this is something important for your research, please [open an issue](https://github.com/mvaudel/trioGen/issues).
 
-2. Sanger VCF: This option uses a custom parser tested on VCF files produced by the Sanger Imputatoin service only, allowing a faster processing of the file but is not compatible with all vcf files. This parser is provided with no guarantee, and we recommend using the _Generic VCF_ parser for testing and if this parser does not work on your files. The vcf file must containt the 8 mandatory columns at the beginning. The hard calls of the genotypes of the samples must be indicated in the beginning of the field by a `0` or `1` indicating _ref_ and _alt_ alleles, respectively, and separated by a pipe (`|`) or a slash (`/`). Example: `0|1:bla:bla:bla`. Columns shoud be tab-separated. The vcf file can be gzipped or not.
+Multi-allelic variants and sex chromosomes are supported. See documentation on [_AlleleFrequency_](AlleleFrequency.md) and [_Transmission_](Transmission.md) for more details.
+
+For haplotype analyses, the genotypes of the children must be phased. The quality of the phasing can be monitored using the estimated prevalence of Mendelian errors, as detailed [here](MendelianErrors.md).
 
 
 ### Trio file
 
-Trios must be provided as text file. The file can be gzipped or not. The file must contain three columns with headers containing the identifiers of the children, father, and mother, in that order. Columns must be space-separated.
+The identifiers of children, mothers, and fathers trios must be provided as text file. The file can be gzipped or not. The file must contain three columns with headers containing the identifiers of the children, father, and mother, in that order. Columns must be space-separated.
+
+When two trios share related individuals, we recommend to keep only one, and hence only work with unrelated trios.
 
 
-### Phenotypes
+### Covariates and Phenotypes
 
-Phenotypes must be provided as a tab-separated text file with phenotypes in column and samples in line, with one column named `child_SentrixID` containing children identifiers, one line per child. Phenotypes should be numeric, missing values set to `NA` or `NaN`. Please note that no normalization or standardization is conducted prior to running the linear regression. The file can be gzipped.
-An example of phenotype file can be found in `src/main/resources/transmission/phenos_linear_model.txt`.
-
-The names of the columns to use for the regressions must be provided as comma-separated list, example: `pheno1,pheno2,pheno3,pheno4`. Spaces and quotes are not supported, please refrain from using spaces in column names. When multiple phenotypes are provided the regressions are conducted in parallel.
+Covariates and phenotypes must be provided as a single tab-separated text file with phenotypes in column and samples in line, with one column containing children identifiers, one line per trio. Phenotypes must be numeric, missing values set to `NA` or `NaN`. The file can be gzipped. Please do not use spaces, quotes, or special characters in column names or identifiers.
 
 
-### Covariates
+### Specific covariates
 
-It is possible to include covariates in the phenotypes file. Covariates should be numeric and not contain missing or infinite values. For factors, we recommend [one-hot endcoding](https://en.wikipedia.org/wiki/One-hot). These covariates are typically PCs or batches, we recommend to account for phenotypic covariates like age when normalizing the phenotypes, see [gamlss](https://www.gamlss.com/) for examples.
+When processing multiple phenotypes in parallel, it is possible to provide phenotype-specific covariates. These must be provided in a json format. For each phenotype name, please provide an array of covariates under the label 'controlVariables'. Other fields will be ignored.
 
-If covariates are provided, the [OLS implementation](http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/regression/OLSMultipleLinearRegression.html) of the [Commons Math library](http://commons.apache.org/proper/commons-math/) is used to run a linear regression between the phenotypes and the matrix of covariates.
-
+#### Example:
 ```
-y = ßi xi + e                                                                             (covariates)
+{
+	"pheno1":
+	{
+		"controlVariables":["covariate1","covariate2"]
+	},
+	"pheno2":
+	{
+		"controlVariables":["covariate3","covariate4"]
+	}
+}
 ```
 
-where y is the phenotypes, xi the ith covariates, and e the residuals. The residuals are then used as new phenotypes.
+
+### Trio LD Matrices
+
+Trio LD matrices '.tld' must be provided per chromosome and generated using the [LdMatrix](cli/LdMatrix.md) command line. Please note that generating these files can take several days, but needs to be done only once. In the MoBa cohort, these files range from 200 MB to 1.2 GB in size.
+
 
 ### Target variants
 
-If you want to process variants specifically, please provide them as text file using the `-v/variantID` command line argument. The first lines of the text file starting with '#' will be ignored. The file must contain a single-line header that is not starting with '#'. The file must be tab-separated and containt in the four first columns: (1) the id of the variant as present in the vcf file; (2) the chromosome name; (3) the position on the chromosome where to start looking for the variant; and (4) the position on the chromosome where to stop looking for the variant.
+When processing specific variants, they must be provided as a tab-separated text file. The file can be gzipped or not. The first lines of the text file starting with '#' will be ignored. The file must contain a single-line header that is not starting with '#'. The file must be tab-separated and contain the five columns: (1) the id of the variant as present in the bgen file, please refrain from using rsids if not unique; (2) the chromosome name; (3) the position on the chromosome where to start looking for the variant; and (4) the position on the chromosome where to stop looking for the variant; and (5) a column for later reference. More columns can be added and will be ignored. The order of the lines has no importance.
+
+This file can be generated from a list of identifiers using the [VariantFile](cli/VariantFile.md) command.
 
 #### Example:
 ```
 # Variant target example
-id	chromosome	start	end
-rs123	1	123456	123456
-rs456	2	456789	456798
-rs789	3	789789	7897890
+id	chromosome	start	end	source
+rs123	1	123456	123456	pmid123
+rs456	2	456789	456798	BMI
+rs789	3	789789	7897890	T2D
 ```
 
+> **Warning: the name of the sex chromosome must be the same as in the bgen file.**
+
+
+### Simple risk scores
+
+The weights used to compute a simple risk score must be provided as a tab-separated text file. The file can be gzipped or not. The first lines of the text file starting with '#' will be ignored. The file must contain a single-line header that is not starting with '#'. The file must be tab-separated and contain the five columns: (1) the id of the variant as present in the gben file, please refrain from using rsids if not unique; (2) the chromosome name; (3) the position on the chromosome ; and (4) the effect allele as a String; and (5) the weight as a number. More columns can be added and will be ignored. The order of the lines has no importance.
+
+#### Example:
+```
+# A simple score
+id	chromosome	bp	ea	weight
+rs123	1	123456	A	0.1
+rs456	2	456789	CG	2
+rs789	3	789789	T	0.01
+```
+
+> **Warning: the name of the sex chromosome must be the same as in the bgen file.**

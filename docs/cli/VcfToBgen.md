@@ -5,7 +5,7 @@ This command converts a phased vcf file to bgen v. 1.3 with phased haplotypes.
 
 ### General considerations
 
-Files need to be formatted as detailed [here](../FileFormats.md).
+The vcf file must be a valid [vcf](https://www.htslib.org/doc/vcf.html) file, with children haplotypes phased.
 
 
 ### Command line

@@ -7,6 +7,8 @@ This command extracts the standardized genotypes and phenotypes for a set of var
 
 Files need to be formatted as detailed [here](../FileFormats.md).
 
+Covariates are handled as detailed [here](../Covariates.md).
+
 
 ### Command line
 

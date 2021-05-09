@@ -1,8 +1,12 @@
+## Performance
+
+> **Warning: Please make sure that java 64 bits is installed.**
+
 ### Threading, IO, and job distribution
 
-You can set the number of variants to process in parallel using the command line options. When doing regression analyses, phenotypes are processed in parallel for each variant. If you see that not all cores are used, you can try to include the number of variants processed in parallel, or run different vcf files in parallel. Note, however, that if the performance on your setup is limited by the I/O, this will not have much of an effect. If this is the case please make sure that TrioGen has direct and rapid access to the files (i.e. not accessing them through a network). IO will be dramatically improved by using SSD discs. If all CPUs are running 100%, you can consider running different phenotypes or vcf files on different nodes.
+For many commands, you can set the number of variants to process in parallel using the command line options. When doing regression analyses, phenotypes are processed in parallel for each variant. If you see that not all cores are used, you can try to include the number of variants processed in parallel, or run different chromosomes in parallel. Note, however, that if the performance on your setup is limited by the I/O, this will not have much of an effect. If this is the case please make sure that TrioGen has direct and rapid access to the files (i.e. not accessing them through a network). IO will be dramatically improved by using SSD discs. If all CPUs are running 100%, you can consider running different phenotypes or chromosomes on different nodes.
 
-Variant-specific tasks are parallelized when possible using all available resources. You can override the number of threads used by default using the `-Djava.util.concurrent.ForkJoinPool.common.parallelism` argument. 
+Most tasks are parallelized when possible using all available resources. You can override the number of threads used by default using the `-Djava.util.concurrent.ForkJoinPool.common.parallelism` argument. 
 
 Example with 32 threads:
 ```

@@ -222,9 +222,9 @@ public class BgenWriter implements AutoCloseable {
 
     /**
      * Initiates the writer.
-     * 
+     *
      * @param samples The identifiers of the samples to include.
-     * 
+     *
      * @throws IOException Exception thrown if an error occurred while writing
      * to the file.
      */
@@ -246,7 +246,7 @@ public class BgenWriter implements AutoCloseable {
 
     /**
      * Finalizes the file.
-     * 
+     *
      * @throws IOException Exception thrown if an error occurred while writing
      * to the file.
      */
@@ -293,7 +293,7 @@ public class BgenWriter implements AutoCloseable {
 
     /**
      * Writes the header block.
-     * 
+     *
      * @throws IOException Exception thrown if an error occurred while writing
      * to the file.
      */
@@ -320,7 +320,7 @@ public class BgenWriter implements AutoCloseable {
 
     /**
      * Writes the sample identifiers block.
-     * 
+     *
      * @throws IOException Exception thrown if an error occurred while writing
      * to the file.
      */
@@ -372,18 +372,18 @@ public class BgenWriter implements AutoCloseable {
          * The information on the variant.
          */
         public final VariantInformation variantInformation;
-/**
- * Index in the file.
- */
+        /**
+         * Index in the file.
+         */
         public final long index;
-/**
- * Block size.
- */
+        /**
+         * Block size.
+         */
         public final long blockSize;
 
         /**
          * Constructor.
-         * 
+         *
          * @param variantInformation The information on the variant.
          * @param index The index in the file.
          * @param blockSize The size of the block.
