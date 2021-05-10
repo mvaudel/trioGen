@@ -32,12 +32,12 @@ public class WLM {
         File gwasChild = new File("/mnt/work/marc/moba/pwbw/prs/meta/child/child_prs1_rsid_clean.tbl.gz");
         File gwasMother = new File("/mnt/work/marc/moba/pwbw/prs/meta/mother/mother_prs1_rsid_clean.tbl.gz");
         File gwasFather = new File("/mnt/work/marc/moba/pwbw/prs/meta/father/father_prs1_rsid_clean.tbl.gz");
+        File resultFile = new File("/mnt/work/marc/moba/pwbw/prs/meta/father/prs_wlm_2.gz");
 
 //        File gwasChild = new File("C:\\Projects\\placenta_weight\\meta_results\\child_prs1_rsid_clean.tbl.gz");
 //        File gwasMother = new File("C:\\Projects\\placenta_weight\\meta_results\\mother_prs1_rsid_clean.tbl.gz");
 //        File gwasFather = new File("C:\\Projects\\placenta_weight\\meta_results\\father_prs1_rsid_clean.tbl.gz");
-
-        File resultFile = new File("C:\\Projects\\placenta_weight\\meta_results\\prs_wlm_2.gz");
+//        File resultFile = new File("C:\\Projects\\placenta_weight\\meta_results\\prs_wlm_2.gz");
 
         HashMap<String, String[]> variantInfoMap = new HashMap<>();
         HashMap<String, String[]> allelesMap = new HashMap<>();
