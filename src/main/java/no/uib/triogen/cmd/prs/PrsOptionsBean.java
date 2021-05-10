@@ -1,7 +1,11 @@
 package no.uib.triogen.cmd.prs;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
+import no.uib.triogen.model.trio_genotypes.Model;
+import no.uib.triogen.processing.prs.PrsComputer;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -28,25 +32,45 @@ public class PrsOptionsBean {
      */
     public final File phenotypesFile;
     /**
-     * Names of the phenotypes to use for association.
+     * Name of the effect allele column in the training file.
      */
-    public final String[] phenoNames;
+    public String eaColumn = "tested_allele";
     /**
-     * The file listing the variants to process.
+     * The training file.
      */
-    public final File variantFile;
+    public final File trainingFile;
+    /**
+     * Name of the variant identifier column in the training file.
+     */
+    public String snpIdColumn = "variantId";
+    /**
+     * Name of the phenotype in the pheno file.
+     */
+    public final String phenoName;
+    /**
+     * Name of the effect allele column in the training file.
+     */
+    public Model model = Model.cmf;
+    /**
+     * Names of the variables.
+     */
+    public String[] variables = new String[]{"c", "m", "f"};
+    /**
+     * Pattern for the effect size column.
+     */
+    public String betaPattern = PrsComputer.MODEL_WILDCARD + ".B" + PrsComputer.VARIABLE_WILDCARD;
     /**
      * The file where to write the output.
      */
     public final File destinationFile;
     /**
-     * The number of days before timeout.
+     * LD R2 threshold.
      */
-    public int timeOut = 365;
+    public double ldThreshold = 0.05;
     /**
-     * Variant log.
+     * Allele frequency threshold.
      */
-    public final boolean variantLog;
+    public double afThreshold = 0.001;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -83,13 +107,13 @@ public class PrsOptionsBean {
         chromosome = aLine.getOptionValue(PrsOptions.chromosome.opt);
 
         // The variant ids
-        filePath = aLine.getOptionValue(PrsOptions.variantId.opt);
+        filePath = aLine.getOptionValue(PrsOptions.trainingFile.opt);
 
-        variantFile = new File(filePath);
+        trainingFile = new File(filePath);
 
-        if (!variantFile.exists()) {
+        if (!trainingFile.exists()) {
 
-            throw new IllegalArgumentException("Variant file (" + variantFile + ") not found.");
+            throw new IllegalArgumentException("Training file (" + trainingFile + ") not found.");
 
         }
 
@@ -115,21 +139,13 @@ public class PrsOptionsBean {
 
         }
 
-        // The pheno columns
-        String option = aLine.getOptionValue(PrsOptions.phenoName.opt);
-
-        phenoNames = option.split(",");
-
-        if (option.length() == 0 || phenoNames.length == 0) {
-
-            throw new IllegalArgumentException("No phenotype name found.");
-
-        }
+        // The pheno name
+        phenoName = aLine.getOptionValue(PrsOptions.phenoName.opt);
 
         // The child id column in the pheno file
         if (aLine.hasOption(PrsOptions.childId.opt)) {
 
-            option = aLine.getOptionValue(PrsOptions.childId.opt);
+            String option = aLine.getOptionValue(PrsOptions.childId.opt);
 
             if (option.length() == 0) {
 
@@ -139,6 +155,104 @@ public class PrsOptionsBean {
 
             PhenotypesHandler.childIdColumn = option;
 
+        }
+
+        // snp id column
+        if (aLine.hasOption(PrsOptions.snpId.opt)) {
+
+            snpIdColumn = aLine.getOptionValue(PrsOptions.snpId.opt);
+
+        }
+
+        // ea column
+        if (aLine.hasOption(PrsOptions.ea.opt)) {
+
+            eaColumn = aLine.getOptionValue(PrsOptions.ea.opt);
+
+        }
+
+        // The model
+        if (aLine.hasOption(PrsOptions.model.opt)) {
+
+            String option = aLine.getOptionValue(PrsOptions.model.opt);
+
+            model = Model.valueOf(option);
+
+        }
+
+        // The variables
+        if (aLine.hasOption(PrsOptions.variables.opt)) {
+
+            String option = aLine.getOptionValue(PrsOptions.variables.opt);
+
+            variables = option.split(",");
+
+            if (variables.length != model.betaNames.length) {
+
+                String modelVariables = Arrays.stream(variables).collect(Collectors.joining(","));
+
+                throw new IllegalArgumentException("Found " + variables.length + " variables (" + option + ") where " + model.betaNames.length + " (" + modelVariables + ") expected.");
+
+            }
+        }
+
+        // The beta pattern
+        if (aLine.hasOption(PrsOptions.betaPattern.opt)) {
+
+            betaPattern = aLine.getOptionValue(PrsOptions.betaPattern.opt);
+
+        }
+
+        // The ld threshold
+        if (aLine.hasOption(PrsOptions.ldThreshold.opt)) {
+
+            String option = aLine.getOptionValue(PrsOptions.ldThreshold.opt);
+
+            try {
+
+                ldThreshold = Double.parseDouble(option);
+
+                if (Double.isNaN(ldThreshold) || Double.isFinite(ldThreshold)) {
+
+                    throw new IllegalArgumentException("The value for LD threshold (" + option + ") could not be parsed as a number.");
+
+                }
+                if (ldThreshold < 0 || ldThreshold > 1) {
+
+                    throw new IllegalArgumentException("The LD threshold (" + option + ") should be higher than 0 or lower than 1.");
+
+                }
+            } catch (Exception e) {
+
+                throw new IllegalArgumentException("The value for LD threshold (" + option + ") could not be parsed as a number.");
+
+            }
+        }
+
+        // The af threshold
+        if (aLine.hasOption(PrsOptions.afThreshold.opt)) {
+
+            String option = aLine.getOptionValue(PrsOptions.afThreshold.opt);
+
+            try {
+
+                afThreshold = Double.parseDouble(option);
+
+                if (Double.isNaN(afThreshold) || Double.isFinite(afThreshold)) {
+
+                    throw new IllegalArgumentException("The value for allele frequency threshold (" + option + ") could not be parsed as a number.");
+
+                }
+                if (afThreshold < 0 || afThreshold > 1) {
+
+                    throw new IllegalArgumentException("The allele frequency threshold (" + option + ") should be higher than 0 or lower than 1.");
+
+                }
+            } catch (Exception e) {
+
+                throw new IllegalArgumentException("The value for allele frequency threshold (" + option + ") could not be parsed as a number.");
+
+            }
         }
 
         // The output file
@@ -151,37 +265,6 @@ public class PrsOptionsBean {
             throw new IllegalArgumentException("Output folder (" + destinationFile.getParentFile() + ") not found.");
 
         }
-
-        // Timeout
-        if (aLine.hasOption(PrsOptions.timeOut.opt)) {
-
-            option = aLine.getOptionValue(PrsOptions.timeOut.opt);
-
-            try {
-
-                timeOut = Integer.parseInt(option);
-
-                if (timeOut <= 0) {
-
-                    throw new IllegalArgumentException(
-                            "Input for timeout (" + option + ") must be a positive number."
-                    );
-
-                }
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-
-                throw new IllegalArgumentException(
-                        "Input for timeout could not be parsed as a number: " + option + "."
-                );
-
-            }
-        }
-
-        // Variant log
-        variantLog = aLine.hasOption(PrsOptions.variantLog.opt);
 
     }
 }

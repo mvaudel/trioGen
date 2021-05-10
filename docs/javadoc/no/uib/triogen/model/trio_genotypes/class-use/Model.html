@@ -83,11 +83,19 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><a href="#no.uib.triogen.model.trio_genotypes">no.uib.triogen.model.trio_genotypes</a></td>
+<td class="colFirst"><a href="#no.uib.triogen.cmd.prs">no.uib.triogen.cmd.prs</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><a href="#no.uib.triogen.model.trio_genotypes">no.uib.triogen.model.trio_genotypes</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><a href="#no.uib.triogen.processing.linear_model">no.uib.triogen.processing.linear_model</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="#no.uib.triogen.processing.prs">no.uib.triogen.processing.prs</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -95,6 +103,26 @@
 </li>
 <li class="blockList">
 <ul class="blockList">
+<li class="blockList"><a name="no.uib.triogen.cmd.prs">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a> in <a href="../../../../../../no/uib/triogen/cmd/prs/package-summary.html">no.uib.triogen.cmd.prs</a></h3>
+<table class="useSummary" border="0" cellpadding="3" cellspacing="0" summary="Use table, listing fields, and an explanation">
+<caption><span>Fields in <a href="../../../../../../no/uib/triogen/cmd/prs/package-summary.html">no.uib.triogen.cmd.prs</a> declared as <a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a></code></td>
+<td class="colLast"><span class="typeNameLabel">PrsOptionsBean.</span><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/cmd/prs/PrsOptionsBean.html#model">model</a></span></code>
+<div class="block">Name of the effect allele column in the training file.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
 <li class="blockList"><a name="no.uib.triogen.model.trio_genotypes">
 <!--   -->
 </a>
@@ -185,12 +213,11 @@ the order they are declared.</div>
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/linear_model/LinearModelComputer.html#LinearModelComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.trio_genotypes.VariantList-int-double-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-no.uib.triogen.model.trio_genotypes.Model:A-java.io.File-int-no.uib.triogen.log.SimpleCliLogger-">LinearModelComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/linear_model/LinearModelComputer.html#LinearModelComputer-java.io.File-java.util.HashMap-int-int-no.uib.triogen.model.trio_genotypes.VariantList-double-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.lang.String:A-java.lang.String:A-java.util.HashMap-no.uib.triogen.model.trio_genotypes.Model:A-java.io.File-int-no.uib.triogen.log.SimpleCliLogger-">LinearModelComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
                    <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
                    int&nbsp;defaultMotherPloidy,
                    int&nbsp;defaultFatherPloidy,
                    <a href="../../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
-                   int&nbsp;maxDistance,
                    double&nbsp;mafThreshold,
                    <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                    <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;phenotypesFile,
@@ -224,6 +251,42 @@ the order they are declared.</div>
 <tr class="altColor">
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/linear_model/RegressionResult.html#RegressionResult-no.uib.triogen.model.trio_genotypes.Model-int-">RegressionResult</a></span>(<a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
                 int&nbsp;nValues)</code>
+<div class="block">Constructor.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="no.uib.triogen.processing.prs">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a> in <a href="../../../../../../no/uib/triogen/processing/prs/package-summary.html">no.uib.triogen.processing.prs</a></h3>
+<table class="useSummary" border="0" cellpadding="3" cellspacing="0" summary="Use table, listing constructors, and an explanation">
+<caption><span>Constructors in <a href="../../../../../../no/uib/triogen/processing/prs/package-summary.html">no.uib.triogen.processing.prs</a> with parameters of type <a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/prs/PrsComputer.html#PrsComputer-java.io.File-java.lang.String-java.io.File-java.io.File-java.lang.String-java.lang.String-java.io.File-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-java.lang.String-java.util.HashMap-int-int-double-double-java.lang.String-java.lang.String:A-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.log.SimpleCliLogger-">PrsComputer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;genotypesFile,
+           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;chromosome,
+           <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;phenotypesFile,
+           <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;destinationFile,
+           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;snpIdColumn,
+           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;eaColumn,
+           <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;trainingFile,
+           <a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
+           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variableNames,
+           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;effectSizePattern,
+           <a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html?is-external=true" title="class or interface in java.util">HashMap</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>,char[]&gt;&nbsp;inheritanceMap,
+           int&nbsp;defaultMotherPloidy,
+           int&nbsp;defaultFatherPloidy,
+           double&nbsp;ldThreshold,
+           double&nbsp;minAf,
+           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;phenoName,
+           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;covariates,
+           <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
+           <a href="../../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
 <div class="block">Constructor.</div>
 </td>
 </tr>

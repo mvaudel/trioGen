@@ -6,6 +6,7 @@ no.uib.triogen.cmd.ld_pruning
 no.uib.triogen.cmd.ld_value
 no.uib.triogen.cmd.locus
 no.uib.triogen.cmd.mendelian_check
+no.uib.triogen.cmd.prs
 no.uib.triogen.cmd.simple_score
 no.uib.triogen.cmd.variant_data
 no.uib.triogen.cmd.variant_file
@@ -43,6 +44,7 @@ no.uib.triogen.model.trio_genotypes
 no.uib.triogen.processing.ld
 no.uib.triogen.processing.linear_model
 no.uib.triogen.processing.mendelian_check
+no.uib.triogen.processing.prs
 no.uib.triogen.processing.simple_score
 no.uib.triogen.processing.variant_data
 no.uib.triogen.scripts_marc.bgen

@@ -3,6 +3,8 @@ package no.uib.triogen.cmd.prs;
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.model.trio_genotypes.Model;
+import no.uib.triogen.processing.prs.PrsComputer;
 
 /**
  * Enum of the different options
@@ -13,14 +15,19 @@ public enum PrsOptions {
 
     geno("g", "geno", "The genotypes file.", true, true),
     chromosome("c", "chromosome", "The chromosome name.", true, true),
-    variantId("vi", "variantId", "File listing the variants to include in the analysis along with the weights.", true, true),
     phenoFile("p", "phenoFile", "The phenotypes file.", true, true),
-    childId("id", "childId", "The name of the column containing the child id. Default: child_SentrixID.", false, true),
-    phenoName("pn", "phenoName", "List of the names of the phenotypes to include in the export. Example: pheno1,pheno2.", true, true),
+    trainingFile("t", "trainingFile", "File listing the summary statistics to use for training.", true, true),
+    snpId("s", "snpId", "Name of the variant identifier column in the training file. Default: 'variantId'.", false, true),
+    ea("ea", "effectAllele", "Name of the effect allele column in the training file. Default: 'tested_allele'.", false, true),
+    model("m", "model", "Names of the model to use. Default: cmf. Available: " + Model.getCommandLineOptions() + ".", false, true),
+    variables("v", "variables", "Names of the variables to use, need to be in the same order as specified in the model. Default: c,m,f.", false, true),
+    betaPattern("b", "betaPattern", "Pattern for the effect size column. Wildcards: " + PrsComputer.MODEL_WILDCARD + " for model name and " + PrsComputer.VARIABLE_WILDCARD + " for variable name. Default: '" + PrsComputer.MODEL_WILDCARD + ".B" + PrsComputer.VARIABLE_WILDCARD + "'.", false, true),
+    childId("id", "childId", "The name of the column containing the child id in the phenotypes file. Default: child_SentrixID.", false, true),
+    phenoName("pn", "phenoName", "The names of the phenotype to analyze.", true, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not.", true, true),
     out("o", "out", "The file where to write the results.", true, true),
-    timeOut("z", "timeOut", "The number of days before timeout, default is 365.", false, true),
-    variantLog("vl", "variantLog", "If present, writes a log for every variant next to the results file.", false, false);
+    ldThreshold("ld", "ldThreshold", "LD R2 value after which two hits cannot be considered independent. Default: '0.05'.", false, true),
+    afThreshold("af", "afThreshold", "Lowest allele frequency considered. 0.001 means that the variants with maf higher or lower than 0.1 % are considered. Default: '0.001'.", false, true);
 
     /**
      * The short option.

@@ -15,6 +15,7 @@ import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.model.simple_score.VariantWeightList;
+import no.uib.triogen.processing.prs.PrsComputer;
 import no.uib.triogen.processing.simple_score.SimpleScoreComputer;
 
 /**
@@ -81,7 +82,6 @@ public class PRS {
     ) {
 
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
-        VariantWeightList variantWeightList = VariantWeightList.getVariantWeightList(bean.variantFile);
 
         HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
 
@@ -90,7 +90,7 @@ public class PRS {
             throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
 
         }
-        
+
         int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
         int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
 
@@ -103,46 +103,33 @@ public class PRS {
         }
 
         File logFile = new File(resultStem + ".log.gz");
-        File variantLogFile = bean.variantLog ? new File(resultStem + ".variantLog.gz") : null;
 
-        SimpleCliLogger logger = new SimpleCliLogger(logFile, variantLogFile);
+        SimpleCliLogger logger = new SimpleCliLogger(logFile, null);
         logger.writeComment("Software", "TrioGen");
         logger.writeComment("Version", TrioGen.getVersion());
         logger.writeComment("Command", "SimpleScore");
         logger.writeComment("Arguments", command);
         logger.writeHeaders();
 
-        SimpleScoreComputer scoreComputer = new SimpleScoreComputer(
-                bean.genotypesFile, 
-                inheritanceMap, 
-                defaultMotherPlooidy,
-                defaultFatherPlooidy,
-                childToParentMap, 
-                variantWeightList, 
-                bean.phenotypesFile, 
-                bean.phenoNames, 
-                bean.destinationFile, 
-                logger
-        );
-
-        try {
-
-            scoreComputer.computeScore();
-
-        } catch (Throwable e) {
-
-            logger.logError(
-                    Arrays.stream(e.getStackTrace())
-                            .map(
-                                    element -> element.toString()
-                            )
-                            .collect(Collectors.joining(" "))
-            );
-
-            e.printStackTrace();
-
-        }
-
+//        PrsComputer prsComputer = new PrsComputer();
+//
+//        try {
+//
+//            scoreComputer.computeScore();
+//
+//        } catch (Throwable e) {
+//
+//            logger.logError(
+//                    Arrays.stream(e.getStackTrace())
+//                            .map(
+//                                    element -> element.toString()
+//                            )
+//                            .collect(Collectors.joining(" "))
+//            );
+//
+//            e.printStackTrace();
+//
+//        }
         logger.close();
 
     }

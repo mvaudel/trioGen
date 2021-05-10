@@ -166,13 +166,14 @@ public class BoltCleanUp {
             // Split bolt results by maf
             rawBoltFilesToTrim.stream()
                     .parallel()
-                    .forEach(filePair -> processBoltFile(
-                    filePair[0],
-                    filePair[1],
-                    filePair[2],
-                    rawBoltFilesToTrim.size(),
-                    incompleteWriter
-            )
+                    .forEach(
+                            filePair -> processBoltFile(
+                                    filePair[0],
+                                    filePair[1],
+                                    filePair[2],
+                                    rawBoltFilesToTrim.size(),
+                                    incompleteWriter
+                            )
                     );
         }
 
