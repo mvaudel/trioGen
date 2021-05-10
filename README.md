@@ -31,7 +31,7 @@ Documentation on the requires file formats is available [here](docs/FileFormats.
 
 ## Code
 
-The code is available at the [GitHub repository](https://github.com/mvaudel/trioGen), JavaDoc can be found [here](docs/javadoc/index.html). 
+The code is available at the [GitHub repository](https://github.com/mvaudel/trioGen). After cloning the repository, JavaDoc can be found in [docs/javadoc](docs/javadoc). 
 
 
 ## Performance

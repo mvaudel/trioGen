@@ -1,6 +1,7 @@
 ## Files and Formats
 
 > **Warning: only minimal sanity check is conducted.**
+
 > **Warning: for multithreaded operations, please expect some stochasticity in the order of the lines in the output, and a different order between runs.**
 
 ### Paths
