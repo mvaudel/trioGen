@@ -28,7 +28,6 @@ no.uib.triogen.io.genotypes.bgen.writer
 no.uib.triogen.io.genotypes.vcf.iterators
 no.uib.triogen.io.genotypes.vcf.reader
 no.uib.triogen.io.ld
-no.uib.triogen.io.ld.pruning
 no.uib.triogen.io.rest
 no.uib.triogen.io.variant_id
 no.uib.triogen.log
@@ -42,6 +41,7 @@ no.uib.triogen.model.phenotypes
 no.uib.triogen.model.simple_score
 no.uib.triogen.model.trio_genotypes
 no.uib.triogen.processing.ld
+no.uib.triogen.processing.ld.pruning
 no.uib.triogen.processing.linear_model
 no.uib.triogen.processing.mendelian_check
 no.uib.triogen.processing.prs

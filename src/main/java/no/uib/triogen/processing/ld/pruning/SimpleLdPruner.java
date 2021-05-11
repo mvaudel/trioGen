@@ -1,4 +1,4 @@
-package no.uib.triogen.io.ld.pruning;
+package no.uib.triogen.processing.ld.pruning;
 
 import java.io.File;
 import java.time.Instant;
@@ -61,9 +61,25 @@ public class SimpleLdPruner {
      * The column separator.
      */
     private final String separator;
-
+    /**
+     * The LD matrix file reader.
+     */
     private LdMatrixReader defaultLdMatrixReader;
 
+    /**
+     * Constructor.
+     * 
+     * @param ldMatrixFilePath The path to the LD matrices.
+     * @param resultsFile The results file to prune.
+     * @param destinationFile The file where to write the results.
+     * @param minR2 The minimal R2 to consider that two hits cannot be considered independent.
+     * @param maxP The maximal p-value to consider.
+     * @param pColName The p-value column name.
+     * @param variantIdColName The variant id column name.
+     * @param phenoColName The phenotype column name.
+     * @param contigColName The contig column name.
+     * @param separator The separator for the columns.
+     */
     public SimpleLdPruner(
             String ldMatrixFilePath,
             File resultsFile,
@@ -90,7 +106,10 @@ public class SimpleLdPruner {
 
     }
 
-    public void prune() {
+    /**
+     * Runs the pruning.
+     */
+    public void run() {
 
         Instant begin = Instant.now();
 
@@ -265,6 +284,13 @@ public class SimpleLdPruner {
         }
     }
 
+    /**
+     * Prunes a map of p-values.
+     * 
+     * @param contigMap The map of p-values per contig.
+     * 
+     * @return The pruned map.
+     */
     private TreeMap<String, TreeMap<String, ArrayList<String>>> prune(
             HashMap<String, HashMap<String, TreeMap<Double, TreeMap<String, String>>>> contigMap
     ) {
@@ -285,6 +311,13 @@ public class SimpleLdPruner {
 
     }
 
+    /**
+     * Returns the LD matrix reader for the given contig.
+     * 
+     * @param contig The contig name.
+     * 
+     * @return The LD matrix reader for the given contig.
+     */
     private LdMatrixReader getLdMatrixReader(
             String contig
     ) {
@@ -318,6 +351,14 @@ public class SimpleLdPruner {
         }
     }
 
+    /**
+     * Prunes the p-values for a phenotype.
+     * 
+     * @param phenoMap The map of p-values for a given phenotype.
+     * @param ldMatrixReader The LD matrix reader.
+     * 
+     * @return The pruned values for this phenotype.
+     */
     private TreeMap<String, ArrayList<String>> prune(
             HashMap<String, TreeMap<Double, TreeMap<String, String>>> phenoMap,
             LdMatrixReader ldMatrixReader
@@ -336,6 +377,14 @@ public class SimpleLdPruner {
 
     }
 
+    /**
+     * Prunes a p-value map.
+     * 
+     * @param pValuesMap The p-values.
+     * @param ldMatrixReader The LD matrix reader.
+     * 
+     * @return The pruned p-values.
+     */
     private ArrayList<String> prune(
             TreeMap<Double, TreeMap<String, String>> pValuesMap,
             LdMatrixReader ldMatrixReader
@@ -361,8 +410,6 @@ public class SimpleLdPruner {
                     }
 
                     ArrayList<R2> r2s = ldMatrixReader.getR2(variantId);
-
-                    System.out.println(r2s.size());
 
                     if (r2s != null && r2s.size() > 0) {
 

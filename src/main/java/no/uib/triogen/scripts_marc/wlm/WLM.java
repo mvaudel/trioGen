@@ -27,6 +27,8 @@ public class WLM {
     private static final int nTriosPValue = 50000;
     
     private static int lastprogress = -1;
+    private static int currentProgress = -1;
+    private static int totalProgress = 0;
 
     /**
      * Main method.
@@ -290,12 +292,13 @@ public class WLM {
             );
 
             ArrayList<String> variantIds = new ArrayList<>(variantInfoMap.keySet());
+            totalProgress = variantIds.size();
 
-            IntStream.range(0, variantIds.size())
+            variantIds.stream()
                     .parallel()
                     .forEach(
-                            i -> processVariant(
-                                    variantIds.get(i),
+                            id -> processVariant(
+                                    id,
                                     variantInfoMap,
                                     allelesMap,
                                     frequencyMap,
@@ -303,8 +306,7 @@ public class WLM {
                                     seMap,
                                     pMap,
                                     nMap,
-                                    writer,
-                                    1000.0 * i / variantIds.size()
+                                    writer
                             )
                     );
         }
@@ -319,11 +321,14 @@ public class WLM {
             HashMap<String, double[]> seMap,
             HashMap<String, double[]> pMap,
             HashMap<String, double[]> nMap,
-            SimpleFileWriter writer,
-            double progress
+            SimpleFileWriter writer
     ) {
         
-        if (progress > lastprogress) {
+        double progress = 1000.0 * currentProgress / totalProgress;
+        
+        currentProgress++;
+        
+        if (progress > lastprogress + 1) {
             
             lastprogress = (int) progress;
             
