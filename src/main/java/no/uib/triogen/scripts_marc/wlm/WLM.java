@@ -324,6 +324,8 @@ public class WLM {
             SimpleFileWriter writer
     ) {
         
+            System.out.println(Instant.now() + "    Computing WLM - variant " + currentProgress + " of " + totalProgress);
+        
         double progress = 1000.0 * currentProgress / totalProgress;
         
         currentProgress++;
