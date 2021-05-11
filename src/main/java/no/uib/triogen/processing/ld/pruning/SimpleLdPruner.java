@@ -425,7 +425,6 @@ public class SimpleLdPruner {
 
                             }
 
-                            throw new IllegalArgumentException("DEBUG");
                         }
                     }
                 }
