@@ -160,7 +160,12 @@ public class LdValue {
                             String contig = variantList.chromosome[i];
                             LdMatrixReader ldMatrixReader = ldMatrixReaderMap.get(contig);
                             ArrayList<R2> result = ldMatrixReader.getR2(variantId);
-                            results.put(variantId, result);
+
+                            if (result != null) {
+
+                                results.put(variantId, result);
+
+                            }
                         }
                 );
 

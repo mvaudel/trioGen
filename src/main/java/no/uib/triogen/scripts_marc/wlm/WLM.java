@@ -23,7 +23,7 @@ public class WLM {
     private static double motherFatherOverlap = 0.0082;
 
     private static final int nReplicates = 20;
-    private static final int nTriosSimulation = 1000;
+    private static final int nTriosSimulation = 10000;
     private static final int nTriosPValue = 50000;
 
     private static final ArrayList<int[]> shuffledIndexes = getShuffledIndexes();
@@ -41,7 +41,7 @@ public class WLM {
         File gwasChild = new File("/mnt/archive/marc/moba/pwbw/prs/meta/child/child_prs1_rsid_clean.tbl.gz");
         File gwasMother = new File("/mnt/archive/marc/moba/pwbw/prs/meta/mother/mother_prs1_rsid_clean.tbl.gz");
         File gwasFather = new File("/mnt/archive/marc/moba/pwbw/prs/meta/father/father_prs1_rsid_clean.tbl.gz");
-        File resultFile = new File("/mnt/archive/marc/moba/pwbw/prs/meta/father/prs_wlm_2.gz");
+        File resultFile = new File("/mnt/archive/marc/moba/pwbw/prs/wlm/prs_wlm_2.gz");
 
 //        File gwasChild = new File("C:\\Projects\\placenta_weight\\meta_results\\child_prs1_rsid_clean.tbl.gz");
 //        File gwasMother = new File("C:\\Projects\\placenta_weight\\meta_results\\mother_prs1_rsid_clean.tbl.gz");
@@ -323,8 +323,6 @@ public class WLM {
             HashMap<String, double[]> nMap,
             SimpleFileWriter writer
     ) {
-
-        System.out.println(Instant.now() + "    Computing WLM - variant " + currentProgress + " of " + totalProgress);
 
         currentProgress++;
 
