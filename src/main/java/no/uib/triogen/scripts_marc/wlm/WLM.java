@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
@@ -23,8 +24,11 @@ public class WLM {
     private static double childFatherOverlap = 0.197;
     private static double motherFatherOverlap = 0.0082;
 
+    private static final int nReplicates = 20;
     private static final int nTriosSimulation = 100000;
     private static final int nTriosPValue = 50000;
+
+    private static final ArrayList<int[]> shuffledIndexes = getShuffledIndexes();
 
     private static int lastprogress = -1;
     private static int currentProgress = -1;
@@ -419,10 +423,10 @@ public class WLM {
             double mafFather
     ) {
 
-        ArrayList<Double> explainedVariance = new ArrayList<>(101);
-        ArrayList<Double> p = new ArrayList<>(101);
+        double[] explainedVariance = new double[nReplicates];
+        double[] p = new double[nReplicates];
 
-        for (int i = 0; i < 101; i++) {
+        for (int i = 0; i < nReplicates; i++) {
 
             double[] runResults = getTrioSummaryStatistics(
                     childBeta,
@@ -433,26 +437,27 @@ public class WLM {
                     fatherSe,
                     mafChild,
                     mafMother,
-                    mafFather
+                    mafFather,
+                    i
             );
 
-            explainedVariance.add(runResults[0]);
-            p.add(runResults[1]);
+            explainedVariance[i] = runResults[0];
+            p[i] = runResults[1];
 
         }
 
-        Collections.sort(explainedVariance);
-        Collections.sort(p);
+        Arrays.sort(explainedVariance);
+        Arrays.sort(p);
 
-        double var5 = explainedVariance.get(0);
-        double var50 = explainedVariance.get(50);
-        double var95 = explainedVariance.get(100);
+        double varLow = explainedVariance[1];
+        double varMedian = (explainedVariance[9] + explainedVariance[10]) / 2;
+        double varHigh = explainedVariance[18];
 
-        double p5 = p.get(0);
-        double p50 = p.get(50);
-        double p95 = p.get(100);
+        double pLow = p[1];
+        double pMedian = (p[9] + p[10]) / 2;
+        double pHigh = p[18];
 
-        return new double[]{var50, var5, var95, p50, p5, p95};
+        return new double[]{varMedian, varLow, varHigh, pMedian, pLow, pHigh};
 
     }
 
@@ -465,95 +470,58 @@ public class WLM {
             double fatherSe,
             double mafChild,
             double mafMother,
-            double mafFather
+            double mafFather,
+            int replicateNumber
     ) {
 
         double minMafMother = mafMother > 0.5 ? 1 - mafMother : mafMother;
         double minMafFather = mafFather > 0.5 ? 1 - mafFather : mafFather;
 
-        ArrayList<Double> motherGenos = new ArrayList<>(nTriosSimulation);
-        ArrayList<Double> fatherGenos = new ArrayList<>(nTriosSimulation);
+        double[] motherGenos = new double[nTriosSimulation];
+        double[] fatherGenos = new double[nTriosSimulation];
 
-        for (int i = 0; i < nTriosSimulation; i++) {
+        for (int i = 0; i < minMafMother * nTriosSimulation; i++) {
 
-            motherGenos.add(0.0);
-            fatherGenos.add(0.0);
+            int randomI = shuffledIndexes.get(replicateNumber)[i];
+
+            motherGenos[randomI] = motherGenos[randomI] + 1;
+
+        }
+
+        for (int i = 0; i < minMafMother * nTriosSimulation; i++) {
+
+            int randomI = shuffledIndexes.get(replicateNumber + nReplicates)[i];
+
+            motherGenos[randomI] = motherGenos[randomI] + 1;
+
+        }
+
+        for (int i = 0; i < minMafFather * nTriosSimulation; i++) {
+
+            int randomI = shuffledIndexes.get(replicateNumber + 2 * nReplicates)[i];
+
+            fatherGenos[randomI] = fatherGenos[randomI] + 1;
+
+        }
+
+        for (int i = 0; i < minMafFather * nTriosSimulation; i++) {
+
+            int randomI = shuffledIndexes.get(replicateNumber + 3 * nReplicates)[i];
+
+            fatherGenos[randomI] = fatherGenos[randomI] + 1;
 
         }
 
         Random random = new Random();
 
-        for (int i = 0; i < minMafMother * nTriosSimulation; i++) {
-
-            int randomI = random.nextInt(nTriosSimulation);
-            double value = motherGenos.get(randomI);
-
-            while (value > 0.5) {
-
-                randomI = random.nextInt(nTriosSimulation);
-                value = motherGenos.get(randomI);
-
-            }
-
-            motherGenos.set(randomI, value + 1);
-
-        }
-
-        for (int i = 0; i < minMafMother * nTriosSimulation; i++) {
-
-            int randomI = random.nextInt(nTriosSimulation);
-            double value = motherGenos.get(randomI);
-
-            while (value > 1.5) {
-
-                randomI = random.nextInt(nTriosSimulation);
-                value = motherGenos.get(randomI);
-
-            }
-
-            motherGenos.set(randomI, value + 1);
-
-        }
-
-        for (int i = 0; i < minMafFather * nTriosSimulation; i++) {
-
-            int randomI = random.nextInt(nTriosSimulation);
-            double value = fatherGenos.get(randomI);
-
-            while (value > 0.5) {
-
-                randomI = random.nextInt(nTriosSimulation);
-                value = fatherGenos.get(randomI);
-
-            }
-
-            fatherGenos.set(randomI, value + 1);
-
-        }
-
-        for (int i = 0; i < minMafFather * nTriosSimulation; i++) {
-
-            int randomI = random.nextInt(nTriosSimulation);
-            double value = fatherGenos.get(randomI);
-
-            while (value > 1.5) {
-
-                randomI = random.nextInt(nTriosSimulation);
-                value = fatherGenos.get(randomI);
-
-            }
-
-            fatherGenos.set(randomI, value + 1);
-
-        }
-
-        ArrayList<Double> phenos = new ArrayList<>(nTriosSimulation);
+        double phenoSum = 0.0;
+        double[] phenos = new double[nTriosSimulation];
         double squaredError = 0.0;
 
         for (int i = 0; i < nTriosSimulation; i++) {
 
-            double motherGenotype = motherGenos.get(i);
-            double fatherGenotype = fatherGenos.get(i);
+            double motherGenotype = motherGenos[i];
+            double fatherGenotype = fatherGenos[i];
             double childGenotype = (motherGenotype + fatherGenotype) / 2;
 
             double motherEffect = (motherBeta + motherSe * random.nextGaussian()) * motherGenotype;
@@ -562,7 +530,8 @@ public class WLM {
 
             double phenoValue = random.nextGaussian() + motherEffect + fatherEffect + childEffect;
 
-            phenos.add(phenoValue);
+            phenos[i] = phenoValue;
+            phenoSum += phenoValue;
 
             double predictedPhenoValue = motherBeta * motherGenotype + fatherBeta * fatherGenotype + childEffect * childGenotype;
 
@@ -572,13 +541,13 @@ public class WLM {
 
         squaredError /= nTriosSimulation;
 
-        double mean = phenos.stream().mapToDouble(a -> a).sum() / nTriosSimulation;
+        double mean = phenoSum / nTriosSimulation;
 
         double rss0 = 0.0;
 
         for (int i = 0; i < nTriosSimulation; i++) {
 
-            double phenoDist = phenos.get(i) - mean;
+            double phenoDist = phenos[i] - mean;
             rss0 += phenoDist * phenoDist;
 
         }
@@ -626,6 +595,32 @@ public class WLM {
         FDistribution fDistribution = new FDistribution(numeratorDegreesOfFreedom, denominatorDegreesOfFreedom);
 
         return 1.0 - fDistribution.cumulativeProbability(x);
+
+    }
+
+    private static ArrayList<int[]> getShuffledIndexes() {
+
+        ArrayList<Integer> indexes = new ArrayList<>(nTriosSimulation);
+
+        for (int i = 0; i < nTriosSimulation; i++) {
+
+            indexes.add(i);
+
+        }
+
+        ArrayList<int[]> result = new ArrayList<>(4 * nReplicates);
+
+        for (int i = 0; i < 4 * nReplicates; i++) {
+
+            Collections.shuffle(indexes);
+
+            result.add(
+                    indexes.stream().mapToInt(a -> a).toArray()
+            );
+
+        }
+        
+        return result;
 
     }
 
