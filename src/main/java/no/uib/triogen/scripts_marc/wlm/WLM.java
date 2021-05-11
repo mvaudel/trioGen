@@ -4,11 +4,9 @@ import java.io.File;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.stream.IntStream;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import org.apache.commons.math3.distribution.FDistribution;
@@ -25,12 +23,11 @@ public class WLM {
     private static double motherFatherOverlap = 0.0082;
 
     private static final int nReplicates = 20;
-    private static final int nTriosSimulation = 100000;
+    private static final int nTriosSimulation = 1000;
     private static final int nTriosPValue = 50000;
 
     private static final ArrayList<int[]> shuffledIndexes = getShuffledIndexes();
 
-    private static int lastprogress = -1;
     private static int currentProgress = -1;
     private static int totalProgress = 0;
 
@@ -329,17 +326,13 @@ public class WLM {
 
         System.out.println(Instant.now() + "    Computing WLM - variant " + currentProgress + " of " + totalProgress);
 
-        double progress = 1000.0 * currentProgress / totalProgress;
-
         currentProgress++;
 
-        if (progress > lastprogress + 1) {
+        if (currentProgress % 1000 == 0) {
 
-            lastprogress = (int) progress;
+            double progressDisplay = (10.0 * currentProgress / totalProgress) / 10;
 
-            double progressDisplay = ((double) lastprogress) / 10;
-
-            System.out.println(Instant.now() + "    Computing WLM - progress " + progressDisplay + " %");
+            System.out.println(Instant.now() + "    Computing WLM - " + currentProgress + " of " + totalProgress + "(" + progressDisplay + " %)");
 
         }
 
