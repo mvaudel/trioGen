@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.stream.IntStream;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import org.apache.commons.math3.distribution.FDistribution;
@@ -24,6 +25,8 @@ public class WLM {
     
     private static final int nTriosSimulation = 100000;
     private static final int nTriosPValue = 50000;
+    
+    private static int lastprogress = -1;
 
     /**
      * Main method.
@@ -288,10 +291,11 @@ public class WLM {
 
             ArrayList<String> variantIds = new ArrayList<>(variantInfoMap.keySet());
 
-            variantIds.stream()
+            IntStream.range(0, variantIds.size())
+                    .parallel()
                     .forEach(
-                            id -> processVariant(
-                                    id,
+                            i -> processVariant(
+                                    variantIds.get(i),
                                     variantInfoMap,
                                     allelesMap,
                                     frequencyMap,
@@ -299,7 +303,8 @@ public class WLM {
                                     seMap,
                                     pMap,
                                     nMap,
-                                    writer
+                                    writer,
+                                    1000.0 * i / variantIds.size()
                             )
                     );
         }
@@ -314,8 +319,19 @@ public class WLM {
             HashMap<String, double[]> seMap,
             HashMap<String, double[]> pMap,
             HashMap<String, double[]> nMap,
-            SimpleFileWriter writer
+            SimpleFileWriter writer,
+            double progress
     ) {
+        
+        if (progress > lastprogress) {
+            
+            lastprogress = (int) progress;
+            
+            double progressDisplay = ((double) lastprogress)/10;
+            
+            System.out.println(Instant.now() + "    Computing WLM - progress " + progressDisplay + " %");
+            
+        }
 
         double[] betas = betaMap.get(id);
         double[] ses = seMap.get(id);
