@@ -21,6 +21,9 @@ public class WLM {
     private static double childMotherOverlap = 0.2653;
     private static double childFatherOverlap = 0.197;
     private static double motherFatherOverlap = 0.0082;
+    
+    private static final int nTriosSimulation = 100000;
+    private static final int nTriosPValue = 50000;
 
     /**
      * Main method.
@@ -29,10 +32,10 @@ public class WLM {
      */
     public static void main(String[] args) {
 
-        File gwasChild = new File("/mnt/work/marc/moba/pwbw/prs/meta/child/child_prs1_rsid_clean.tbl.gz");
-        File gwasMother = new File("/mnt/work/marc/moba/pwbw/prs/meta/mother/mother_prs1_rsid_clean.tbl.gz");
-        File gwasFather = new File("/mnt/work/marc/moba/pwbw/prs/meta/father/father_prs1_rsid_clean.tbl.gz");
-        File resultFile = new File("/mnt/work/marc/moba/pwbw/prs/meta/father/prs_wlm_2.gz");
+        File gwasChild = new File("/mnt/archive/marc/moba/pwbw/prs/meta/child/child_prs1_rsid_clean.tbl.gz");
+        File gwasMother = new File("/mnt/archive/marc/moba/pwbw/prs/meta/mother/mother_prs1_rsid_clean.tbl.gz");
+        File gwasFather = new File("/mnt/archive/marc/moba/pwbw/prs/meta/father/father_prs1_rsid_clean.tbl.gz");
+        File resultFile = new File("/mnt/archive/marc/moba/pwbw/prs/meta/father/prs_wlm_2.gz");
 
 //        File gwasChild = new File("C:\\Projects\\placenta_weight\\meta_results\\child_prs1_rsid_clean.tbl.gz");
 //        File gwasMother = new File("C:\\Projects\\placenta_weight\\meta_results\\mother_prs1_rsid_clean.tbl.gz");
@@ -279,7 +282,8 @@ public class WLM {
                     "beta_wlm_child", "se_wlm_child",
                     "beta_wlm_mother", "se_wlm_mother",
                     "beta_wlm_father", "se_wlm_father",
-                    "estimated_variance_explained", "p_intercept", "n_trios_simulated"
+                    "variance_explained_50", "variance_explained_5", "variance_explained_95", "variance_explained_n",
+                    "p_50", "p_5", "p_95", "p_n"
             );
 
             ArrayList<String> variantIds = new ArrayList<>(variantInfoMap.keySet());
@@ -353,9 +357,7 @@ public class WLM {
                     + 3 * motherFatherOverlap * Math.sqrt(ses2[1] * ses2[2]) / 2
             );
             
-            int nTriosSimulated = 100000;
-            
-            double[] trioStats = getTrioSummaryStatistics(
+            double[] trioStats = getTrioSummaryStatisticsRepeated(
                     wlmBetaChild, 
                     wlmBetaMother, 
                     wlmBetaFather, 
@@ -364,8 +366,7 @@ public class WLM {
                     wlmSeFather, 
                     testedAlleleFrequencies[0], 
                     testedAlleleFrequencies[1], 
-                    testedAlleleFrequencies[2],
-                    nTriosSimulated
+                    testedAlleleFrequencies[2]
             );
 
             writer.writeLine(
@@ -377,10 +378,61 @@ public class WLM {
                     Double.toString(wlmBetaChild), Double.toString(wlmSeChild),
                     Double.toString(wlmBetaMother), Double.toString(wlmSeMother),
                     Double.toString(wlmBetaFather), Double.toString(wlmSeFather),
-                    Double.toString(trioStats[0]), Double.toString(trioStats[1]), Integer.toString(nTriosSimulated)
+                    Double.toString(trioStats[0]), Double.toString(trioStats[1]), Double.toString(trioStats[2]), Integer.toString(nTriosSimulation),
+                    Double.toString(trioStats[3]), Double.toString(trioStats[4]), Double.toString(trioStats[5]), Integer.toString(nTriosPValue)
             );
 
         }
+    }
+
+    private static double[] getTrioSummaryStatisticsRepeated(
+            double childBeta,
+            double motherBeta,
+            double fatherBeta,
+            double childSe,
+            double motherSe,
+            double fatherSe,
+            double mafChild,
+            double mafMother,
+            double mafFather
+    ) {
+        
+        ArrayList<Double> explainedVariance = new ArrayList<>(101);
+        ArrayList<Double> p = new ArrayList<>(101);
+        
+        for (int i = 0 ; i < 101 ; i++) {
+            
+            double[] runResults = getTrioSummaryStatistics(
+                    childBeta, 
+                    motherBeta, 
+                    fatherBeta, 
+                    childSe, 
+                    motherSe, 
+                    fatherSe, 
+                    mafChild, 
+                    mafMother, 
+                    mafFather
+            );
+            
+            explainedVariance.add(runResults[0]);
+            p.add(runResults[1]);
+            
+        }
+        
+        Collections.sort(explainedVariance);
+        Collections.sort(p);
+        
+        double var5 = explainedVariance.get(0);
+        double var50 = explainedVariance.get(50);
+        double var95 = explainedVariance.get(100);
+        
+        
+        double p5 = p.get(0);
+        double p50 = p.get(50);
+        double p95 = p.get(100);
+        
+        return new double[]{var50, var5, var95, p50, p5, p95};
+        
     }
 
     private static double[] getTrioSummaryStatistics(
@@ -392,24 +444,23 @@ public class WLM {
             double fatherSe,
             double mafChild,
             double mafMother,
-            double mafFather,
-            int nTrios
+            double mafFather
     ) {
 
         double minMafMother = mafMother > 0.5 ? 1 - mafMother : mafMother;
         double minMafFather = mafFather > 0.5 ? 1 - mafFather : mafFather;
         
-        ArrayList<Double> motherGenos = new ArrayList<>(nTrios);
-        ArrayList<Double> fatherGenos = new ArrayList<>(nTrios);
+        ArrayList<Double> motherGenos = new ArrayList<>(nTriosSimulation);
+        ArrayList<Double> fatherGenos = new ArrayList<>(nTriosSimulation);
         
-        for (int i = 0 ; i < nTrios ; i++) {
+        for (int i = 0 ; i < nTriosSimulation ; i++) {
             
             motherGenos.add(0.0);
             fatherGenos.add(0.0);
             
         }
         
-        for (int i = 0 ; i < minMafMother * nTrios ; i++) {
+        for (int i = 0 ; i < minMafMother * nTriosSimulation ; i++) {
             
             motherGenos.set(i, motherGenos.get(i) + 1);
             
@@ -417,7 +468,7 @@ public class WLM {
         
         Collections.shuffle(motherGenos);
         
-        for (int i = 0 ; i < minMafMother * nTrios ; i++) {
+        for (int i = 0 ; i < minMafMother * nTriosSimulation ; i++) {
             
             motherGenos.set(i, motherGenos.get(i) + 1);
             
@@ -427,7 +478,7 @@ public class WLM {
         
         
         
-        for (int i = 0 ; i < minMafFather * nTrios ; i++) {
+        for (int i = 0 ; i < minMafFather * nTriosSimulation ; i++) {
             
             fatherGenos.set(i, fatherGenos.get(i) + 1);
             
@@ -435,7 +486,7 @@ public class WLM {
         
         Collections.shuffle(fatherGenos);
         
-        for (int i = 0 ; i < minMafFather * nTrios ; i++) {
+        for (int i = 0 ; i < minMafFather * nTriosSimulation ; i++) {
             
             fatherGenos.set(i, fatherGenos.get(i) + 1);
             
@@ -443,12 +494,12 @@ public class WLM {
         
         Collections.shuffle(fatherGenos);
         
-        ArrayList<Double> phenos = new ArrayList<>(nTrios);
+        ArrayList<Double> phenos = new ArrayList<>(nTriosSimulation);
         double squaredError = 0.0;
         
         Random random = new Random();
         
-        for (int i = 0 ; i < nTrios ; i++) {
+        for (int i = 0 ; i < nTriosSimulation ; i++) {
             
             double motherGenotype = motherGenos.get(i);
             double fatherGenotype = fatherGenos.get(i);
@@ -468,24 +519,24 @@ public class WLM {
             
         }
         
-        squaredError /= nTrios;
+        squaredError /= nTriosSimulation;
         
-        double mean = phenos.stream().mapToDouble(a -> a).sum() / nTrios;
+        double mean = phenos.stream().mapToDouble(a -> a).sum() / nTriosSimulation;
         
         double rss0 = 0.0;
         
-        for (int i = 0 ; i < nTrios ; i++) {
+        for (int i = 0 ; i < nTriosSimulation ; i++) {
             
             double phenoDist = phenos.get(i) - mean;
             rss0 += phenoDist * phenoDist;
             
         }
         
-        rss0 /= nTrios;
+        rss0 /= nTriosSimulation;
         
         double varianceExplained = (rss0 - squaredError) / rss0;
 
-        double p = getModelSignificance(rss0, 1, squaredError, 4, nTrios);
+        double p = getModelSignificance(rss0, 1, squaredError, 4, nTriosPValue);
         
         return new double[]{varianceExplained, p};
         
