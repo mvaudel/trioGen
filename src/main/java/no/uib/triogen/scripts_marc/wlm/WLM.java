@@ -302,6 +302,7 @@ public class WLM {
             long start = Instant.now().getEpochSecond();
 
             variantIds.stream()
+                    .parallel()
                     .forEach(
                             id -> processVariant(
                                     id,
