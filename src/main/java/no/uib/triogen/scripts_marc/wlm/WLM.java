@@ -341,7 +341,7 @@ public class WLM {
             
             long elapsedTimeSeconds = Instant.now().getEpochSecond() - start;
             
-            double remainingTimeSeconds = Math.round((1.0 - progress) * elapsedTimeSeconds / progress);
+            double remainingTimeSeconds = Math.round(((double) totalProgress) * elapsedTimeSeconds / currentProgress - elapsedTimeSeconds);
             
             double progressDisplay = (10.0 * Math.round(progress) / 10);
             
