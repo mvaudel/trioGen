@@ -24,7 +24,7 @@ public class WLM {
     private static double motherFatherOverlap = 0.0082;
 
     private static final int nReplicates = 10;
-    private static final int nTriosSimulation = 10000;
+    private static final int nTriosSimulation = 100000;
     private static final int nTriosPValue = 50000;
 
     private static final ArrayList<int[]> shuffledIndexes = getShuffledIndexes();

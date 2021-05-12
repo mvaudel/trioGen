@@ -208,7 +208,7 @@ public class LdValue {
                     r2Json.put("alleleA", r2.alleleA);
                     r2Json.put("variantB", r2.getVariantBId());
                     r2Json.put("rsidB", r2.getVariantBRsid());
-                    r2Json.put("alleleA", r2.alleleB);
+                    r2Json.put("alleleB", r2.alleleB);
                     r2Json.put("r2", r2.r2Value);
 
                     array.put(r2Json);
