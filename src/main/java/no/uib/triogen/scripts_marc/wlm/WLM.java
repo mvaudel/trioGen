@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import org.apache.commons.math3.distribution.FDistribution;
@@ -22,11 +23,15 @@ public class WLM {
     private static double childFatherOverlap = 0.197;
     private static double motherFatherOverlap = 0.0082;
 
-    private static final int nReplicates = 20;
+    private static final int nReplicates = 10;
     private static final int nTriosSimulation = 10000;
     private static final int nTriosPValue = 50000;
 
     private static final ArrayList<int[]> shuffledIndexes = getShuffledIndexes();
+    private static final double[] gaussianCache = fillGaussianCache();
+    private static final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, FDistribution>> fDistributionCache = new ConcurrentHashMap<>();
+    
+    private static int gaussianCacheIndex = 0;
 
     private static int currentProgress = -1;
     private static int totalProgress = 0;
@@ -293,9 +298,10 @@ public class WLM {
 
             ArrayList<String> variantIds = new ArrayList<>(variantInfoMap.keySet());
             totalProgress = variantIds.size();
+            
+            long start = Instant.now().getEpochSecond();
 
             variantIds.stream()
-                    .parallel()
                     .forEach(
                             id -> processVariant(
                                     id,
@@ -306,7 +312,8 @@ public class WLM {
                                     seMap,
                                     pMap,
                                     nMap,
-                                    writer
+                                    writer,
+                                    start
                             )
                     );
         }
@@ -321,16 +328,23 @@ public class WLM {
             HashMap<String, double[]> seMap,
             HashMap<String, double[]> pMap,
             HashMap<String, double[]> nMap,
-            SimpleFileWriter writer
+            SimpleFileWriter writer,
+            long start
     ) {
 
         currentProgress++;
 
         if (currentProgress % 1000 == 0) {
 
-            double progressDisplay = (10.0 * currentProgress / totalProgress) / 10;
-
-            System.out.println(Instant.now() + "    Computing WLM - " + currentProgress + " of " + totalProgress + "(" + progressDisplay + " %)");
+            double progress = (10.0 * currentProgress / totalProgress) / 10;
+            
+            long elapsedTimeSeconds = Instant.now().getEpochSecond() - start;
+            
+            double remainingTimeSeconds = Math.round((1.0 - progress) * elapsedTimeSeconds);
+            
+            double progressDisplay = (10.0 * Math.round(progress) / 10);
+            
+            System.out.println(Instant.now() + "    Computing WLM - " + currentProgress + " of " + totalProgress + "(" + progressDisplay + " %, ETA: " + remainingTimeSeconds + " s)");
 
         }
 
@@ -440,13 +454,13 @@ public class WLM {
         Arrays.sort(explainedVariance);
         Arrays.sort(p);
 
-        double varLow = explainedVariance[1];
-        double varMedian = (explainedVariance[9] + explainedVariance[10]) / 2;
-        double varHigh = explainedVariance[18];
+        double varLow = explainedVariance[0];
+        double varMedian = (explainedVariance[4] + explainedVariance[5]) / 2;
+        double varHigh = explainedVariance[9];
 
-        double pLow = p[1];
-        double pMedian = (p[9] + p[10]) / 2;
-        double pHigh = p[18];
+        double pLow = p[0];
+        double pMedian = (p[4] + p[5]) / 2;
+        double pHigh = p[9];
 
         return new double[]{varMedian, varLow, varHigh, pMedian, pLow, pHigh};
 
@@ -503,8 +517,6 @@ public class WLM {
 
         }
 
-        Random random = new Random();
-
         double phenoSum = 0.0;
         double[] phenos = new double[nTriosSimulation];
         double squaredError = 0.0;
@@ -515,11 +527,11 @@ public class WLM {
             double fatherGenotype = fatherGenos[i];
             double childGenotype = (motherGenotype + fatherGenotype) / 2;
 
-            double motherEffect = (motherBeta + motherSe * random.nextGaussian()) * motherGenotype;
-            double fatherEffect = (fatherBeta + fatherSe * random.nextGaussian()) * fatherGenotype;
-            double childEffect = (childBeta + childSe * random.nextGaussian()) * childGenotype;
+            double motherEffect = (motherBeta + motherSe * nextGaussian()) * motherGenotype;
+            double fatherEffect = (fatherBeta + fatherSe * nextGaussian()) * fatherGenotype;
+            double childEffect = (childBeta + childSe * nextGaussian()) * childGenotype;
 
-            double phenoValue = random.nextGaussian() + motherEffect + fatherEffect + childEffect;
+            double phenoValue = nextGaussian() + motherEffect + fatherEffect + childEffect;
 
             phenos[i] = phenoValue;
             phenoSum += phenoValue;
@@ -579,14 +591,67 @@ public class WLM {
 
         }
 
-        double numeratorDegreesOfFreedom = p2 - p1;
-        double denominatorDegreesOfFreedom = nValues - p2;
+        int numeratorDegreesOfFreedom = p2 - p1;
+        int denominatorDegreesOfFreedom = nValues - p2;
         double x = ((model1RSS - model2RSS) / numeratorDegreesOfFreedom) / (model2RSS / denominatorDegreesOfFreedom);
 
-        FDistribution fDistribution = new FDistribution(numeratorDegreesOfFreedom, denominatorDegreesOfFreedom);
+        FDistribution fDistribution = getFDistribution(numeratorDegreesOfFreedom, denominatorDegreesOfFreedom);
 
         return 1.0 - fDistribution.cumulativeProbability(x);
 
+    }
+    
+    private static FDistribution getFDistribution(int numeratorDegreesOfFreedom, int denominatorDegreesOfFreedom) {
+        
+        ConcurrentHashMap<Integer, FDistribution> subCache = fDistributionCache.get(numeratorDegreesOfFreedom);
+        
+        if (subCache == null) {
+            
+            subCache = new ConcurrentHashMap<>(1);
+            fDistributionCache.put(numeratorDegreesOfFreedom, subCache);
+            
+        }
+        
+        FDistribution fDistribution = subCache.get(denominatorDegreesOfFreedom);
+        
+        if (fDistribution == null) {
+            
+            fDistribution = new FDistribution(numeratorDegreesOfFreedom, denominatorDegreesOfFreedom);
+            subCache.put(denominatorDegreesOfFreedom, fDistribution);
+            
+        }
+        
+        return fDistribution;
+        
+    }
+    
+    private static double nextGaussian() {
+        
+        if (gaussianCacheIndex == gaussianCache.length) {
+            
+            gaussianCacheIndex = 0;
+            
+        }
+        
+        return gaussianCache[gaussianCacheIndex++];
+        
+    }
+    
+    private static double[] fillGaussianCache() {
+        
+        int cacheSize = 100000000;
+        double[] cache = new double[cacheSize];
+        
+        Random random = new Random();
+        
+        for (int i = 0 ; i < cacheSize ; i++) {
+            
+            cache[i] = random.nextGaussian();
+            
+        }
+        
+        return cache;
+        
     }
 
     private static ArrayList<int[]> getShuffledIndexes() {
