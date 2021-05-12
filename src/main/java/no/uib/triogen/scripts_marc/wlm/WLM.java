@@ -336,15 +336,15 @@ public class WLM {
 
         if (currentProgress % 1000 == 0) {
 
-            double progress = (10.0 * currentProgress / totalProgress) / 10;
+            double progress = currentProgress / totalProgress;
             
             long elapsedTimeSeconds = Instant.now().getEpochSecond() - start;
             
-            double remainingTimeSeconds = Math.round((1.0 - progress) * elapsedTimeSeconds);
+            double remainingTimeSeconds = Math.round((1.0 - progress) * elapsedTimeSeconds / progress);
             
             double progressDisplay = (10.0 * Math.round(progress) / 10);
             
-            System.out.println(Instant.now() + "    Computing WLM - " + currentProgress + " of " + totalProgress + "(" + progressDisplay + " %, ETA: " + remainingTimeSeconds + " s)");
+            System.out.println(Instant.now() + "    Computing WLM - " + currentProgress + " of " + totalProgress + " (" + progressDisplay + " %, ETA: " + remainingTimeSeconds + " s)");
 
         }
 

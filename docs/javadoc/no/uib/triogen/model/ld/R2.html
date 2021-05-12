@@ -18,6 +18,12 @@
     catch(err) {
     }
 //-->
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var altColor = "altColor";
+var rowColor = "rowColor";
+var tableTab = "tableTab";
+var activeTableTab = "activeTableTab";
 </script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -71,13 +77,13 @@
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#methods.inherited.from.class.java.lang.Object">Method</a></li>
+<li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
 <a name="skip.navbar.top">
@@ -130,19 +136,27 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>short</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/ld/R2.html#alleleA">alleleA</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/ld/R2.html#alleleA">alleleA</a></span></code>
+<div class="block">The correlated allele for variant A.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>short</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/ld/R2.html#alleleB">alleleB</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/ld/R2.html#alleleB">alleleB</a></span></code>
+<div class="block">The correlated allele for variant B.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>float</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/ld/R2.html#r2Value">r2Value</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/ld/R2.html#r2Value">r2Value</a></span></code>
+<div class="block">The r2 value of the correlation.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/ld/R2.html#variantB">variantB</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/ld/R2.html#variantB">variantB</a></span></code>
+<div class="block">The index of variant B in the LD matrix.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -162,7 +176,9 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/ld/R2.html#R2-int-short-short-float-">R2</a></span>(int&nbsp;variantB,
   short&nbsp;alleleA,
   short&nbsp;alleleB,
-  float&nbsp;r2Value)</code>&nbsp;</td>
+  float&nbsp;r2Value)</code>
+<div class="block">Constructor.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -173,6 +189,37 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Method Summary</h3>
+<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr id="i0" class="altColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/ld/R2.html#getVariantBId--">getVariantBId</a></span>()</code>
+<div class="block">Returns the id of variant B.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/ld/R2.html#getVariantBRsid--">getVariantBRsid</a></span>()</code>
+<div class="block">Returns the rsid of variant B.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/ld/R2.html#setVariantBId-java.lang.String-">setVariantBId</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantBId)</code>
+<div class="block">Sets the id of variant B.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/model/ld/R2.html#setVariantBRsid-java.lang.String-">setVariantBRsid</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;rsidBId)</code>
+<div class="block">Sets the rsid of variant B.</div>
+</td>
+</tr>
+</table>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
@@ -201,6 +248,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>variantB</h4>
 <pre>public final&nbsp;int variantB</pre>
+<div class="block">The index of variant B in the LD matrix.</div>
 </li>
 </ul>
 <a name="alleleA">
@@ -210,6 +258,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>alleleA</h4>
 <pre>public final&nbsp;short alleleA</pre>
+<div class="block">The correlated allele for variant A.</div>
 </li>
 </ul>
 <a name="alleleB">
@@ -219,6 +268,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>alleleB</h4>
 <pre>public final&nbsp;short alleleB</pre>
+<div class="block">The correlated allele for variant B.</div>
 </li>
 </ul>
 <a name="r2Value">
@@ -228,6 +278,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li class="blockList">
 <h4>r2Value</h4>
 <pre>public final&nbsp;float r2Value</pre>
+<div class="block">The r2 value of the correlation.</div>
 </li>
 </ul>
 </li>
@@ -248,6 +299,78 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
           short&nbsp;alleleA,
           short&nbsp;alleleB,
           float&nbsp;r2Value)</pre>
+<div class="block">Constructor.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>variantB</code> - The index of variant B in the LD matrix.</dd>
+<dd><code>alleleA</code> - The correlated allele for variant A.</dd>
+<dd><code>alleleB</code> - The correlated allele for variant B.</dd>
+<dd><code>r2Value</code> - The r2 value of the correlation.</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<!-- ============ METHOD DETAIL ========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method.detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="getVariantBId--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getVariantBId</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getVariantBId()</pre>
+<div class="block">Returns the id of variant B.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The id of variant B.</dd>
+</dl>
+</li>
+</ul>
+<a name="setVariantBId-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setVariantBId</h4>
+<pre>public&nbsp;void&nbsp;setVariantBId(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantBId)</pre>
+<div class="block">Sets the id of variant B.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>variantBId</code> - The id of variant B.</dd>
+</dl>
+</li>
+</ul>
+<a name="getVariantBRsid--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getVariantBRsid</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getVariantBRsid()</pre>
+<div class="block">Returns the rsid of variant B.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The esid of variant B.</dd>
+</dl>
+</li>
+</ul>
+<a name="setVariantBRsid-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setVariantBRsid</h4>
+<pre>public&nbsp;void&nbsp;setVariantBRsid(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;rsidBId)</pre>
+<div class="block">Sets the rsid of variant B.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>rsidBId</code> - The esid of variant B.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -306,13 +429,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#methods.inherited.from.class.java.lang.Object">Method</a></li>
+<li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
 <a name="skip.navbar.bottom">

@@ -22,6 +22,7 @@ import no.uib.triogen.io.ld.LdMatrixReader;
 import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.utils.Utils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -163,6 +164,16 @@ public class LdValue {
 
                             if (result != null) {
 
+                                for (R2 r2 : result) {
+
+                                    String variantB = ldMatrixReader.getId(r2.variantB);
+                                    r2.setVariantBId(variantB);
+
+                                    String rsidB = ldMatrixReader.getRsId(variantB);
+                                    r2.setVariantBRsid(rsidB);
+
+                                }
+
                                 results.put(variantId, result);
 
                             }
@@ -181,16 +192,34 @@ public class LdValue {
 
         JSONObject resultJson = new JSONObject();
 
-        for (Entry<String, ArrayList<R2>> entry : results.entrySet()) {
+        for (String variantId : variantList.variantId) {
 
-            ArrayList<R2> ldMap = entry.getValue();
+            ArrayList<R2> r2Array = results.get(variantId);
 
-            if (ldMap != null) {
+            if (r2Array != null) {
 
-                String variantId = entry.getKey();
-                JSONObject ldMapJson = new JSONObject(ldMap);
+                JSONArray array = new JSONArray();
 
-                resultJson.put(variantId, ldMapJson);
+                for (R2 r2 : r2Array) {
+
+                    JSONObject r2Json = new JSONObject();
+
+                    r2Json.put("variantA", variantId);
+                    r2Json.put("alleleA", r2.alleleA);
+                    r2Json.put("variantB", r2.getVariantBId());
+                    r2Json.put("rsidB", r2.getVariantBRsid());
+                    r2Json.put("alleleA", r2.alleleB);
+                    r2Json.put("r2", r2.r2Value);
+
+                    array.put(r2Json);
+
+                }
+
+                resultJson.put(variantId, array);
+
+            } else {
+
+                resultJson.put(variantId, "Not Found");
 
             }
         }
