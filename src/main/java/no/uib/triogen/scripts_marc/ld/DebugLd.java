@@ -42,7 +42,7 @@ public class DebugLd {
             String variantId = "20:11209782_C_T";
             int position = 11209782;
 
-            File output = new File("/mnt/work/marc/moba/trioGen/tmp");
+            File output = new File("/mnt/work/marc/moba/trioGen/tmp", rsid + "_ld");
 
             File trioFile = new File("/mnt/work/marc/moba/run/triogen/pheno/trio");
 
