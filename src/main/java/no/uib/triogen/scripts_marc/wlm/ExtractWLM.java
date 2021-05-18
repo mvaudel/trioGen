@@ -20,8 +20,8 @@ public class ExtractWLM {
      */
     public static void main(String[] args) {
 
-        File wlmFile = new File("C:\\Projects\\placenta_weight\\meta_results\\prs_wlm_2.gz");
-        File destinationFile = new File("C:\\Projects\\placenta_weight\\meta_results\\prs_wlm_2_pw.gz");
+        File wlmFile = new File("C:\\Projects\\placenta_weight\\meta_results\\prs_wlm_200000.gz");
+        File destinationFile = new File("C:\\Projects\\placenta_weight\\meta_results\\prs_wlm_200000_pw.gz");
         
         File targetsFile = new File("C:\\Github\\placenta_weight\\resources\\targets\\targets_pw");
         
