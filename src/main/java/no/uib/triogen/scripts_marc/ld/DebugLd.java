@@ -39,6 +39,7 @@ public class DebugLd {
 
             String chromosome = "1";
             String rsid = "rs6040450";
+            String variantId = "20:11209782_C_T";
 
             File output = new File("/mnt/work/marc/moba/trioGen/tmp");
 
@@ -96,7 +97,7 @@ public class DebugLd {
                 
                 variantInformationA = bgenIndex.variantInformationArray[i];
 
-                if (variantInformationA.rsId.equals(rsid)) {
+                if (variantInformationA.id.equals(variantId)) {
                     
                     indexA = i;
 
@@ -105,7 +106,7 @@ public class DebugLd {
                 }
             }
 
-            if (variantInformationA == null) {
+            if (indexA == -1) {
                 
                 throw new IllegalArgumentException("Variant " + rsid + " not found.");
                 
