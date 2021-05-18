@@ -98,7 +98,7 @@ public class DebugLd {
 
                 variantInformationA = bgenIndex.variantInformationArray[i];
 
-                if (variantInformationA.id.equals(variantId)) {
+                if (variantInformationA.rsId.equals(rsid) || variantInformationA.id.equals(variantId)) {
 
                     indexA = i;
 
@@ -109,13 +109,13 @@ public class DebugLd {
 
             if (indexA == -1) {
 
-                System.out.println("Variant not found. Variants within 1kp");
+                System.out.println("Variant not found. Variants within 10kb");
 
                 for (int i = 0; i < bgenIndex.sampleIds.length; i++) {
 
                     variantInformationA = bgenIndex.variantInformationArray[i];
 
-                    if (variantInformationA.position >= position - 1000 && variantInformationA.position <= position + 1000) {
+                    if (variantInformationA.position >= position - 10000 && variantInformationA.position <= position + 10000) {
 
                         System.out.println(variantInformationA.id);
 
