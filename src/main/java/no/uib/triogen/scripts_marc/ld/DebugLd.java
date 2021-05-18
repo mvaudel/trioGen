@@ -97,6 +97,8 @@ public class DebugLd {
                 variantInformationA = bgenIndex.variantInformationArray[i];
 
                 if (variantInformationA.rsId.equals(rsid)) {
+                    
+                    indexA = i;
 
                     break;
 
