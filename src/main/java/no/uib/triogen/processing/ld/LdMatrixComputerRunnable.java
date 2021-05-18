@@ -143,6 +143,8 @@ public class LdMatrixComputerRunnable implements Runnable {
     public void run() {
 
         try {
+            
+                    System.out.println("DEBUG");
 
             Integer indexA;
             while ((indexA = iteratorA.next()) != null && !canceled) {
@@ -160,6 +162,10 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                     }
 
+                } else {
+                    
+                    continue;
+                    
                 }
 
                 if (Math.abs(variantInformationA.position - 11209782) > 600000) {
