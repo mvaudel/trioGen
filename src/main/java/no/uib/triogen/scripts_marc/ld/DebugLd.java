@@ -37,7 +37,7 @@ public class DebugLd {
 
         try {
 
-            String chromosome = "1";
+            String chromosome = "20";
             String rsid = "rs6040450";
             String variantId = "20:11209782_C_T";
             int position = 11209782;
@@ -46,7 +46,7 @@ public class DebugLd {
 
             File trioFile = new File("/mnt/work/marc/moba/run/triogen/pheno/trio");
 
-            File bgenFile = new File("/mnt/archive2/marc/moba/phased_bgen/1.phased.bgen");
+            File bgenFile = new File("/mnt/archive2/marc/moba/phased_bgen/20.phased.bgen");
             HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(chromosome);
             int defaultMotherPloidy = InheritanceUtils.getDefaultMotherPloidy(chromosome);
             int defaultFatherPloidy = InheritanceUtils.getDefaultFatherPloidy(chromosome);
@@ -95,11 +95,11 @@ public class DebugLd {
             VariantInformation variantInformationA = null;
 
             for (int i = 0; i < bgenIndex.sampleIds.length; i++) {
-                
+
                 variantInformationA = bgenIndex.variantInformationArray[i];
 
                 if (variantInformationA.id.equals(variantId)) {
-                    
+
                     indexA = i;
 
                     break;
@@ -109,21 +109,21 @@ public class DebugLd {
 
             if (indexA == -1) {
 
-            System.out.println("Variant not found. Variants at position");
+                System.out.println("Variant not found. Variants within 1kp");
 
-            for (int i = 0; i < bgenIndex.sampleIds.length; i++) {
-                
-                variantInformationA = bgenIndex.variantInformationArray[i];
+                for (int i = 0; i < bgenIndex.sampleIds.length; i++) {
 
-                if (variantInformationA.position == position) {
-                    
-            System.out.println(variantInformationA.id);
+                    variantInformationA = bgenIndex.variantInformationArray[i];
 
+                    if (variantInformationA.position >= position - 1000 && variantInformationA.position <= position + 1000) {
+
+                        System.out.println(variantInformationA.id);
+
+                    }
                 }
-            }
-                
+
                 throw new IllegalArgumentException("Variant " + rsid + " not found.");
-                
+
             }
 
             float[][] pHomA = p0Cache.getPHomozygous(variantInformationA.id);
