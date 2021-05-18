@@ -145,6 +145,7 @@ public class LdMatrixComputerRunnable implements Runnable {
         try {
             
                     System.out.println("DEBUG");
+                    boolean debug = true;
 
             Integer indexA;
             while ((indexA = iteratorA.next()) != null && !canceled) {
@@ -162,16 +163,16 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                     }
 
-                } else {
-                    
-                    continue;
-                    
                 }
 
                 if (Math.abs(variantInformationA.position - 11209782) > 600000) {
 
                     continue;
 
+                } else if (debug) {
+                    
+                        System.out.println("Begin region - " + variantInformationA.id);
+                    
                 }
 
                 if (!excludedVariants.contains(indexA)) {
