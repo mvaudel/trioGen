@@ -94,7 +94,7 @@ public class DebugLd {
             int indexA = -1;
             VariantInformation variantInformationA = null;
 
-            for (int i = 0; i < bgenIndex.sampleIds.length; i++) {
+            for (int i = 0; i < bgenIndex.variantIdArray.length; i++) {
 
                 variantInformationA = bgenIndex.variantInformationArray[i];
 
@@ -111,7 +111,7 @@ public class DebugLd {
 
                 System.out.println("Variant not found. Variants within 10kb");
 
-                for (int i = 0; i < bgenIndex.sampleIds.length; i++) {
+                for (int i = 0; i < bgenIndex.variantIdArray.length; i++) {
 
                     variantInformationA = bgenIndex.variantInformationArray[i];
 
