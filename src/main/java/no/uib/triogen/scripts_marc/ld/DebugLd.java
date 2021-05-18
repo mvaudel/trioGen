@@ -40,6 +40,7 @@ public class DebugLd {
             String chromosome = "1";
             String rsid = "rs6040450";
             String variantId = "20:11209782_C_T";
+            int position = 11209782;
 
             File output = new File("/mnt/work/marc/moba/trioGen/tmp");
 
@@ -84,7 +85,7 @@ public class DebugLd {
 
             System.out.println("Parsing " + trioFile + " done (" + duration + " seconds)");
 
-            System.out.println("Loading results for " + rsid + ".");
+            System.out.println("Loading results for " + variantId + ".");
 
             start = Instant.now().getEpochSecond();
 
@@ -107,6 +108,19 @@ public class DebugLd {
             }
 
             if (indexA == -1) {
+
+            System.out.println("Variant not found. Variants at position");
+
+            for (int i = 0; i < bgenIndex.sampleIds.length; i++) {
+                
+                variantInformationA = bgenIndex.variantInformationArray[i];
+
+                if (variantInformationA.position == position) {
+                    
+            System.out.println(variantInformationA.id);
+
+                }
+            }
                 
                 throw new IllegalArgumentException("Variant " + rsid + " not found.");
                 
