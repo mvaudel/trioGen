@@ -172,6 +172,8 @@ public class LdMatrixComputerRunnable implements Runnable {
                 } else if (debug) {
                     
                         System.out.println("Begin region - " + variantInformationA.id);
+                        
+                        debug = false;
                     
                 }
 
