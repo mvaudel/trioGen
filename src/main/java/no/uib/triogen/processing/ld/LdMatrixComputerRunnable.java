@@ -147,10 +147,30 @@ public class LdMatrixComputerRunnable implements Runnable {
             Integer indexA;
             while ((indexA = iteratorA.next()) != null && !canceled) {
 
+                // DEBUG
+                VariantInformation variantInformationA = bgenIndex.variantInformationArray[indexA];
+
+                if (variantInformationA.id.equals("20_11209782_C_T")) {
+
+                    System.out.println("Variant A: 20_11209782_C_T");
+
+                    if (excludedVariants.contains(indexA)) {
+
+                        System.out.println("EXCLUDED");
+
+                    }
+
+                }
+
+                if (Math.abs(variantInformationA.position - 11209782) > 600000) {
+
+                    continue;
+
+                }
+
                 if (!excludedVariants.contains(indexA)) {
 
-                    VariantInformation variantInformationA = bgenIndex.variantInformationArray[indexA];
-
+//                    VariantInformation variantInformationA = bgenIndex.variantInformationArray[indexA];
                     float[][] pHomA = p0Cache.getPHomozygous(variantInformationA.id);
 
                     if (pHomA == null) {
@@ -162,6 +182,20 @@ public class LdMatrixComputerRunnable implements Runnable {
                         );
 
                         if (!hasAlleles(variantData)) {
+
+                            if (variantInformationA.id.equals("20_11209782_C_T")) {
+
+                                System.out.println("No alleles");
+
+                                for (int allele : variantData.getOrderedAlleles()) {
+
+                                    double frequency = variantData.getAlleleFrequency(allele);
+
+                                    System.out.println(allele + ": " + frequency);
+
+                                }
+
+                            }
 
                             if (excludedVariants.size() > 1000000) {
 
@@ -268,6 +302,12 @@ public class LdMatrixComputerRunnable implements Runnable {
                             p0Cache.release(threadIndex, variantInformationA.position - maxDistance);
 
                         }
+                    }
+
+                    if (variantInformationA.id.equals("20_11209782_C_T")) {
+
+                        System.out.println("r2 size: " + r2s.size());
+
                     }
                     if (!r2s.isEmpty()) {
 

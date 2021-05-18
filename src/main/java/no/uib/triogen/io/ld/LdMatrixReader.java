@@ -128,7 +128,7 @@ public class LdMatrixReader implements AutoCloseable {
             indexMap = new HashMap<>(nVariants);
 
             for (int i = 0; i < nVariants; i++) {
-
+                
                 int variantI = byteBuffer.getInt();
                 String variantId = variantIds[variantI];
                 long index = byteBuffer.getLong();

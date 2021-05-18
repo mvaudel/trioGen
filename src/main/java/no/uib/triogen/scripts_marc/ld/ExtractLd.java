@@ -23,12 +23,19 @@ public class ExtractLd {
 
         try {
 
-            File ldFile = new File("tmp/23_ld_test.gz.tld");
+            File ldFile = new File("tmp/20.tld");
             LdMatrixReader ldMatrixReader = new LdMatrixReader(ldFile);
+            
+            
+                ArrayList<R2> result = ldMatrixReader.getR2("rs6040450");
 
             String[] variantIds = ldMatrixReader.variantIds;
 
             for (String variantId : variantIds) {
+                
+                if (variantId.equals("20_11209782_C_T")) {
+                    int debug = 1;
+                }
 
                 ArrayList<R2> variantLdMap = ldMatrixReader.getR2(variantId);
 
