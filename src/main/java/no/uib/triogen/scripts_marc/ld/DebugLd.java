@@ -90,18 +90,24 @@ public class DebugLd {
             ZstdDecompressor decompressor = new ZstdDecompressor();
 
             int indexA = -1;
+            VariantInformation variantInformationA = null;
 
             for (int i = 0; i < bgenIndex.sampleIds.length; i++) {
+                
+                variantInformationA = bgenIndex.variantInformationArray[i];
 
-                if (bgenIndex.sampleIds[i].equals(rsid)) {
+                if (variantInformationA.rsId.equals(rsid)) {
 
-                    indexA = i;
                     break;
 
                 }
             }
 
-            VariantInformation variantInformationA = bgenIndex.variantInformationArray[indexA];
+            if (variantInformationA == null) {
+                
+                throw new IllegalArgumentException("Variant " + rsid + " not found.");
+                
+            }
 
             float[][] pHomA = p0Cache.getPHomozygous(variantInformationA.id);
 
