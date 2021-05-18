@@ -11,6 +11,7 @@ import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
+import no.uib.triogen.io.ld.LdMatrixReader;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.genome.VariantInformation;
 import no.uib.triogen.model.ld.R2;
@@ -42,11 +43,13 @@ public class DebugLd {
             String variantId = "20:11209782_C_T";
             int position = 11209782;
 
-            File output = new File("/mnt/work/marc/moba/trioGen/tmp", rsid + "_ld");
+            File output1 = new File("/mnt/work/marc/moba/trioGen/tmp", rsid + "_raw_ld");
+            File output2 = new File("/mnt/work/marc/moba/trioGen/tmp", rsid + "_precomputed_ld");
 
             File trioFile = new File("/mnt/work/marc/moba/run/triogen/pheno/trio");
-
             File bgenFile = new File("/mnt/archive2/marc/moba/phased_bgen/20.phased.bgen");
+            File ldFile = new File("/mnt/archive2/marc/moba/ld/20.tld");
+
             HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(chromosome);
             int defaultMotherPloidy = InheritanceUtils.getDefaultMotherPloidy(chromosome);
             int defaultFatherPloidy = InheritanceUtils.getDefaultFatherPloidy(chromosome);
@@ -85,7 +88,7 @@ public class DebugLd {
 
             System.out.println("Parsing " + trioFile + " done (" + duration + " seconds)");
 
-            System.out.println("Loading results for " + variantId + ".");
+            System.out.println("Getting raw LD for " + variantId + ".");
 
             start = Instant.now().getEpochSecond();
 
@@ -146,20 +149,17 @@ public class DebugLd {
 
             }
 
-            ArrayList<R2> r2s = new ArrayList<>(2);
-
             pHomA = p0Cache.getPHomozygous(variantInformationA.id);
 
-            try (SimpleFileWriter writer = new SimpleFileWriter(output, false)) {
+            try (SimpleFileWriter writer = new SimpleFileWriter(output1, false)) {
 
                 writer.writeLine(
                         "variant_A",
                         "rsid_A",
                         "allele_A",
                         "variant_B",
-                        "rsid_A",
+                        "rsid_B",
                         "allele_B",
-                        "d",
                         "r2"
                 );
 
@@ -237,7 +237,6 @@ public class DebugLd {
                                         variantInformationB.id,
                                         variantInformationB.rsId,
                                         variantInformationB.alleles[alleleIA],
-                                        Double.toString(d),
                                         Double.toString(r2Value)
                                 );
 
@@ -250,7 +249,51 @@ public class DebugLd {
             end = Instant.now().getEpochSecond();
             duration = end - start;
 
-            System.out.println("Parsing " + bgenFile + " done (" + duration + " seconds)");
+            System.out.println("Getting raw LD from " + bgenFile + " done (" + duration + " seconds)");
+
+            System.out.println("Getting precomputed LD for " + variantId + ".");
+
+            start = Instant.now().getEpochSecond();
+
+            try (SimpleFileWriter writer = new SimpleFileWriter(output2, false)) {
+
+                writer.writeLine(
+                        "variant_A",
+                        "rsid_A",
+                        "allele_A",
+                        "variant_B",
+                        "rsid_B",
+                        "allele_B",
+                        "r2"
+                );
+
+                LdMatrixReader ldMatrixReader = new LdMatrixReader(ldFile);
+
+                ArrayList<R2> result = ldMatrixReader.getR2(variantId);
+
+                for (R2 r2 : result) {
+
+                    String variantB = ldMatrixReader.getId(r2.variantB);
+
+                    String rsidB = ldMatrixReader.getRsId(variantB);
+
+                    writer.writeLine(
+                            variantId,
+                            rsid,
+                            r2.alleleA + "",
+                            variantB,
+                            rsidB,
+                            r2.alleleB + "",
+                            Double.toString(r2.r2Value)
+                    );
+
+                }
+            }
+
+            end = Instant.now().getEpochSecond();
+            duration = end - start;
+
+            System.out.println("Getting precomputed LD from " + bgenFile + " done (" + duration + " seconds)");
 
         } catch (Throwable t) {
             t.printStackTrace();
