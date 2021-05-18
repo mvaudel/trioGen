@@ -44,7 +44,7 @@ public class DebugLd {
 
             File trioFile = new File("/mnt/work/marc/moba/run/triogen/pheno/trio");
 
-            File bgenFile = new File("/mnt/archive/MOBAGENETICS/genotypes-base/imputed/all/bgen/1:22.bgen");
+            File bgenFile = new File("/mnt/archive/MOBAGENETICS/genotypes-base/imputed/all/bgen/1.bgen");
             HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(chromosome);
             int defaultMotherPloidy = InheritanceUtils.getDefaultMotherPloidy(chromosome);
             int defaultFatherPloidy = InheritanceUtils.getDefaultFatherPloidy(chromosome);
