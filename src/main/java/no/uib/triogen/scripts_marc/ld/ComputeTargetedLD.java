@@ -4,7 +4,6 @@ import io.airlift.compress.zstd.ZstdDecompressor;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.IntStream;
 import no.uib.cell_rk.utils.SimpleFileWriter;
@@ -13,10 +12,8 @@ import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
-import no.uib.triogen.io.ld.LdMatrixReader;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.genome.VariantInformation;
-import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 import no.uib.triogen.processing.ld.P0Cache;
 
@@ -127,7 +124,7 @@ public class ComputeTargetedLD {
             ChildToParentMap childToParentMap
     ) throws IOException {
 
-        File output = new File("/mnt/work/marc/moba/trioGen/tmp", rsid + "_ld.");
+        File output = new File("/mnt/work/marc/moba/trioGen/tmp", rsid + "_ld.gz");
 
         P0Cache p0Cache = new P0Cache(1);
 
@@ -155,7 +152,7 @@ public class ComputeTargetedLD {
 
         if (indexA == -1) {
 
-            throw new IllegalArgumentException("Variant " + rsid + " not found.");
+            System.out.println(rsid + " not found.");
 
         }
 
@@ -228,9 +225,9 @@ public class ComputeTargetedLD {
                 }
 
                 pHomB = p0Cache.getPHomozygous(variantInformationB.id);
-        int[] allelesB = p0Cache.getOrderedAlleles(variantInformationB.id);
+                int[] allelesB = p0Cache.getOrderedAlleles(variantInformationB.id);
 
-                for (int iA = 0; iA < variantInformationA.alleles.length-1; iA++) {
+                for (int iA = 0; iA < variantInformationA.alleles.length - 1; iA++) {
 
                     for (short iB = 0; iB < variantInformationB.alleles.length - 1; iB++) {
 
