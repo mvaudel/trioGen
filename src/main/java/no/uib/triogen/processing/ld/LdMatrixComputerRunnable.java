@@ -5,6 +5,9 @@ import io.airlift.compress.zstd.ZstdDecompressor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
@@ -89,7 +92,16 @@ public class LdMatrixComputerRunnable implements Runnable {
      * Cache for the variants that have less than two alleles passing the allele
      * frequency threshold.
      */
-    private final HashSet<Integer> excludedVariants = new HashSet<>();
+    private static final HashSet<Integer> excludedVariants = new HashSet<>();
+    /**
+     * The interval at which this thread should check the cache in number of
+     * variants.
+     */
+    public static final int N_CACHE_FREQ = 10000;
+    /**
+     * Map of semaphore to synchronize the parsing between threads.
+     */
+    private final static ConcurrentHashMap<Integer, Semaphore> parseSemaphores = new ConcurrentHashMap<>();
 
     /**
      * Constructor.
@@ -143,81 +155,75 @@ public class LdMatrixComputerRunnable implements Runnable {
     public void run() {
 
         try {
-            
-                    System.out.println("DEBUG");
-                    boolean debug = true;
+
+            int cacheCounter = (new Random()).nextInt(N_CACHE_FREQ);
 
             Integer indexA;
             while ((indexA = iteratorA.next()) != null && !canceled) {
 
-                // DEBUG
-                VariantInformation variantInformationA = bgenIndex.variantInformationArray[indexA];
-
-                if (variantInformationA.id.equals("20_11209782_C_T")) {
-
-                    System.out.println("Variant A: 20_11209782_C_T");
-
-                    if (excludedVariants.contains(indexA)) {
-
-                        System.out.println("EXCLUDED");
-
-                    }
-
-                }
-
-                if (Math.abs(variantInformationA.position - 11209782) > 600000) {
-
-                    continue;
-
-                } else if (debug) {
-                    
-                        System.out.println("Begin region - " + variantInformationA.id);
-                        
-                        debug = false;
-                    
-                }
-
                 if (!excludedVariants.contains(indexA)) {
 
-//                    VariantInformation variantInformationA = bgenIndex.variantInformationArray[indexA];
+                    VariantInformation variantInformationA = bgenIndex.variantInformationArray[indexA];
+
                     float[][] pHomA = p0Cache.getPHomozygous(variantInformationA.id);
 
                     if (pHomA == null) {
 
-                        BgenVariantData variantData = bgenFileReader.getVariantData(indexA);
-                        variantData.parse(
-                                childToParentMap,
-                                decompressor
-                        );
+                        Semaphore semaphore = parseSemaphores.get(indexA);
 
-                        if (!hasAlleles(variantData)) {
+                        if (semaphore != null) {
 
-                            if (variantInformationA.id.equals("20_11209782_C_T")) {
+                            semaphore.acquire();
 
-                                System.out.println("No alleles");
+                            if (excludedVariants.contains(indexA)) {
 
-                                for (int allele : variantData.getOrderedAlleles()) {
+                                semaphore.release();
 
-                                    double frequency = variantData.getAlleleFrequency(allele);
-
-                                    System.out.println(allele + ": " + frequency);
-
-                                }
+                                continue;
 
                             }
 
-                            if (excludedVariants.size() > 1000000) {
+                            pHomA = p0Cache.getPHomozygous(variantInformationA.id);
 
-                                excludedVariants.clear();
+                        } else {
 
-                            }
-
-                            excludedVariants.add(indexA);
-                            continue;
+                            semaphore = new Semaphore(1);
+                            semaphore.acquire();
+                            parseSemaphores.put(indexA, semaphore);
 
                         }
 
-                        p0Cache.register(variantData, childToParentMap);
+                        if (pHomA == null) {
+
+                            BgenVariantData variantData = bgenFileReader.getVariantData(indexA);
+                            variantData.parse(
+                                    childToParentMap,
+                                    decompressor
+                            );
+
+                            if (!hasAlleles(variantData)) {
+
+                                if (excludedVariants.size() > 1000000) {
+
+                                    excludedVariants.clear();
+
+                                }
+
+                                excludedVariants.add(indexA);
+
+                                semaphore.release();
+
+                                continue;
+
+                            }
+
+                            p0Cache.register(variantData, childToParentMap);
+
+                            pHomA = p0Cache.getPHomozygous(variantInformationA.id);
+
+                        }
+
+                        semaphore.release();
 
                     }
 
@@ -225,7 +231,7 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                     ArrayList<R2> r2s = new ArrayList<>(2);
 
-                    pHomA = p0Cache.getPHomozygous(variantInformationA.id);
+                    int[] allelesA = p0Cache.getOrderedAlleles(variantInformationA.id);
 
                     VariantIterator iteratorB = new VariantIterator(bgenIndex, variantInformationA.position - maxDistance, variantInformationA.position + maxDistance);
 
@@ -241,28 +247,62 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                             if (pHomB == null) {
 
-                                BgenVariantData variantData = bgenFileReader.getVariantData(indexB);
-                                variantData.parse(
-                                        childToParentMap,
-                                        decompressor
-                                );
+                                Semaphore semaphore = parseSemaphores.get(indexB);
 
-                                if (!hasAlleles(variantData)) {
+                                if (semaphore != null) {
 
-                                    excludedVariants.add(indexB);
-                                    continue;
+                                    semaphore.acquire();
+
+                                    if (excludedVariants.contains(indexB)) {
+
+                                        semaphore.release();
+
+                                        continue;
+
+                                    }
+
+                                    pHomB = p0Cache.getPHomozygous(variantInformationB.id);
+
+                                } else {
+
+                                    semaphore = new Semaphore(1);
+                                    semaphore.acquire();
+                                    parseSemaphores.put(indexB, semaphore);
 
                                 }
 
-                                p0Cache.register(variantData, childToParentMap);
+                                if (pHomB == null) {
 
+                                    BgenVariantData variantData = bgenFileReader.getVariantData(indexB);
+                                    variantData.parse(
+                                            childToParentMap,
+                                            decompressor
+                                    );
+
+                                    if (!hasAlleles(variantData)) {
+
+                                        excludedVariants.add(indexB);
+
+                                        semaphore.release();
+
+                                        continue;
+
+                                    }
+
+                                    p0Cache.register(variantData, childToParentMap);
+
+                                    pHomB = p0Cache.getPHomozygous(variantInformationB.id);
+
+                                    semaphore.release();
+
+                                }
                             }
 
-                            pHomB = p0Cache.getPHomozygous(variantInformationB.id);
+                            int[] allelesB = p0Cache.getOrderedAlleles(variantInformationB.id);
 
-                            for (short alleleIA = 0; alleleIA < variantInformationA.alleles.length; alleleIA++) {
+                            for (int alleleIA = 0; alleleIA < allelesA.length - 1; alleleIA++) {
 
-                                for (short alleleIB = 0; alleleIB < variantInformationB.alleles.length; alleleIB++) {
+                                for (int alleleIB = 0; alleleIB < allelesB.length - 1; alleleIB++) {
 
                                     double nA = 0.0;
                                     double nB = 0.0;
@@ -300,23 +340,14 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                                         if (r2Value > minR2) {
 
-                                            R2 r2 = new R2(variantIdB, alleleIA, alleleIB, (float) r2Value);
+                                            R2 r2 = new R2(variantIdB, (short) allelesA[alleleIA + 1], (short) allelesB[alleleIB + 1], (float) r2Value);
                                             r2s.add(r2);
 
                                         }
                                     }
                                 }
                             }
-
-                            p0Cache.release(threadIndex, variantInformationA.position - maxDistance);
-
                         }
-                    }
-
-                    if (variantInformationA.id.equals("20_11209782_C_T")) {
-
-                        System.out.println("r2 size: " + r2s.size());
-
                     }
                     if (!r2s.isEmpty()) {
 
@@ -325,6 +356,18 @@ public class LdMatrixComputerRunnable implements Runnable {
                                 r2s,
                                 compressor
                         );
+                    }
+
+                    if (++cacheCounter >= N_CACHE_FREQ) {
+
+                        p0Cache.releaseAndEmptyCache(threadIndex, variantInformationA.position - maxDistance);
+
+                        cacheCounter = 0;
+
+                    } else {
+
+                        p0Cache.release(threadIndex, variantInformationA.position - maxDistance);
+
                     }
                 }
             }
@@ -360,10 +403,11 @@ public class LdMatrixComputerRunnable implements Runnable {
     ) {
 
         int nAlleles = 0;
+        int[] orderedAlleles = variantData.getOrderedAlleles();
 
-        for (int allele : variantData.getOrderedAlleles()) {
+        for (int i = 1; i < orderedAlleles.length; i++) {
 
-            double frequency = variantData.getAlleleFrequency(allele);
+            double frequency = variantData.getAlleleFrequency(orderedAlleles[i]);
 
             if (frequency >= alleleFrequencyThreshold) {
 
@@ -376,7 +420,7 @@ public class LdMatrixComputerRunnable implements Runnable {
             }
         }
 
-        return nAlleles > 1;
+        return nAlleles > 0;
 
     }
 }

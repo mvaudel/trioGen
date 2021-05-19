@@ -2,7 +2,9 @@ package no.uib.triogen.cmd.ld_matrix;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.model.family.ChildToParentMap;
 import org.apache.commons.cli.CommandLine;
@@ -120,9 +122,20 @@ public class LdMatrix {
 
         } catch (Throwable e) {
 
+            logger.logError(
+                    Arrays.stream(e.getStackTrace())
+                            .map(
+                                    element -> element.toString()
+                            )
+                            .collect(Collectors.joining(" "))
+            );
+
             e.printStackTrace();
 
         }
+
+        logger.close();
+        
     }
 
     /**

@@ -20,7 +20,6 @@ public class P0Cache {
      * The current check-out position for each thread.
      */
     private final int[] checkOutPosition;
-
     /**
      * Map of the position of each variant.
      */
@@ -29,11 +28,14 @@ public class P0Cache {
      * Semaphore for the edition of the map.
      */
     private final SimpleSemaphore positionMapSemaphore = new SimpleSemaphore(1);
-
     /**
      * Map of the probability of being homozygous for each variant.
      */
     private final ConcurrentHashMap<String, float[][]> pHomozygous = new ConcurrentHashMap<>();
+    /**
+     * The ordered alleles for each variant.
+     */
+    private final ConcurrentHashMap<String, int[]> alleles = new ConcurrentHashMap<>();
 
     /**
      * Constructor.
@@ -65,13 +67,47 @@ public class P0Cache {
     }
 
     /**
-     * Releases the given position for the given thread. Once all threads are
-     * done at a given position, previous information is cleared from the cache.
+     * Returns the alleles ordered by allele frequency for the given variant.
+     *
+     * @param id The id of the variant.
+     *
+     * @return The alleles orderd by allele freqyency for the given variant.
+     */
+    public int[] getOrderedAlleles(
+            String id
+    ) {
+
+        return alleles.get(id);
+
+    }
+
+    /**
+     * Releases the given position for the given thread.
      *
      * @param thread The thread number.
      * @param pos The position on the chromosome.
      */
-    public void release(int thread, int pos) {
+    public void release(
+            int thread,
+            int pos
+    ) {
+
+        checkOutPosition[thread] = pos;
+
+    }
+
+    /**
+     * Releases the given position for the given thread. If all threads are done
+     * at the given position, information from variants upstream this position
+     * is cleared from the cache.
+     *
+     * @param thread The thread number.
+     * @param pos The position on the chromosome.
+     */
+    public void releaseAndEmptyCache(
+            int thread,
+            int pos
+    ) {
 
         checkOutPosition[thread] = pos;
 
@@ -101,6 +137,7 @@ public class P0Cache {
             for (String id : entry.getValue()) {
 
                 pHomozygous.remove(id);
+                alleles.remove(id);
 
             }
         }
@@ -121,14 +158,17 @@ public class P0Cache {
     ) {
 
         VariantInformation variantInformation = variantData.getVariantInformation();
+        int[] orderedAlleles = variantData.getOrderedAlleles();
 
-        float[][] variantPHomozygous = new float[variantInformation.alleles.length][2 * childToParentMap.children.length];
+        float[][] variantPHomozygous = new float[variantInformation.alleles.length - 1][2 * childToParentMap.children.length];
 
-        for (int alleleI = 0; alleleI < variantInformation.alleles.length; alleleI++) {
+        for (int alleleI = 1; alleleI < orderedAlleles.length; alleleI++) {
+            
+            int alleleIndex = orderedAlleles[alleleI];
 
-            for (int i = 0; i < childToParentMap.children.length; i++) {
+            for (int childI = 0; childI < childToParentMap.children.length; childI++) {
 
-                String childId = childToParentMap.children[i];
+                String childId = childToParentMap.children[childI];
 
                 String motherId = childToParentMap.getMother(childId);
 
@@ -138,15 +178,15 @@ public class P0Cache {
 
                     for (int z = 0; z < variantData.getPloidy(motherId); z++) {
 
-                        homozygous *= variantData.getProbability(motherId, z, alleleI);
+                        homozygous *= variantData.getProbability(motherId, z, alleleIndex);
 
                     }
 
-                    variantPHomozygous[alleleI][i] = homozygous;
+                    variantPHomozygous[alleleI - 1][childI] = homozygous;
 
                 } else {
 
-                    variantPHomozygous[alleleI][i] = Float.NaN;
+                    variantPHomozygous[alleleI - 1][childI] = Float.NaN;
 
                 }
 
@@ -158,32 +198,35 @@ public class P0Cache {
 
                     for (int z = 0; z < variantData.getPloidy(fatherId); z++) {
 
-                        homozygous *= variantData.getProbability(fatherId, z, alleleI);
+                        homozygous *= variantData.getProbability(fatherId, z, alleleIndex);
 
                     }
 
-                    variantPHomozygous[alleleI][i + childToParentMap.children.length] = homozygous;
+                    variantPHomozygous[alleleI - 1][childI + childToParentMap.children.length] = homozygous;
 
                 } else {
 
-                    variantPHomozygous[alleleI][i + childToParentMap.children.length] = Float.NaN;
+                    variantPHomozygous[alleleI - 1][childI + childToParentMap.children.length] = Float.NaN;
 
                 }
             }
         }
 
         pHomozygous.put(variantInformation.id, variantPHomozygous);
-        
+        alleles.put(variantInformation.id, orderedAlleles);
+
         savePosition(variantInformation);
 
     }
 
     /**
      * Saves the variant information sorted by position.
-     * 
-     * @param variantInformation 
+     *
+     * @param variantInformation
      */
-    private void savePosition(VariantInformation variantInformation) {
+    private void savePosition(
+            VariantInformation variantInformation
+    ) {
 
         positionMapSemaphore.acquire();
 
@@ -191,7 +234,7 @@ public class P0Cache {
 
         if (idsAtPosition == null) {
 
-            idsAtPosition = new ArrayList<>(2);
+            idsAtPosition = new ArrayList<>();
             positionMap.put(variantInformation.position, idsAtPosition);
 
         }
