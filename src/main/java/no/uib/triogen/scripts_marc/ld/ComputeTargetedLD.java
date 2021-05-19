@@ -127,7 +127,7 @@ public class ComputeTargetedLD {
             ChildToParentMap childToParentMap
     ) throws IOException {
 
-        File output = new File("/mnt/work/marc/moba/trioGen/tmp", rsid + "_ld.gz");
+        File output = new File("/mnt/work/marc/moba/trioGen/tmp", rsid + "_ld.");
 
         P0Cache p0Cache = new P0Cache(1);
 
@@ -186,6 +186,7 @@ public class ComputeTargetedLD {
         }
 
         pHomA = p0Cache.getPHomozygous(variantInformationA.id);
+        int[] allelesA = p0Cache.getOrderedAlleles(variantInformationA.id);
 
         try (SimpleFileWriter writer = new SimpleFileWriter(output, false)) {
 
@@ -227,18 +228,19 @@ public class ComputeTargetedLD {
                 }
 
                 pHomB = p0Cache.getPHomozygous(variantInformationB.id);
+        int[] allelesB = p0Cache.getOrderedAlleles(variantInformationB.id);
 
-                for (short alleleIA = 0; alleleIA < variantInformationA.alleles.length; alleleIA++) {
+                for (int iA = 0; iA < variantInformationA.alleles.length-1; iA++) {
 
-                    for (short alleleIB = 0; alleleIB < variantInformationB.alleles.length; alleleIB++) {
+                    for (short iB = 0; iB < variantInformationB.alleles.length - 1; iB++) {
 
                         double nA = 0.0;
                         double nB = 0.0;
                         double nAB = 0.0;
                         double n = 0.0;
 
-                        float[] allelePHomA = pHomA[alleleIA];
-                        float[] allelePHomB = pHomB[alleleIB];
+                        float[] allelePHomA = pHomA[iA];
+                        float[] allelePHomB = pHomB[iB];
 
                         for (int parentI = 0; parentI < allelePHomA.length; parentI++) {
 
@@ -269,10 +271,10 @@ public class ComputeTargetedLD {
                             writer.writeLine(
                                     variantInformationA.id,
                                     variantInformationA.rsId,
-                                    variantInformationA.alleles[alleleIA],
+                                    variantInformationA.alleles[allelesA[iA]],
                                     variantInformationB.id,
                                     variantInformationB.rsId,
-                                    variantInformationB.alleles[alleleIA],
+                                    variantInformationB.alleles[allelesB[iB]],
                                     Double.toString(r2Value)
                             );
 
