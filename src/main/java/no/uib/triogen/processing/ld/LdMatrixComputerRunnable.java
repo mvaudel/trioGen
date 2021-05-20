@@ -166,6 +166,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                     VariantInformation variantInformationA = bgenIndex.variantInformationArray[indexA];
 
                     float[][] pHomA = p0Cache.getPHomozygous(variantInformationA.id);
+                    int[] allelesA = p0Cache.getOrderedAlleles(variantInformationA.id);
 
                     if (pHomA == null) {
 
@@ -184,6 +185,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                             }
 
                             pHomA = p0Cache.getPHomozygous(variantInformationA.id);
+                            allelesA = p0Cache.getOrderedAlleles(variantInformationA.id);
 
                         } else {
 
@@ -220,6 +222,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                             p0Cache.register(variantData, childToParentMap);
 
                             pHomA = p0Cache.getPHomozygous(variantInformationA.id);
+                            allelesA = p0Cache.getOrderedAlleles(variantInformationA.id);
 
                         }
 
@@ -230,8 +233,6 @@ public class LdMatrixComputerRunnable implements Runnable {
                     int variantIdA = variantIndex.getIndex(variantInformationA.id, variantInformationA.rsId);
 
                     ArrayList<R2> r2s = new ArrayList<>(2);
-
-                    int[] allelesA = p0Cache.getOrderedAlleles(variantInformationA.id);
 
                     VariantIterator iteratorB = new VariantIterator(bgenIndex, variantInformationA.position - maxDistance, variantInformationA.position + maxDistance);
 
@@ -244,6 +245,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                             int variantIdB = variantIndex.getIndex(variantInformationB.id, variantInformationB.rsId);
 
                             float[][] pHomB = p0Cache.getPHomozygous(variantInformationB.id);
+                            int[] allelesB = p0Cache.getOrderedAlleles(variantInformationB.id);
 
                             if (pHomB == null) {
 
@@ -262,6 +264,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                                     }
 
                                     pHomB = p0Cache.getPHomozygous(variantInformationB.id);
+                                    allelesB = p0Cache.getOrderedAlleles(variantInformationB.id);
 
                                 } else {
 
@@ -292,13 +295,12 @@ public class LdMatrixComputerRunnable implements Runnable {
                                     p0Cache.register(variantData, childToParentMap);
 
                                     pHomB = p0Cache.getPHomozygous(variantInformationB.id);
+                                    allelesB = p0Cache.getOrderedAlleles(variantInformationB.id);
 
                                     semaphore.release();
 
                                 }
                             }
-
-                            int[] allelesB = p0Cache.getOrderedAlleles(variantInformationB.id);
 
                             for (int alleleIA = 0; alleleIA < allelesA.length - 1; alleleIA++) {
 
@@ -360,7 +362,7 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                     if (++cacheCounter >= N_CACHE_FREQ) {
 
-                        p0Cache.releaseAndEmptyCache(threadIndex, variantInformationA.position - maxDistance);
+                        p0Cache.releaseAndEmptyCache(threadIndex, variantInformationA.position - maxDistance - maxDistance / 10);
 
                         cacheCounter = 0;
 
