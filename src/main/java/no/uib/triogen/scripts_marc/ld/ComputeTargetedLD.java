@@ -153,6 +153,7 @@ public class ComputeTargetedLD {
         if (indexA == -1) {
 
             System.out.println(rsid + " not found.");
+            return;
 
         }
 
