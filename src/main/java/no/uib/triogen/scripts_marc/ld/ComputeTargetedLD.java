@@ -127,7 +127,7 @@ public class ComputeTargetedLD {
         File output = new File("/mnt/work/marc/moba/trioGen/tmp", rsid + "_ld.gz");
 
         P0Cache p0Cache = new P0Cache(1);
-        
+
         HashMap<String, double[]> afCache = new HashMap<>();
 
         System.out.println("Getting LD for " + rsid + ".");
@@ -183,7 +183,7 @@ public class ComputeTargetedLD {
             }
 
             p0Cache.register(variantData, childToParentMap);
-            
+
             afCache.put(variantInformationA.id, variantData.getAlleleFrequency());
 
         }
@@ -191,8 +191,16 @@ public class ComputeTargetedLD {
         pHomA = p0Cache.getPHomozygous(variantInformationA.id);
         int[] allelesA = p0Cache.getOrderedAlleles(variantInformationA.id);
         double[] afA = afCache.get(variantInformationA.id);
+        
+            System.out.println(indexA);
+            System.out.println("AF");
+            for (int iAF = 0 ; iAF < allelesA.length ; iAF++) {
+                
+            System.out.println(allelesA[iAF] + ": " + afA[iAF]);
+                
+            }
 
-        try (SimpleFileWriter writer = new SimpleFileWriter(output, false)) {
+        try (SimpleFileWriter writer = new SimpleFileWriter(output, true)) {
 
             writer.writeLine(
                     "variant_A",
@@ -212,6 +220,12 @@ public class ComputeTargetedLD {
             while ((indexB = iteratorB.next()) != null) {
 
                 VariantInformation variantInformationB = bgenIndex.variantInformationArray[indexB];
+                
+                if (variantInformationB.rsId.equals(rsid)) {
+                    
+            System.out.println(indexB);
+                    
+                }
 
                 float[][] pHomB = p0Cache.getPHomozygous(variantInformationB.id);
 
@@ -230,14 +244,14 @@ public class ComputeTargetedLD {
                     }
 
                     p0Cache.register(variantData, childToParentMap);
-            
-            afCache.put(variantInformationB.id, variantData.getAlleleFrequency());
+
+                    afCache.put(variantInformationB.id, variantData.getAlleleFrequency());
 
                 }
 
                 pHomB = p0Cache.getPHomozygous(variantInformationB.id);
                 int[] allelesB = p0Cache.getOrderedAlleles(variantInformationB.id);
-        double[] afB = afCache.get(variantInformationB.id);
+                double[] afB = afCache.get(variantInformationB.id);
 
                 for (int iA = 0; iA < variantInformationA.alleles.length - 1; iA++) {
 
@@ -276,9 +290,15 @@ public class ComputeTargetedLD {
                             double d = pAB - (pA * pB);
 
                             double r2Value = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
-                            
+                
+                if (variantInformationB.rsId.equals(rsid)) {
+                    
+            System.out.println("ok" + r2Value);
+                    
+                }
+
                             double alleleFrequencyA = afA[allelesA[iA]];
-                            double alleleFrequencyB = afA[allelesB[iB]];
+                            double alleleFrequencyB = afB[allelesB[iB]];
 
                             writer.writeLine(
                                     variantInformationA.id,
@@ -292,6 +312,14 @@ public class ComputeTargetedLD {
                                     Double.toString(r2Value)
                             );
 
+                        } else {
+                            
+                
+                if (variantInformationB.rsId.equals(rsid)) {
+                    
+            System.out.println("excluded");
+                    
+                }
                         }
                     }
                 }
