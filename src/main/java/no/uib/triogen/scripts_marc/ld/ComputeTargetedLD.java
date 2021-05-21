@@ -40,7 +40,7 @@ public class ComputeTargetedLD {
 
         try {
 
-            File targetsFile = new File("/mnt/work/marc/moba/mobaRun/target_Ellen");
+            File targetsFile = new File("/mnt/work/marc/moba/mobaRun/resources/triogen/targets/target_Ellen");
             File trioFile = new File("/mnt/work/marc/moba/run/triogen/pheno/trio");
 
             System.out.println("Parsing " + trioFile.getAbsolutePath() + ".");
@@ -127,6 +127,8 @@ public class ComputeTargetedLD {
         File output = new File("/mnt/work/marc/moba/trioGen/tmp", rsid + "_ld.gz");
 
         P0Cache p0Cache = new P0Cache(1);
+        
+        HashMap<String, double[]> afCache = new HashMap<>();
 
         System.out.println("Getting LD for " + rsid + ".");
 
@@ -136,6 +138,7 @@ public class ComputeTargetedLD {
 
         int indexA = -1;
         VariantInformation variantInformationA = null;
+        double[] af = null;
 
         for (int i = 0; i < bgenIndex.variantIdArray.length; i++) {
 
@@ -180,11 +183,14 @@ public class ComputeTargetedLD {
             }
 
             p0Cache.register(variantData, childToParentMap);
+            
+            afCache.put(variantInformationA.id, variantData.getAlleleFrequency());
 
         }
 
         pHomA = p0Cache.getPHomozygous(variantInformationA.id);
         int[] allelesA = p0Cache.getOrderedAlleles(variantInformationA.id);
+        double[] afA = afCache.get(variantInformationA.id);
 
         try (SimpleFileWriter writer = new SimpleFileWriter(output, false)) {
 
@@ -192,9 +198,11 @@ public class ComputeTargetedLD {
                     "variant_A",
                     "rsid_A",
                     "allele_A",
+                    "allele_frequency_A",
                     "variant_B",
                     "rsid_B",
                     "allele_B",
+                    "allele_frequency_B",
                     "r2"
             );
 
@@ -222,11 +230,14 @@ public class ComputeTargetedLD {
                     }
 
                     p0Cache.register(variantData, childToParentMap);
+            
+            afCache.put(variantInformationB.id, variantData.getAlleleFrequency());
 
                 }
 
                 pHomB = p0Cache.getPHomozygous(variantInformationB.id);
                 int[] allelesB = p0Cache.getOrderedAlleles(variantInformationB.id);
+        double[] afB = afCache.get(variantInformationB.id);
 
                 for (int iA = 0; iA < variantInformationA.alleles.length - 1; iA++) {
 
@@ -265,14 +276,19 @@ public class ComputeTargetedLD {
                             double d = pAB - (pA * pB);
 
                             double r2Value = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
+                            
+                            double alleleFrequencyA = afA[allelesA[iA]];
+                            double alleleFrequencyB = afA[allelesB[iB]];
 
                             writer.writeLine(
                                     variantInformationA.id,
                                     variantInformationA.rsId,
                                     variantInformationA.alleles[allelesA[iA]],
+                                    Double.toString(alleleFrequencyA),
                                     variantInformationB.id,
                                     variantInformationB.rsId,
                                     variantInformationB.alleles[allelesB[iB]],
+                                    Double.toString(alleleFrequencyB),
                                     Double.toString(r2Value)
                             );
 

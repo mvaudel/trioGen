@@ -670,6 +670,15 @@ public class BgenVariantData {
     }
 
     /**
+     * Returns the allele frequencies.
+     * 
+     * @return the allele frequencies
+     */
+    public double[] getAlleleFrequency() {
+        return alleleFrequency;
+    }
+
+    /**
      * Returns the indexes of the alleles ordered by decreasing frequency.
      *
      * @return The indexes of the alleles ordered by decreasing frequency.
