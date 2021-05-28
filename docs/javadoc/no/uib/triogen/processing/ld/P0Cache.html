@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -154,38 +154,41 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#block-int-int-">block</a></span>(int&nbsp;thread,
+     int&nbsp;pos)</code>
+<div class="block">Releases the given position for the given thread.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>int[]</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#cleanCache--">cleanCache</a></span>()</code>
+<div class="block">Clear information from the cache.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>int[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#getOrderedAlleles-java.lang.String-">getOrderedAlleles</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;id)</code>
 <div class="block">Returns the alleles ordered by allele frequency for the given variant.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>float[][]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#getPHomozygous-java.lang.String-">getPHomozygous</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;id)</code>
 <div class="block">Returns the probability of being homozygous for the given variant.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#register-no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData-no.uib.triogen.model.family.ChildToParentMap-">register</a></span>(<a href="../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a>&nbsp;variantData,
         <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</code>
 <div class="block">Saves the information needed for LD calculation in cache.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#release-int-int-">release</a></span>(int&nbsp;thread,
-       int&nbsp;pos)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#release-int-">release</a></span>(int&nbsp;thread)</code>
 <div class="block">Releases the given position for the given thread.</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#releaseAndEmptyCache-int-int-">releaseAndEmptyCache</a></span>(int&nbsp;thread,
-                    int&nbsp;pos)</code>
-<div class="block">Releases the given position for the given thread.If all threads are done
- at the given position, information from variants upstream this position
- is cleared from the cache.</div>
 </td>
 </tr>
 </table>
@@ -265,14 +268,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </dl>
 </li>
 </ul>
-<a name="release-int-int-">
+<a name="block-int-int-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>release</h4>
-<pre>public&nbsp;void&nbsp;release(int&nbsp;thread,
-                    int&nbsp;pos)</pre>
+<h4>block</h4>
+<pre>public&nbsp;void&nbsp;block(int&nbsp;thread,
+                  int&nbsp;pos)</pre>
 <div class="block">Releases the given position for the given thread.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -281,23 +284,31 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </dl>
 </li>
 </ul>
-<a name="releaseAndEmptyCache-int-int-">
+<a name="release-int-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>releaseAndEmptyCache</h4>
-<pre>public&nbsp;int&nbsp;releaseAndEmptyCache(int&nbsp;thread,
-                                int&nbsp;pos)</pre>
-<div class="block">Releases the given position for the given thread.If all threads are done
- at the given position, information from variants upstream this position
- is cleared from the cache.</div>
+<h4>release</h4>
+<pre>public&nbsp;void&nbsp;release(int&nbsp;thread)</pre>
+<div class="block">Releases the given position for the given thread.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>thread</code> - The thread number.</dd>
-<dd><code>pos</code> - The position on the chromosome.</dd>
+</dl>
+</li>
+</ul>
+<a name="cleanCache--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cleanCache</h4>
+<pre>public&nbsp;int[]&nbsp;cleanCache()</pre>
+<div class="block">Clear information from the cache.</div>
+<dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>Returns the position of the first value removed from cache. -1 if no value was removed.</dd>
+<dd>Returns the position of the first and last values removed from cache. Null if no value was removed.</dd>
 </dl>
 </li>
 </ul>

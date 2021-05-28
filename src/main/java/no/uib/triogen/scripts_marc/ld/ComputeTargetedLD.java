@@ -40,7 +40,7 @@ public class ComputeTargetedLD {
 
         try {
 
-            File targetsFile = new File("/mnt/work/marc/moba/mobaRun/resources/triogen/targets/target_Ellen");
+            File targetsFile = new File("/mnt/work/marc/moba/gestational_age/docs/targets/targets_ga");
             File trioFile = new File("/mnt/work/marc/moba/run/triogen/pheno/trio");
 
             System.out.println("Parsing " + trioFile.getAbsolutePath() + ".");
@@ -124,7 +124,7 @@ public class ComputeTargetedLD {
             ChildToParentMap childToParentMap
     ) throws IOException {
 
-        File output = new File("/mnt/work/marc/moba/trioGen/tmp", rsid + "_ld.gz");
+        File output = new File("/mnt/work/marc/moba/gestational_age/docs/ld", rsid + "_ld.gz");
 
         P0Cache p0Cache = new P0Cache(1);
 
@@ -191,14 +191,6 @@ public class ComputeTargetedLD {
         pHomA = p0Cache.getPHomozygous(variantInformationA.id);
         int[] allelesA = p0Cache.getOrderedAlleles(variantInformationA.id);
         double[] afA = afCache.get(variantInformationA.id);
-        
-            System.out.println(indexA);
-            System.out.println("AF");
-            for (int iAF = 0 ; iAF < allelesA.length ; iAF++) {
-                
-            System.out.println(allelesA[iAF] + ": " + afA[iAF]);
-                
-            }
 
         try (SimpleFileWriter writer = new SimpleFileWriter(output, true)) {
 
@@ -220,11 +212,11 @@ public class ComputeTargetedLD {
             while ((indexB = iteratorB.next()) != null) {
 
                 VariantInformation variantInformationB = bgenIndex.variantInformationArray[indexB];
-                
+
                 if (variantInformationB.rsId.equals(rsid)) {
-                    
-            System.out.println(indexB);
-                    
+
+                    System.out.println(indexB);
+
                 }
 
                 float[][] pHomB = p0Cache.getPHomozygous(variantInformationB.id);
@@ -290,12 +282,6 @@ public class ComputeTargetedLD {
                             double d = pAB - (pA * pB);
 
                             double r2Value = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
-                
-                if (variantInformationB.rsId.equals(rsid)) {
-                    
-            System.out.println("ok" + r2Value);
-                    
-                }
 
                             double alleleFrequencyA = afA[allelesA[iA]];
                             double alleleFrequencyB = afB[allelesB[iB]];
@@ -313,13 +299,12 @@ public class ComputeTargetedLD {
                             );
 
                         } else {
-                            
-                
-                if (variantInformationB.rsId.equals(rsid)) {
-                    
-            System.out.println("excluded");
-                    
-                }
+
+                            if (variantInformationB.rsId.equals(rsid)) {
+
+                                System.out.println("excluded");
+
+                            }
                         }
                     }
                 }

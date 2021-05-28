@@ -18,9 +18,9 @@ import no.uib.triogen.utils.SimpleSemaphore;
 public class P0Cache {
 
     /**
-     * The current check-out position for each thread.
+     * The current blocking position for each thread.
      */
-    private final int[] checkOutPosition;
+    private final int[] blockPosition;
     /**
      * Map of the position of each variant.
      */
@@ -47,7 +47,7 @@ public class P0Cache {
             int nThreads
     ) {
 
-        this.checkOutPosition = new int[nThreads];
+        this.blockPosition = new int[nThreads];
 
     }
 
@@ -88,39 +88,51 @@ public class P0Cache {
      * @param thread The thread number.
      * @param pos The position on the chromosome.
      */
-    public void release(
+    public void block(
             int thread,
             int pos
     ) {
 
-        checkOutPosition[thread] = pos;
+        blockPosition[thread] = pos;
 
     }
 
     /**
-     * Releases the given position for the given thread.If all threads are done
-     * at the given position, information from variants upstream this position
-     * is cleared from the cache.
+     * Releases the given position for the given thread.
      *
      * @param thread The thread number.
-     * @param pos The position on the chromosome.
-     *
-     * @return Returns the position of the first value removed from cache. -1 if no value was removed.
      */
-    public int releaseAndEmptyCache(
-            int thread,
-            int pos
+    public void release(
+            int thread
     ) {
 
-        checkOutPosition[thread] = pos;
+        blockPosition[thread] = -1;
 
-        for (int threadPosition : checkOutPosition) {
+    }
 
-            if (threadPosition < pos) {
+    /**
+     * Clear information from the cache.
+     *
+     * @return Returns the position of the first and last values removed from cache. Null if no value was removed.
+     */
+    public int[] cleanCache() {
+        
+        int lastLock = -1;
 
-                return -1;
+        for (int threadPosition : blockPosition) {
+
+            if (threadPosition > -1 && 
+                    (threadPosition < lastLock || lastLock == -1)) {
+                
+                        lastLock = threadPosition;
 
             }
+        }
+        
+        if (lastLock == -1) {
+            
+            return null;
+            
         }
 
         positionMapSemaphore.acquire();
@@ -133,7 +145,7 @@ public class P0Cache {
 
             int position = entry.getKey();
 
-            if (position > pos) {
+            if (position >= lastLock) {
 
                 break;
 
@@ -161,14 +173,14 @@ public class P0Cache {
 
         }
         
-        System.out.println("Cache emptied between " + firstPosition + " and " + pos);
+        System.out.println("Cache emptied between " + firstPosition + " and " + lastLock);
         System.out.println("pHomozygous size " + pHomozygous.size());
         System.out.println("alleles size " + alleles.size());
         System.out.println("positionMap size " + positionMap.size());
 
         positionMapSemaphore.release();
 
-        return firstPosition;
+        return new int[]{firstPosition, lastLock};
 
     }
 
