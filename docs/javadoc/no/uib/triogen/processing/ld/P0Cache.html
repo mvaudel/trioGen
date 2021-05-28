@@ -180,10 +180,12 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>void</code></td>
+<td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/ld/P0Cache.html#releaseAndEmptyCache-int-int-">releaseAndEmptyCache</a></span>(int&nbsp;thread,
                     int&nbsp;pos)</code>
-<div class="block">Releases the given position for the given thread.</div>
+<div class="block">Releases the given position for the given thread.If all threads are done
+ at the given position, information from variants upstream this position
+ is cleared from the cache.</div>
 </td>
 </tr>
 </table>
@@ -285,15 +287,17 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <ul class="blockList">
 <li class="blockList">
 <h4>releaseAndEmptyCache</h4>
-<pre>public&nbsp;void&nbsp;releaseAndEmptyCache(int&nbsp;thread,
-                                 int&nbsp;pos)</pre>
-<div class="block">Releases the given position for the given thread. If all threads are done
+<pre>public&nbsp;int&nbsp;releaseAndEmptyCache(int&nbsp;thread,
+                                int&nbsp;pos)</pre>
+<div class="block">Releases the given position for the given thread.If all threads are done
  at the given position, information from variants upstream this position
  is cleared from the cache.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>thread</code> - The thread number.</dd>
 <dd><code>pos</code> - The position on the chromosome.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Returns the position of the first value removed from cache. -1 if no value was removed.</dd>
 </dl>
 </li>
 </ul>

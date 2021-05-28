@@ -50,6 +50,13 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 All alleles of all variants within the given bp window are compared. LD R2 is computed using the parents in the trio file, when no genotype is found for the parents of a trio, the genotype of the child is used.
 
 
+### Performance considerations
+
+Depending on the window size and the number of samples, RAM requirement can become important possibly limiting the number of chromosomes that can be run in parallel. For ~100,000 samples and a max distance of 500,000 kb, this command requires approximately 20 GB of RAM. If the number of CPU used is lower than the number of variants to process in parallel, this is due to the reading and parsing of the bgen file, consider using ssd discs and removing low maf variants if this happens. 
+
+Please make sure that your disk is large enough to save the results. Depending on the threshold, the file size is around 1-10 kB per variant.
+
+
 ### Output
 
 The output file LD values between all the alleles of all the variants considered in a binary block-compressed format as detailed [here](../FileFormats.md).

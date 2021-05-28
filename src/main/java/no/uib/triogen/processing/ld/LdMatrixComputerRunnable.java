@@ -97,7 +97,11 @@ public class LdMatrixComputerRunnable implements Runnable {
      * The interval at which this thread should check the cache in number of
      * variants.
      */
-    public static final int N_CACHE_FREQ = 10000;
+    public static final int N_CACHE_FREQ = 1000;
+    /**
+     * The size of the cache for excluded variants.
+     */
+    public static final int EXCLUDED_VARIANTS_CACHE_SIZE = 1000000;
     /**
      * Map of semaphore to synchronize the parsing between threads.
      */
@@ -205,7 +209,7 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                             if (!hasAlleles(variantData)) {
 
-                                if (excludedVariants.size() > 1000000) {
+                                if (excludedVariants.size() > EXCLUDED_VARIANTS_CACHE_SIZE) {
 
                                     excludedVariants.clear();
 
@@ -362,12 +366,29 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                     if (++cacheCounter >= N_CACHE_FREQ) {
 
-                        p0Cache.releaseAndEmptyCache(threadIndex, variantInformationA.position - maxDistance - maxDistance / 10);
+                        // Empty maps and caches until this position
+                        int newCachePosition = variantInformationA.position - maxDistance - maxDistance / 10;
+
+                        int previousCachePosition = p0Cache.releaseAndEmptyCache(threadIndex, newCachePosition);
+
+                        if (previousCachePosition != -1 && previousCachePosition < newCachePosition) {
+
+                            VariantIterator tempIterator = new VariantIterator(bgenIndex, previousCachePosition, newCachePosition);
+
+                            Integer indexToRemove;
+                            while ((indexToRemove = tempIterator.next()) != null) {
+
+                                parseSemaphores.remove(indexToRemove);
+
+                            }
+
+                        }
 
                         cacheCounter = 0;
 
                     } else {
 
+                        // Notify other threads of progress
                         p0Cache.release(threadIndex, variantInformationA.position - maxDistance);
 
                     }

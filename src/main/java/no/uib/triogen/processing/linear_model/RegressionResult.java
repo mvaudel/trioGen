@@ -49,6 +49,10 @@ public class RegressionResult {
      */
     public double modelSignificance;
     /**
+     * Variance explained.
+     */
+    public double varianceExplained;
+    /**
      * Model significance relatively to included parent models.
      */
     public final double[] modelRelativeSignificance;
@@ -132,6 +136,8 @@ public class RegressionResult {
     public void computeModelSignificance(
             double rss0
     ) {
+        
+        varianceExplained = (rss0 - rss) / rss0;
 
         modelSignificance = getModelSignificance(
                 rss0,
@@ -261,6 +267,8 @@ public class RegressionResult {
     ) {
 
         stringBuilder
+                .append(IoUtils.SEPARATOR)
+                .append(varianceExplained)
                 .append(IoUtils.SEPARATOR)
                 .append(modelSignificance);
 

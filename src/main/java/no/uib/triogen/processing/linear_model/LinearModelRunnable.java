@@ -555,12 +555,12 @@ public class LinearModelRunnable implements Runnable {
 
                     for (int i = 0; i < rowsToRun.size(); i++) {
 
-                        for (int j = 0; j < model.betaNames.length; j++) {
-
                             int childIndex = rowsToRun.get(i);
 
                             y[i] = phenoValues[childIndex];
                             rss0 += rss0s[childIndex];
+
+                        for (int j = 0; j < model.betaNames.length; j++) {
 
                             double xValue = Model.getXValueAt(
                                     model,
@@ -663,7 +663,7 @@ public class LinearModelRunnable implements Runnable {
                     }
                 }
 
-                // Estimate model significance
+                // Estimate model significance relative to parent models
                 regressionRestultsMap.values()
                         .forEach(
                                 regressionResult -> regressionResult.computeModelSignificance(

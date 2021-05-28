@@ -531,6 +531,10 @@ public enum Model {
         stringBuilder
                 .append(IoUtils.SEPARATOR)
                 .append(
+                        String.join(".", name(), "variance_explained")
+                )
+                .append(IoUtils.SEPARATOR)
+                .append(
                         String.join(".", name(), "intercept", "p")
                 );
 

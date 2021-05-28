@@ -1,6 +1,7 @@
 package no.uib.triogen.processing.ld;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -97,14 +98,16 @@ public class P0Cache {
     }
 
     /**
-     * Releases the given position for the given thread. If all threads are done
+     * Releases the given position for the given thread.If all threads are done
      * at the given position, information from variants upstream this position
      * is cleared from the cache.
      *
      * @param thread The thread number.
      * @param pos The position on the chromosome.
+     *
+     * @return Returns the position of the first value removed from cache. -1 if no value was removed.
      */
-    public void releaseAndEmptyCache(
+    public int releaseAndEmptyCache(
             int thread,
             int pos
     ) {
@@ -115,12 +118,16 @@ public class P0Cache {
 
             if (threadPosition < pos) {
 
-                return;
+                return -1;
 
             }
         }
 
         positionMapSemaphore.acquire();
+
+        HashSet<Integer> positionToRemove = new HashSet<>();
+
+        int firstPosition = -1;
 
         for (Entry<Integer, ArrayList<String>> entry : positionMap.entrySet()) {
 
@@ -128,11 +135,17 @@ public class P0Cache {
 
             if (position > pos) {
 
-                positionMapSemaphore.release();
-
-                return;
+                break;
 
             }
+
+            if (firstPosition == -1) {
+
+                firstPosition = position;
+
+            }
+
+            positionToRemove.add(position);
 
             for (String id : entry.getValue()) {
 
@@ -142,7 +155,20 @@ public class P0Cache {
             }
         }
 
+        for (int position : positionToRemove) {
+
+            positionMap.remove(position);
+
+        }
+        
+        System.out.println("Cache emptied between " + firstPosition + " and " + pos);
+        System.out.println("pHomozygous size " + pHomozygous.size());
+        System.out.println("alleles size " + alleles.size());
+        System.out.println("positionMap size " + positionMap.size());
+
         positionMapSemaphore.release();
+
+        return firstPosition;
 
     }
 
@@ -163,7 +189,7 @@ public class P0Cache {
         float[][] variantPHomozygous = new float[variantInformation.alleles.length - 1][2 * childToParentMap.children.length];
 
         for (int alleleI = 1; alleleI < orderedAlleles.length; alleleI++) {
-            
+
             int alleleIndex = orderedAlleles[alleleI];
 
             for (int childI = 0; childI < childToParentMap.children.length; childI++) {
@@ -234,7 +260,7 @@ public class P0Cache {
 
         if (idsAtPosition == null) {
 
-            idsAtPosition = new ArrayList<>();
+            idsAtPosition = new ArrayList<>(1);
             positionMap.put(variantInformation.position, idsAtPosition);
 
         }

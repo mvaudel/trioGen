@@ -38,6 +38,11 @@ java -Xmx16G -cp your/folder/triogen-X.Y.Z/triogen-X.Y.Z.jar no.uib.triogen.cmd.
 Since genotyping probabilities are not phased, only hard-called genotypes are exported. Pobabilities are coded using an 8 bits precision. Genotypes are compressed using Zstd.
 
 
+### Performance considerations
+
+To improve the performance of this step and all downstream work on the bgen files, please consider removing low maf and low quality variants from the vcf file before processing.
+
+
 ### Output
 
 A bgen file and an index file containing the location of every variant.

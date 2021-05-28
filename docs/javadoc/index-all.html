@@ -705,6 +705,10 @@
  parents compared to the number of such trios expected according to the
  maf.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/ld/LdMatrixComputerRunnable.html#EXCLUDED_VARIANTS_CACHE_SIZE">EXCLUDED_VARIANTS_CACHE_SIZE</a></span> - Static variable in class no.uib.triogen.processing.ld.<a href="no/uib/triogen/processing/ld/LdMatrixComputerRunnable.html" title="class in no.uib.triogen.processing.ld">LdMatrixComputerRunnable</a></dt>
+<dd>
+<div class="block">The size of the cache for excluded variants.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/ld/LdMatrixUtils.html#EXTENSION">EXTENSION</a></span> - Static variable in class no.uib.triogen.io.ld.<a href="no/uib/triogen/io/ld/LdMatrixUtils.html" title="class in no.uib.triogen.io.ld">LdMatrixUtils</a></dt>
 <dd>
 <div class="block">The file extension.</div>
@@ -2462,7 +2466,9 @@
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/processing/ld/P0Cache.html#releaseAndEmptyCache-int-int-">releaseAndEmptyCache(int, int)</a></span> - Method in class no.uib.triogen.processing.ld.<a href="no/uib/triogen/processing/ld/P0Cache.html" title="class in no.uib.triogen.processing.ld">P0Cache</a></dt>
 <dd>
-<div class="block">Releases the given position for the given thread.</div>
+<div class="block">Releases the given position for the given thread.If all threads are done
+ at the given position, information from variants upstream this position
+ is cleared from the cache.</div>
 </dd>
 <dt><a href="no/uib/triogen/io/rest/Rest.html" title="class in no.uib.triogen.io.rest"><span class="typeNameLink">Rest</span></a> - Class in <a href="no/uib/triogen/io/rest/package-summary.html">no.uib.triogen.io.rest</a></dt>
 <dd>
@@ -2946,6 +2952,10 @@ the order they are declared.</div>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/prs/PrsOptionsBean.html#variables">variables</a></span> - Variable in class no.uib.triogen.cmd.prs.<a href="no/uib/triogen/cmd/prs/PrsOptionsBean.html" title="class in no.uib.triogen.cmd.prs">PrsOptionsBean</a></dt>
 <dd>
 <div class="block">Names of the variables.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/linear_model/RegressionResult.html#varianceExplained">varianceExplained</a></span> - Variable in class no.uib.triogen.processing.linear_model.<a href="no/uib/triogen/processing/linear_model/RegressionResult.html" title="class in no.uib.triogen.processing.linear_model">RegressionResult</a></dt>
+<dd>
+<div class="block">Variance explained.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/ld/R2.html#variantB">variantB</a></span> - Variable in class no.uib.triogen.model.ld.<a href="no/uib/triogen/model/ld/R2.html" title="class in no.uib.triogen.model.ld">R2</a></dt>
 <dd>
