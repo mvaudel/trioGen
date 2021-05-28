@@ -173,10 +173,10 @@ public class P0Cache {
 
         }
         
-        System.out.println("Cache emptied between " + firstPosition + " and " + lastLock);
-        System.out.println("pHomozygous size " + pHomozygous.size());
-        System.out.println("alleles size " + alleles.size());
-        System.out.println("positionMap size " + positionMap.size());
+//        System.out.println("Cache emptied between " + firstPosition + " and " + lastLock);
+//        System.out.println("pHomozygous size " + pHomozygous.size());
+//        System.out.println("alleles size " + alleles.size());
+//        System.out.println("positionMap size " + positionMap.size());
 
         positionMapSemaphore.release();
 

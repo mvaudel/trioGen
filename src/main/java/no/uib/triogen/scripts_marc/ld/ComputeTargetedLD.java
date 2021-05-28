@@ -213,12 +213,6 @@ public class ComputeTargetedLD {
 
                 VariantInformation variantInformationB = bgenIndex.variantInformationArray[indexB];
 
-                if (variantInformationB.rsId.equals(rsid)) {
-
-                    System.out.println(indexB);
-
-                }
-
                 float[][] pHomB = p0Cache.getPHomozygous(variantInformationB.id);
 
                 if (pHomB == null) {

@@ -371,8 +371,6 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                     if (++cacheCounter >= N_CACHE_FREQ) {
 
-                        System.out.println("Cache cleaning " + threadIndex + " (" + cacheCounter + ")");
-
                         int[] cleanedRegion = p0Cache.cleanCache();
 
                         if (cleanedRegion != null) {
