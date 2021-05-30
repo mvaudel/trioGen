@@ -174,7 +174,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                     float[][] pHomA = p0Cache.getPHomozygous(variantInformationA.id);
                     int[] allelesA = p0Cache.getOrderedAlleles(variantInformationA.id);
 
-                    if (pHomA == null) {
+                    if (pHomA == null || allelesA == null) {
 
                         Semaphore semaphore = parseSemaphores.get(indexA);
 
@@ -201,7 +201,7 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                         }
 
-                        if (pHomA == null) {
+                        if (pHomA == null || allelesA == null) {
 
                             BgenVariantData variantData = bgenFileReader.getVariantData(indexA);
                             variantData.parse(
@@ -253,7 +253,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                             float[][] pHomB = p0Cache.getPHomozygous(variantInformationB.id);
                             int[] allelesB = p0Cache.getOrderedAlleles(variantInformationB.id);
 
-                            if (pHomB == null) {
+                            if (pHomB == null || allelesB == null) {
 
                                 Semaphore semaphore = parseSemaphores.get(indexB);
 
@@ -280,7 +280,7 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                                 }
 
-                                if (pHomB == null) {
+                                if (pHomB == null || allelesB == null) {
 
                                     BgenVariantData variantData = bgenFileReader.getVariantData(indexB);
                                     variantData.parse(

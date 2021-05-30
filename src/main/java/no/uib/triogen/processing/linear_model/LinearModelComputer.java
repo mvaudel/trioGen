@@ -269,7 +269,7 @@ public class LinearModelComputer {
                 "contig",
                 "position",
                 "variantId",
-                "rsId",
+                "rsid",
                 "phenotype",
                 "compressedLength",
                 "uncompressedLength"

@@ -88,7 +88,7 @@ public class LdMatrix {
             throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
 
         }
-        
+
         int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
         int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
 
@@ -132,10 +132,11 @@ public class LdMatrix {
 
             e.printStackTrace();
 
-        }
+        } finally {
 
-        logger.close();
-        
+            logger.close();
+
+        }
     }
 
     /**
@@ -143,7 +144,7 @@ public class LdMatrix {
      */
     private static void printHelp() {
 
-        try ( PrintWriter lPrintWriter = new PrintWriter(System.out)) {
+        try (PrintWriter lPrintWriter = new PrintWriter(System.out)) {
             lPrintWriter.print(LINE_SEPARATOR);
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print("              trioGen             " + LINE_SEPARATOR);
