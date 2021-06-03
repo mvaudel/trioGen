@@ -450,7 +450,7 @@ public enum Model {
                 switch (j) {
                     
                     case 0: return childX[i][0];
-                    case 2: return haplotypeX[i][1];
+                    case 1: return haplotypeX[i][1];
                     default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
                     
                 }
@@ -460,7 +460,7 @@ public enum Model {
                 switch (j) {
                     
                     case 0: return childX[i][0];
-                    case 2: return haplotypeX[i][2];
+                    case 1: return haplotypeX[i][2];
                     default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
                     
                 }
@@ -474,7 +474,7 @@ public enum Model {
                 switch (j) {
                     
                     case 0: return motherX[i][0];
-                    case 2: return haplotypeX[i][1];
+                    case 1: return haplotypeX[i][1];
                     default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
                     
                 }
@@ -488,7 +488,7 @@ public enum Model {
                 switch (j) {
                     
                     case 0: return fatherX[i][0];
-                    case 2: return haplotypeX[i][2];
+                    case 1: return haplotypeX[i][2];
                     default: throw new IllegalArgumentException("Only " + model.betaNames.length + " columns in model " + model + ".");
                     
                 }

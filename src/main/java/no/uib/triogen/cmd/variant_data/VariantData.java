@@ -109,6 +109,9 @@ public class VariantData {
             if (variantList.variantId.length == 0) {
 
                 logger.logMessage("No target variant on chromosome " + bean.chromosome + ".");
+                
+                logger.close();
+                return;
 
             }
 

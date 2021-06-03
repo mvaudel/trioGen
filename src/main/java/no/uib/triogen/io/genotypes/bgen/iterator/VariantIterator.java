@@ -158,7 +158,7 @@ public class VariantIterator {
                     double elapsedTimeHours = ((double) Instant.now().getEpochSecond() - startInstant) / 3600;
                     double elapsedTimeHoursRounded = Math.round(elapsedTimeHours * 10) / 10;
 
-                    double timeRemaining = ((double) bgenIndex.variantInformationArray.length) / currentVariantIndex * elapsedTimeHours;
+                    double timeRemaining = ((double) bgenIndex.variantInformationArray.length - currentVariantIndex) / currentVariantIndex * elapsedTimeHours;
                     double timeRemainingRounded = Math.round(timeRemaining * 10) / 10;
 
                     logger.logMessage(logPrefix + "    " + currentVariantIndex + " processed of " + bgenIndex.variantInformationArray.length + " (" + progress + "% in " + elapsedTimeHoursRounded + " hours, approx " + timeRemainingRounded + " hours remaining)");

@@ -38,17 +38,20 @@ public class DebugLd {
 
         try {
 
-            String chromosome = "20";
-            String rsid = "rs6040450";
-            String variantId = "20:11209782_C_T";
+            boolean rawLd = false;
+            boolean precomputedLd = true;
+
+            String chromosome = "22";
+            String rsid = "rs240064";
+            String variantId = "NAN";
             int position = 11209782;
 
-            File output1 = new File("/mnt/work/marc/moba/trioGen/tmp", rsid + "_raw_ld");
-            File output2 = new File("/mnt/work/marc/moba/trioGen/tmp", rsid + "_precomputed_ld");
+            File output1 = new File("C:\\Github\\trioGen\\tmp", rsid + "_raw_ld");
+            File output2 = new File("C:\\Github\\trioGen\\tmp", rsid + "_precomputed_ld");
 
-            File trioFile = new File("/mnt/work/marc/moba/run/triogen/pheno/trio");
-            File bgenFile = new File("/mnt/archive2/marc/moba/phased_bgen/20.phased.bgen");
-            File ldFile = new File("/mnt/archive2/marc/moba/ld/20.tld");
+            File trioFile = new File("C:\\Github\\trioGen\\tmp\\trio");
+            File bgenFile = new File("C:\\Github\\trioGen\\tmp\\22.phased.bgen");
+            File ldFile = new File("C:\\Github\\trioGen\\tmp\\22_200k.tld");
 
             HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(chromosome);
             int defaultMotherPloidy = InheritanceUtils.getDefaultMotherPloidy(chromosome);
@@ -88,213 +91,220 @@ public class DebugLd {
 
             System.out.println("Parsing " + trioFile + " done (" + duration + " seconds)");
 
-            System.out.println("Getting raw LD for " + variantId + ".");
+            if (rawLd) {
 
-            start = Instant.now().getEpochSecond();
+                System.out.println("Getting raw LD for " + rsid + ".");
 
-            ZstdDecompressor decompressor = new ZstdDecompressor();
+                start = Instant.now().getEpochSecond();
 
-            int indexA = -1;
-            VariantInformation variantInformationA = null;
+                ZstdDecompressor decompressor = new ZstdDecompressor();
 
-            for (int i = 0; i < bgenIndex.variantIdArray.length; i++) {
-
-                variantInformationA = bgenIndex.variantInformationArray[i];
-
-                if (variantInformationA.rsId.equals(rsid) || variantInformationA.id.equals(variantId)) {
-
-                    indexA = i;
-
-                    break;
-
-                }
-            }
-
-            if (indexA == -1) {
-
-                System.out.println("Variant not found. Variants within 10kb");
+                int indexA = -1;
+                VariantInformation variantInformationA = null;
 
                 for (int i = 0; i < bgenIndex.variantIdArray.length; i++) {
 
                     variantInformationA = bgenIndex.variantInformationArray[i];
 
-                    if (variantInformationA.position >= position - 10000 && variantInformationA.position <= position + 10000) {
+                    if (variantInformationA.rsId.equals(rsid) || variantInformationA.id.equals(variantId)) {
 
-                        System.out.println(variantInformationA.id);
+                        indexA = i;
+
+                        break;
 
                     }
                 }
 
-                throw new IllegalArgumentException("Variant " + rsid + " not found.");
+                if (indexA == -1) {
 
-            }
+                    System.out.println("Variant not found. Variants within 10kb");
 
-            float[][] pHomA = p0Cache.getPHomozygous(variantInformationA.id);
+                    for (int i = 0; i < bgenIndex.variantIdArray.length; i++) {
 
-            if (pHomA == null) {
+                        variantInformationA = bgenIndex.variantInformationArray[i];
 
-                BgenVariantData variantData = bgenFileReader.getVariantData(indexA);
-                variantData.parse(
-                        childToParentMap,
-                        decompressor
-                );
+                        if (variantInformationA.position >= position - 10000 && variantInformationA.position <= position + 10000) {
 
-                if (!hasAlleles(variantData)) {
+                            System.out.println(variantInformationA.id);
 
-                    throw new IllegalArgumentException("No allele found for " + rsid + ".");
+                        }
+                    }
+
+                    throw new IllegalArgumentException("Variant " + rsid + " not found.");
 
                 }
 
-                p0Cache.register(variantData, childToParentMap);
+                float[][] pHomA = p0Cache.getPHomozygous(variantInformationA.id);
 
-            }
+                if (pHomA == null) {
 
-            pHomA = p0Cache.getPHomozygous(variantInformationA.id);
+                    BgenVariantData variantData = bgenFileReader.getVariantData(indexA);
+                    variantData.parse(
+                            childToParentMap,
+                            decompressor
+                    );
 
-            try (SimpleFileWriter writer = new SimpleFileWriter(output1, false)) {
+                    if (!hasAlleles(variantData)) {
 
-                writer.writeLine(
-                        "variant_A",
-                        "rsid_A",
-                        "allele_A",
-                        "variant_B",
-                        "rsid_B",
-                        "allele_B",
-                        "r2"
-                );
+                        throw new IllegalArgumentException("No allele found for " + rsid + ".");
 
-                VariantIterator iteratorB = new VariantIterator(bgenIndex, variantInformationA.position - maxDistance, variantInformationA.position + maxDistance);
+                    }
 
-                Integer indexB;
-                while ((indexB = iteratorB.next()) != null) {
+                    p0Cache.register(variantData, childToParentMap);
 
-                    VariantInformation variantInformationB = bgenIndex.variantInformationArray[indexB];
+                }
 
-                    float[][] pHomB = p0Cache.getPHomozygous(variantInformationB.id);
+                pHomA = p0Cache.getPHomozygous(variantInformationA.id);
 
-                    if (pHomB == null) {
+                try (SimpleFileWriter writer = new SimpleFileWriter(output1, false)) {
 
-                        BgenVariantData variantData = bgenFileReader.getVariantData(indexB);
-                        variantData.parse(
-                                childToParentMap,
-                                decompressor
-                        );
+                    writer.writeLine(
+                            "variant_A",
+                            "rsid_A",
+                            "allele_A",
+                            "variant_B",
+                            "rsid_B",
+                            "allele_B",
+                            "r2"
+                    );
 
-                        if (!hasAlleles(variantData)) {
+                    VariantIterator iteratorB = new VariantIterator(bgenIndex, variantInformationA.position - maxDistance, variantInformationA.position + maxDistance);
 
-                            continue;
+                    Integer indexB;
+                    while ((indexB = iteratorB.next()) != null) {
+
+                        VariantInformation variantInformationB = bgenIndex.variantInformationArray[indexB];
+
+                        float[][] pHomB = p0Cache.getPHomozygous(variantInformationB.id);
+
+                        if (pHomB == null) {
+
+                            BgenVariantData variantData = bgenFileReader.getVariantData(indexB);
+                            variantData.parse(
+                                    childToParentMap,
+                                    decompressor
+                            );
+
+                            if (!hasAlleles(variantData)) {
+
+                                continue;
+
+                            }
+
+                            p0Cache.register(variantData, childToParentMap);
 
                         }
 
-                        p0Cache.register(variantData, childToParentMap);
+                        pHomB = p0Cache.getPHomozygous(variantInformationB.id);
 
-                    }
+                        for (short alleleIA = 0; alleleIA < variantInformationA.alleles.length - 1; alleleIA++) {
 
-                    pHomB = p0Cache.getPHomozygous(variantInformationB.id);
+                            for (short alleleIB = 0; alleleIB < variantInformationB.alleles.length - 1; alleleIB++) {
 
-                    for (short alleleIA = 0; alleleIA < variantInformationA.alleles.length; alleleIA++) {
+                                double nA = 0.0;
+                                double nB = 0.0;
+                                double nAB = 0.0;
+                                double n = 0.0;
 
-                        for (short alleleIB = 0; alleleIB < variantInformationB.alleles.length; alleleIB++) {
+                                float[] allelePHomA = pHomA[alleleIA];
+                                float[] allelePHomB = pHomB[alleleIB];
 
-                            double nA = 0.0;
-                            double nB = 0.0;
-                            double nAB = 0.0;
-                            double n = 0.0;
+                                for (int parentI = 0; parentI < allelePHomA.length; parentI++) {
 
-                            float[] allelePHomA = pHomA[alleleIA];
-                            float[] allelePHomB = pHomB[alleleIB];
+                                    float parentAllelePHomA = allelePHomA[parentI];
+                                    float parentAllelePHomB = allelePHomB[parentI];
 
-                            for (int parentI = 0; parentI < allelePHomA.length; parentI++) {
+                                    if (!Float.isNaN(parentAllelePHomA) && !Float.isNaN(parentAllelePHomB)) {
 
-                                float parentAllelePHomA = allelePHomA[parentI];
-                                float parentAllelePHomB = allelePHomB[parentI];
+                                        n += 1;
 
-                                if (!Float.isNaN(parentAllelePHomA) && !Float.isNaN(parentAllelePHomB)) {
+                                        nA += parentAllelePHomA;
+                                        nB += parentAllelePHomB;
+                                        nAB += parentAllelePHomA * parentAllelePHomB;
 
-                                    n += 1;
+                                    }
+                                }
 
-                                    nA += parentAllelePHomA;
-                                    nB += parentAllelePHomB;
-                                    nAB += parentAllelePHomA * parentAllelePHomB;
+                                if (nAB * n != nA * nB) {
+
+                                    double pAB = nAB / n;
+                                    double pA = nA / n;
+                                    double pB = nB / n;
+
+                                    double d = pAB - (pA * pB);
+
+                                    double r2Value = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
+
+                                    writer.writeLine(
+                                            variantInformationA.id,
+                                            variantInformationA.rsId,
+                                            variantInformationA.alleles[alleleIA + 1],
+                                            variantInformationB.id,
+                                            variantInformationB.rsId,
+                                            variantInformationB.alleles[alleleIA + 1],
+                                            Double.toString(r2Value)
+                                    );
 
                                 }
                             }
-
-                            if (nAB * n != nA * nB) {
-
-                                double pAB = nAB / n;
-                                double pA = nA / n;
-                                double pB = nB / n;
-
-                                double d = pAB - (pA * pB);
-
-                                double r2Value = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
-
-                                writer.writeLine(
-                                        variantInformationA.id,
-                                        variantInformationA.rsId,
-                                        variantInformationA.alleles[alleleIA],
-                                        variantInformationB.id,
-                                        variantInformationB.rsId,
-                                        variantInformationB.alleles[alleleIA],
-                                        Double.toString(r2Value)
-                                );
-
-                            }
                         }
                     }
                 }
+
+                end = Instant.now().getEpochSecond();
+                duration = end - start;
+
+                System.out.println("Getting raw LD from " + bgenFile + " done (" + duration + " seconds)");
+
             }
 
-            end = Instant.now().getEpochSecond();
-            duration = end - start;
+            if (precomputedLd) {
 
-            System.out.println("Getting raw LD from " + bgenFile + " done (" + duration + " seconds)");
+                System.out.println("Getting precomputed LD for " + rsid + ".");
 
-            System.out.println("Getting precomputed LD for " + variantId + ".");
+                start = Instant.now().getEpochSecond();
 
-            start = Instant.now().getEpochSecond();
-
-            try (SimpleFileWriter writer = new SimpleFileWriter(output2, false)) {
-
-                writer.writeLine(
-                        "variant_A",
-                        "rsid_A",
-                        "allele_A",
-                        "variant_B",
-                        "rsid_B",
-                        "allele_B",
-                        "r2"
-                );
-
-                LdMatrixReader ldMatrixReader = new LdMatrixReader(ldFile);
-
-                ArrayList<R2> result = ldMatrixReader.getR2(variantId);
-
-                for (R2 r2 : result) {
-
-                    String variantB = ldMatrixReader.getId(r2.variantB);
-
-                    String rsidB = ldMatrixReader.getRsId(variantB);
+                try (SimpleFileWriter writer = new SimpleFileWriter(output2, false)) {
 
                     writer.writeLine(
-                            variantId,
-                            rsid,
-                            r2.alleleA + "",
-                            variantB,
-                            rsidB,
-                            r2.alleleB + "",
-                            Double.toString(r2.r2Value)
+                            "variant_A",
+                            "rsid_A",
+                            "allele_A",
+                            "variant_B",
+                            "rsid_B",
+                            "allele_B",
+                            "r2"
                     );
 
+                    LdMatrixReader ldMatrixReader = new LdMatrixReader(ldFile);
+
+                    ArrayList<R2> result = ldMatrixReader.getR2(rsid);
+
+                    for (R2 r2 : result) {
+
+                        String variantB = ldMatrixReader.getId(r2.variantB);
+
+                        String rsidB = ldMatrixReader.getRsId(variantB);
+
+                        writer.writeLine(
+                                "",
+                                rsid,
+                                r2.alleleA + "",
+                                variantB,
+                                rsidB,
+                                r2.alleleB + "",
+                                Double.toString(r2.r2Value)
+                        );
+
+                    }
                 }
+
+                end = Instant.now().getEpochSecond();
+                duration = end - start;
+
+                System.out.println("Getting precomputed LD from " + bgenFile + " done (" + duration + " seconds)");
+
             }
-
-            end = Instant.now().getEpochSecond();
-            duration = end - start;
-
-            System.out.println("Getting precomputed LD from " + bgenFile + " done (" + duration + " seconds)");
-
         } catch (Throwable t) {
             t.printStackTrace();
         }

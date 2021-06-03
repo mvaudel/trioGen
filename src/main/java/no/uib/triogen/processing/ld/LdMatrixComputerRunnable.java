@@ -2,13 +2,15 @@ package no.uib.triogen.processing.ld;
 
 import io.airlift.compress.zstd.ZstdCompressor;
 import io.airlift.compress.zstd.ZstdDecompressor;
+import java.io.File;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
+import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
@@ -19,6 +21,7 @@ import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.genome.VariantInformation;
 import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.model.trio_genotypes.VariantIndex;
+import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
  * Runnable for the LD matrix writer.
@@ -105,7 +108,7 @@ public class LdMatrixComputerRunnable implements Runnable {
     /**
      * Map of semaphore to synchronize the parsing between threads.
      */
-    private final static ConcurrentHashMap<Integer, Semaphore> parseSemaphores = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<Integer, SimpleSemaphore> parseSemaphores = new ConcurrentHashMap<>();
 
     /**
      * Constructor.
@@ -176,7 +179,7 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                     if (pHomA == null || allelesA == null) {
 
-                        Semaphore semaphore = parseSemaphores.get(indexA);
+                        SimpleSemaphore semaphore = parseSemaphores.get(indexA);
 
                         if (semaphore != null) {
 
@@ -195,7 +198,7 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                         } else {
 
-                            semaphore = new Semaphore(1);
+                            semaphore = new SimpleSemaphore(1);
                             semaphore.acquire();
                             parseSemaphores.put(indexA, semaphore);
 
@@ -237,6 +240,8 @@ public class LdMatrixComputerRunnable implements Runnable {
                     }
 
                     int variantIdA = variantIndex.getIndex(variantInformationA.id, variantInformationA.rsId);
+                    
+//                    System.out.println(Instant.now() + " Thread " + threadIndex + " " + indexA);
 
                     ArrayList<R2> r2s = new ArrayList<>(2);
 
@@ -255,7 +260,7 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                             if (pHomB == null || allelesB == null) {
 
-                                Semaphore semaphore = parseSemaphores.get(indexB);
+                                SimpleSemaphore semaphore = parseSemaphores.get(indexB);
 
                                 if (semaphore != null) {
 
@@ -274,7 +279,7 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                                 } else {
 
-                                    semaphore = new Semaphore(1);
+                                    semaphore = new SimpleSemaphore(1);
                                     semaphore.acquire();
                                     parseSemaphores.put(indexB, semaphore);
 
@@ -303,9 +308,10 @@ public class LdMatrixComputerRunnable implements Runnable {
                                     pHomB = p0Cache.getPHomozygous(variantInformationB.id);
                                     allelesB = p0Cache.getOrderedAlleles(variantInformationB.id);
 
-                                    semaphore.release();
-
                                 }
+
+                                semaphore.release();
+
                             }
 
                             for (int alleleIA = 0; alleleIA < allelesA.length - 1; alleleIA++) {
