@@ -157,9 +157,8 @@ public class BgenIndex {
                 long start = bgenIndex.variantIndexArray[variantI];
                 long length = bgenIndex.variantBlockLengthArray[variantI];
 
-                writer.writeLine(
-                        id,
-                        variantInformation.rsId,
+                writer.writeLine(id,
+                        variantInformation.rsid,
                         variantInformation.contig,
                         Integer.toString(variantInformation.position),
                         String.join(",", variantInformation.alleles),

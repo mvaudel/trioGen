@@ -106,7 +106,7 @@ public class DebugLd {
 
                     variantInformationA = bgenIndex.variantInformationArray[i];
 
-                    if (variantInformationA.rsId.equals(rsid) || variantInformationA.id.equals(variantId)) {
+                    if (variantInformationA.rsid.equals(rsid) || variantInformationA.id.equals(variantId)) {
 
                         indexA = i;
 
@@ -235,12 +235,11 @@ public class DebugLd {
 
                                     double r2Value = (d * d) / (pA * (1 - pA) * pB * (1 - pB));
 
-                                    writer.writeLine(
-                                            variantInformationA.id,
-                                            variantInformationA.rsId,
+                                    writer.writeLine(variantInformationA.id,
+                                            variantInformationA.rsid,
                                             variantInformationA.alleles[alleleIA + 1],
                                             variantInformationB.id,
-                                            variantInformationB.rsId,
+                                            variantInformationB.rsid,
                                             variantInformationB.alleles[alleleIA + 1],
                                             Double.toString(r2Value)
                                     );

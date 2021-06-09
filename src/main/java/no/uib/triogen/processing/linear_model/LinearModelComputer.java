@@ -292,7 +292,7 @@ public class LinearModelComputer {
                         "contig",
                         "position",
                         "variantId",
-                        "rsId",
+                        "rsid",
                         "testedAllele",
                         "otherAllele",
                         "n",

@@ -102,7 +102,7 @@ public class BgenWriter implements AutoCloseable {
         raf.writeShort(Short.reverseBytes((short) variantId.length));
         raf.write(variantId);
 
-        byte[] rsId = variantInformation.rsId.getBytes(ENCODING);
+        byte[] rsId = variantInformation.rsid.getBytes(ENCODING);
         raf.writeShort(Short.reverseBytes((short) rsId.length));
         raf.write(rsId);
 
@@ -278,9 +278,8 @@ public class BgenWriter implements AutoCloseable {
                 long index = indexEntry.index;
                 long length = indexEntry.blockSize;
 
-                writer.writeLine(
-                        id,
-                        variantInformation.rsId,
+                writer.writeLine(id,
+                        variantInformation.rsid,
                         variantInformation.contig,
                         Integer.toString(variantInformation.position),
                         String.join(",", variantInformation.alleles),

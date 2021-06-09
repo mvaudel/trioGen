@@ -180,13 +180,14 @@ public class LinearModelRunnable implements Runnable {
                                 decompressor
                         );
 
-                        // Check if any allele passes the frequency threshold
-                        int[] testedAlleleIndexes = IntStream.range(1, variantData.getOrderedAlleles().length)
-                                .filter(
-                                        alleleIndex -> variantData.getAlleleFrequency(alleleIndex) > alleleFrequencyThreshold
-                                        && variantData.getAlleleFrequency(alleleIndex) < 1.0 - alleleFrequencyThreshold
-                                )
-                                .toArray();
+                        // Get the alleles passing the frequency threshold, test all alleles if the variant is targeted
+                        int[] testedAlleleIndexes = variantList == null || !variantList.contains(variantInformation.id) && !variantList.contains(variantInformation.rsid)
+                                ? IntStream.range(1, variantData.getOrderedAlleles().length)
+                                        .filter(
+                                                alleleIndex -> variantData.getAlleleFrequency(alleleIndex) > alleleFrequencyThreshold
+                                                && variantData.getAlleleFrequency(alleleIndex) < 1.0 - alleleFrequencyThreshold
+                                        )
+                                        .toArray() : IntStream.range(1, variantData.getOrderedAlleles().length).toArray();
 
                         if (testedAlleleIndexes.length > 0) {
 
@@ -555,10 +556,10 @@ public class LinearModelRunnable implements Runnable {
 
                     for (int i = 0; i < rowsToRun.size(); i++) {
 
-                            int childIndex = rowsToRun.get(i);
+                        int childIndex = rowsToRun.get(i);
 
-                            y[i] = phenoValues[childIndex];
-                            rss0 += rss0s[childIndex];
+                        y[i] = phenoValues[childIndex];
+                        rss0 += rss0s[childIndex];
 
                         for (int j = 0; j < model.betaNames.length; j++) {
 
@@ -685,7 +686,7 @@ public class LinearModelRunnable implements Runnable {
                         .append(IoUtils.SEPARATOR)
                         .append(variantInformation.id)
                         .append(IoUtils.SEPARATOR)
-                        .append(variantInformation.rsId)
+                        .append(variantInformation.rsid)
                         .append(IoUtils.SEPARATOR)
                         .append(variantInformation.alleles[alleleI])
                         .append(IoUtils.SEPARATOR)
@@ -712,11 +713,10 @@ public class LinearModelRunnable implements Runnable {
 
                 IndexedGzCoordinates coordinates = outputWriter.append(line);
 
-                resultsIndex.writeLine(
-                        variantInformation.contig,
+                resultsIndex.writeLine(variantInformation.contig,
                         Integer.toString(variantInformation.position),
                         variantInformation.id,
-                        variantInformation.rsId,
+                        variantInformation.rsid,
                         phenoName,
                         Integer.toString(coordinates.compressedLength),
                         Integer.toString(coordinates.uncompressedLength)

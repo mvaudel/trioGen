@@ -130,7 +130,7 @@ public class VariantListToFile {
 
                                     for (VariantInformation variantInformation : bgenIndex.variantInformationArray) {
 
-                                        rsIdMap.put(variantInformation.rsId, variantInformation.position);
+                                        rsIdMap.put(variantInformation.rsid, variantInformation.position);
 
                                     }
                                 }

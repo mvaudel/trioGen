@@ -176,7 +176,7 @@ public class SimpleScoreComputer {
 
                 if (!found) {
 
-                    variantId = variantInformation.rsId;
+                    variantId = variantInformation.rsid;
 
                     if (variantWeightList.variantList.contains(variantId)) {
 

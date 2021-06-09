@@ -82,7 +82,7 @@ public class AddRsidToMetal {
 
                 String chr = variantInformation.contig;
                 int pos = variantInformation.position;
-                String rsid = variantInformation.rsId;
+                String rsid = variantInformation.rsid;
                 String[] alleles = variantInformation.alleles;
 
                 if (alleles.length >= 2) {

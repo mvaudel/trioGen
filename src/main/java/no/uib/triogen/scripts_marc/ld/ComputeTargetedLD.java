@@ -144,7 +144,7 @@ public class ComputeTargetedLD {
 
             variantInformationA = bgenIndex.variantInformationArray[i];
 
-            if (variantInformationA.rsId.equals(rsid)) {
+            if (variantInformationA.rsid.equals(rsid)) {
 
                 indexA = i;
 
@@ -280,13 +280,12 @@ public class ComputeTargetedLD {
                             double alleleFrequencyA = afA[allelesA[iA]];
                             double alleleFrequencyB = afB[allelesB[iB]];
 
-                            writer.writeLine(
-                                    variantInformationA.id,
-                                    variantInformationA.rsId,
+                            writer.writeLine(variantInformationA.id,
+                                    variantInformationA.rsid,
                                     variantInformationA.alleles[allelesA[iA]],
                                     Double.toString(alleleFrequencyA),
                                     variantInformationB.id,
-                                    variantInformationB.rsId,
+                                    variantInformationB.rsid,
                                     variantInformationB.alleles[allelesB[iB]],
                                     Double.toString(alleleFrequencyB),
                                     Double.toString(r2Value)
@@ -294,7 +293,7 @@ public class ComputeTargetedLD {
 
                         } else {
 
-                            if (variantInformationB.rsId.equals(rsid)) {
+                            if (variantInformationB.rsid.equals(rsid)) {
 
                                 System.out.println("excluded");
 

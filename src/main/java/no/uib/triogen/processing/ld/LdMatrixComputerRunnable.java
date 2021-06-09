@@ -239,7 +239,7 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                     }
 
-                    int variantIdA = variantIndex.getIndex(variantInformationA.id, variantInformationA.rsId);
+                    int variantIdA = variantIndex.getIndex(variantInformationA.id, variantInformationA.rsid);
                     
 //                    System.out.println(Instant.now() + " Thread " + threadIndex + " " + indexA);
 
@@ -253,7 +253,7 @@ public class LdMatrixComputerRunnable implements Runnable {
                         if (!excludedVariants.contains(indexB)) {
 
                             VariantInformation variantInformationB = bgenIndex.variantInformationArray[indexB];
-                            int variantIdB = variantIndex.getIndex(variantInformationB.id, variantInformationB.rsId);
+                            int variantIdB = variantIndex.getIndex(variantInformationB.id, variantInformationB.rsid);
 
                             float[][] pHomB = p0Cache.getPHomozygous(variantInformationB.id);
                             int[] allelesB = p0Cache.getOrderedAlleles(variantInformationB.id);

@@ -253,7 +253,7 @@ public class VariantDataExtractor {
                 int variantIndex = tempIndex;
                 VariantInformation variantInformation = bgenIndex.variantInformationArray[variantIndex];
 
-                if (variantInformation.alleles.length > 1 && (variantList.contains(variantInformation.id) || variantList.contains(variantInformation.rsId))) {
+                if (variantInformation.alleles.length > 1 && (variantList.contains(variantInformation.id) || variantList.contains(variantInformation.rsid))) {
 
                     BgenVariantData variantData = bgenFileReader.getVariantData(variantIndex);
                     variantData.parse(
@@ -298,11 +298,10 @@ public class VariantDataExtractor {
                                 }
                             }
 
-                            writer.writeLine(
-                                    variantInformation.contig,
+                            writer.writeLine(variantInformation.contig,
                                     Integer.toString(variantInformation.position),
                                     variantInformation.id,
-                                    variantInformation.rsId,
+                                    variantInformation.rsid,
                                     variantInformation.alleles[alleleI],
                                     variantInformation.getOtherAllele(alleleI),
                                     Double.toString(haplotypes[0]),

@@ -175,11 +175,10 @@ public class MendelianCheckRunnable implements Runnable {
 
                             variantData.swapChildrenAlleles();
 
-                            writer.writeLine(
-                                    variantInformation.contig,
+                            writer.writeLine(variantInformation.contig,
                                     Integer.toString(variantInformation.position),
                                     variantInformation.id,
-                                    variantInformation.rsId,
+                                    variantInformation.rsid,
                                     variantInformation.alleles[alleleI],
                                     variantInformation.getOtherAllele(alleleI),
                                     Double.toString(alleleFrequency),

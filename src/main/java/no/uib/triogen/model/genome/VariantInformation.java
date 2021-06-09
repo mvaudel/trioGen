@@ -15,7 +15,7 @@ public class VariantInformation {
     /**
      * The rsId of the variant.
      */
-    public final String rsId;
+    public final String rsid;
 
     /**
      * The contig of the variant.
@@ -55,7 +55,7 @@ public class VariantInformation {
     ) {
 
         this.id = id;
-        this.rsId = rsId;
+        this.rsid = rsId;
         this.contig = contig;
         this.position = bp;
         this.alleles = alleles;
