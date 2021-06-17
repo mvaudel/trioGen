@@ -58,5 +58,28 @@ java.lang.NullPointerException
 ```
 * Troubleshooting:
   * Add `-XX:-OmitStackTraceInFastThrow` to your command ([Source](https://stackoverflow.com/questions/4659151/recurring-exception-without-a-stack-trace-how-to-reset)).
+  
+  
+#### Airlift _IncompatibleJvmException_
+
+* Error Message:
+```
+Exception in thread "ImportThread" java.lang.ExceptionInInitializerError
+	at io.airlift.compress.zstd.ZstdFrameCompressor.writeMagic(ZstdFrameCompressor.java:57)
+	at io.airlift.compress.zstd.ZstdFrameCompressor.compress(ZstdFrameCompressor.java:143)
+	at io.airlift.compress.zstd.ZstdCompressor.compress(ZstdCompressor.java:45)
+	...
+        Suppressed: java.lang.NoClassDefFoundError: Could not initialize class io.airlift.compress.zstd.UnsafeUtil
+		at io.airlift.compress.zstd.ZstdFrameCompressor.writeMagic(ZstdFrameCompressor.java:57)
+		at io.airlift.compress.zstd.ZstdFrameCompressor.compress(ZstdFrameCompressor.java:143)
+		at io.airlift.compress.zstd.ZstdCompressor.compress(ZstdCompressor.java:45)
+		...
+Caused by: io.airlift.compress.IncompatibleJvmException: Zstandard requires access to java.nio.Buffer raw address field
+	at io.airlift.compress.zstd.UnsafeUtil.<clinit>(UnsafeUtil.java:53)
+	...
+
+```
+* Troubleshooting:
+  * Add `--add-opens java.base/java.nio=ALL-UNNAMED` to your command ([Source](https://github.com/airlift/aircompressor/issues/125)).
 
  
