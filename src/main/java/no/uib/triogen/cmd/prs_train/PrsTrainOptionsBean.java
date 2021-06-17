@@ -102,7 +102,7 @@ public class PrsTrainOptionsBean {
         }
 
         // The summary stats file
-        String filePath = aLine.getOptionValue(PrsTrainOptions.out.opt);
+        String filePath = aLine.getOptionValue(PrsTrainOptions.trainingFile.opt);
 
         trainingFile = new File(filePath);
 
