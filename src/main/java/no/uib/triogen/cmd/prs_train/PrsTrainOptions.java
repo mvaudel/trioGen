@@ -16,7 +16,7 @@ public enum PrsTrainOptions {
 
     trainingFile("t", "trainingFile", "File listing the summary statistics to use for training.", true, true),
     ldMatrix("l", "ldMatrix", "The ld matrix file as generated using the LdMatrix command. If LD matrix files are computed per contig, replace the contig name with '" + Utils.CONTIG_WILDCARD + "'.", true, true),
-    snpId("s", "snpId", "Name of the variant identifier column in the training file. Default: 'variantId'.", false, true),
+    snpId("sc", "snpId", "Name of the variant identifier column in the training file. Default: 'variantId'.", false, true),
     chrColumn("cc", "chrColumn", "Name of the contig column in the training file. Default: 'contig'.", true, true),
     posColumn("pc", "posColumn", "Name of the position column in the training file. Default: 'position'.", true, true),
     refColumn("rc", "refColumn", "Name of the reference allele column in the training file. Default: 'otherAllele'.", true, true),

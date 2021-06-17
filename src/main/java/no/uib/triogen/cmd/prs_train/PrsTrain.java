@@ -2,21 +2,14 @@ package no.uib.triogen.cmd.prs_train;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.stream.Collectors;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.log.SimpleCliLogger;
-import no.uib.triogen.model.family.ChildToParentMap;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
-import no.uib.triogen.io.genotypes.InheritanceUtils;
-import no.uib.triogen.model.simple_score.VariantWeightList;
 import no.uib.triogen.processing.prs.PrsTrainer;
-import no.uib.triogen.processing.simple_score.SimpleScoreComputer;
 
 /**
  * Computes a simple polygenic risk score based on the sum of a list of betas.

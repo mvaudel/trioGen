@@ -2,6 +2,8 @@ package no.uib.triogen.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.special.Beta;
 
 /**
  * Utilities.
@@ -30,6 +32,14 @@ public class Utils {
      * Placeholder for an array of NAs.
      */
     public final static double[] na4 = new double[]{Double.NaN, Double.NaN, Double.NaN, Double.NaN};
+    /**
+     * Epsilon to use for the estimation of the p-value.
+     */
+    public final static double[] pEpsilons = new double[]{1e-14, 1e-20, 1e-50, 1e-100, 1e-200};
+    /**
+     * Cache for a standard normal distribution.
+     */
+    private final static NormalDistribution normalDistribution = new NormalDistribution(0, 1);
 
     /**
      * Simple method to merge two byte arrays.
@@ -148,6 +158,74 @@ public class Utils {
         }
 
         return valueAtIndex + rest * (input.get(index + 1) - valueAtIndex);
+    }
+
+    /**
+     * Computes the significance the beta estimates.
+     *
+     * @param nSamples The number of samples that went into the analysis.
+     * @param nVariables The number of variables in the model excluding
+     * intercept.
+     * @param beta The effect size estimate.
+     * @param se The standard error estimate.
+     *
+     * @return The significance the beta estimates.
+     */
+    public double computeBetaSignificance(
+            int nSamples,
+            int nVariables,
+            double beta,
+            double se
+    ) {
+
+        if (!Double.isNaN(beta) && !Double.isNaN(se) && se > 0.0) {
+
+            int degreesOfFreedom = nSamples - nVariables - 1;
+
+            if (degreesOfFreedom > 1) {
+
+                double x = beta / se;
+
+                for (double epsilon : pEpsilons) {
+
+                    double p = x != 0.0
+                            ? Beta.regularizedBeta(
+                                    degreesOfFreedom / (degreesOfFreedom + (x * x)),
+                                    0.5 * degreesOfFreedom,
+                                    0.5,
+                                    epsilon)
+                            : 0.5;
+
+                    if (p > epsilon * 16) {
+
+                        return p;
+
+                    }
+                }
+            }
+        }
+
+        return Double.NaN;
+
+    }
+
+    /**
+     * Computes the significance the beta estimates.
+     *
+     * @param beta The effect size estimate.
+     * @param se The standard error estimate.
+     *
+     * @return The significance the beta estimates.
+     */
+    public static double computeBetaSignificance(
+            double beta,
+            double se
+    ) {
+        
+        double p = normalDistribution.cumulativeProbability(-Math.abs(beta/se));
+        
+        return p * p;
+        
     }
 
 }

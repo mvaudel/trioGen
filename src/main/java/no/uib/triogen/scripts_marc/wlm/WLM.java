@@ -4,13 +4,10 @@ import java.io.File;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.flat.SimpleFileReader;
-import org.apache.commons.math3.distribution.FDistribution;
+import no.uib.triogen.utils.Utils;
 
 /**
  * This class runs WLM on meta results. Based on work by RN Beaumont.
@@ -22,16 +19,6 @@ public class WLM {
     private static double childMotherOverlap = 0.2653;
     private static double childFatherOverlap = 0.197;
     private static double motherFatherOverlap = 0.0082;
-
-    private static final int nReplicates = 10;
-    private static final int nTriosSimulation = 200000;
-    private static final int nTriosPValue = 50000;
-
-    private static final ArrayList<int[]> shuffledIndexes = getShuffledIndexes();
-    private static final double[] gaussianCache = fillGaussianCache();
-    private static final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, FDistribution>> fDistributionCache = new ConcurrentHashMap<>();
-    
-    private static int gaussianCacheIndex = 0;
 
     private static int currentProgress = -1;
     private static int totalProgress = 0;
@@ -46,12 +33,8 @@ public class WLM {
         File gwasChild = new File("/mnt/archive/marc/moba/pwbw/prs/meta/child/child_prs1_rsid_clean.tbl.gz");
         File gwasMother = new File("/mnt/archive/marc/moba/pwbw/prs/meta/mother/mother_prs1_rsid_clean.tbl.gz");
         File gwasFather = new File("/mnt/archive/marc/moba/pwbw/prs/meta/father/father_prs1_rsid_clean.tbl.gz");
-        File resultFile = new File("/mnt/archive/marc/moba/pwbw/prs/wlm/prs_wlm_200000.gz");
+        File resultFile = new File("/mnt/archive/marc/moba/pwbw/prs/wlm/prs_wlm.gz");
 
-//        File gwasChild = new File("C:\\Projects\\placenta_weight\\meta_results\\child_prs1_rsid_clean.tbl.gz");
-//        File gwasMother = new File("C:\\Projects\\placenta_weight\\meta_results\\mother_prs1_rsid_clean.tbl.gz");
-//        File gwasFather = new File("C:\\Projects\\placenta_weight\\meta_results\\father_prs1_rsid_clean.tbl.gz");
-//        File resultFile = new File("C:\\Projects\\placenta_weight\\meta_results\\prs_wlm_2.gz");
         HashMap<String, String[]> variantInfoMap = new HashMap<>();
         HashMap<String, String[]> allelesMap = new HashMap<>();
         HashMap<String, double[]> frequencyMap = new HashMap<>();
@@ -289,11 +272,9 @@ public class WLM {
                     "beta_child", "se_child", "p_child", "n_child",
                     "beta_mother", "se_mother", "p_mother", "n_mother",
                     "beta_father", "se_father", "p_father", "n_father",
-                    "beta_wlm_child", "se_wlm_child",
-                    "beta_wlm_mother", "se_wlm_mother",
-                    "beta_wlm_father", "se_wlm_father",
-                    "variance_explained_50", "variance_explained_5", "variance_explained_95", "variance_explained_n",
-                    "p_50", "p_5", "p_95", "p_n"
+                    "beta_wlm_child", "se_wlm_child", "p_wlm_child",
+                    "beta_wlm_mother", "se_wlm_mother", "p_wlm_mother",
+                    "beta_wlm_father", "se_wlm_father", "p_wlm_father"
             );
 
             ArrayList<String> variantIds = new ArrayList<>(variantInfoMap.keySet());
@@ -374,6 +355,8 @@ public class WLM {
                     - 4 * childFatherOverlap * Math.sqrt(ses2[0] * ses2[2])
                     + 2 * motherFatherOverlap * Math.sqrt(ses2[1] * ses2[2])
             );
+            double wlmPChild = Utils.computeBetaSignificance(wlmBetaChild, wlmSeChild);
+            
             double wlmBetaMother = (3 * betas[1] - 2 * betas[0] + betas[2]) / 2;
             double wlmSeMother = Math.sqrt(
                     9 * ses2[1] / 4 + ses2[0] + ses2[2] / 4
@@ -381,6 +364,8 @@ public class WLM {
                     - childFatherOverlap * Math.sqrt(ses2[0] * ses2[2])
                     + 3 * motherFatherOverlap * Math.sqrt(ses2[1] * ses2[2]) / 2
             );
+            double wlmPMother = Utils.computeBetaSignificance(wlmBetaMother, wlmSeMother);
+            
             double wlmBetaFather = (3 * betas[2] - 2 * betas[0] + betas[1]) / 2;
             double wlmSeFather = Math.sqrt(
                     9 * ses2[2] / 4 + ses2[0] + ses2[1] / 4
@@ -388,297 +373,19 @@ public class WLM {
                     - 3 * childFatherOverlap * Math.sqrt(ses2[0] * ses2[2])
                     + 3 * motherFatherOverlap * Math.sqrt(ses2[1] * ses2[2]) / 2
             );
-
-            double[] trioStats = getTrioSummaryStatisticsRepeated(
-                    wlmBetaChild,
-                    wlmBetaMother,
-                    wlmBetaFather,
-                    wlmSeChild,
-                    wlmSeMother,
-                    wlmSeFather,
-                    testedAlleleFrequencies[0],
-                    testedAlleleFrequencies[1],
-                    testedAlleleFrequencies[2]
-            );
-
+            double wlmPFather = Utils.computeBetaSignificance(wlmBetaFather, wlmSeFather);
+            
             writer.writeLine(
                     id, variantInfo[0], variantInfo[1], variantInfo[2], alleles[1], alleles[0],
                     Double.toString(testedAlleleFrequencies[0]), Double.toString(testedAlleleFrequencies[1]), Double.toString(testedAlleleFrequencies[2]),
                     Double.toString(betas[0]), Double.toString(ses[0]), Double.toString(ps[0]), Double.toString(ns[0]),
                     Double.toString(betas[1]), Double.toString(ses[1]), Double.toString(ps[1]), Double.toString(ns[1]),
                     Double.toString(betas[2]), Double.toString(ses[2]), Double.toString(ps[2]), Double.toString(ns[2]),
-                    Double.toString(wlmBetaChild), Double.toString(wlmSeChild),
-                    Double.toString(wlmBetaMother), Double.toString(wlmSeMother),
-                    Double.toString(wlmBetaFather), Double.toString(wlmSeFather),
-                    Double.toString(trioStats[0]), Double.toString(trioStats[1]), Double.toString(trioStats[2]), Integer.toString(nTriosSimulation),
-                    Double.toString(trioStats[3]), Double.toString(trioStats[4]), Double.toString(trioStats[5]), Integer.toString(nTriosPValue)
+                    Double.toString(wlmBetaChild), Double.toString(wlmSeChild), Double.toString(wlmPChild),
+                    Double.toString(wlmBetaMother), Double.toString(wlmSeMother), Double.toString(wlmPMother),
+                    Double.toString(wlmBetaFather), Double.toString(wlmSeFather), Double.toString(wlmPFather)
             );
 
         }
     }
-
-    private static double[] getTrioSummaryStatisticsRepeated(
-            double childBeta,
-            double motherBeta,
-            double fatherBeta,
-            double childSe,
-            double motherSe,
-            double fatherSe,
-            double mafChild,
-            double mafMother,
-            double mafFather
-    ) {
-
-        double[] explainedVariance = new double[nReplicates];
-        double[] p = new double[nReplicates];
-
-        for (int i = 0; i < nReplicates; i++) {
-
-            double[] runResults = getTrioSummaryStatistics(
-                    childBeta,
-                    motherBeta,
-                    fatherBeta,
-                    childSe,
-                    motherSe,
-                    fatherSe,
-                    mafChild,
-                    mafMother,
-                    mafFather,
-                    i
-            );
-
-            explainedVariance[i] = runResults[0];
-            p[i] = runResults[1];
-
-        }
-
-        Arrays.sort(explainedVariance);
-        Arrays.sort(p);
-
-        double varLow = explainedVariance[0];
-        double varMedian = (explainedVariance[4] + explainedVariance[5]) / 2;
-        double varHigh = explainedVariance[9];
-
-        double pLow = p[0];
-        double pMedian = (p[4] + p[5]) / 2;
-        double pHigh = p[9];
-
-        return new double[]{varMedian, varLow, varHigh, pMedian, pLow, pHigh};
-
-    }
-
-    private static double[] getTrioSummaryStatistics(
-            double childBeta,
-            double motherBeta,
-            double fatherBeta,
-            double childSe,
-            double motherSe,
-            double fatherSe,
-            double mafChild,
-            double mafMother,
-            double mafFather,
-            int replicateNumber
-    ) {
-
-        double minMafMother = mafMother > 0.5 ? 1 - mafMother : mafMother;
-        double minMafFather = mafFather > 0.5 ? 1 - mafFather : mafFather;
-
-        double[] motherGenos = new double[nTriosSimulation];
-        double[] fatherGenos = new double[nTriosSimulation];
-
-        for (int i = 0; i < minMafMother * nTriosSimulation; i++) {
-
-            int randomI = shuffledIndexes.get(replicateNumber)[i];
-
-            motherGenos[randomI] = motherGenos[randomI] + 1;
-
-        }
-
-        for (int i = 0; i < minMafMother * nTriosSimulation; i++) {
-
-            int randomI = shuffledIndexes.get(replicateNumber + nReplicates)[i];
-
-            motherGenos[randomI] = motherGenos[randomI] + 1;
-
-        }
-
-        for (int i = 0; i < minMafFather * nTriosSimulation; i++) {
-
-            int randomI = shuffledIndexes.get(replicateNumber + 2 * nReplicates)[i];
-
-            fatherGenos[randomI] = fatherGenos[randomI] + 1;
-
-        }
-
-        for (int i = 0; i < minMafFather * nTriosSimulation; i++) {
-
-            int randomI = shuffledIndexes.get(replicateNumber + 3 * nReplicates)[i];
-
-            fatherGenos[randomI] = fatherGenos[randomI] + 1;
-
-        }
-
-        double phenoSum = 0.0;
-        double[] phenos = new double[nTriosSimulation];
-        double squaredError = 0.0;
-
-        for (int i = 0; i < nTriosSimulation; i++) {
-
-            double motherGenotype = motherGenos[i];
-            double fatherGenotype = fatherGenos[i];
-            double childGenotype = (motherGenotype + fatherGenotype) / 2;
-
-            double motherEffect = (motherBeta + motherSe * nextGaussian()) * motherGenotype;
-            double fatherEffect = (fatherBeta + fatherSe * nextGaussian()) * fatherGenotype;
-            double childEffect = (childBeta + childSe * nextGaussian()) * childGenotype;
-
-            double phenoValue = nextGaussian() + motherEffect + fatherEffect + childEffect;
-
-            phenos[i] = phenoValue;
-            phenoSum += phenoValue;
-
-            double predictedPhenoValue = motherBeta * motherGenotype + fatherBeta * fatherGenotype + childEffect * childGenotype;
-
-            squaredError += (predictedPhenoValue - phenoValue) * (predictedPhenoValue - phenoValue);
-
-        }
-
-        squaredError /= nTriosSimulation;
-
-        double mean = phenoSum / nTriosSimulation;
-
-        double rss0 = 0.0;
-
-        for (int i = 0; i < nTriosSimulation; i++) {
-
-            double phenoDist = phenos[i] - mean;
-            rss0 += phenoDist * phenoDist;
-
-        }
-
-        rss0 /= nTriosSimulation;
-
-        double varianceExplained = (rss0 - squaredError) / rss0;
-
-        double p = getModelSignificance(rss0, 1, squaredError, 4, nTriosPValue);
-
-        return new double[]{varianceExplained, p};
-
-    }
-
-    /**
-     * Returns the significance of increasing the complexity of a simple model,
-     * model1, with p1 parameters to a more complex model, model2, with p2
-     * parameters. p1 < p2.
-     *
-     * @param model1RSS the residual sum of squares for model 1
-     * @param p1 the number of parameters of model 1
-     * @param model2RSS the residual sum of squares for model 2
-     * @param p2 the number of parameters of model 2
-     *
-     * @return the significance
-     */
-    private static double getModelSignificance(
-            double model1RSS,
-            int p1,
-            double model2RSS,
-            int p2,
-            int nValues
-    ) {
-
-        if (Double.isNaN(model1RSS) || Double.isNaN(model2RSS)) {
-
-            return Double.NaN;
-
-        }
-
-        int numeratorDegreesOfFreedom = p2 - p1;
-        int denominatorDegreesOfFreedom = nValues - p2;
-        double x = ((model1RSS - model2RSS) / numeratorDegreesOfFreedom) / (model2RSS / denominatorDegreesOfFreedom);
-
-        FDistribution fDistribution = getFDistribution(numeratorDegreesOfFreedom, denominatorDegreesOfFreedom);
-
-        return 1.0 - fDistribution.cumulativeProbability(x);
-
-    }
-    
-    private static FDistribution getFDistribution(int numeratorDegreesOfFreedom, int denominatorDegreesOfFreedom) {
-        
-        ConcurrentHashMap<Integer, FDistribution> subCache = fDistributionCache.get(numeratorDegreesOfFreedom);
-        
-        if (subCache == null) {
-            
-            subCache = new ConcurrentHashMap<>(1);
-            fDistributionCache.put(numeratorDegreesOfFreedom, subCache);
-            
-        }
-        
-        FDistribution fDistribution = subCache.get(denominatorDegreesOfFreedom);
-        
-        if (fDistribution == null) {
-            
-            fDistribution = new FDistribution(numeratorDegreesOfFreedom, denominatorDegreesOfFreedom);
-            subCache.put(denominatorDegreesOfFreedom, fDistribution);
-            
-        }
-        
-        return fDistribution;
-        
-    }
-    
-    private static double nextGaussian() {
-        
-        if (gaussianCacheIndex == gaussianCache.length) {
-            
-            gaussianCacheIndex = 0;
-            
-        }
-        
-        return gaussianCache[gaussianCacheIndex++];
-        
-    }
-    
-    private static double[] fillGaussianCache() {
-        
-        int cacheSize = 100000000;
-        double[] cache = new double[cacheSize];
-        
-        Random random = new Random();
-        
-        for (int i = 0 ; i < cacheSize ; i++) {
-            
-            cache[i] = random.nextGaussian();
-            
-        }
-        
-        return cache;
-        
-    }
-
-    private static ArrayList<int[]> getShuffledIndexes() {
-
-        ArrayList<Integer> indexes = new ArrayList<>(nTriosSimulation);
-
-        for (int i = 0; i < nTriosSimulation; i++) {
-
-            indexes.add(i);
-
-        }
-
-        ArrayList<int[]> result = new ArrayList<>(4 * nReplicates);
-
-        for (int i = 0; i < 4 * nReplicates; i++) {
-
-            Collections.shuffle(indexes);
-
-            result.add(
-                    indexes.stream().mapToInt(a -> a).toArray()
-            );
-
-        }
-        
-        return result;
-
-    }
-
 }

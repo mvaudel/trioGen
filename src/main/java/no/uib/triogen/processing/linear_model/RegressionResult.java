@@ -5,6 +5,7 @@ import java.util.HashMap;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.utils.Utils;
+import static no.uib.triogen.utils.Utils.pEpsilons;
 import org.apache.commons.math3.distribution.FDistribution;
 import org.apache.commons.math3.special.Beta;
 
@@ -14,11 +15,6 @@ import org.apache.commons.math3.special.Beta;
  * @author Marc Vaudel
  */
 public class RegressionResult {
-
-    /**
-     * Epsilon to use for the estimation of the p-value.
-     */
-    private final static double[] epsilons = new double[]{1e-14, 1e-20, 1e-50, 1e-100, 1e-200};
 
     /**
      * The model of this regression.
@@ -169,7 +165,7 @@ public class RegressionResult {
                     double x = betaEstimate / betaSE;
                     double p = Double.NaN;
 
-                    for (double epsilon : epsilons) {
+                    for (double epsilon : pEpsilons) {
 
                         p = x != 0.0
                                 ? Beta.regularizedBeta(
