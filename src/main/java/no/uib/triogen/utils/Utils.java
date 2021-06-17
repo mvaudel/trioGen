@@ -222,9 +222,7 @@ public class Utils {
             double se
     ) {
         
-        double p = normalDistribution.cumulativeProbability(-Math.abs(beta/se));
-        
-        return p * p;
+        return 2* normalDistribution.cumulativeProbability(-Math.abs(beta/se));
         
     }
 

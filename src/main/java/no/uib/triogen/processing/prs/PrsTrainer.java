@@ -219,6 +219,8 @@ public class PrsTrainer {
                     .append(IoUtils.SEPARATOR)
                     .append("weight");
 
+            boolean singlePValue = !pValueColumnPattern.contains(VARIABLE_WILDCARD);
+
             for (int j = 0; j < variableNames.length; j++) {
 
                 String variable = variableNames[j];
@@ -233,6 +235,22 @@ public class PrsTrainer {
                         .append(betaColumn)
                         .append(IoUtils.SEPARATOR)
                         .append(seValueColumn);
+
+                if (!singlePValue) {
+
+                    String pValueColumn = pValueColumnPattern
+                            .replace(VARIABLE_WILDCARD, variable);
+
+                    line.append(IoUtils.SEPARATOR)
+                            .append(pValueColumn);
+
+                }
+            }
+
+            if (singlePValue) {
+
+                line.append(IoUtils.SEPARATOR)
+                        .append(pValueColumnPattern);
 
             }
 
@@ -358,14 +376,29 @@ public class PrsTrainer {
                                         .append(IoUtils.SEPARATOR)
                                         .append(weight);
 
+                                double[] summaryStats = null;
+
                                 for (int j = 0; j < variableNames.length; j++) {
 
-                                    double[] summaryStats = trainingData.variantToSummaryStats[j].get(id);
+                                    summaryStats = trainingData.variantToSummaryStats[j].get(id);
 
                                     line.append(IoUtils.SEPARATOR)
                                             .append(summaryStats[0])
                                             .append(IoUtils.SEPARATOR)
                                             .append(summaryStats[1]);
+
+                                    if (!singlePValue) {
+
+                                        line.append(IoUtils.SEPARATOR)
+                                                .append(summaryStats[0]);
+
+                                    }
+                                }
+
+                                if (singlePValue) {
+
+                                    line.append(IoUtils.SEPARATOR)
+                                            .append(summaryStats[2]);
 
                                 }
 
