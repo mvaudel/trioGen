@@ -34,8 +34,8 @@ public class BoltCleanUp {
         String[] boltFileTemplates = new String[]{"{geno}Geno_{pheno}-stats-bgen.gz", "{geno}Geno_{pheno}-stats-bgen-chrX.gz"};
         String[] boltTabFileTemplates = new String[]{"{geno}Geno_{pheno}-stats.tab", "{geno}Geno_{pheno}-stats-chrX.tab"};
         String[] logFileTemplates = new String[]{"{geno}Geno_{pheno}-runlog.log", "{geno}Geno_{pheno}-runlog-chrX.log"};
-        String[] rareFileTemplates = new String[]{"{geno}Geno_{pheno}_over_maf_" + MAF_THRESHOLD + ".gz", "{geno}Geno_{pheno}_over_maf_" + MAF_THRESHOLD + "-chrX.gz"};
-        String[] commonFileTemplates = new String[]{"{geno}Geno_{pheno}_under_maf_" + MAF_THRESHOLD + ".gz", "{geno}Geno_{pheno}_under_maf_" + MAF_THRESHOLD + "-chrX.gz"};
+        String[] rareFileTemplates = new String[]{"{geno}Geno_{pheno}_under_maf_" + MAF_THRESHOLD + ".gz", "{geno}Geno_{pheno}_under_maf_" + MAF_THRESHOLD + "-chrX.gz"};
+        String[] commonFileTemplates = new String[]{"{geno}Geno_{pheno}_over_maf_" + MAF_THRESHOLD + ".gz", "{geno}Geno_{pheno}_over_maf_" + MAF_THRESHOLD + "-chrX.gz"};
         String[] chrLabels = new String[]{"1:22", "X"};
 
         ArrayList<File[]> rawBoltFilesToTrim = new ArrayList<>();

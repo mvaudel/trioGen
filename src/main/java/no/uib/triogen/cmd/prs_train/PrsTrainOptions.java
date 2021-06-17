@@ -1,33 +1,35 @@
-package no.uib.triogen.cmd.prs;
+package no.uib.triogen.cmd.prs_train;
 
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.triogen.model.trio_genotypes.Model;
-import no.uib.triogen.processing.prs.PrsComputer;
+import no.uib.triogen.processing.prs.PrsTrainer;
+import no.uib.triogen.utils.Utils;
 
 /**
  * Enum of the different options
  *
  * @author Marc Vaudel
  */
-public enum PrsOptions {
+public enum PrsTrainOptions {
 
-    geno("g", "geno", "The genotypes file.", true, true),
-    chromosome("c", "chromosome", "The chromosome name.", true, true),
-    phenoFile("p", "phenoFile", "The phenotypes file.", true, true),
     trainingFile("t", "trainingFile", "File listing the summary statistics to use for training.", true, true),
+    ldMatrix("l", "ldMatrix", "The ld matrix file as generated using the LdMatrix command. If LD matrix files are computed per contig, replace the contig name with '" + Utils.CONTIG_WILDCARD + "'.", true, true),
     snpId("s", "snpId", "Name of the variant identifier column in the training file. Default: 'variantId'.", false, true),
-    ea("ea", "effectAllele", "Name of the effect allele column in the training file. Default: 'tested_allele'.", false, true),
-    model("m", "model", "Names of the model to use. Default: cmf. Available: " + Model.getCommandLineOptions() + ".", false, true),
+    chrColumn("cc", "chrColumn", "Name of the contig column in the training file. Default: 'contig'.", true, true),
+    posColumn("pc", "posColumn", "Name of the position column in the training file. Default: 'position'.", true, true),
+    refColumn("rc", "refColumn", "Name of the reference allele column in the training file. Default: 'otherAllele'.", true, true),
+    eaColumn("ec", "eaColumn", "Name of the effect allele column in the training file. Default: 'testedAllele'.", true, true),
+    model("m", "model", "Names of the model to use. Default: " + Model.cmf.name() + ". Available: " + Model.getCommandLineOptions() + ".", false, true),
     variables("v", "variables", "Names of the variables to use, need to be in the same order as specified in the model. Default: c,m,f.", false, true),
-    betaPattern("b", "betaPattern", "Pattern for the effect size column. Wildcards: " + PrsComputer.MODEL_WILDCARD + " for model name and " + PrsComputer.VARIABLE_WILDCARD + " for variable name. Default: '" + PrsComputer.MODEL_WILDCARD + ".B" + PrsComputer.VARIABLE_WILDCARD + "'.", false, true),
-    childId("id", "childId", "The name of the column containing the child id in the phenotypes file. Default: child_SentrixID.", false, true),
-    phenoName("pn", "phenoName", "The names of the phenotype to analyze.", true, true),
-    trio("f", "fam", "The trio identifiers file. Can be gzipped or not.", true, true),
+    betaPattern("b", "betaPattern", "Pattern for the effect size column. Wildcard: " + PrsTrainer.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD + "'.", false, true),
+    sePattern("s", "sePattern", "Pattern for the standard error column. Wildcard: " + PrsTrainer.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD + ".se'.", false, true),
+    pPattern("p", "pPattern", "Pattern for the p-value column. Wildcard: " + PrsTrainer.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD + "'.p.", false, true),
     out("o", "out", "The file where to write the results.", true, true),
-    ldThreshold("ld", "ldThreshold", "LD R2 value after which two hits cannot be considered independent. Default: '0.05'.", false, true),
-    afThreshold("af", "afThreshold", "Lowest allele frequency considered. 0.001 means that the variants with maf higher or lower than 0.1 % are considered. Default: '0.001'.", false, true);
+    ldLocusThreshold("ldl", "ldLocusThreshold", "LD R2 value over which two hits cannot be considered independent. Default: '0.05'.", false, true),
+    ldTopHitThreshold("ldh", "ldTopHitThreshold", "LD R2 value over which two hits are considered identical. Default: '0.9'.", false, true),
+    nSnpPerLocusThreshold("ldn", "nSnpPerLocusThreshold", "The minimal number of variants required for a locus. Default: '5'.", false, true);
 
     /**
      * The short option.
@@ -60,7 +62,7 @@ public enum PrsOptions {
      * @param mandatory is the option mandatory
      * @param hasArg has the option an argument
      */
-    private PrsOptions(
+    private PrsTrainOptions(
             String opt, 
             String longOpt, 
             String description, 
@@ -84,7 +86,7 @@ public enum PrsOptions {
             Options options
     ) {
 
-        for (PrsOptions option : values()) {
+        for (PrsTrainOptions option : values()) {
 
             options.addOption(option.opt, option.longOpt, option.hasArg, option.description);
 

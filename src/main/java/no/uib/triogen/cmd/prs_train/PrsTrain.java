@@ -1,4 +1,4 @@
-package no.uib.triogen.cmd.prs;
+package no.uib.triogen.cmd.prs_train;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -15,7 +15,7 @@ import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.model.simple_score.VariantWeightList;
-import no.uib.triogen.processing.prs.PrsComputer;
+import no.uib.triogen.processing.prs.PrsTrainer;
 import no.uib.triogen.processing.simple_score.SimpleScoreComputer;
 
 /**
@@ -23,7 +23,7 @@ import no.uib.triogen.processing.simple_score.SimpleScoreComputer;
  *
  * @author Marc Vaudel
  */
-public class PRS {
+public class PrsTrain {
 
     /**
      * Main method.
@@ -53,11 +53,11 @@ public class PRS {
         try {
 
             Options lOptions = new Options();
-            PrsOptions.createOptionsCLI(lOptions);
+            PrsTrainOptions.createOptionsCLI(lOptions);
             CommandLineParser parser = new DefaultParser();
             CommandLine commandLine = parser.parse(lOptions, args);
 
-            PrsOptionsBean bean = new PrsOptionsBean(commandLine);
+            PrsTrainOptionsBean bean = new PrsTrainOptionsBean(commandLine);
 
             run(
                     bean,
@@ -77,22 +77,9 @@ public class PRS {
      * @param command the command line as string
      */
     private static void run(
-            PrsOptionsBean bean,
+            PrsTrainOptionsBean bean,
             String command
     ) {
-
-        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
-
-        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
-
-        if (inheritanceMap == null) {
-
-            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
-
-        }
-
-        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
-        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
 
         String resultStem = bean.destinationFile.getAbsolutePath();
 
@@ -111,27 +98,39 @@ public class PRS {
         logger.writeComment("Arguments", command);
         logger.writeHeaders();
 
-//        PrsComputer prsComputer = new PrsComputer();
-//
-//        try {
-//
-//            scoreComputer.computeScore();
-//
-//        } catch (Throwable e) {
-//
-//            logger.logError(
-//                    Arrays.stream(e.getStackTrace())
-//                            .map(
-//                                    element -> element.toString()
-//                            )
-//                            .collect(Collectors.joining(" "))
-//            );
-//
-//            e.printStackTrace();
-//
-//        }
-        logger.close();
+        try {
 
+            PrsTrainer prsTrainer = new PrsTrainer(
+                    bean.trainingFile,
+                    bean.ldMatrixFilePath,
+                    bean.destinationFile,
+                    bean.snpIdColumn,
+                    bean.chrColumn,
+                    bean.posColumn,
+                    bean.refColumn,
+                    bean.eaColumn,
+                    bean.betaPattern,
+                    bean.sePattern,
+                    bean.pPattern,
+                    bean.model,
+                    bean.variables,
+                    bean.nSnpPerLocusThreshold,
+                    bean.ldLocusThreshold,
+                    bean.ldTopHitThreshold,
+                    logger
+            );
+
+            prsTrainer.run();
+
+        } catch (Throwable e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            logger.close();
+
+        }
     }
 
     /**
@@ -144,10 +143,10 @@ public class PRS {
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print("              trioGen             " + LINE_SEPARATOR);
             lPrintWriter.print("               ****               " + LINE_SEPARATOR);
-            lPrintWriter.print("            Simple Score          " + LINE_SEPARATOR);
+            lPrintWriter.print("              PrsTrain            " + LINE_SEPARATOR);
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print(LINE_SEPARATOR
-                    + "The simple score command computes a simple risk score in trios based on a list of weights." + LINE_SEPARATOR
+                    + "The PrsTrain command exports a list of weights from the pruning of trio summary statistics." + LINE_SEPARATOR
                     + LINE_SEPARATOR
                     + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + LINE_SEPARATOR
                     + LINE_SEPARATOR
@@ -157,7 +156,7 @@ public class PRS {
                     + LINE_SEPARATOR
                     + "----------------------" + LINE_SEPARATOR
                     + LINE_SEPARATOR);
-            lPrintWriter.print(PrsOptions.getOptionsAsString());
+            lPrintWriter.print(PrsTrainOptions.getOptionsAsString());
             lPrintWriter.flush();
         }
     }
