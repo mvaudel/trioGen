@@ -442,6 +442,27 @@ public class PrsTrainer {
 
             if (!contigLdFile.exists()) {
 
+                if (contig.equals("X")) {
+
+                    String newContig = "23";
+
+                    contigLdMatrixFilePath = ldMatrixFilePath.replace(Utils.CONTIG_WILDCARD, newContig);
+
+                    contigLdFile = new File(contigLdMatrixFilePath);
+
+                } else if (contig.equals("23")) {
+
+                    String newContig = "X";
+
+                    contigLdMatrixFilePath = ldMatrixFilePath.replace(Utils.CONTIG_WILDCARD, newContig);
+
+                    contigLdFile = new File(contigLdMatrixFilePath);
+
+                }
+            }
+
+            if (!contigLdFile.exists()) {
+
                 throw new IllegalArgumentException("No LD matrix found for chromosome " + contig + " at " + contigLdMatrixFilePath + ".");
 
             }
