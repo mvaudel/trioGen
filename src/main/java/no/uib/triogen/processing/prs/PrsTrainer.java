@@ -279,7 +279,7 @@ public class PrsTrainer {
                         double progress = ((double) currentProgress) / 10;
 
                         logger.logMessage("Pruning    " + processedVariants.size() + " processed of " + trainingData.variantToDetailsMap.size() + " (" + progress + "%)");
-                        
+
                         lastProgress = currentProgress;
 
 //                        }
@@ -297,6 +297,9 @@ public class PrsTrainer {
                             for (R2 r2 : r2s) {
 
                                 if (r2.r2Value >= ldLocusThreshold) {
+
+                                    r2.setVariantBId(ldMatrixReader.getId(r2.variantB));
+                                    r2.setVariantBRsid(ldMatrixReader.getRsId(r2.getVariantBId()));
 
                                     r2InLocus.add(r2);
                                     idsInLocus.add(r2.getVariantBId());
@@ -320,8 +323,8 @@ public class PrsTrainer {
                                     HashMap<String, double[]> variableResult = trainingData.variantToSummaryStats[variableI];
 
                                     for (R2 r2 : r2InLocus) {
-                                        
-                                    System.out.println(variantId + ": " + r2.getVariantBId() + " (" + r2.getVariantBRsid() + ") - " + r2.r2Value);
+
+                                        System.out.println(variantId + ": " + r2.getVariantBId() + " (" + r2.getVariantBRsid() + ") - " + r2.r2Value);
 
                                         double[] summaryStats = variableResult.get(r2.getVariantBId());
 
@@ -372,6 +375,9 @@ public class PrsTrainer {
 
                                             if (r2.r2Value >= ldTopHitThreshold) {
 
+                                                r2.setVariantBId(ldMatrixReader.getId(r2.variantB));
+                                                r2.setVariantBRsid(ldMatrixReader.getRsId(r2.getVariantBId()));
+
                                                 if (trainingData.variantToDetailsMap.containsKey(r2.getVariantBId())) {
 
                                                     topHits.put(r2.getVariantBId(), r2.getVariantBRsid());
@@ -394,7 +400,7 @@ public class PrsTrainer {
 
                                     String hitId = entry.getKey();
                                     String rsId = entry.getValue() == null ? "" : entry.getValue();
-                                    
+
                                     System.out.println(hitId + " - " + rsId);
 
                                     String id = hitsIds.get(hitId);
@@ -407,10 +413,10 @@ public class PrsTrainer {
                                     line.append(hitId)
                                             .append(IoUtils.SEPARATOR)
                                             .append(rsId);
-                                    
+
                                     System.out.println(line);
-                                    
-                                            line.append(IoUtils.SEPARATOR)
+
+                                    line.append(IoUtils.SEPARATOR)
                                             .append(hitDetails[0])
                                             .append(IoUtils.SEPARATOR)
                                             .append(hitDetails[1])
