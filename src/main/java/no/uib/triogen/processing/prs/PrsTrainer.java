@@ -275,14 +275,16 @@ public class PrsTrainer {
 
                         int currentProgress = processedVariants.size() * 1000 / trainingData.variantToDetailsMap.size();
 
-//                        if (currentProgress > lastProgress) {
-                        double progress = ((double) currentProgress) / 10;
+                        if (currentProgress > lastProgress) {
 
-                        logger.logMessage("Pruning    " + processedVariants.size() + " processed of " + trainingData.variantToDetailsMap.size() + " (" + progress + "%)");
+                            double progress = ((double) currentProgress) / 10;
 
-                        lastProgress = currentProgress;
+                            logger.logMessage("Pruning    " + processedVariants.size() + " processed of " + trainingData.variantToDetailsMap.size() + " (" + progress + "%)");
 
-//                        }
+                            lastProgress = currentProgress;
+
+                        }
+
                         String[] variantDetails = trainingData.variantToDetailsMap.get(variantId);
 
                         LdMatrixReader ldMatrixReader = getLdMatrixReader(variantDetails[0]);
@@ -309,8 +311,6 @@ public class PrsTrainer {
                             }
 
                             if (r2InLocus.size() >= nSnpPerLocusThreshold) {
-
-                                logger.logMessage(variantId + " - " + r2InLocus.size() + " variants in locus");
 
                                 String[] bestSnps = new String[variableNames.length];
                                 String[] bestRsids = new String[variableNames.length];
@@ -354,12 +354,6 @@ public class PrsTrainer {
                                         }
                                     }
                                 }
-                                
-                                for (int i = 0 ; i < bestPs.length ; i++) {
-                                    
-                                    System.out.println(bestSnps[i] + ": " + bestPs[i]);
-                                    
-                                }
 
                                 HashMap<String, String> topHits = new HashMap<>();
                                 HashMap<String, String> hitsIds = new HashMap<>();
@@ -376,12 +370,6 @@ public class PrsTrainer {
                                     if (r2s != null) {
 
                                         for (R2 r2 : r2s) {
-                                            
-                                            if (r2.r2Value > 0.8) {
-                                                
-                                    System.out.println(ldMatrixReader.getId(r2.variantB) + ": " + r2.r2Value);
-                                                
-                                            }
 
                                             if (r2.r2Value >= ldTopHitThreshold) {
 
@@ -410,8 +398,6 @@ public class PrsTrainer {
 
                                     String hitId = entry.getKey();
                                     String rsId = entry.getValue() == null ? "" : entry.getValue();
-
-                                    System.out.println(hitId + " - " + rsId);
 
                                     String id = hitsIds.get(hitId);
                                     String[] hitDetails = trainingData.variantToDetailsMap.get(id);
