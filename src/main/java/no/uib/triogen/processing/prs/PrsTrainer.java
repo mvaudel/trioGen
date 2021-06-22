@@ -324,8 +324,6 @@ public class PrsTrainer {
 
                                     for (R2 r2 : r2InLocus) {
 
-                                        System.out.println(variantId + ": " + r2.getVariantBId() + " (" + r2.getVariantBRsid() + ") - " + r2.r2Value);
-
                                         double[] summaryStats = variableResult.get(r2.getVariantBId());
 
                                         if (summaryStats != null) {
@@ -356,6 +354,9 @@ public class PrsTrainer {
                                         }
                                     }
                                 }
+                                
+                                System.out.print(bestSnps);
+                                System.out.print(bestPs);
 
                                 HashMap<String, String> topHits = new HashMap<>();
                                 HashMap<String, String> hitsIds = new HashMap<>();
@@ -370,6 +371,8 @@ public class PrsTrainer {
                                     r2s = ldMatrixReader.getR2(topHitId);
 
                                     if (r2s != null) {
+
+                                logger.logMessage("Top hit: " + r2s.size() + " ld");
 
                                         for (R2 r2 : r2s) {
 
@@ -386,7 +389,7 @@ public class PrsTrainer {
                                                 } else if (trainingData.variantToDetailsMap.containsKey(r2.getVariantBRsid())) {
 
                                                     topHits.put(r2.getVariantBId(), r2.getVariantBRsid());
-                                                    hitsIds.put(r2.getVariantBId(), r2.getVariantBId());
+                                                    hitsIds.put(r2.getVariantBId(), r2.getVariantBRsid());
 
                                                 }
                                             }
