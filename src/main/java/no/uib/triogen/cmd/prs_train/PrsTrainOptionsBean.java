@@ -83,7 +83,7 @@ public class PrsTrainOptionsBean {
     /**
      * The highest p-value to consider.
      */
-    public double pValueThreshold = 1e-3;
+    public double pValueThreshold = 0.05;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity

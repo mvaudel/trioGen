@@ -279,6 +279,8 @@ public class PrsTrainer {
                         double progress = ((double) currentProgress) / 10;
 
                         logger.logMessage("Pruning    " + processedVariants.size() + " processed of " + trainingData.variantToDetailsMap.size() + " (" + progress + "%)");
+                        
+                        lastProgress = currentProgress;
 
 //                        }
                         String[] variantDetails = trainingData.variantToDetailsMap.get(variantId);
@@ -318,6 +320,8 @@ public class PrsTrainer {
                                     HashMap<String, double[]> variableResult = trainingData.variantToSummaryStats[variableI];
 
                                     for (R2 r2 : r2InLocus) {
+                                        
+                                    System.out.println(variantId + ": " + r2.getVariantBId() + " (" + r2.getVariantBRsid() + ") - " + r2.r2Value);
 
                                         double[] summaryStats = variableResult.get(r2.getVariantBId());
 
