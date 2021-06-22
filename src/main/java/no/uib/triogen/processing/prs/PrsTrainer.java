@@ -200,7 +200,7 @@ public class PrsTrainer {
         end = Instant.now().getEpochSecond();
         duration = end - start;
 
-        logger.logMessage("Parsing training data from " + trainingFile + " done (" + duration + " seconds)");
+        logger.logMessage("Parsing training data from " + trainingFile + " done (" + duration + " seconds), " + nPruned + " hits remaining.");
 
     }
 
@@ -281,10 +281,11 @@ public class PrsTrainer {
                         logger.logMessage("Pruning    " + processedVariants.size() + " processed of " + trainingData.variantToDetailsMap.size() + " (" + progress + "%)");
 
 //                        }
+
                         String[] variantDetails = trainingData.variantToDetailsMap.get(variantId);
 
                         LdMatrixReader ldMatrixReader = getLdMatrixReader(variantDetails[0]);
-
+                        
                         ArrayList<R2> r2s = ldMatrixReader.getR2(variantId);
 
                         if (r2s != null) {
@@ -307,11 +308,11 @@ public class PrsTrainer {
 
                                 logger.logMessage(variantId + " - " + r2InLocus.size() + " variants in locus");
 
-                                String[] bestSnps = new String[variantDetails.length];
-                                String[] bestRsids = new String[variantDetails.length];
-                                double[] bestPs = new double[variantDetails.length];
+                                String[] bestSnps = new String[variableNames.length];
+                                String[] bestRsids = new String[variableNames.length];
+                                double[] bestPs = new double[variableNames.length];
 
-                                for (int variableI = 0; variableI < variantDetails.length; variableI++) {
+                                for (int variableI = 0; variableI < variableNames.length; variableI++) {
 
                                     bestPs[variableI] = 1.1;
 
@@ -353,7 +354,7 @@ public class PrsTrainer {
                                 HashMap<String, String> topHits = new HashMap<>();
                                 HashMap<String, String> hitsIds = new HashMap<>();
 
-                                for (int variableI = 0; variableI < variantDetails.length; variableI++) {
+                                for (int variableI = 0; variableI < variableNames.length; variableI++) {
 
                                     String topHitId = bestSnps[variableI];
                                     String topHitRsId = bestRsids[variableI];
