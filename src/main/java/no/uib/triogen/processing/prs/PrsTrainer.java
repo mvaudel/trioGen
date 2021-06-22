@@ -389,7 +389,7 @@ public class PrsTrainer {
                                 for (Entry<String, String> entry : topHits.entrySet()) {
 
                                     String hitId = entry.getKey();
-                                    String rsId = entry.getValue();
+                                    String rsId = entry.getValue() == null ? "" : entry.getValue();
 
                                     String id = hitsIds.get(hitId);
                                     String[] hitDetails = trainingData.variantToDetailsMap.get(id);
