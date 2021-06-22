@@ -205,7 +205,7 @@ public class PrsTrainer {
     }
 
     private int pruneAndExport(TrainingData trainingData) {
-        
+
         int variantsPruned = 0;
 
         try (SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true)) {
@@ -276,13 +276,11 @@ public class PrsTrainer {
                         int currentProgress = processedVariants.size() * 1000 / trainingData.variantToDetailsMap.size();
 
 //                        if (currentProgress > lastProgress) {
+                        double progress = ((double) currentProgress) / 10;
 
-                            double progress = ((double) currentProgress) / 10;
-
-                            logger.logMessage("Pruning    " + processedVariants.size() + " processed of " + trainingData.variantToDetailsMap.size() + " (" + progress + "%)");
+                        logger.logMessage("Pruning    " + processedVariants.size() + " processed of " + trainingData.variantToDetailsMap.size() + " (" + progress + "%)");
 
 //                        }
-
                         String[] variantDetails = trainingData.variantToDetailsMap.get(variantId);
 
                         LdMatrixReader ldMatrixReader = getLdMatrixReader(variantDetails[0]);
@@ -307,6 +305,8 @@ public class PrsTrainer {
 
                             if (r2InLocus.size() >= nSnpPerLocusThreshold) {
 
+                                logger.logMessage(variantId + " - " + r2InLocus.size() + " variants in locus");
+
                                 String[] bestSnps = new String[variantDetails.length];
                                 String[] bestRsids = new String[variantDetails.length];
                                 double[] bestPs = new double[variantDetails.length];
@@ -321,21 +321,31 @@ public class PrsTrainer {
 
                                         double[] summaryStats = variableResult.get(r2.getVariantBId());
 
-                                        if (summaryStats != null && summaryStats[2] < bestPs[variableI]) {
+                                        if (summaryStats != null) {
 
-                                            bestSnps[variableI] = r2.getVariantBId();
-                                            bestRsids[variableI] = r2.getVariantBRsid();
-                                            bestPs[variableI] = summaryStats[2];
+                                            processedVariants.add(r2.getVariantBId());
 
+                                            if (summaryStats[2] < bestPs[variableI]) {
+
+                                                bestSnps[variableI] = r2.getVariantBId();
+                                                bestRsids[variableI] = r2.getVariantBRsid();
+                                                bestPs[variableI] = summaryStats[2];
+
+                                            }
                                         }
 
                                         summaryStats = variableResult.get(r2.getVariantBRsid());
 
-                                        if (summaryStats != null && summaryStats[2] < bestPs[variableI]) {
+                                        if (summaryStats != null) {
 
-                                            bestSnps[variableI] = r2.getVariantBRsid();
-                                            bestPs[variableI] = summaryStats[2];
+                                            processedVariants.add(r2.getVariantBRsid());
 
+                                            if (summaryStats[2] < bestPs[variableI]) {
+
+                                                bestSnps[variableI] = r2.getVariantBRsid();
+                                                bestPs[variableI] = summaryStats[2];
+
+                                            }
                                         }
                                     }
                                 }
@@ -370,6 +380,8 @@ public class PrsTrainer {
                                         }
                                     }
                                 }
+
+                                logger.logMessage(variantId + " - " + topHits.size() + " top hits");
 
                                 for (Entry<String, String> entry : topHits.entrySet()) {
 
@@ -424,13 +436,21 @@ public class PrsTrainer {
                                     }
 
                                     writer.writeLine(line.toString());
-                                    
+
                                     variantsPruned++;
 
                                 }
+                            } else {
+
+                                logger.logMessage(variantId + " - " + r2s.size() + " variants in LD where " + ldTopHitThreshold + " required");
+
                             }
 
                             processedVariants.addAll(idsInLocus);
+
+                        } else {
+
+                            logger.logMessage(variantId + " - no variants in LD");
 
                         }
 
@@ -440,9 +460,9 @@ public class PrsTrainer {
                 }
             }
         }
-        
+
         return variantsPruned;
-        
+
     }
 
     /**
@@ -713,7 +733,6 @@ public class PrsTrainer {
                 pValueToVariantMap,
                 variantToDetailsMap
         );
-
     }
 
     /**

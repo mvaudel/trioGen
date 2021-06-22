@@ -112,7 +112,7 @@ public class PrsTrainOptionsBean {
 
         if (!trainingFile.exists()) {
 
-            throw new IllegalArgumentException("Training file (" + trainingFile.getParentFile() + ") not found.");
+            throw new IllegalArgumentException("Training file (" + trainingFile + ") not found.");
 
         }
 
