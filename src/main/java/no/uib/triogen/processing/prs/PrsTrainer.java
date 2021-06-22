@@ -281,11 +281,10 @@ public class PrsTrainer {
                         logger.logMessage("Pruning    " + processedVariants.size() + " processed of " + trainingData.variantToDetailsMap.size() + " (" + progress + "%)");
 
 //                        }
-
                         String[] variantDetails = trainingData.variantToDetailsMap.get(variantId);
 
                         LdMatrixReader ldMatrixReader = getLdMatrixReader(variantDetails[0]);
-                        
+
                         ArrayList<R2> r2s = ldMatrixReader.getR2(variantId);
 
                         if (r2s != null) {
@@ -363,20 +362,23 @@ public class PrsTrainer {
 
                                     r2s = ldMatrixReader.getR2(topHitId);
 
-                                    for (R2 r2 : r2s) {
+                                    if (r2s != null) {
 
-                                        if (r2.r2Value >= ldTopHitThreshold) {
+                                        for (R2 r2 : r2s) {
 
-                                            if (trainingData.variantToDetailsMap.containsKey(r2.getVariantBId())) {
+                                            if (r2.r2Value >= ldTopHitThreshold) {
 
-                                                topHits.put(r2.getVariantBId(), r2.getVariantBRsid());
-                                                hitsIds.put(r2.getVariantBId(), r2.getVariantBId());
+                                                if (trainingData.variantToDetailsMap.containsKey(r2.getVariantBId())) {
 
-                                            } else if (trainingData.variantToDetailsMap.containsKey(r2.getVariantBRsid())) {
+                                                    topHits.put(r2.getVariantBId(), r2.getVariantBRsid());
+                                                    hitsIds.put(r2.getVariantBId(), r2.getVariantBId());
 
-                                                topHits.put(r2.getVariantBId(), r2.getVariantBRsid());
-                                                hitsIds.put(r2.getVariantBId(), r2.getVariantBId());
+                                                } else if (trainingData.variantToDetailsMap.containsKey(r2.getVariantBRsid())) {
 
+                                                    topHits.put(r2.getVariantBId(), r2.getVariantBRsid());
+                                                    hitsIds.put(r2.getVariantBId(), r2.getVariantBId());
+
+                                                }
                                             }
                                         }
                                     }

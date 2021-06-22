@@ -267,7 +267,7 @@ public class WLM {
         try (SimpleFileWriter writer = new SimpleFileWriter(resultFile, true)) {
 
             writer.writeLine(
-                    "snp", "rsid", "chr", "pos", "tested_allele", "other_allele",
+                    "snp", "moba_id", "rsid", "chr", "pos", "tested_allele", "other_allele",
                     "tested_allele_freq_child", "tested_allele_freq_mother", "tested_allele_freq_father",
                     "beta_child", "se_child", "p_child", "n_child",
                     "beta_mother", "se_mother", "p_mother", "n_mother",
@@ -375,8 +375,13 @@ public class WLM {
             );
             double wlmPFather = Utils.computeBetaSignificance(wlmBetaFather, wlmSeFather);
             
+            String[] sortedAlleles = Arrays.copyOf(alleles, alleles.length);
+            Arrays.sort(sortedAlleles);
+            
+            String mobaId = String.join("_", variantInfo[1], variantInfo[2], sortedAlleles[0], sortedAlleles[1]);
+            
             writer.writeLine(
-                    id, variantInfo[0], variantInfo[1], variantInfo[2], alleles[1], alleles[0],
+                    id, mobaId, variantInfo[0], variantInfo[1], variantInfo[2], alleles[1], alleles[0],
                     Double.toString(testedAlleleFrequencies[0]), Double.toString(testedAlleleFrequencies[1]), Double.toString(testedAlleleFrequencies[2]),
                     Double.toString(betas[0]), Double.toString(ses[0]), Double.toString(ps[0]), Double.toString(ns[0]),
                     Double.toString(betas[1]), Double.toString(ses[1]), Double.toString(ps[1]), Double.toString(ns[1]),
