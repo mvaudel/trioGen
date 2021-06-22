@@ -390,6 +390,8 @@ public class PrsTrainer {
 
                                     String hitId = entry.getKey();
                                     String rsId = entry.getValue() == null ? "" : entry.getValue();
+                                    
+                                    System.out.println(hitId + " - " + rsId);
 
                                     String id = hitsIds.get(hitId);
                                     String[] hitDetails = trainingData.variantToDetailsMap.get(id);
@@ -400,8 +402,11 @@ public class PrsTrainer {
 
                                     line.append(hitId)
                                             .append(IoUtils.SEPARATOR)
-                                            .append(rsId)
-                                            .append(IoUtils.SEPARATOR)
+                                            .append(rsId);
+                                    
+                                    System.out.println(line);
+                                    
+                                            line.append(IoUtils.SEPARATOR)
                                             .append(hitDetails[0])
                                             .append(IoUtils.SEPARATOR)
                                             .append(hitDetails[1])
