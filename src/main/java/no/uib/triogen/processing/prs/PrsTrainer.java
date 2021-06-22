@@ -355,8 +355,11 @@ public class PrsTrainer {
                                     }
                                 }
                                 
-                                System.out.print(bestSnps);
-                                System.out.print(bestPs);
+                                for (int i = 0 ; i < bestPs.length ; i++) {
+                                    
+                                    System.out.println(bestSnps[i] + ": " + bestPs[i]);
+                                    
+                                }
 
                                 HashMap<String, String> topHits = new HashMap<>();
                                 HashMap<String, String> hitsIds = new HashMap<>();
@@ -372,9 +375,13 @@ public class PrsTrainer {
 
                                     if (r2s != null) {
 
-                                logger.logMessage("Top hit: " + r2s.size() + " ld");
-
                                         for (R2 r2 : r2s) {
+                                            
+                                            if (r2.r2Value > 0.8) {
+                                                
+                                    System.out.println(ldMatrixReader.getId(r2.variantB) + ": " + r2.r2Value);
+                                                
+                                            }
 
                                             if (r2.r2Value >= ldTopHitThreshold) {
 
