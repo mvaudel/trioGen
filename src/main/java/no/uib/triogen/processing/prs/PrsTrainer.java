@@ -102,6 +102,10 @@ public class PrsTrainer {
      */
     private final int nSnpPerLocusThreshold;
     /**
+     * The highest p-value to consider.
+     */
+    private final double pValueThreshold;
+    /**
      * The logger.
      */
     private final SimpleCliLogger logger;
@@ -127,6 +131,7 @@ public class PrsTrainer {
      * column for each variable in the model.
      * @param ldLocusThreshold The LD threshold used for pruning.
      * @param ldTopHitThreshold The LD threshold used for top hits.
+     * @param pValueThreshold The p-value threshold.
      * @param nSnpPerLocusThreshold The number of variants to consider per
      * locus.
      * @param logger The logger.
@@ -148,6 +153,7 @@ public class PrsTrainer {
             int nSnpPerLocusThreshold,
             double ldLocusThreshold,
             double ldTopHitThreshold,
+            double pValueThreshold,
             SimpleCliLogger logger
     ) {
 
@@ -167,6 +173,7 @@ public class PrsTrainer {
         this.nSnpPerLocusThreshold = nSnpPerLocusThreshold;
         this.ldLocusThreshold = ldLocusThreshold;
         this.ldTopHitThreshold = ldTopHitThreshold;
+        this.pValueThreshold = pValueThreshold;
         this.logger = logger;
 
     }
@@ -179,18 +186,16 @@ public class PrsTrainer {
 
         TrainingData trainingData = parseTrainingData();
 
-        TreeMap<Double, TreeSet<String>> pValueToSnpMap = new TreeMap<>();
-
         long end = Instant.now().getEpochSecond();
         long duration = end - start;
 
-        logger.logMessage("Parsing training data from " + trainingFile + " done (" + duration + " seconds)");
+        logger.logMessage("Parsing training data from " + trainingFile + " done (" + duration + " seconds), " + trainingData.variantToDetailsMap.size() + " variants to prune.");
 
         logger.logMessage("Weighted pruning");
 
         start = Instant.now().getEpochSecond();
 
-        pruneAndExport(trainingData);
+        int nPruned = pruneAndExport(trainingData);
 
         end = Instant.now().getEpochSecond();
         duration = end - start;
@@ -199,7 +204,9 @@ public class PrsTrainer {
 
     }
 
-    private void pruneAndExport(TrainingData trainingData) {
+    private int pruneAndExport(TrainingData trainingData) {
+        
+        int variantsPruned = 0;
 
         try (SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true)) {
 
@@ -256,6 +263,8 @@ public class PrsTrainer {
 
             writer.writeLine(line.toString());
 
+            int lastProgress = 0;
+
             HashSet<String> processedVariants = new HashSet<>();
 
             for (Entry<Double, TreeSet<String>> pEntry : trainingData.pValueToVariantMap.entrySet()) {
@@ -263,6 +272,16 @@ public class PrsTrainer {
                 for (String variantId : pEntry.getValue()) {
 
                     if (!processedVariants.contains(variantId)) {
+
+                        int currentProgress = processedVariants.size() * 1000 / trainingData.variantToDetailsMap.size();
+
+//                        if (currentProgress > lastProgress) {
+
+                            double progress = ((double) currentProgress) / 10;
+
+                            logger.logMessage("Pruning    " + processedVariants.size() + " processed of " + trainingData.variantToDetailsMap.size() + " (" + progress + "%)");
+
+//                        }
 
                         String[] variantDetails = trainingData.variantToDetailsMap.get(variantId);
 
@@ -405,6 +424,8 @@ public class PrsTrainer {
                                     }
 
                                     writer.writeLine(line.toString());
+                                    
+                                    variantsPruned++;
 
                                 }
                             }
@@ -419,6 +440,9 @@ public class PrsTrainer {
                 }
             }
         }
+        
+        return variantsPruned;
+        
     }
 
     /**
@@ -476,7 +500,6 @@ public class PrsTrainer {
                 throw new RuntimeException(e);
 
             }
-
         }
 
         return ldMatrixReader;
@@ -638,31 +661,49 @@ public class PrsTrainer {
                 String ref = lineSplit[refAlleleIndex];
                 String alt = lineSplit[testedAlleleIndex];
 
+                boolean pValueOK = false;
+                double[] pValues = new double[variableNames.length];
+
                 for (int j = 0; j < variableNames.length; j++) {
 
-                    String betaString = lineSplit[betaColumnIndexes[j]];
-                    String seString = lineSplit[seColumnIndexes[j]];
                     String pString = lineSplit[pColumnIndexes[j]];
-
-                    double beta = Double.parseDouble(betaString);
-                    double se = Double.parseDouble(seString);
                     double p = Double.parseDouble(pString);
+                    pValues[j] = p;
 
-                    variantToSummaryStats[j].put(snpId, new double[]{beta, se, p});
+                    if (p <= pValueThreshold) {
 
-                    TreeSet<String> variantsAtPvalue = pValueToVariantMap.get(p);
-
-                    if (variantsAtPvalue == null) {
-
-                        variantsAtPvalue = new TreeSet<>();
-                        pValueToVariantMap.put(p, variantsAtPvalue);
+                        pValueOK = true;
 
                     }
+                }
 
-                    variantsAtPvalue.add(snpId);
+                if (pValueOK) {
 
-                    variantToDetailsMap.put(snpId, new String[]{chr, pos, ref, alt});
+                    for (int j = 0; j < variableNames.length; j++) {
 
+                        String betaString = lineSplit[betaColumnIndexes[j]];
+                        String seString = lineSplit[seColumnIndexes[j]];
+
+                        double beta = Double.parseDouble(betaString);
+                        double se = Double.parseDouble(seString);
+                        double p = pValues[j];
+
+                        variantToSummaryStats[j].put(snpId, new double[]{beta, se, p});
+
+                        TreeSet<String> variantsAtPvalue = pValueToVariantMap.get(p);
+
+                        if (variantsAtPvalue == null) {
+
+                            variantsAtPvalue = new TreeSet<>();
+                            pValueToVariantMap.put(p, variantsAtPvalue);
+
+                        }
+
+                        variantsAtPvalue.add(snpId);
+
+                        variantToDetailsMap.put(snpId, new String[]{chr, pos, ref, alt});
+
+                    }
                 }
             }
         }

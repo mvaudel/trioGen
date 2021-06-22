@@ -110,6 +110,7 @@ public class PrsTrain {
                     bean.nSnpPerLocusThreshold,
                     bean.ldLocusThreshold,
                     bean.ldTopHitThreshold,
+                    bean.pValueThreshold,
                     logger
             );
 

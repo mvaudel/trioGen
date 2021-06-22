@@ -155,7 +155,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/prs/PrsTrainer.html#PrsTrainer-java.io.File-java.lang.String-java.io.File-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-int-double-double-no.uib.triogen.log.SimpleCliLogger-">PrsTrainer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;trainingFile,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/prs/PrsTrainer.html#PrsTrainer-java.io.File-java.lang.String-java.io.File-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-int-double-double-double-no.uib.triogen.log.SimpleCliLogger-">PrsTrainer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;trainingFile,
           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;ldMatrixFilePath,
           <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;destinationFile,
           <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;snpIdColumn,
@@ -171,6 +171,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
           int&nbsp;nSnpPerLocusThreshold,
           double&nbsp;ldLocusThreshold,
           double&nbsp;ldTopHitThreshold,
+          double&nbsp;pValueThreshold,
           <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
 <div class="block">Constructor.</div>
 </td>
@@ -238,7 +239,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="PrsTrainer-java.io.File-java.lang.String-java.io.File-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-int-double-double-no.uib.triogen.log.SimpleCliLogger-">
+<a name="PrsTrainer-java.io.File-java.lang.String-java.io.File-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-int-double-double-double-no.uib.triogen.log.SimpleCliLogger-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -260,6 +261,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                   int&nbsp;nSnpPerLocusThreshold,
                   double&nbsp;ldLocusThreshold,
                   double&nbsp;ldTopHitThreshold,
+                  double&nbsp;pValueThreshold,
                   <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</pre>
 <div class="block">Constructor.</div>
 <dl>
@@ -282,6 +284,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
  column for each variable in the model.</dd>
 <dd><code>ldLocusThreshold</code> - The LD threshold used for pruning.</dd>
 <dd><code>ldTopHitThreshold</code> - The LD threshold used for top hits.</dd>
+<dd><code>pValueThreshold</code> - The p-value threshold.</dd>
 <dd><code>nSnpPerLocusThreshold</code> - The number of variants to consider per
  locus.</dd>
 <dd><code>logger</code> - The logger.</dd>

@@ -80,6 +80,10 @@ public class PrsTrainOptionsBean {
      * The minimal number of variants required for a locus.
      */
     public int nSnpPerLocusThreshold = 5;
+    /**
+     * The highest p-value to consider.
+     */
+    public double pValueThreshold = 1e-3;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -214,7 +218,7 @@ public class PrsTrainOptionsBean {
                 }
                 if (ldLocusThreshold < 0 || ldLocusThreshold > 1) {
 
-                    throw new IllegalArgumentException("The LD locus threshold (" + option + ") should be higher than 0 or lower than 1.");
+                    throw new IllegalArgumentException("The LD locus threshold (" + option + ") should be higher than 0 and lower than 1.");
 
                 }
             } catch (Exception e) {
@@ -240,7 +244,7 @@ public class PrsTrainOptionsBean {
                 }
                 if (ldTopHitThreshold < 0 || ldTopHitThreshold > 1) {
 
-                    throw new IllegalArgumentException("The LD top hit threshold (" + option + ") should be higher than 0 or lower than 1.");
+                    throw new IllegalArgumentException("The LD top hit threshold (" + option + ") should be higher than 0 and lower than 1.");
 
                 }
             } catch (Exception e) {
@@ -272,6 +276,32 @@ public class PrsTrainOptionsBean {
             } catch (Exception e) {
 
                 throw new IllegalArgumentException("The minimal number of SNP in locus (" + option + ") could not be parsed as a number.");
+
+            }
+        }
+
+        // The p-value threshold
+        if (aLine.hasOption(PrsTrainOptions.pValueThreshold.opt)) {
+
+            String option = aLine.getOptionValue(PrsTrainOptions.pValueThreshold.opt);
+
+            try {
+
+                pValueThreshold = Double.parseDouble(option);
+
+                if (Double.isNaN(pValueThreshold) || Double.isFinite(pValueThreshold)) {
+
+                    throw new IllegalArgumentException("The p-value threshold (" + option + ") could not be parsed as a number.");
+
+                }
+                if (pValueThreshold <= 0 || pValueThreshold > 1) {
+
+                    throw new IllegalArgumentException("The p-value threshold (" + option + ") should be higher than 0 and lower than 1.");
+
+                }
+            } catch (Exception e) {
+
+                throw new IllegalArgumentException("The value for LD top hit threshold (" + option + ") could not be parsed as a number.");
 
             }
         }
