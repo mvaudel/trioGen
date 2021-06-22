@@ -275,7 +275,7 @@ public class PrsTrainer {
 
                         int currentProgress = processedVariants.size() * 1000 / trainingData.variantToDetailsMap.size();
 
-                        if (currentProgress > lastProgress) {
+//                        if (currentProgress > lastProgress) {
 
                             double progress = ((double) currentProgress) / 10;
 
@@ -283,7 +283,7 @@ public class PrsTrainer {
 
                             lastProgress = currentProgress;
 
-                        }
+//                        }
 
                         String[] variantDetails = trainingData.variantToDetailsMap.get(variantId);
 
@@ -392,8 +392,6 @@ public class PrsTrainer {
                                     }
                                 }
 
-                                logger.logMessage(variantId + " - " + topHits.size() + " top hits");
-
                                 for (Entry<String, String> entry : topHits.entrySet()) {
 
                                     String hitId = entry.getKey();
@@ -454,17 +452,9 @@ public class PrsTrainer {
                                     variantsPruned++;
 
                                 }
-                            } else {
-
-                                logger.logMessage(variantId + " - " + r2s.size() + " variants in LD where " + ldTopHitThreshold + " required");
-
                             }
 
                             processedVariants.addAll(idsInLocus);
-
-                        } else {
-
-                            logger.logMessage(variantId + " - no variants in LD");
 
                         }
 
