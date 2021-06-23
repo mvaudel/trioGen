@@ -301,7 +301,8 @@ public class PrsTrainOptionsBean {
                 }
             } catch (Exception e) {
 
-                throw new IllegalArgumentException("The value for LD top hit threshold (" + option + ") could not be parsed as a number.");
+                e.printStackTrace();
+                throw new IllegalArgumentException("The value for p-value threshold (" + option + ") could not be parsed as a number.");
 
             }
         }
