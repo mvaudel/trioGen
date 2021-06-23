@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import no.uib.triogen.cmd.ld_pruning.LdPruningOptions;
-import no.uib.triogen.model.phenotypes.PhenotypesHandler;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.processing.prs.PrsTrainer;
 import org.apache.commons.cli.CommandLine;
@@ -211,19 +210,19 @@ public class PrsTrainOptionsBean {
 
                 ldLocusThreshold = Double.parseDouble(option);
 
-                if (Double.isNaN(ldLocusThreshold) || Double.isFinite(ldLocusThreshold)) {
-
-                    throw new IllegalArgumentException("The value for LD locus threshold (" + option + ") could not be parsed as a number.");
-
-                }
-                if (ldLocusThreshold < 0 || ldLocusThreshold > 1) {
-
-                    throw new IllegalArgumentException("The LD locus threshold (" + option + ") should be higher than 0 and lower than 1.");
-
-                }
             } catch (Exception e) {
 
                 throw new IllegalArgumentException("The value for LD locus threshold (" + option + ") could not be parsed as a number.");
+
+            }
+            if (Double.isNaN(ldLocusThreshold) || Double.isInfinite(ldLocusThreshold)) {
+
+                throw new IllegalArgumentException("The value for LD locus threshold (" + option + ") could not be parsed as a number.");
+
+            }
+            if (ldLocusThreshold < 0 || ldLocusThreshold > 1) {
+
+                throw new IllegalArgumentException("The LD locus threshold (" + option + ") should be higher than 0 and lower than 1.");
 
             }
         }
@@ -237,19 +236,19 @@ public class PrsTrainOptionsBean {
 
                 ldTopHitThreshold = Double.parseDouble(option);
 
-                if (Double.isNaN(ldTopHitThreshold) || Double.isFinite(ldTopHitThreshold)) {
-
-                    throw new IllegalArgumentException("The value for LD top hit threshold (" + option + ") could not be parsed as a number.");
-
-                }
-                if (ldTopHitThreshold < 0 || ldTopHitThreshold > 1) {
-
-                    throw new IllegalArgumentException("The LD top hit threshold (" + option + ") should be higher than 0 and lower than 1.");
-
-                }
             } catch (Exception e) {
 
                 throw new IllegalArgumentException("The value for LD top hit threshold (" + option + ") could not be parsed as a number.");
+
+            }
+            if (Double.isNaN(ldTopHitThreshold) || Double.isInfinite(ldTopHitThreshold)) {
+
+                throw new IllegalArgumentException("The value for LD top hit threshold (" + option + ") could not be parsed as a number.");
+
+            }
+            if (ldTopHitThreshold < 0 || ldTopHitThreshold > 1) {
+
+                throw new IllegalArgumentException("The LD top hit threshold (" + option + ") should be higher than 0 and lower than 1.");
 
             }
         }
@@ -263,19 +262,19 @@ public class PrsTrainOptionsBean {
 
                 nSnpPerLocusThreshold = Integer.parseInt(option);
 
-                if (Double.isNaN(nSnpPerLocusThreshold) || Double.isFinite(nSnpPerLocusThreshold)) {
-
-                    throw new IllegalArgumentException("The minimal number of SNP in locus (" + option + ") could not be parsed as a number.");
-
-                }
-                if (nSnpPerLocusThreshold < 0) {
-
-                    throw new IllegalArgumentException("The minimal number of SNP in locus (" + option + ") should be higher than 0.");
-
-                }
             } catch (Exception e) {
 
                 throw new IllegalArgumentException("The minimal number of SNP in locus (" + option + ") could not be parsed as a number.");
+
+            }
+            if (Double.isNaN(nSnpPerLocusThreshold) || Double.isInfinite(nSnpPerLocusThreshold)) {
+
+                throw new IllegalArgumentException("The minimal number of SNP in locus (" + option + ") could not be parsed as a number.");
+
+            }
+            if (nSnpPerLocusThreshold < 0) {
+
+                throw new IllegalArgumentException("The minimal number of SNP in locus (" + option + ") should be higher than 0.");
 
             }
         }
@@ -289,20 +288,20 @@ public class PrsTrainOptionsBean {
 
                 pValueThreshold = Double.parseDouble(option);
 
-                if (Double.isNaN(pValueThreshold) || Double.isFinite(pValueThreshold)) {
-
-                    throw new IllegalArgumentException("The p-value threshold (" + option + ") could not be parsed as a number.");
-
-                }
-                if (pValueThreshold <= 0 || pValueThreshold > 1) {
-
-                    throw new IllegalArgumentException("The p-value threshold (" + option + ") should be higher than 0 and lower than 1.");
-
-                }
             } catch (Exception e) {
 
                 e.printStackTrace();
                 throw new IllegalArgumentException("The value for p-value threshold (" + option + ") could not be parsed as a number.");
+
+            }
+            if (Double.isNaN(pValueThreshold) || Double.isInfinite(pValueThreshold)) {
+
+                throw new IllegalArgumentException("The p-value threshold (" + option + ") could not be parsed as a number.");
+
+            }
+            if (pValueThreshold <= 0 || pValueThreshold > 1) {
+
+                throw new IllegalArgumentException("The p-value threshold (" + option + ") should be higher than 0 and lower than 1.");
 
             }
         }
