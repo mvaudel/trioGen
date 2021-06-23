@@ -283,16 +283,18 @@ public class PrsTrainer {
 
             for (Entry<Double, TreeMap<String, Integer>> pEntry : trainingData.pValueToVariantMap.entrySet()) {
 
-//                        if (currentProgress > lastProgress) {
                 int currentProgress = cpt * 1000 / trainingData.pValueToVariantMap.size();
 
-                double progress = ((double) currentProgress) / 10;
+                if (currentProgress > lastProgress) {
 
-                logger.logMessage("Pruning    " + cpt + " p-values of " + trainingData.pValueToVariantMap.size() + " (" + progress + "%) - " + variantsPerPrunedLocus.size() + " loci pruned, " + processedVariants.size() + " variants inspected.");
+                    double progress = ((double) currentProgress) / 10;
 
-                lastProgress = currentProgress;
+                    logger.logMessage("Pruning    " + cpt + " p-values of " + trainingData.pValueToVariantMap.size() + " (" + progress + "%) - " + variantsPerPrunedLocus.size() + " loci pruned, " + processedVariants.size() + " variants inspected.");
 
-//                        }
+                    lastProgress = currentProgress;
+
+                }
+
                 double pValue = pEntry.getKey();
                 TreeMap<String, Integer> variantMap = pEntry.getValue();
 
