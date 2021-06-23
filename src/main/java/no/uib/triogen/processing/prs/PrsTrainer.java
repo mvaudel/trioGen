@@ -741,18 +741,10 @@ public class PrsTrainer {
 
                 String snpId = lineSplit[snpIdIndex];
                 String chr = lineSplit[chrIndex];
-                
-                if (chr.equals("1")) {
 
                 String pos = lineSplit[posIndex];
                 String ref = lineSplit[refAlleleIndex];
                 String alt = lineSplit[testedAlleleIndex];
-                
-                if (pos.equals("155001281")) {
-                    
-                    System.out.println(line);
-                    
-                }
 
                 boolean pValueOK = false;
                 double[] pValues = new double[variableNames.length];
@@ -798,7 +790,6 @@ public class PrsTrainer {
 
                     }
                 }
-            }
             }
         }
 
