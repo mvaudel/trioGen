@@ -194,6 +194,16 @@ public class PrsTrainer {
         
         System.out.println("rs150138294: " + r2s.size() + " r2 values, " + n02 + " over 0.2.");
         
+        for (R2 r2 : r2s) {
+            
+            if (r2.r2Value >= 0.2) {
+                
+                System.out.println("rs150138294: " + reader.getId(r2.variantB));
+                
+            }
+            
+        }
+        
         
         logger.logMessage("Parsing training data from " + trainingFile.getAbsolutePath());
 
@@ -492,7 +502,7 @@ public class PrsTrainer {
                                     .append(IoUtils.SEPARATOR)
                                     .append(weight);
                             
-                            if (leadVariantId.equals("rs150138294")) {
+                            if (leadVariantId.equals("1_155001281_A_G")) {
                         
                         System.out.println(line);
                         
@@ -529,11 +539,11 @@ public class PrsTrainer {
                             variantsPerPrunedLocus.put(leadVariantId, topHits.size());
 
                         }
-                    } else if (leadVariantId.equals("rs150138294")) {
+                    } else if (leadVariantId.equals("1_155001281_A_G")) {
                         
                         System.out.println("rs150138294 excluded by number of variants");
                         
-                    } else if (idsInLocus.contains("rs150138294")) {
+                    } else if (idsInLocus.contains("1_155001281_A_G")) {
                         
                         System.out.println("rs150138294 excluded by " + leadVariantId + " for number of variants");
                         
@@ -778,8 +788,6 @@ public class PrsTrainer {
                     
                     System.out.println(line);
                     
-                    throw new IllegalArgumentException("end");
-                    
                 }
 
                 boolean pValueOK = false;
@@ -799,6 +807,12 @@ public class PrsTrainer {
                 }
 
                 if (pValueOK) {
+                
+                if (pos.equals("155001281")) {
+                    
+                    System.out.println("### pvalueOK");
+                    
+                }
 
                     for (int j = 0; j < variableNames.length; j++) {
 
