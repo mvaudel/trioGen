@@ -798,6 +798,12 @@ public class PrsTrainer {
                     String pString = lineSplit[pColumnIndexes[j]];
                     double p = Double.parseDouble(pString);
                     pValues[j] = p;
+                
+                if (pos.equals("155001281")) {
+                    
+                    System.out.println(variableNames[j] + ": " + p);
+                    
+                }
 
                     if (p <= pValueThreshold) {
 
