@@ -17,6 +17,7 @@ import no.uib.triogen.io.ld.LdMatrixReader;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.model.trio_genotypes.Model;
+import no.uib.triogen.utils.SimpleSemaphore;
 import no.uib.triogen.utils.Utils;
 
 /**
@@ -109,6 +110,7 @@ public class PrsTrainer {
      * The logger.
      */
     private final SimpleCliLogger logger;
+    private final SimpleSemaphore simpleSemaphore = new SimpleSemaphore(1);
 
     /**
      * Constructor.
@@ -212,9 +214,15 @@ public class PrsTrainer {
 
             StringBuilder line = new StringBuilder();
 
-            line.append("variantid")
+            line.append("lead_id")
                     .append(IoUtils.SEPARATOR)
-                    .append("rsid")
+                    .append("lead_variable")
+                    .append(IoUtils.SEPARATOR)
+                    .append("lead_p")
+                    .append(IoUtils.SEPARATOR)
+                    .append("variant_id")
+                    .append(IoUtils.SEPARATOR)
+                    .append("variant_rsid")
                     .append(IoUtils.SEPARATOR)
                     .append("chr")
                     .append(IoUtils.SEPARATOR)
@@ -264,208 +272,252 @@ public class PrsTrainer {
             writer.writeLine(line.toString());
 
             int lastProgress = 0;
+            int cpt = 0;
 
             HashSet<String> processedVariants = new HashSet<>();
 
-            for (Entry<Double, TreeSet<String>> pEntry : trainingData.pValueToVariantMap.entrySet()) {
-
-                for (String variantId : pEntry.getValue()) {
-
-                    if (!processedVariants.contains(variantId)) {
-
-                        int currentProgress = processedVariants.size() * 1000 / trainingData.variantToDetailsMap.size();
+            for (Entry<Double, TreeMap<String, Integer>> pEntry : trainingData.pValueToVariantMap.entrySet()) {
 
 //                        if (currentProgress > lastProgress) {
+                int currentProgress = cpt * 1000 / trainingData.pValueToVariantMap.size();
 
-                            double progress = ((double) currentProgress) / 10;
+                double progress = ((double) currentProgress) / 10;
 
-                            logger.logMessage("Pruning    " + processedVariants.size() + " processed of " + trainingData.variantToDetailsMap.size() + " (" + progress + "%)");
+                logger.logMessage("Pruning    " + cpt + " p-values of " + trainingData.pValueToVariantMap.size() + " (" + progress + "%)");
 
-                            lastProgress = currentProgress;
+                lastProgress = currentProgress;
 
 //                        }
+                double pValue = pEntry.getKey();
+                TreeMap<String, Integer> variantMap = pEntry.getValue();
+
+                variantMap.entrySet()
+                        .stream()
+                        .parallel()
+                        .forEach(
+                                entry -> processVariant(
+                                        processedVariants,
+                                        entry.getKey(),
+                                        entry.getValue(),
+                                        pValue,
+                                        trainingData,
+                                        singlePValue,
+                                        writer
+                                )
+                        );
+
+                cpt++;
 
-                        String[] variantDetails = trainingData.variantToDetailsMap.get(variantId);
-
-                        LdMatrixReader ldMatrixReader = getLdMatrixReader(variantDetails[0]);
-
-                        ArrayList<R2> r2s = ldMatrixReader.getR2(variantId);
-
-                        if (r2s != null) {
-
-                            ArrayList<R2> r2InLocus = new ArrayList<>();
-                            HashSet<String> idsInLocus = new HashSet<>();
-
-                            for (R2 r2 : r2s) {
-
-                                if (r2.r2Value >= ldLocusThreshold) {
-
-                                    r2.setVariantBId(ldMatrixReader.getId(r2.variantB));
-                                    r2.setVariantBRsid(ldMatrixReader.getRsId(r2.getVariantBId()));
-
-                                    r2InLocus.add(r2);
-                                    idsInLocus.add(r2.getVariantBId());
-                                    idsInLocus.add(r2.getVariantBRsid());
-
-                                }
-                            }
-
-                            if (r2InLocus.size() >= nSnpPerLocusThreshold) {
-
-                                String[] bestSnps = new String[variableNames.length];
-                                String[] bestRsids = new String[variableNames.length];
-                                double[] bestPs = new double[variableNames.length];
-
-                                for (int variableI = 0; variableI < variableNames.length; variableI++) {
-
-                                    bestPs[variableI] = 1.1;
-
-                                    HashMap<String, double[]> variableResult = trainingData.variantToSummaryStats[variableI];
-
-                                    for (R2 r2 : r2InLocus) {
-
-                                        double[] summaryStats = variableResult.get(r2.getVariantBId());
-
-                                        if (summaryStats != null) {
-
-                                            processedVariants.add(r2.getVariantBId());
-
-                                            if (summaryStats[2] < bestPs[variableI]) {
-
-                                                bestSnps[variableI] = r2.getVariantBId();
-                                                bestRsids[variableI] = r2.getVariantBRsid();
-                                                bestPs[variableI] = summaryStats[2];
-
-                                            }
-                                        }
-
-                                        summaryStats = variableResult.get(r2.getVariantBRsid());
-
-                                        if (summaryStats != null) {
-
-                                            processedVariants.add(r2.getVariantBRsid());
-
-                                            if (summaryStats[2] < bestPs[variableI]) {
-
-                                                bestSnps[variableI] = r2.getVariantBRsid();
-                                                bestPs[variableI] = summaryStats[2];
-
-                                            }
-                                        }
-                                    }
-                                }
-
-                                HashMap<String, String> topHits = new HashMap<>();
-                                HashMap<String, String> hitsIds = new HashMap<>();
-
-                                for (int variableI = 0; variableI < variableNames.length; variableI++) {
-
-                                    String topHitId = bestSnps[variableI];
-                                    String topHitRsId = bestRsids[variableI];
-
-                                    topHits.put(topHitId, topHitRsId);
-
-                                    r2s = ldMatrixReader.getR2(topHitId);
-
-                                    if (r2s != null) {
-
-                                        for (R2 r2 : r2s) {
-
-                                            if (r2.r2Value >= ldTopHitThreshold) {
-
-                                                r2.setVariantBId(ldMatrixReader.getId(r2.variantB));
-                                                r2.setVariantBRsid(ldMatrixReader.getRsId(r2.getVariantBId()));
-
-                                                if (trainingData.variantToDetailsMap.containsKey(r2.getVariantBId())) {
-
-                                                    topHits.put(r2.getVariantBId(), r2.getVariantBRsid());
-                                                    hitsIds.put(r2.getVariantBId(), r2.getVariantBId());
-
-                                                } else if (trainingData.variantToDetailsMap.containsKey(r2.getVariantBRsid())) {
-
-                                                    topHits.put(r2.getVariantBId(), r2.getVariantBRsid());
-                                                    hitsIds.put(r2.getVariantBId(), r2.getVariantBRsid());
-
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                for (Entry<String, String> entry : topHits.entrySet()) {
-
-                                    String hitId = entry.getKey();
-                                    String rsId = entry.getValue() == null ? "" : entry.getValue();
-
-                                    String id = hitsIds.get(hitId);
-                                    String[] hitDetails = trainingData.variantToDetailsMap.get(id);
-
-                                    double weight = 1.0 / topHits.size();
-
-                                    line = new StringBuilder();
-
-                                    line.append(hitId)
-                                            .append(IoUtils.SEPARATOR)
-                                            .append(rsId);
-
-                                    System.out.println(line);
-
-                                    line.append(IoUtils.SEPARATOR)
-                                            .append(hitDetails[0])
-                                            .append(IoUtils.SEPARATOR)
-                                            .append(hitDetails[1])
-                                            .append(IoUtils.SEPARATOR)
-                                            .append(hitDetails[2])
-                                            .append(IoUtils.SEPARATOR)
-                                            .append(hitDetails[3])
-                                            .append(IoUtils.SEPARATOR)
-                                            .append(weight);
-
-                                    double[] summaryStats = null;
-
-                                    for (int j = 0; j < variableNames.length; j++) {
-
-                                        summaryStats = trainingData.variantToSummaryStats[j].get(id);
-
-                                        line.append(IoUtils.SEPARATOR)
-                                                .append(summaryStats[0])
-                                                .append(IoUtils.SEPARATOR)
-                                                .append(summaryStats[1]);
-
-                                        if (!singlePValue) {
-
-                                            line.append(IoUtils.SEPARATOR)
-                                                    .append(summaryStats[0]);
-
-                                        }
-                                    }
-
-                                    if (singlePValue) {
-
-                                        line.append(IoUtils.SEPARATOR)
-                                                .append(summaryStats[2]);
-
-                                    }
-
-                                    writer.writeLine(line.toString());
-
-                                    variantsPruned++;
-
-                                }
-                            }
-
-                            processedVariants.addAll(idsInLocus);
-
-                        }
-
-                        processedVariants.add(variantId);
-
-                    }
-                }
             }
         }
 
         return variantsPruned;
+
+    }
+
+    private int processVariant(
+            HashSet<String> processedVariants,
+            String leadVariantId,
+            int leadVariantVariable,
+            double leadVariantP,
+            TrainingData trainingData,
+            boolean singlePValue,
+            SimpleFileWriter writer
+    ) {
+
+        boolean pruned = false;
+
+        if (!processedVariants.contains(leadVariantId)) {
+
+            simpleSemaphore.acquire();
+
+            if (!processedVariants.contains(leadVariantId)) {
+
+                String[] variantDetails = trainingData.variantToDetailsMap.get(leadVariantId);
+
+                LdMatrixReader ldMatrixReader = getLdMatrixReader(variantDetails[0]);
+
+                ArrayList<R2> r2s = ldMatrixReader.getR2(leadVariantId);
+
+                if (r2s != null) {
+
+                    ArrayList<R2> r2InLocus = new ArrayList<>();
+                    HashSet<String> idsInLocus = new HashSet<>();
+
+                    for (R2 r2 : r2s) {
+
+                        if (r2.r2Value >= ldLocusThreshold) {
+
+                            r2.setVariantBId(ldMatrixReader.getId(r2.variantB));
+                            r2.setVariantBRsid(ldMatrixReader.getRsId(r2.getVariantBId()));
+
+                            r2InLocus.add(r2);
+                            idsInLocus.add(r2.getVariantBId());
+                            idsInLocus.add(r2.getVariantBRsid());
+
+                        }
+                    }
+
+                    if (r2InLocus.size() >= nSnpPerLocusThreshold) {
+
+                        String[] bestSnps = new String[variableNames.length];
+                        String[] bestRsids = new String[variableNames.length];
+                        double[] bestPs = new double[variableNames.length];
+
+                        for (int variableI = 0; variableI < variableNames.length; variableI++) {
+
+                            bestPs[variableI] = 1.1;
+
+                            HashMap<String, double[]> variableResult = trainingData.variantToSummaryStats[variableI];
+
+                            for (R2 r2 : r2InLocus) {
+
+                                double[] summaryStats = variableResult.get(r2.getVariantBId());
+
+                                if (summaryStats != null) {
+
+                                    processedVariants.add(r2.getVariantBId());
+
+                                    if (summaryStats[2] < bestPs[variableI]) {
+
+                                        bestSnps[variableI] = r2.getVariantBId();
+                                        bestRsids[variableI] = r2.getVariantBRsid();
+                                        bestPs[variableI] = summaryStats[2];
+
+                                    }
+                                }
+
+                                summaryStats = variableResult.get(r2.getVariantBRsid());
+
+                                if (summaryStats != null) {
+
+                                    processedVariants.add(r2.getVariantBRsid());
+
+                                    if (summaryStats[2] < bestPs[variableI]) {
+
+                                        bestSnps[variableI] = r2.getVariantBRsid();
+                                        bestPs[variableI] = summaryStats[2];
+
+                                    }
+                                }
+                            }
+                        }
+
+                        HashMap<String, String> topHits = new HashMap<>();
+                        HashMap<String, String> hitsIds = new HashMap<>();
+
+                        for (int variableI = 0; variableI < variableNames.length; variableI++) {
+
+                            String topHitId = bestSnps[variableI];
+                            String topHitRsId = bestRsids[variableI];
+
+                            topHits.put(topHitId, topHitRsId);
+
+                            r2s = ldMatrixReader.getR2(topHitId);
+
+                            if (r2s != null) {
+
+                                for (R2 r2 : r2s) {
+
+                                    if (r2.r2Value >= ldTopHitThreshold) {
+
+                                        r2.setVariantBId(ldMatrixReader.getId(r2.variantB));
+                                        r2.setVariantBRsid(ldMatrixReader.getRsId(r2.getVariantBId()));
+
+                                        if (trainingData.variantToDetailsMap.containsKey(r2.getVariantBId())) {
+
+                                            topHits.put(r2.getVariantBId(), r2.getVariantBRsid());
+                                            hitsIds.put(r2.getVariantBId(), r2.getVariantBId());
+
+                                        } else if (trainingData.variantToDetailsMap.containsKey(r2.getVariantBRsid())) {
+
+                                            topHits.put(r2.getVariantBId(), r2.getVariantBRsid());
+                                            hitsIds.put(r2.getVariantBId(), r2.getVariantBRsid());
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        for (Entry<String, String> entry : topHits.entrySet()) {
+
+                            String hitId = entry.getKey();
+                            String rsId = entry.getValue() == null ? "" : entry.getValue();
+
+                            String id = hitsIds.get(hitId);
+                            String[] hitDetails = trainingData.variantToDetailsMap.get(id);
+
+                            double weight = 1.0 / topHits.size();
+
+                            StringBuilder line = new StringBuilder();
+
+                            line.append(leadVariantId)
+                                    .append(IoUtils.SEPARATOR)
+                                    .append(variableNames[leadVariantVariable])
+                                    .append(IoUtils.SEPARATOR)
+                                    .append(leadVariantP)
+                                    .append(IoUtils.SEPARATOR)
+                                    .append(hitId)
+                                    .append(IoUtils.SEPARATOR)
+                                    .append(rsId)
+                                    .append(IoUtils.SEPARATOR)
+                                    .append(hitDetails[0])
+                                    .append(IoUtils.SEPARATOR)
+                                    .append(hitDetails[1])
+                                    .append(IoUtils.SEPARATOR)
+                                    .append(hitDetails[2])
+                                    .append(IoUtils.SEPARATOR)
+                                    .append(hitDetails[3])
+                                    .append(IoUtils.SEPARATOR)
+                                    .append(weight);
+
+                            double[] summaryStats = null;
+
+                            for (int j = 0; j < variableNames.length; j++) {
+
+                                summaryStats = trainingData.variantToSummaryStats[j].get(id);
+
+                                line.append(IoUtils.SEPARATOR)
+                                        .append(summaryStats[0])
+                                        .append(IoUtils.SEPARATOR)
+                                        .append(summaryStats[1]);
+
+                                if (!singlePValue) {
+
+                                    line.append(IoUtils.SEPARATOR)
+                                            .append(summaryStats[0]);
+
+                                }
+                            }
+
+                            if (singlePValue) {
+
+                                line.append(IoUtils.SEPARATOR)
+                                        .append(summaryStats[2]);
+
+                            }
+
+                            writer.writeLine(line.toString());
+
+                            pruned = true;
+
+                        }
+                    }
+
+                    processedVariants.addAll(idsInLocus);
+
+                }
+
+                processedVariants.add(leadVariantId);
+
+            }
+
+            simpleSemaphore.release();
+
+        }
+
+        return pruned ? 1 : 0;
 
     }
 
@@ -540,7 +592,7 @@ public class PrsTrainer {
     private TrainingData parseTrainingData() {
 
         HashMap<String, double[]>[] variantToSummaryStats = new HashMap[variableNames.length];
-        TreeMap<Double, TreeSet<String>> pValueToVariantMap = new TreeMap<>();
+        TreeMap<Double, TreeMap<String, Integer>> pValueToVariantMap = new TreeMap<>();
         HashMap<String, String[]> variantToDetailsMap = new HashMap<>();
 
         for (int j = 0; j < variableNames.length; j++) {
@@ -714,16 +766,16 @@ public class PrsTrainer {
 
                         variantToSummaryStats[j].put(snpId, new double[]{beta, se, p});
 
-                        TreeSet<String> variantsAtPvalue = pValueToVariantMap.get(p);
+                        TreeMap<String, Integer> variantsAtPvalue = pValueToVariantMap.get(p);
 
                         if (variantsAtPvalue == null) {
 
-                            variantsAtPvalue = new TreeSet<>();
+                            variantsAtPvalue = new TreeMap<>();
                             pValueToVariantMap.put(p, variantsAtPvalue);
 
                         }
 
-                        variantsAtPvalue.add(snpId);
+                        variantsAtPvalue.put(snpId, j);
 
                         variantToDetailsMap.put(snpId, new String[]{chr, pos, ref, alt});
 
@@ -745,12 +797,12 @@ public class PrsTrainer {
     private class TrainingData {
 
         public final HashMap<String, double[]>[] variantToSummaryStats;
-        public final TreeMap<Double, TreeSet<String>> pValueToVariantMap;
+        public final TreeMap<Double, TreeMap<String, Integer>> pValueToVariantMap;
         public final HashMap<String, String[]> variantToDetailsMap;
 
         public TrainingData(
                 HashMap<String, double[]>[] variantToSummaryStats,
-                TreeMap<Double, TreeSet<String>> pValueToVariantMap,
+                TreeMap<Double, TreeMap<String, Integer>> pValueToVariantMap,
                 HashMap<String, String[]> variantToDetailsMap
         ) {
 
