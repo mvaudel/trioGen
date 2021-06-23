@@ -181,7 +181,20 @@ public class PrsTrainer {
     }
 
     public void run() throws IOException {
-
+        
+        // Debug
+        
+        LdMatrixReader reader = getLdMatrixReader("1");
+        ArrayList<R2> r2s = reader.getR2("rs150138294");
+        long n02 = r2s.stream()
+                .filter(
+                r2 -> r2.r2Value >= 0.2
+                )
+                .count();
+        
+        System.out.println("rs150138294: " + r2s.size() + " r2 values, " + n02 + " over 0.2.");
+        
+        
         logger.logMessage("Parsing training data from " + trainingFile.getAbsolutePath());
 
         long start = Instant.now().getEpochSecond();
@@ -478,6 +491,12 @@ public class PrsTrainer {
                                     .append(hitDetails[3])
                                     .append(IoUtils.SEPARATOR)
                                     .append(weight);
+                            
+                            if (leadVariantId.equals("rs150138294")) {
+                        
+                        System.out.println(line);
+                        
+                    }
 
                             double[] summaryStats = null;
 
@@ -510,6 +529,14 @@ public class PrsTrainer {
                             variantsPerPrunedLocus.put(leadVariantId, topHits.size());
 
                         }
+                    } else if (leadVariantId.equals("rs150138294")) {
+                        
+                        System.out.println("rs150138294 excluded by number of variants");
+                        
+                    } else if (idsInLocus.contains("rs150138294")) {
+                        
+                        System.out.println("rs150138294 excluded by " + leadVariantId + " for number of variants");
+                        
                     }
 
                     processedVariants.addAll(idsInLocus);
@@ -740,6 +767,8 @@ public class PrsTrainer {
 
                 String snpId = lineSplit[snpIdIndex];
                 String chr = lineSplit[chrIndex];
+                
+                if (chr.equals("1")) {
 
                 String pos = lineSplit[posIndex];
                 String ref = lineSplit[refAlleleIndex];
@@ -789,6 +818,7 @@ public class PrsTrainer {
 
                     }
                 }
+            }
             }
         }
 
