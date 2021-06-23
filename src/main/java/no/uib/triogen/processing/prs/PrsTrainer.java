@@ -773,6 +773,14 @@ public class PrsTrainer {
                 String pos = lineSplit[posIndex];
                 String ref = lineSplit[refAlleleIndex];
                 String alt = lineSplit[testedAlleleIndex];
+                
+                if (pos.equals("155001281")) {
+                    
+                    System.out.println(line);
+                    
+                    throw new IllegalArgumentException("end");
+                    
+                }
 
                 boolean pValueOK = false;
                 double[] pValues = new double[variableNames.length];
