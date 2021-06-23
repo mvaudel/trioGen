@@ -182,28 +182,6 @@ public class PrsTrainer {
 
     public void run() throws IOException {
         
-        // Debug
-        
-        LdMatrixReader reader = getLdMatrixReader("1");
-        ArrayList<R2> r2s = reader.getR2("rs150138294");
-        long n02 = r2s.stream()
-                .filter(
-                r2 -> r2.r2Value >= 0.2
-                )
-                .count();
-        
-        System.out.println("rs150138294: " + r2s.size() + " r2 values, " + n02 + " over 0.2.");
-        
-        for (R2 r2 : r2s) {
-            
-            if (r2.r2Value >= 0.2) {
-                
-                System.out.println("rs150138294: " + reader.getId(r2.variantB));
-                
-            }
-            
-        }
-        
         
         logger.logMessage("Parsing training data from " + trainingFile.getAbsolutePath());
 
@@ -501,12 +479,6 @@ public class PrsTrainer {
                                     .append(hitDetails[3])
                                     .append(IoUtils.SEPARATOR)
                                     .append(weight);
-                            
-                            if (leadVariantId.equals("1_155001281_A_G")) {
-                        
-                        System.out.println(line);
-                        
-                    }
 
                             double[] summaryStats = null;
 
@@ -539,14 +511,6 @@ public class PrsTrainer {
                             variantsPerPrunedLocus.put(leadVariantId, topHits.size());
 
                         }
-                    } else if (leadVariantId.equals("1_155001281_A_G")) {
-                        
-                        System.out.println("rs150138294 excluded by number of variants");
-                        
-                    } else if (idsInLocus.contains("1_155001281_A_G")) {
-                        
-                        System.out.println("rs150138294 excluded by " + leadVariantId + " for number of variants");
-                        
                     }
 
                     processedVariants.addAll(idsInLocus);
@@ -798,12 +762,6 @@ public class PrsTrainer {
                     String pString = lineSplit[pColumnIndexes[j]];
                     double p = Double.parseDouble(pString);
                     pValues[j] = p;
-                
-                if (pos.equals("155001281")) {
-                    
-                    System.out.println(variableNames[j] + ": " + p);
-                    
-                }
 
                     if (p <= pValueThreshold) {
 
@@ -813,12 +771,6 @@ public class PrsTrainer {
                 }
 
                 if (pValueOK) {
-                
-                if (pos.equals("155001281")) {
-                    
-                    System.out.println("### pvalueOK");
-                    
-                }
 
                     for (int j = 0; j < variableNames.length; j++) {
 
