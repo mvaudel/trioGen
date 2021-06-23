@@ -75,7 +75,7 @@ public class PrsTrainOptionsBean {
     /**
      * LD R2 value over which two hits are considered identical.
      */
-    public double ldTopHitThreshold = 0.9;
+    public double ldTopHitThreshold = 0.8;
     /**
      * The minimal number of variants required for a locus.
      */

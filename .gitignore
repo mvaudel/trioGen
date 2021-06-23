@@ -23,3 +23,4 @@ hs_err_pid*
 !/bin/triogen-0.4.0-beta/*
 !/bin/triogen-0.5.0-beta/*
 .Rproj.user
+/target/

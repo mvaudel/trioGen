@@ -28,7 +28,7 @@ public enum PrsTrainOptions {
     pPattern("p", "pPattern", "Pattern for the p-value column. Wildcard: " + PrsTrainer.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD + "'.p.", false, true),
     out("o", "out", "The file where to write the results.", true, true),
     ldLocusThreshold("ldl", "ldLocusThreshold", "LD R2 value over which two hits cannot be considered independent. Default: '0.05'.", false, true),
-    ldTopHitThreshold("ldh", "ldTopHitThreshold", "LD R2 value over which two hits are considered identical. Default: '0.9'.", false, true),
+    ldTopHitThreshold("ldh", "ldTopHitThreshold", "LD R2 value over which two hits are considered identical. Default: '0.8'.", false, true),
     pValueThreshold("pv", "pValueThreshold", "The highest p-value to consider. Default: '0.05'.", false, true),
     nSnpPerLocusThreshold("ldn", "nSnpPerLocusThreshold", "The minimal number of variants required for a locus. Default: '5'.", false, true);
 

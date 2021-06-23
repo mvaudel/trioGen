@@ -197,18 +197,23 @@ public class PrsTrainer {
 
         start = Instant.now().getEpochSecond();
 
-        int nPruned = pruneAndExport(trainingData);
+        HashMap<String, Integer> nPruned = pruneAndExport(trainingData);
+
+        int nVariants = nPruned.values()
+                .stream()
+                .mapToInt(a -> a)
+                .sum();
 
         end = Instant.now().getEpochSecond();
         duration = end - start;
 
-        logger.logMessage("Parsing training data from " + trainingFile + " done (" + duration + " seconds), " + nPruned + " hits remaining.");
+        logger.logMessage("Parsing training data from " + trainingFile + " done (" + duration + " seconds), " + nVariants + " from " + nPruned.size() + " loci remaining.");
 
     }
 
-    private int pruneAndExport(TrainingData trainingData) {
+    private HashMap<String, Integer> pruneAndExport(TrainingData trainingData) {
 
-        int variantsPruned = 0;
+        HashMap<String, Integer> variantsPerPrunedLocus = new HashMap<>();
 
         try (SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true)) {
 
@@ -283,7 +288,7 @@ public class PrsTrainer {
 
                 double progress = ((double) currentProgress) / 10;
 
-                logger.logMessage("Pruning    " + cpt + " p-values of " + trainingData.pValueToVariantMap.size() + " (" + progress + "%)");
+                logger.logMessage("Pruning    " + cpt + " p-values of " + trainingData.pValueToVariantMap.size() + " (" + progress + "%) - " + variantsPerPrunedLocus.size() + " loci pruned, " + processedVariants.size() + " variants inspected.");
 
                 lastProgress = currentProgress;
 
@@ -297,6 +302,7 @@ public class PrsTrainer {
                         .forEach(
                                 entry -> processVariant(
                                         processedVariants,
+                                        variantsPerPrunedLocus,
                                         entry.getKey(),
                                         entry.getValue(),
                                         pValue,
@@ -311,12 +317,13 @@ public class PrsTrainer {
             }
         }
 
-        return variantsPruned;
+        return variantsPerPrunedLocus;
 
     }
 
-    private int processVariant(
+    private void processVariant(
             HashSet<String> processedVariants,
+            HashMap<String, Integer> variantsPerPrunedLocus,
             String leadVariantId,
             int leadVariantVariable,
             double leadVariantP,
@@ -325,21 +332,19 @@ public class PrsTrainer {
             SimpleFileWriter writer
     ) {
 
-        boolean pruned = false;
-
         if (!processedVariants.contains(leadVariantId)) {
 
-            simpleSemaphore.acquire();
+            String[] variantDetails = trainingData.variantToDetailsMap.get(leadVariantId);
 
-            if (!processedVariants.contains(leadVariantId)) {
+            LdMatrixReader ldMatrixReader = getLdMatrixReader(variantDetails[0]);
 
-                String[] variantDetails = trainingData.variantToDetailsMap.get(leadVariantId);
+            ArrayList<R2> r2s = ldMatrixReader.getR2(leadVariantId);
 
-                LdMatrixReader ldMatrixReader = getLdMatrixReader(variantDetails[0]);
+            if (r2s != null) {
 
-                ArrayList<R2> r2s = ldMatrixReader.getR2(leadVariantId);
+                simpleSemaphore.acquire();
 
-                if (r2s != null) {
+                if (!processedVariants.contains(leadVariantId)) {
 
                     ArrayList<R2> r2InLocus = new ArrayList<>();
                     HashSet<String> idsInLocus = new HashSet<>();
@@ -486,7 +491,7 @@ public class PrsTrainer {
                                 if (!singlePValue) {
 
                                     line.append(IoUtils.SEPARATOR)
-                                            .append(summaryStats[0]);
+                                            .append(summaryStats[2]);
 
                                 }
                             }
@@ -500,7 +505,7 @@ public class PrsTrainer {
 
                             writer.writeLine(line.toString());
 
-                            pruned = true;
+                            variantsPerPrunedLocus.put(leadVariantId, topHits.size());
 
                         }
                     }
@@ -509,16 +514,13 @@ public class PrsTrainer {
 
                 }
 
-                processedVariants.add(leadVariantId);
+                simpleSemaphore.release();
 
             }
 
-            simpleSemaphore.release();
+            processedVariants.add(leadVariantId);
 
         }
-
-        return pruned ? 1 : 0;
-
     }
 
     /**
@@ -576,6 +578,9 @@ public class PrsTrainer {
                 throw new RuntimeException(e);
 
             }
+
+            ldMatrixReadersMap.put(contig, ldMatrixReader);
+
         }
 
         return ldMatrixReader;
@@ -733,6 +738,7 @@ public class PrsTrainer {
 
                 String snpId = lineSplit[snpIdIndex];
                 String chr = lineSplit[chrIndex];
+
                 String pos = lineSplit[posIndex];
                 String ref = lineSplit[refAlleleIndex];
                 String alt = lineSplit[testedAlleleIndex];
