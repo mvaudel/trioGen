@@ -19,6 +19,8 @@ import no.uib.triogen.processing.ld.P0Cache;
 
 /**
  * Debugs the LD calculation.
+ * 
+ * Command: java -Xmx16G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar no.uib.triogen.scripts_marc.ld.ComputeTargetedLD /mnt/work/marc/moba/mobaRun/resources/triogen/targets/targets_ld
  *
  * @author Marc Vaudel
  */
@@ -39,8 +41,21 @@ public class ComputeTargetedLD {
     public static void main(String[] args) {
 
         try {
+            
+            if (args.length != 1) {
+                
+                throw new IllegalArgumentException("One argument expected.");
+                
+            }
 
-            File targetsFile = new File("/mnt/work/marc/moba/mobaRun/resources/triogen/targets/targets_ld");
+            File targetsFile = new File(args[0]);
+            
+            if (!targetsFile.exists()) {
+                
+                throw new IllegalArgumentException("Targets file '" + args[0] + "' not found.");
+                
+            }
+            
             File trioFile = new File("/mnt/work/marc/moba/run/triogen/pheno/trio");
 
             System.out.println("Parsing " + trioFile.getAbsolutePath() + ".");
@@ -124,7 +139,7 @@ public class ComputeTargetedLD {
             ChildToParentMap childToParentMap
     ) throws IOException {
 
-        File output = new File("/mnt/work/marc/moba/gestational_age/docs/ld", rsid + "_ld.gz");
+        File output = new File("/mnt/work/marc/moba/mobaRun/docs/ld", rsid + "_ld.gz");
 
         P0Cache p0Cache = new P0Cache(1);
 
