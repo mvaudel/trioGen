@@ -40,7 +40,7 @@ public class ComputeTargetedLD {
 
         try {
 
-            File targetsFile = new File("/mnt/work/marc/moba/gestational_age/docs/targets/targets_ga");
+            File targetsFile = new File("/mnt/work/marc/moba/mobaRun/resources/triogen/targets/targets_ld");
             File trioFile = new File("/mnt/work/marc/moba/run/triogen/pheno/trio");
 
             System.out.println("Parsing " + trioFile.getAbsolutePath() + ".");
