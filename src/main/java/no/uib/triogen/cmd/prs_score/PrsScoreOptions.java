@@ -4,6 +4,7 @@ import java.util.Arrays;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.triogen.model.trio_genotypes.Model;
+import no.uib.triogen.processing.prs.PrsScorer;
 import no.uib.triogen.processing.prs.PrsTrainer;
 
 /**
@@ -13,8 +14,7 @@ import no.uib.triogen.processing.prs.PrsTrainer;
  */
 public enum PrsScoreOptions {
 
-    geno("g", "geno", "The genotypes file.", true, true),
-    chromosome("c", "chromosome", "The chromosome name.", true, true),
+    geno("g", "geno", "The genotypes file. Wildcard: " + PrsScorer.CHROMOSOME_WILDCARD + " for variable name.", true, true),
     variantId("vi", "variantId", "File listing the variants to include in the analysis. Default: process all variants in the genotypes file.", false, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not.", true, true),
     scoreFile("s", "scoreFile", "Score details as obtained from the PrsTrain command.", true, true),

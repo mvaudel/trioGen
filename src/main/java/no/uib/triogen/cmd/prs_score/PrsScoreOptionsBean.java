@@ -3,7 +3,6 @@ package no.uib.triogen.cmd.prs_score;
 import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import no.uib.triogen.cmd.association.LinearModelOptions;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.processing.prs.PrsScorer;
 import no.uib.triogen.processing.prs.PrsTrainer;
@@ -20,10 +19,6 @@ public class PrsScoreOptionsBean {
      * The genotypes file path.
      */
     public final String genotypesFile;
-    /**
-     * The chromosome name.
-     */
-    public final String chromosome;
     /**
      * the trio file.
      */
@@ -82,7 +77,7 @@ public class PrsScoreOptionsBean {
         }
 
         // The genotypes file
-        genotypesFile = aLine.getOptionValue(LinearModelOptions.geno.opt);
+        genotypesFile = aLine.getOptionValue(PrsScoreOptions.geno.opt);
         
         File genotypesFolder = (new File(genotypesFile)).getParentFile();
 
@@ -92,11 +87,8 @@ public class PrsScoreOptionsBean {
 
         }
 
-        // The chromosome name
-        chromosome = aLine.getOptionValue(LinearModelOptions.chromosome.opt);
-
         // the trio file
-        String filePath = aLine.getOptionValue(LinearModelOptions.trio.opt);
+        String filePath = aLine.getOptionValue(PrsScoreOptions.trio.opt);
 
         trioFile = new File(filePath);
 
@@ -107,9 +99,9 @@ public class PrsScoreOptionsBean {
         }
 
         // The variant ids
-        if (aLine.hasOption(LinearModelOptions.variantId.opt)) {
+        if (aLine.hasOption(PrsScoreOptions.variantId.opt)) {
 
-            filePath = aLine.getOptionValue(LinearModelOptions.variantId.opt);
+            filePath = aLine.getOptionValue(PrsScoreOptions.variantId.opt);
 
             variantFile = new File(filePath);
 

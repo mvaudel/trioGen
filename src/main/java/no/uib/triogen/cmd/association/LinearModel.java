@@ -128,8 +128,8 @@ public class LinearModel {
 
         }
 
-        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
-        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
+        int defaultMotherPloidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPloidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
 
         Model[] models = Arrays.stream(bean.modelNames)
                 .map(
@@ -140,8 +140,8 @@ public class LinearModel {
         LinearModelComputer linearModelComputer = new LinearModelComputer(
                 bean.genotypesFile,
                 inheritanceMap,
-                defaultMotherPlooidy,
-                defaultFatherPlooidy,
+                defaultMotherPloidy,
+                defaultFatherPloidy,
                 variantList,
                 bean.alleleFrequencyThreshold,
                 childToParentMap,

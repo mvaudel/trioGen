@@ -102,12 +102,12 @@ public class PrsScore {
 
             variantList = VariantList.getVariantList(
                     bean.variantFile,
-                    bean.chromosome
+                    null
             );
 
             if (variantList.variantId.length == 0) {
 
-                logger.logMessage("No target variant on chromosome " + bean.chromosome + ".");
+                logger.logMessage("No target variant in file " + bean.variantFile + ".");
 
             }
 
@@ -117,36 +117,22 @@ public class PrsScore {
 
         ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
 
-        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
-
-        if (inheritanceMap == null) {
-
-            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
-
-        }
-
-        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
-        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
-
         try {
 
             PrsScorer prsScorer = new PrsScorer(
-                    bean.genotypesFile, 
-                    inheritanceMap, 
-                    defaultMotherPlooidy, 
-                    defaultFatherPlooidy, 
-                    childToParentMap, 
-                    bean.scoreFile, 
-                    bean.destinationFile, 
-                    variantList, 
-                    bean.betaPattern, 
-                    bean.model, 
-                    bean.variables, 
-                    bean.pValueThreshold, 
-                    bean.scoringMode, 
+                    bean.genotypesFile,
+                    childToParentMap,
+                    bean.scoreFile,
+                    bean.destinationFile,
+                    variantList,
+                    bean.betaPattern,
+                    bean.model,
+                    bean.variables,
+                    bean.pValueThreshold,
+                    bean.scoringMode,
                     logger
             );
-            
+
             prsScorer.run();
 
         } catch (Throwable e) {

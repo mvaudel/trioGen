@@ -10,6 +10,7 @@ import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.SEPARATOR;
 import no.uib.triogen.io.flat.SimpleFileReader;
+import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
@@ -18,6 +19,7 @@ import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.genome.VariantInformation;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.trio_genotypes.VariantList;
+import static no.uib.triogen.processing.prs.PrsTrainer.VARIABLE_WILDCARD;
 import no.uib.triogen.utils.SimpleSemaphore;
 
 /**
@@ -28,10 +30,6 @@ import no.uib.triogen.utils.SimpleSemaphore;
 public class PrsScorer {
 
     /**
-     * Wildcard for the variable name in the summary stats columns.
-     */
-    public static final String VARIABLE_WILDCARD = "{variable}";
-    /**
      * Wildcard for the chromosome name in the genotypes file.
      */
     public static final String CHROMOSOME_WILDCARD = "{chr}";
@@ -39,18 +37,6 @@ public class PrsScorer {
      * The path top the file containing the genotypes.
      */
     private final String genotypesFilePath;
-    /**
-     * The allele inheritance map.
-     */
-    private final HashMap<Integer, char[]> inheritanceMap;
-    /**
-     * The default ploidy for mothers.
-     */
-    private final int defaultMotherPloidy;
-    /**
-     * The default ploidy for fathers.
-     */
-    private final int defaultFatherPloidy;
     /**
      * The map of trios.
      */
@@ -101,9 +87,6 @@ public class PrsScorer {
      * Constructor.
      *
      * @param genotypesFilePath The path to the file containing the genotypes.
-     * @param inheritanceMap The inheritance map for the given file.
-     * @param defaultMotherPloidy The default ploidy for mothers.
-     * @param defaultFatherPloidy The default ploidy for fathers.
      * @param childToParentMap The map of trios.
      * @param trainingFile The file containing the training data.
      * @param destinationFile The file to export the result to.
@@ -118,9 +101,6 @@ public class PrsScorer {
      */
     public PrsScorer(
             String genotypesFilePath,
-            HashMap<Integer, char[]> inheritanceMap,
-            int defaultMotherPloidy,
-            int defaultFatherPloidy,
             ChildToParentMap childToParentMap,
             File trainingFile,
             File destinationFile,
@@ -134,9 +114,6 @@ public class PrsScorer {
     ) {
 
         this.genotypesFilePath = genotypesFilePath;
-        this.inheritanceMap = inheritanceMap;
-        this.defaultMotherPloidy = defaultMotherPloidy;
-        this.defaultFatherPloidy = defaultFatherPloidy;
         this.childToParentMap = childToParentMap;
         this.trainingFile = trainingFile;
         this.destinationFile = destinationFile;
@@ -264,6 +241,17 @@ public class PrsScorer {
             logger.logMessage("Parsing " + genotypesFile.getAbsolutePath());
 
             long start = Instant.now().getEpochSecond();
+
+        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(chromosome);
+
+        if (inheritanceMap == null) {
+
+            throw new IllegalArgumentException("Mode of inheritance not implemented for " + chromosome + ".");
+
+        }
+
+        int defaultMotherPloidy = InheritanceUtils.getDefaultMotherPloidy(chromosome);
+        int defaultFatherPloidy = InheritanceUtils.getDefaultFatherPloidy(chromosome);
 
             BgenIndex bgenIndex = BgenIndex.getBgenIndex(genotypesFile);
             BgenFileReader bgenFileReader = new BgenFileReader(
