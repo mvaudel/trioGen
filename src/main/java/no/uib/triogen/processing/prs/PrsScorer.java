@@ -271,8 +271,6 @@ public class PrsScorer {
 
             start = Instant.now().getEpochSecond();
 
-            ZstdDecompressor decompressor = new ZstdDecompressor();
-
             IntStream.range(0, bgenIndex.variantIdArray.length)
                     .parallel()
                     .filter(
@@ -284,7 +282,6 @@ public class PrsScorer {
                                     chromosomeScoringData.get(bgenIndex.variantIdArray[variantIndex]),
                                     bgenFileReader,
                                     bgenIndex,
-                                    decompressor,
                                     scores
                             )
                     );
@@ -306,7 +303,6 @@ public class PrsScorer {
             HashMap<String, double[]> variantScoringData,
             BgenFileReader bgenFileReader,
             BgenIndex bgenIndex,
-            ZstdDecompressor decompressor,
             HashMap<String, double[]> scores
     ) {
 
@@ -318,7 +314,6 @@ public class PrsScorer {
                                 entry.getValue(),
                                 bgenFileReader,
                                 bgenIndex,
-                                decompressor,
                                 scores
                         )
                 );
@@ -331,7 +326,6 @@ public class PrsScorer {
             double[] scoringDetails,
             BgenFileReader bgenFileReader,
             BgenIndex bgenIndex,
-            ZstdDecompressor decompressor,
             HashMap<String, double[]> scores
     ) {
 
@@ -360,6 +354,9 @@ public class PrsScorer {
         }
 
         // Parse genotypes
+
+            ZstdDecompressor decompressor = new ZstdDecompressor();
+            
         BgenVariantData variantData = bgenFileReader.getVariantData(variantIndex);
         variantData.parse(
                 childToParentMap,
