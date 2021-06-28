@@ -1,7 +1,8 @@
-package no.uib.triogen.cmd.prs_train;
+package no.uib.triogen.cmd.prs_score;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import no.uib.triogen.TrioGen;
 import no.uib.triogen.log.SimpleCliLogger;
 import org.apache.commons.cli.CommandLine;
@@ -9,6 +10,10 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.io.genotypes.InheritanceUtils;
+import no.uib.triogen.model.family.ChildToParentMap;
+import no.uib.triogen.model.trio_genotypes.VariantList;
+import no.uib.triogen.processing.prs.PrsScorer;
 import no.uib.triogen.processing.prs.PrsTrainer;
 
 /**
@@ -16,7 +21,7 @@ import no.uib.triogen.processing.prs.PrsTrainer;
  *
  * @author Marc Vaudel
  */
-public class PrsTrain {
+public class PrsScore {
 
     /**
      * Main method.
@@ -46,11 +51,11 @@ public class PrsTrain {
         try {
 
             Options lOptions = new Options();
-            PrsTrainOptions.createOptionsCLI(lOptions);
+            PrsScoreOptions.createOptionsCLI(lOptions);
             CommandLineParser parser = new DefaultParser();
             CommandLine commandLine = parser.parse(lOptions, args);
 
-            PrsTrainOptionsBean bean = new PrsTrainOptionsBean(commandLine);
+            PrsScoreOptionsBean bean = new PrsScoreOptionsBean(commandLine);
 
             run(
                     bean,
@@ -70,7 +75,7 @@ public class PrsTrain {
      * @param command the command line as string
      */
     private static void run(
-            PrsTrainOptionsBean bean,
+            PrsScoreOptionsBean bean,
             String command
     ) {
 
@@ -87,34 +92,62 @@ public class PrsTrain {
         SimpleCliLogger logger = new SimpleCliLogger(logFile, null);
         logger.writeComment("Software", "TrioGen");
         logger.writeComment("Version", TrioGen.getVersion());
-        logger.writeComment("Command", "PrsTrain");
+        logger.writeComment("Command", "PrsScore");
         logger.writeComment("Arguments", command);
         logger.writeHeaders();
 
-        try {
+        VariantList variantList = null;
 
-            PrsTrainer prsTrainer = new PrsTrainer(
-                    bean.trainingFile,
-                    bean.ldMatrixFilePath,
-                    bean.destinationFile,
-                    bean.snpIdColumn,
-                    bean.chrColumn,
-                    bean.posColumn,
-                    bean.refColumn,
-                    bean.eaColumn,
-                    bean.betaPattern,
-                    bean.sePattern,
-                    bean.pPattern,
-                    bean.model,
-                    bean.variables,
-                    bean.nSnpPerLocusThreshold,
-                    bean.ldLocusThreshold,
-                    bean.ldTopHitThreshold,
-                    bean.pValueThreshold,
-                    logger
+        if (bean.variantFile != null) {
+
+            variantList = VariantList.getVariantList(
+                    bean.variantFile,
+                    bean.chromosome
             );
 
-            prsTrainer.run();
+            if (variantList.variantId.length == 0) {
+
+                logger.logMessage("No target variant on chromosome " + bean.chromosome + ".");
+
+            }
+
+            variantList.index(0);
+
+        }
+
+        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(bean.trioFile);
+
+        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(bean.chromosome);
+
+        if (inheritanceMap == null) {
+
+            throw new IllegalArgumentException("Mode of inheritance not implemented for " + bean.chromosome + ".");
+
+        }
+
+        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(bean.chromosome);
+        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(bean.chromosome);
+
+        try {
+
+            PrsScorer prsScorer = new PrsScorer(
+                    bean.genotypesFile, 
+                    inheritanceMap, 
+                    defaultMotherPlooidy, 
+                    defaultFatherPlooidy, 
+                    childToParentMap, 
+                    bean.scoreFile, 
+                    bean.destinationFile, 
+                    variantList, 
+                    bean.betaPattern, 
+                    bean.model, 
+                    bean.variables, 
+                    bean.pValueThreshold, 
+                    bean.scoringMode, 
+                    logger
+            );
+            
+            prsScorer.run();
 
         } catch (Throwable e) {
 
@@ -137,10 +170,10 @@ public class PrsTrain {
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print("              trioGen             " + LINE_SEPARATOR);
             lPrintWriter.print("               ****               " + LINE_SEPARATOR);
-            lPrintWriter.print("              PrsTrain            " + LINE_SEPARATOR);
+            lPrintWriter.print("              PrsScore            " + LINE_SEPARATOR);
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print(LINE_SEPARATOR
-                    + "The PrsTrain command exports a list of weights from the pruning of trio summary statistics." + LINE_SEPARATOR
+                    + "The PrsScore command computes a score on genotypes based on a PrsTrain file." + LINE_SEPARATOR
                     + LINE_SEPARATOR
                     + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + LINE_SEPARATOR
                     + LINE_SEPARATOR
@@ -150,7 +183,7 @@ public class PrsTrain {
                     + LINE_SEPARATOR
                     + "----------------------" + LINE_SEPARATOR
                     + LINE_SEPARATOR);
-            lPrintWriter.print(PrsTrainOptions.getOptionsAsString());
+            lPrintWriter.print(PrsScoreOptions.getOptionsAsString());
             lPrintWriter.flush();
         }
     }

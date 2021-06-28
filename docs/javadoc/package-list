@@ -6,6 +6,7 @@ no.uib.triogen.cmd.ld_pruning
 no.uib.triogen.cmd.ld_value
 no.uib.triogen.cmd.locus
 no.uib.triogen.cmd.mendelian_check
+no.uib.triogen.cmd.prs_score
 no.uib.triogen.cmd.prs_train
 no.uib.triogen.cmd.simple_score
 no.uib.triogen.cmd.variant_data

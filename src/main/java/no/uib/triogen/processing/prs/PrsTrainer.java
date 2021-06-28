@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.SEPARATOR;
@@ -110,6 +109,9 @@ public class PrsTrainer {
      * The logger.
      */
     private final SimpleCliLogger logger;
+    /**
+     * Semaphore to synchronize the pruning threads.
+     */
     private final SimpleSemaphore simpleSemaphore = new SimpleSemaphore(1);
 
     /**
@@ -180,6 +182,11 @@ public class PrsTrainer {
 
     }
 
+    /**
+     * Runs the training.
+     * 
+     * @throws IOException Exception thrown if an error occurs while reading or writing a file.
+     */
     public void run() throws IOException {
         
         
@@ -212,6 +219,13 @@ public class PrsTrainer {
 
     }
 
+    /**
+     * Prune the training data and export the results.
+     * 
+     * @param trainingData The training data.
+     * 
+     * @return The pruned results.
+     */
     private HashMap<String, Integer> pruneAndExport(TrainingData trainingData) {
 
         HashMap<String, Integer> variantsPerPrunedLocus = new HashMap<>();
@@ -324,6 +338,18 @@ public class PrsTrainer {
 
     }
 
+    /**
+     * Process the given variant.
+     * 
+     * @param processedVariants The variants already processed
+     * @param variantsPerPrunedLocus The number of variants per pruned locus.
+     * @param leadVariantId The id of the lead variant.
+     * @param leadVariantVariable The variable for the lead variant selection.
+     * @param leadVariantP The p-value of the lead variant.
+     * @param trainingData The training data.
+     * @param singlePValue A boolean indicating whether the pruning is done using a single p-value for the model or a p-value per variable.
+     * @param writer The writer to write the results to.
+     */
     private void processVariant(
             HashSet<String> processedVariants,
             HashMap<String, Integer> variantsPerPrunedLocus,

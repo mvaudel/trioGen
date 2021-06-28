@@ -81,6 +81,7 @@
 <li><a href="no/uib/triogen/cmd/ld_value/package-tree.html">no.uib.triogen.cmd.ld_value</a>, </li>
 <li><a href="no/uib/triogen/cmd/locus/package-tree.html">no.uib.triogen.cmd.locus</a>, </li>
 <li><a href="no/uib/triogen/cmd/mendelian_check/package-tree.html">no.uib.triogen.cmd.mendelian_check</a>, </li>
+<li><a href="no/uib/triogen/cmd/prs_score/package-tree.html">no.uib.triogen.cmd.prs_score</a>, </li>
 <li><a href="no/uib/triogen/cmd/prs_train/package-tree.html">no.uib.triogen.cmd.prs_train</a>, </li>
 <li><a href="no/uib/triogen/cmd/simple_score/package-tree.html">no.uib.triogen.cmd.simple_score</a>, </li>
 <li><a href="no/uib/triogen/cmd/variant_data/package-tree.html">no.uib.triogen.cmd.variant_data</a>, </li>
@@ -201,6 +202,9 @@
 <li type="circle">no.uib.triogen.processing.ld.<a href="no/uib/triogen/processing/ld/P0Cache.html" title="class in no.uib.triogen.processing.ld"><span class="typeNameLink">P0Cache</span></a></li>
 <li type="circle">no.uib.triogen.model.phenotypes.<a href="no/uib/triogen/model/phenotypes/PhenotypesHandler.html" title="class in no.uib.triogen.model.phenotypes"><span class="typeNameLink">PhenotypesHandler</span></a></li>
 <li type="circle">no.uib.triogen.model.annotation.<a href="no/uib/triogen/model/annotation/ProxyCoordinates.html" title="class in no.uib.triogen.model.annotation"><span class="typeNameLink">ProxyCoordinates</span></a></li>
+<li type="circle">no.uib.triogen.cmd.prs_score.<a href="no/uib/triogen/cmd/prs_score/PrsScore.html" title="class in no.uib.triogen.cmd.prs_score"><span class="typeNameLink">PrsScore</span></a></li>
+<li type="circle">no.uib.triogen.cmd.prs_score.<a href="no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html" title="class in no.uib.triogen.cmd.prs_score"><span class="typeNameLink">PrsScoreOptionsBean</span></a></li>
+<li type="circle">no.uib.triogen.processing.prs.<a href="no/uib/triogen/processing/prs/PrsScorer.html" title="class in no.uib.triogen.processing.prs"><span class="typeNameLink">PrsScorer</span></a></li>
 <li type="circle">no.uib.triogen.cmd.prs_train.<a href="no/uib/triogen/cmd/prs_train/PrsTrain.html" title="class in no.uib.triogen.cmd.prs_train"><span class="typeNameLink">PrsTrain</span></a></li>
 <li type="circle">no.uib.triogen.processing.prs.<a href="no/uib/triogen/processing/prs/PrsTrainer.html" title="class in no.uib.triogen.processing.prs"><span class="typeNameLink">PrsTrainer</span></a></li>
 <li type="circle">no.uib.triogen.cmd.prs_train.<a href="no/uib/triogen/cmd/prs_train/PrsTrainOptionsBean.html" title="class in no.uib.triogen.cmd.prs_train"><span class="typeNameLink">PrsTrainOptionsBean</span></a></li>
@@ -270,12 +274,14 @@
 <li type="circle">no.uib.triogen.cmd.ld_value.<a href="no/uib/triogen/cmd/ld_value/LdValueOptions.html" title="enum in no.uib.triogen.cmd.ld_value"><span class="typeNameLink">LdValueOptions</span></a></li>
 <li type="circle">no.uib.triogen.cmd.locus.<a href="no/uib/triogen/cmd/locus/LocusZoomOptions.html" title="enum in no.uib.triogen.cmd.locus"><span class="typeNameLink">LocusZoomOptions</span></a></li>
 <li type="circle">no.uib.triogen.cmd.mendelian_check.<a href="no/uib/triogen/cmd/mendelian_check/MendelianCheckOptions.html" title="enum in no.uib.triogen.cmd.mendelian_check"><span class="typeNameLink">MendelianCheckOptions</span></a></li>
+<li type="circle">no.uib.triogen.cmd.prs_score.<a href="no/uib/triogen/cmd/prs_score/PrsScoreOptions.html" title="enum in no.uib.triogen.cmd.prs_score"><span class="typeNameLink">PrsScoreOptions</span></a></li>
 <li type="circle">no.uib.triogen.cmd.prs_train.<a href="no/uib/triogen/cmd/prs_train/PrsTrainOptions.html" title="enum in no.uib.triogen.cmd.prs_train"><span class="typeNameLink">PrsTrainOptions</span></a></li>
 <li type="circle">no.uib.triogen.cmd.simple_score.<a href="no/uib/triogen/cmd/simple_score/SimpleScoreOptions.html" title="enum in no.uib.triogen.cmd.simple_score"><span class="typeNameLink">SimpleScoreOptions</span></a></li>
 <li type="circle">no.uib.triogen.cmd.variant_data.<a href="no/uib/triogen/cmd/variant_data/VariantDataOptions.html" title="enum in no.uib.triogen.cmd.variant_data"><span class="typeNameLink">VariantDataOptions</span></a></li>
 <li type="circle">no.uib.triogen.cmd.variant_file.<a href="no/uib/triogen/cmd/variant_file/VariantFileOptions.html" title="enum in no.uib.triogen.cmd.variant_file"><span class="typeNameLink">VariantFileOptions</span></a></li>
 <li type="circle">no.uib.triogen.cmd.vcf_to_bgen.<a href="no/uib/triogen/cmd/vcf_to_bgen/VcfToBgenOptions.html" title="enum in no.uib.triogen.cmd.vcf_to_bgen"><span class="typeNameLink">VcfToBgenOptions</span></a></li>
 <li type="circle">no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes"><span class="typeNameLink">Model</span></a></li>
+<li type="circle">no.uib.triogen.processing.prs.<a href="no/uib/triogen/processing/prs/PrsScorer.ScoringMode.html" title="enum in no.uib.triogen.processing.prs"><span class="typeNameLink">PrsScorer.ScoringMode</span></a></li>
 </ul>
 </li>
 </ul>
