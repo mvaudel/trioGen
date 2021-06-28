@@ -55,9 +55,10 @@ public class VariantIndex {
         if (index == null) {
 
             index = idList.size();
-            idList.add(variantId);
             indexMap.put(variantId, index);
 
+            idList.add(variantId);
+            
             if (rsId != null) {
 
                 rsidList.add(rsId);
@@ -103,7 +104,7 @@ public class VariantIndex {
      */
     public String[] getVariantIds() {
 
-        return idList.stream().toArray(String[]::new);
+        return idList.toArray(new String[idList.size()]);
 
     }
 
@@ -116,7 +117,7 @@ public class VariantIndex {
      */
     public String[] getRsIds() {
 
-        return rsidList.stream().toArray(String[]::new);
+        return rsidList.toArray(new String[rsidList.size()]);
 
     }
 

@@ -29,50 +29,25 @@ public class LdTest {
 
         try {
 
-            File genotypesFile = new File("tmp/22.phased.bgen");
-            File trioFile = new File("tmp/trio");
-            String destinationFile = "tmp/22_test";
-            String chromosome = "20";
-
-        ChildToParentMap childToParentMap = ChildToParentMap.fromFile(trioFile);
-
-        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(chromosome);
-        int defaultMotherPlooidy = InheritanceUtils.getDefaultMotherPloidy(chromosome);
-        int defaultFatherPlooidy = InheritanceUtils.getDefaultFatherPloidy(chromosome);
-
-        File logFile = new File("tmp/20_test.log.gz");
-        SimpleCliLogger logger = new SimpleCliLogger(logFile, null);
-        logger.writeComment("Software", "TrioGen");
-        logger.writeComment("Version", TrioGen.getVersion());
-        logger.writeComment("Command", "LinearModel");
-        logger.writeComment("Arguments", "test");
-        logger.writeHeaders();
-
-        LdMatrixComputer computer = new LdMatrixComputer(
-                genotypesFile,
-                inheritanceMap,
-                defaultMotherPlooidy,
-                defaultFatherPlooidy,
-                childToParentMap,
-                destinationFile,
-                500000,
-                1e-6,
-                1e-3,
-                2,
-                logger
-        );
-
-        try {
-
-            computer.run(
-                    365
-            );
-
-        } catch (Throwable e) {
-
-            e.printStackTrace();
-
-        }
+            File ldFile = new File("tmp/12_200k.tld");
+            
+            LdMatrixReader reader = new LdMatrixReader(ldFile);
+            
+            ArrayList<R2> r2s = reader.getR2("12_66343400_G_C");
+            String rsidA = reader.getRsId("12_66343400_G_C");
+            
+            for (R2 r2 : r2s) {
+                
+                String id = reader.getId(r2.variantB);
+                String rsid = reader.getRsId(id);
+                
+                if (id.equals("12_66327632_A_G")) {
+                    
+                    int debug = 1;
+                    
+                }
+                
+            }
 
         } catch (Throwable t) {
             t.printStackTrace();
