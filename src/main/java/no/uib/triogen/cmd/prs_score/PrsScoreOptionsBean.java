@@ -50,7 +50,7 @@ public class PrsScoreOptionsBean {
     /**
      * The highest p-value to consider.
      */
-    public double pValueThreshold = 0.05;
+    public double pValueThreshold = 1e-6;
     /**
      * The scoring mode
      */

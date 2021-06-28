@@ -505,9 +505,9 @@ public class PrsScorer {
                 String variantId = lineSplit[3];
                 String variantRsid = lineSplit[4];
 
-                if (scoringMode == ScoringMode.lead && variantList.contains(variantId)
-                        || scoringMode == ScoringMode.lead && variantList.contains(variantRsid) 
-                        || scoringMode == ScoringMode.weighted && leadP <= pValueThreshold) {
+                if (variantList != null && variantList.contains(variantId)
+                        || variantList != null && variantList.contains(variantRsid) 
+                        || variantList == null && leadP <= pValueThreshold) {
 
                     if (scoringMode == ScoringMode.weighted || leadVariantId.equals(variantId)) {
 

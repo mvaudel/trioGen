@@ -23,7 +23,7 @@ public enum PrsScoreOptions {
     betaPattern("b", "betaPattern", "Pattern for the effect size column. Wildcard: " + PrsTrainer.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD + "'.", false, true),
     scoringMode("sm", "scoringMode", "The scoring mode. 0: top hit per locus; 1: weighted average. Default: 1.", false, true),
     out("o", "out", "The file where to write the results.", true, true),
-    pValueThreshold("pv", "pValueThreshold", "The highest p-value to consider. Default: '0.05'.", false, true);
+    pValueThreshold("pv", "pValueThreshold", "The highest p-value to consider. Default: '1e-6'.", false, true);
 
     /**
      * The short option.
