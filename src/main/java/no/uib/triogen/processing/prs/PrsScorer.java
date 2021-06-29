@@ -432,7 +432,7 @@ public class PrsScorer {
                         break;
 
                     case weighted:
-                        variantContribution = xValue * beta / weight;
+                        variantContribution = xValue * beta * weight;
                         break;
 
                     default:
