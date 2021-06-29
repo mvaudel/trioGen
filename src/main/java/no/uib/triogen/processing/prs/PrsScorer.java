@@ -190,7 +190,7 @@ public class PrsScorer {
 
                                 }
 
-                                writer.writeLine(header.toString());
+                                writer.writeLine(line.toString());
 
                             }
                     );

@@ -79,15 +79,22 @@ public class PrsScore {
             String command
     ) {
 
-        String resultStem = bean.destinationFile.getAbsolutePath();
+        String filePath = bean.destinationFile.getAbsolutePath();
+        String logPath;
 
-        if (resultStem.endsWith(".gz")) {
+        if (!filePath.endsWith(".gz")) {
 
-            resultStem = resultStem.substring(0, resultStem.length() - 3);
+            logPath = filePath;
+            filePath = filePath + ".gz";
 
+        } else {
+            
+            logPath = filePath.substring(0, filePath.length() - 3);
+            
         }
 
-        File logFile = new File(resultStem + ".log.gz");
+        File destinationFile = new File(filePath);
+        File logFile = new File(logPath + ".log.gz");
 
         SimpleCliLogger logger = new SimpleCliLogger(logFile, null);
         logger.writeComment("Software", "TrioGen");
@@ -123,7 +130,7 @@ public class PrsScore {
                     bean.genotypesFile,
                     childToParentMap,
                     bean.scoreFile,
-                    bean.destinationFile,
+                    destinationFile,
                     variantList,
                     bean.betaPattern,
                     bean.model,

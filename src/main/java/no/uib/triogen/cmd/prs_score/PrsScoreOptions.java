@@ -54,6 +54,8 @@ public enum PrsScoreOptions {
      * @param longOpt the long option
      * @param description the description
      * @param mandatory is the option mandatory
+     * 
+     * 
      * @param hasArg has the option an argument
      */
     private PrsScoreOptions(
