@@ -581,13 +581,17 @@ public class PrsScorer {
 
                 if (betaColumnIndexes[j] == -1) {
 
-                    throw new IllegalArgumentException("Effect size column not found for '" + variable + "'.");
+                    String betaColumn = betaColumnPattern
+                            .replace(VARIABLE_WILDCARD, variable);
+                    throw new IllegalArgumentException("Effect size column '" + betaColumn + "' not found for '" + variable + "'.");
 
                 }
 
                 if (seColumnIndexes[j] == -1) {
 
-                    throw new IllegalArgumentException("Standard error column not found for '" + variable + "'.");
+                    String seColumn = seColumnPattern
+                            .replace(VARIABLE_WILDCARD, variable);
+                    throw new IllegalArgumentException("Standard error column '" + seColumn + "' not found for '" + variable + "'.");
 
                 }
             }
