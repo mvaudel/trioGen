@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.stream.IntStream;
@@ -537,7 +538,10 @@ public class PrsScorer {
         HashMap<String, HashMap<String, HashMap<String, HashMap<String, double[]>>>> scoringData = new HashMap<>();
 
         int[] betaColumnIndexes = new int[variableNames.length];
+        Arrays.fill(betaColumnIndexes, -1);
+        
         int[] seColumnIndexes = new int[variableNames.length];
+        Arrays.fill(seColumnIndexes, -1);
 
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(trainingFile)) {
 
@@ -578,6 +582,12 @@ public class PrsScorer {
                 if (betaColumnIndexes[j] == -1) {
 
                     throw new IllegalArgumentException("Effect size column not found for '" + variable + "'.");
+
+                }
+
+                if (seColumnIndexes[j] == -1) {
+
+                    throw new IllegalArgumentException("Standard error column not found for '" + variable + "'.");
 
                 }
             }
