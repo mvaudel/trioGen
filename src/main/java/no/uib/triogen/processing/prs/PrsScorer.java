@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.stream.IntStream;
 import no.uib.cell_rk.utils.SimpleFileWriter;
@@ -292,12 +293,12 @@ public class PrsScorer {
 
             logger.logMessage("Gathering genotyped variants from " + chromosome);
 
-            int nVariantsScore = 0;
+            HashSet<String> variantsScore = new HashSet<>();
             int nLociScore = chromosomeScoringData.size();
 
             start = Instant.now().getEpochSecond();
 
-            HashMap<String, String> scoringToLeadVariantMap = new HashMap<>();
+            HashMap<String, ArrayList<String>> scoringToLeadVariantMap = new HashMap<>();
 
             for (Entry<String, HashMap<String, HashMap<String, double[]>>> entry : chromosomeScoringData.entrySet()) {
 
@@ -305,20 +306,23 @@ public class PrsScorer {
 
                 for (String scoringVariant : entry.getValue().keySet()) {
 
-                    if (scoringToLeadVariantMap.containsKey(scoringVariant)) {
+                    variantsScore.add(scoringVariant);
 
-                        String otherleadVariant = scoringToLeadVariantMap.get(scoringVariant);
+                    ArrayList<String> leadVariants = scoringToLeadVariantMap.get(scoringVariant);
 
-                        throw new IllegalArgumentException(scoringVariant + " found in two lead variants: " + leadVariant + " and " + otherleadVariant + ".");
+                    if (leadVariants == null) {
+
+                        leadVariants = new ArrayList<>(1);
+                        scoringToLeadVariantMap.put(scoringVariant, leadVariants);
 
                     }
 
-                    scoringToLeadVariantMap.put(scoringVariant, leadVariant);
-
-                    nVariantsScore++;
+                    leadVariants.add(leadVariant);
 
                 }
             }
+
+            int nVariantsScore = variantsScore.size();
 
             HashMap<String, HashMap<String, Integer>> leadToScoringVariantIndexMap = new HashMap<>();
             int nVariants = 0;
@@ -327,20 +331,24 @@ public class PrsScorer {
 
                 String bgenVariantId = bgenIndex.variantIdArray[bgenI];
 
-                String leadVariant = scoringToLeadVariantMap.get(bgenVariantId);
+                ArrayList<String> leadVariants = scoringToLeadVariantMap.get(bgenVariantId);
 
-                if (leadVariant != null) {
+                if (leadVariants != null) {
 
-                    HashMap<String, Integer> scoringVariants = leadToScoringVariantIndexMap.get(leadVariant);
+                    for (String leadVariant : leadVariants) {
 
-                    if (scoringVariants == null) {
+                        HashMap<String, Integer> scoringVariants = leadToScoringVariantIndexMap.get(leadVariant);
 
-                        scoringVariants = new HashMap<>(1);
-                        leadToScoringVariantIndexMap.put(leadVariant, scoringVariants);
+                        if (scoringVariants == null) {
+
+                            scoringVariants = new HashMap<>(1);
+                            leadToScoringVariantIndexMap.put(leadVariant, scoringVariants);
+
+                        }
+
+                        scoringVariants.put(bgenVariantId, bgenI);
 
                     }
-
-                    scoringVariants.put(bgenVariantId, bgenI);
 
                     nVariants++;
 
@@ -358,26 +366,31 @@ public class PrsScorer {
 
             start = Instant.now().getEpochSecond();
 
-            scoringToLeadVariantMap.entrySet()
+            leadToScoringVariantIndexMap.entrySet()
                     .stream()
                     .parallel()
                     .forEach(
                             entry -> {
 
-                                String scoringVariant = entry.getKey();
-                                String leadVariant = entry.getValue();
-                                HashMap<String, Integer> indexMap = leadToScoringVariantIndexMap.get(leadVariant);
-                                int bgenVariantIndex = indexMap.get(scoringVariant);
+                                String leadVariant = entry.getKey();
+                                HashMap<String, Integer> indexMap = entry.getValue();
                                 double weight = 1.0 / ((double) indexMap.size());
-                                HashMap<String, double[]> alleles = chromosomeScoringData.get(leadVariant).get(scoringVariant);
 
-                                for (Entry<String, double[]> allelesEntry : alleles.entrySet()) {
+                                for (Entry<String, Integer> variantEntry : indexMap.entrySet()) {
 
-                                    String allele = allelesEntry.getKey();
-                                    double[] scoringDetails = allelesEntry.getValue();
+                                    String scoringVariant = variantEntry.getKey();
+                                    int bgenVariantIndex = variantEntry.getValue();
 
-                                    score(bgenVariantIndex, allele, weight, scoringDetails, bgenFileReader, bgenIndex, scores);
+                                    HashMap<String, double[]> alleles = chromosomeScoringData.get(leadVariant).get(scoringVariant);
 
+                                    for (Entry<String, double[]> allelesEntry : alleles.entrySet()) {
+
+                                        String allele = allelesEntry.getKey();
+                                        double[] scoringDetails = allelesEntry.getValue();
+
+                                        score(bgenVariantIndex, allele, weight, scoringDetails, bgenFileReader, bgenIndex, scores);
+
+                                    }
                                 }
                             }
                     );
@@ -539,7 +552,7 @@ public class PrsScorer {
 
         int[] betaColumnIndexes = new int[variableNames.length];
         Arrays.fill(betaColumnIndexes, -1);
-        
+
         int[] seColumnIndexes = new int[variableNames.length];
         Arrays.fill(seColumnIndexes, -1);
 
