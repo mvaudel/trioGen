@@ -12,6 +12,7 @@ import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.processing.ld.LdMatrixComputer;
+import org.apache.commons.math3.distribution.NormalDistribution;
 
 /**
  * Extracts specific lines of a file.

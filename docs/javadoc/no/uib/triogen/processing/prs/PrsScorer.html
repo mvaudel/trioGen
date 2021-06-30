@@ -174,15 +174,17 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.html#PrsScorer-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-double-no.uib.triogen.processing.prs.PrsScorer.ScoringMode-no.uib.triogen.log.SimpleCliLogger-">PrsScorer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;genotypesFilePath,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.html#PrsScorer-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-double-double-no.uib.triogen.processing.prs.PrsScorer.ScoringMode-no.uib.triogen.log.SimpleCliLogger-">PrsScorer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;genotypesFilePath,
          <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;trainingFile,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;destinationFile,
          <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;betaColumnPattern,
+         <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;seColumnPattern,
          <a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variableNames,
          double&nbsp;pValueThreshold,
+         double&nbsp;qBeta,
          <a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.ScoringMode.html" title="enum in no.uib.triogen.processing.prs">PrsScorer.ScoringMode</a>&nbsp;scorerMode,
          <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
 <div class="block">Constructor.</div>
@@ -253,7 +255,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="PrsScorer-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-double-no.uib.triogen.processing.prs.PrsScorer.ScoringMode-no.uib.triogen.log.SimpleCliLogger-">
+<a name="PrsScorer-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-double-double-no.uib.triogen.processing.prs.PrsScorer.ScoringMode-no.uib.triogen.log.SimpleCliLogger-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -265,9 +267,11 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                  <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;destinationFile,
                  <a href="../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
                  <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;betaColumnPattern,
+                 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;seColumnPattern,
                  <a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
                  <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variableNames,
                  double&nbsp;pValueThreshold,
+                 double&nbsp;qBeta,
                  <a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.ScoringMode.html" title="enum in no.uib.triogen.processing.prs">PrsScorer.ScoringMode</a>&nbsp;scorerMode,
                  <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</pre>
 <div class="block">Constructor.</div>
@@ -282,7 +286,10 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dd><code>variableNames</code> - The names of the variables to include.</dd>
 <dd><code>betaColumnPattern</code> - The pattern to use to find the effect size
  column for each variable in the model.</dd>
+<dd><code>seColumnPattern</code> - The pattern to use to find the standard error
+ column for each variable in the model.</dd>
 <dd><code>pValueThreshold</code> - The p-value threshold to use.</dd>
+<dd><code>qBeta</code> - The quantile to use on the beta estimation.</dd>
 <dd><code>scorerMode</code> - The scorer mode to use.</dd>
 <dd><code>logger</code> - The logger.</dd>
 </dl>

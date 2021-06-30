@@ -135,39 +135,51 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#betaQuantile">betaQuantile</a></span></code>
+<div class="block">The quantile to use for beta estimation.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#destinationFile">destinationFile</a></span></code>
 <div class="block">The file where to write the output.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#genotypesFile">genotypesFile</a></span></code>
 <div class="block">The genotypes file path.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#model">model</a></span></code>
 <div class="block">Name of the effect allele column in the training file.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#pValueThreshold">pValueThreshold</a></span></code>
 <div class="block">The highest p-value to consider.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#scoreFile">scoreFile</a></span></code>
 <div class="block">The score file.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.ScoringMode.html" title="enum in no.uib.triogen.processing.prs">PrsScorer.ScoringMode</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#scoringMode">scoringMode</a></span></code>
 <div class="block">The scoring mode</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#sePattern">sePattern</a></span></code>
+<div class="block">Pattern for the standard error column.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -307,6 +319,16 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="block">Pattern for the effect size column.</div>
 </li>
 </ul>
+<a name="sePattern">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sePattern</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> sePattern</pre>
+<div class="block">Pattern for the standard error column.</div>
+</li>
+</ul>
 <a name="destinationFile">
 <!--   -->
 </a>
@@ -325,6 +347,16 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <h4>pValueThreshold</h4>
 <pre>public&nbsp;double pValueThreshold</pre>
 <div class="block">The highest p-value to consider.</div>
+</li>
+</ul>
+<a name="betaQuantile">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>betaQuantile</h4>
+<pre>public&nbsp;double betaQuantile</pre>
+<div class="block">The quantile to use for beta estimation.</div>
 </li>
 </ul>
 <a name="scoringMode">

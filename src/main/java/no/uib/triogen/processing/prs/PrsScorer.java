@@ -4,7 +4,9 @@ import io.airlift.compress.zstd.ZstdDecompressor;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.stream.IntStream;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.IoUtils;
@@ -21,6 +23,8 @@ import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 import static no.uib.triogen.processing.prs.PrsTrainer.VARIABLE_WILDCARD;
 import no.uib.triogen.utils.SimpleSemaphore;
+import no.uib.triogen.utils.Utils;
+import org.apache.commons.math3.distribution.NormalDistribution;
 
 /**
  * This class scores genotypes based on pruned results from PrsTrainer.
@@ -59,6 +63,11 @@ public class PrsScorer {
      */
     private final String betaColumnPattern;
     /**
+     * The pattern to use to find the standard error column for each variable in
+     * the model.
+     */
+    private final String seColumnPattern;
+    /**
      * The trio model to use.
      */
     private final Model model;
@@ -70,6 +79,10 @@ public class PrsScorer {
      * The lead p-value threshold.
      */
     private final double pValueThreshold;
+    /**
+     * The scaling value for the standard error.
+     */
+    private final double seScaling;
     /**
      * The scorer mode to use.
      */
@@ -95,7 +108,10 @@ public class PrsScorer {
      * @param variableNames The names of the variables to include.
      * @param betaColumnPattern The pattern to use to find the effect size
      * column for each variable in the model.
+     * @param seColumnPattern The pattern to use to find the standard error
+     * column for each variable in the model.
      * @param pValueThreshold The p-value threshold to use.
+     * @param qBeta The quantile to use on the beta estimation.
      * @param scorerMode The scorer mode to use.
      * @param logger The logger.
      */
@@ -106,9 +122,11 @@ public class PrsScorer {
             File destinationFile,
             VariantList variantList,
             String betaColumnPattern,
+            String seColumnPattern,
             Model model,
             String[] variableNames,
             double pValueThreshold,
+            double qBeta,
             ScoringMode scorerMode,
             SimpleCliLogger logger
     ) {
@@ -119,11 +137,15 @@ public class PrsScorer {
         this.destinationFile = destinationFile;
         this.variantList = variantList;
         this.betaColumnPattern = betaColumnPattern;
+        this.seColumnPattern = seColumnPattern;
         this.model = model;
         this.variableNames = variableNames;
         this.pValueThreshold = pValueThreshold;
         this.scoringMode = scorerMode;
         this.logger = logger;
+
+        NormalDistribution normalDistribution = new NormalDistribution(0, 1);
+        this.seScaling = normalDistribution.inverseCumulativeProbability(qBeta);
 
     }
 
@@ -139,12 +161,12 @@ public class PrsScorer {
 
         long start = Instant.now().getEpochSecond();
 
-        HashMap<String, HashMap<String, HashMap<String, double[]>>> scoringData = parseScoringData();
+        HashMap<String, HashMap<String, HashMap<String, HashMap<String, double[]>>>> scoringData = parseScoringData();
 
         long end = Instant.now().getEpochSecond();
         long duration = end - start;
 
-        logger.logMessage("Parsing scoring data from " + trainingFile + " done (" + duration + " seconds), " + scoringData.size() + " variants used for scoring.");
+        logger.logMessage("Parsing scoring data from " + trainingFile + " done (" + duration + " seconds).");
 
         logger.logMessage("Scoring");
 
@@ -203,7 +225,7 @@ public class PrsScorer {
 
     }
 
-    private HashMap<String, double[]> getScores(HashMap<String, HashMap<String, HashMap<String, double[]>>> scoringData) {
+    private HashMap<String, double[]> getScores(HashMap<String, HashMap<String, HashMap<String, HashMap<String, double[]>>>> scoringData) {
 
         HashMap<String, double[]> scores = new HashMap<>(childToParentMap.children.length);
 
@@ -230,7 +252,7 @@ public class PrsScorer {
 
     private void processChromosome(
             String chromosome,
-            HashMap<String, HashMap<String, double[]>> chromosomeScoringData,
+            HashMap<String, HashMap<String, HashMap<String, double[]>>> chromosomeScoringData,
             HashMap<String, double[]> scores
     ) {
 
@@ -242,16 +264,16 @@ public class PrsScorer {
 
             long start = Instant.now().getEpochSecond();
 
-        HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(chromosome);
+            HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(chromosome);
 
-        if (inheritanceMap == null) {
+            if (inheritanceMap == null) {
 
-            throw new IllegalArgumentException("Mode of inheritance not implemented for " + chromosome + ".");
+                throw new IllegalArgumentException("Mode of inheritance not implemented for " + chromosome + ".");
 
-        }
+            }
 
-        int defaultMotherPloidy = InheritanceUtils.getDefaultMotherPloidy(chromosome);
-        int defaultFatherPloidy = InheritanceUtils.getDefaultFatherPloidy(chromosome);
+            int defaultMotherPloidy = InheritanceUtils.getDefaultMotherPloidy(chromosome);
+            int defaultFatherPloidy = InheritanceUtils.getDefaultFatherPloidy(chromosome);
 
             BgenIndex bgenIndex = BgenIndex.getBgenIndex(genotypesFile);
             BgenFileReader bgenFileReader = new BgenFileReader(
@@ -267,23 +289,96 @@ public class PrsScorer {
 
             logger.logMessage("Parsing " + genotypesFile + " done (" + duration + " seconds)");
 
+            logger.logMessage("Gathering genotyped variants from " + chromosome);
+
+            int nVariantsScore = 0;
+            int nLociScore = chromosomeScoringData.size();
+
+            start = Instant.now().getEpochSecond();
+
+            HashMap<String, String> scoringToLeadVariantMap = new HashMap<>();
+
+            for (Entry<String, HashMap<String, HashMap<String, double[]>>> entry : chromosomeScoringData.entrySet()) {
+
+                String leadVariant = entry.getKey();
+
+                for (String scoringVariant : entry.getValue().keySet()) {
+
+                    if (scoringToLeadVariantMap.containsKey(scoringVariant)) {
+
+                        String otherleadVariant = scoringToLeadVariantMap.get(scoringVariant);
+
+                        throw new IllegalArgumentException(scoringVariant + " found in two lead variants: " + leadVariant + " and " + otherleadVariant + ".");
+
+                    }
+
+                    scoringToLeadVariantMap.put(scoringVariant, leadVariant);
+
+                    nVariantsScore++;
+
+                }
+            }
+
+            HashMap<String, HashMap<String, Integer>> leadToScoringVariantIndexMap = new HashMap<>();
+            int nVariants = 0;
+
+            for (int bgenI = 0; bgenI <= bgenIndex.variantIdArray.length; bgenI++) {
+
+                String bgenVariantId = bgenIndex.variantIdArray[bgenI];
+
+                String leadVariant = scoringToLeadVariantMap.get(bgenVariantId);
+
+                if (leadVariant != null) {
+
+                    HashMap<String, Integer> scoringVariants = leadToScoringVariantIndexMap.get(leadVariant);
+
+                    if (scoringVariants == null) {
+
+                        scoringVariants = new HashMap<>(1);
+                        leadToScoringVariantIndexMap.put(leadVariant, scoringVariants);
+
+                    }
+
+                    scoringVariants.put(bgenVariantId, bgenI);
+
+                    nVariants++;
+
+                }
+            }
+
+            int nLociFound = leadToScoringVariantIndexMap.size();
+
+            end = Instant.now().getEpochSecond();
+            duration = end - start;
+
+            logger.logMessage("Gathering genotyped variants from " + chromosome + " done (" + duration + " seconds), " + nVariants + "/" + nLociFound + " variants/loci found of " + nVariantsScore + "/" + nLociScore + ".");
+
             logger.logMessage("Scoring chromosome " + chromosome);
 
             start = Instant.now().getEpochSecond();
 
-            IntStream.range(0, bgenIndex.variantIdArray.length)
+            scoringToLeadVariantMap.entrySet()
+                    .stream()
                     .parallel()
-                    .filter(
-                            variantIndex -> chromosomeScoringData.containsKey(bgenIndex.variantIdArray[variantIndex])
-                    )
                     .forEach(
-                            variantIndex -> score(
-                                    variantIndex,
-                                    chromosomeScoringData.get(bgenIndex.variantIdArray[variantIndex]),
-                                    bgenFileReader,
-                                    bgenIndex,
-                                    scores
-                            )
+                            entry -> {
+
+                                String scoringVariant = entry.getKey();
+                                String leadVariant = entry.getValue();
+                                HashMap<String, Integer> indexMap = leadToScoringVariantIndexMap.get(leadVariant);
+                                int bgenVariantIndex = indexMap.get(scoringVariant);
+                                double weight = 1.0 / ((double) indexMap.size());
+                                HashMap<String, double[]> alleles = chromosomeScoringData.get(leadVariant).get(scoringVariant);
+
+                                for (Entry<String, double[]> allelesEntry : alleles.entrySet()) {
+
+                                    String allele = allelesEntry.getKey();
+                                    double[] scoringDetails = allelesEntry.getValue();
+
+                                    score(bgenVariantIndex, allele, weight, scoringDetails, bgenFileReader, bgenIndex, scores);
+
+                                }
+                            }
                     );
 
             end = Instant.now().getEpochSecond();
@@ -299,41 +394,17 @@ public class PrsScorer {
     }
 
     private void score(
-            int variantIndex,
-            HashMap<String, double[]> variantScoringData,
-            BgenFileReader bgenFileReader,
-            BgenIndex bgenIndex,
-            HashMap<String, double[]> scores
-    ) {
-
-        variantScoringData.entrySet()
-                .forEach(
-                        entry -> score(
-                                variantIndex,
-                                entry.getKey(),
-                                entry.getValue(),
-                                bgenFileReader,
-                                bgenIndex,
-                                scores
-                        )
-                );
-
-    }
-
-    private void score(
-            int variantIndex,
+            int bgenVariantIndex,
             String effectAllele,
+            double weight,
             double[] scoringDetails,
             BgenFileReader bgenFileReader,
             BgenIndex bgenIndex,
             HashMap<String, double[]> scores
     ) {
 
-        // Scoring details
-        double weight = scoringDetails[0];
-
         // Get the index of the allele to score
-        VariantInformation variantInformation = bgenIndex.variantInformationArray[variantIndex];
+        VariantInformation variantInformation = bgenIndex.variantInformationArray[bgenVariantIndex];
 
         int alleleI = -1;
 
@@ -354,10 +425,9 @@ public class PrsScorer {
         }
 
         // Parse genotypes
+        ZstdDecompressor decompressor = new ZstdDecompressor();
 
-            ZstdDecompressor decompressor = new ZstdDecompressor();
-            
-        BgenVariantData variantData = bgenFileReader.getVariantData(variantIndex);
+        BgenVariantData variantData = bgenFileReader.getVariantData(bgenVariantIndex);
         variantData.parse(
                 childToParentMap,
                 decompressor
@@ -420,25 +490,32 @@ public class PrsScorer {
                         fatherX
                 );
 
-                double beta = scoringDetails[variableI + 1];
+                double beta = scoringDetails[variableI];
+                double se = scoringDetails[variableI + variableNames.length];
 
-                double variantContribution;
+                double betaEstimate = 0.0;
 
-                switch (scoringMode) {
+                if (beta > 0.0) {
 
-                    case lead:
+                    betaEstimate = beta + seScaling * se;
 
-                        variantContribution = xValue * beta;
-                        break;
+                    if (betaEstimate < 0.0) {
 
-                    case weighted:
-                        variantContribution = xValue * beta * weight;
-                        break;
+                        betaEstimate = 0.0;
 
-                    default:
-                        throw new UnsupportedOperationException("Scoring mode " + scoringMode + " not implemented.");
+                    }
+                } else if (beta < 0.0) {
 
+                    betaEstimate = beta - seScaling * se;
+
+                    if (betaEstimate > 0.0) {
+
+                        betaEstimate = 0.0;
+
+                    }
                 }
+
+                double variantContribution = xValue * betaEstimate * weight;
 
                 childScores[variableI] = childScores[variableI] + variantContribution;
 
@@ -452,14 +529,15 @@ public class PrsScorer {
     /**
      * For each variant, parses the weight and effect size.
      *
-     * @return The scoring data in a map, chromosome to variant id to effect
-     * allele to weight and effect size.
+     * @return The scoring data in a map, chromosome to lead variant to scoring
+     * variant to effect allele to weight and effect size.
      */
-    private HashMap<String, HashMap<String, HashMap<String, double[]>>> parseScoringData() {
+    private HashMap<String, HashMap<String, HashMap<String, HashMap<String, double[]>>>> parseScoringData() {
 
-        HashMap<String, HashMap<String, HashMap<String, double[]>>> scoringData = new HashMap<>();
+        HashMap<String, HashMap<String, HashMap<String, HashMap<String, double[]>>>> scoringData = new HashMap<>();
 
         int[] betaColumnIndexes = new int[variableNames.length];
+        int[] seColumnIndexes = new int[variableNames.length];
 
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(trainingFile)) {
 
@@ -479,6 +557,15 @@ public class PrsScorer {
                     if (lineSplit[i].equals(betaColumn)) {
 
                         betaColumnIndexes[j] = i;
+
+                    }
+
+                    String seColumn = seColumnPattern
+                            .replace(VARIABLE_WILDCARD, variable);
+
+                    if (lineSplit[i].equals(seColumn)) {
+
+                        seColumnIndexes[j] = i;
 
                     }
                 }
@@ -506,7 +593,7 @@ public class PrsScorer {
                 String variantRsid = lineSplit[4];
 
                 if (variantList != null && variantList.contains(variantId)
-                        || variantList != null && variantList.contains(variantRsid) 
+                        || variantList != null && variantList.contains(variantRsid)
                         || variantList == null && leadP <= pValueThreshold) {
 
                     if (scoringMode == ScoringMode.weighted || leadVariantId.equals(variantId)) {
@@ -514,11 +601,7 @@ public class PrsScorer {
                         String chromosome = lineSplit[5];
                         String ea = lineSplit[8];
 
-                        double weight = Double.parseDouble(lineSplit[9]);
-
-                        double[] result = new double[variableNames.length + 1];
-
-                        result[0] = weight;
+                        double[] result = new double[2 * variableNames.length];
 
                         for (int j = 0; j < variableNames.length; j++) {
 
@@ -526,11 +609,17 @@ public class PrsScorer {
 
                             double beta = Double.parseDouble(betaString);
 
-                            result[j + 1] = beta;
+                            result[j] = beta;
+
+                            String seString = lineSplit[seColumnIndexes[j]];
+
+                            double se = Double.parseDouble(seString);
+
+                            result[j + variableNames.length] = se;
 
                         }
 
-                        HashMap<String, HashMap<String, double[]>> chromosomeValues = scoringData.get(chromosome);
+                        HashMap<String, HashMap<String, HashMap<String, double[]>>> chromosomeValues = scoringData.get(chromosome);
 
                         if (chromosomeValues == null) {
 
@@ -539,12 +628,21 @@ public class PrsScorer {
 
                         }
 
-                        HashMap<String, double[]> variantValues = chromosomeValues.get(variantId);
+                        HashMap<String, HashMap<String, double[]>> leadVariantValues = chromosomeValues.get(leadVariantId);
+
+                        if (leadVariantValues == null) {
+
+                            leadVariantValues = new HashMap<>(1);
+                            chromosomeValues.put(leadVariantId, leadVariantValues);
+
+                        }
+
+                        HashMap<String, double[]> variantValues = leadVariantValues.get(variantId);
 
                         if (variantValues == null) {
 
                             variantValues = new HashMap<>(1);
-                            chromosomeValues.put(variantId, variantValues);
+                            leadVariantValues.put(variantId, variantValues);
 
                         }
 

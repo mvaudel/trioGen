@@ -21,9 +21,11 @@ public enum PrsScoreOptions {
     model("m", "model", "Names of the model to use. Default: " + Model.cmf.name() + ". Available: " + Model.getCommandLineOptions() + ".", false, true),
     variables("v", "variables", "Names of the variables to use, need to be in the same order as specified in the model. Default: c,m,f.", false, true),
     betaPattern("b", "betaPattern", "Pattern for the effect size column. Wildcard: " + PrsTrainer.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD + "'.", false, true),
+    sePattern("s", "sePattern", "Pattern for the standard error column. Wildcard: " + PrsTrainer.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD + ".se'.", false, true),
     scoringMode("sm", "scoringMode", "The scoring mode. 0: top hit per locus; 1: weighted average. Default: 1.", false, true),
     out("o", "out", "The file where to write the results.", true, true),
-    pValueThreshold("pv", "pValueThreshold", "The highest p-value to consider. Default: '1e-6'.", false, true);
+    pValueThreshold("pv", "pValueThreshold", "The highest p-value to consider. Default: '1e-6'.", false, true),
+    betaQuantile("bq", "betaQuantile", "The probability quantile for the beta estimation. Default: '0.025'.", false, true);
 
     /**
      * The short option.

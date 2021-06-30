@@ -133,9 +133,11 @@ public class PrsScore {
                     destinationFile,
                     variantList,
                     bean.betaPattern,
+                    bean.sePattern,
                     bean.model,
                     bean.variables,
                     bean.pValueThreshold,
+                    bean.betaQuantile,
                     bean.scoringMode,
                     logger
             );

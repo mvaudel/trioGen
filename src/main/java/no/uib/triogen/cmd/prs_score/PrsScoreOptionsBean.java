@@ -3,6 +3,7 @@ package no.uib.triogen.cmd.prs_score;
 import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import no.uib.triogen.cmd.prs_train.PrsTrainOptions;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.processing.prs.PrsScorer;
 import no.uib.triogen.processing.prs.PrsTrainer;
@@ -44,6 +45,10 @@ public class PrsScoreOptionsBean {
      */
     public String betaPattern = Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD;
     /**
+     * Pattern for the standard error column.
+     */
+    public String sePattern = Model.cmf.name() + ".B.se" + PrsTrainer.VARIABLE_WILDCARD;
+    /**
      * The file where to write the output.
      */
     public final File destinationFile;
@@ -51,6 +56,10 @@ public class PrsScoreOptionsBean {
      * The highest p-value to consider.
      */
     public double pValueThreshold = 1e-6;
+    /**
+     * The quantile to use for beta estimation.
+     */
+    public double betaQuantile = 0.025;
     /**
      * The scoring mode
      */
@@ -193,6 +202,13 @@ public class PrsScoreOptionsBean {
 
         }
 
+        // The se pattern
+        if (aLine.hasOption(PrsTrainOptions.sePattern.opt)) {
+
+            sePattern = aLine.getOptionValue(PrsTrainOptions.sePattern.opt);
+
+        }
+
         // The p-value threshold
         if (aLine.hasOption(PrsScoreOptions.pValueThreshold.opt)) {
 
@@ -216,6 +232,33 @@ public class PrsScoreOptionsBean {
             if (pValueThreshold <= 0 || pValueThreshold > 1) {
 
                 throw new IllegalArgumentException("The p-value threshold (" + option + ") should be higher than 0 and lower than 1.");
+
+            }
+        }
+
+        // The beta quantile
+        if (aLine.hasOption(PrsScoreOptions.betaQuantile.opt)) {
+
+            String option = aLine.getOptionValue(PrsScoreOptions.betaQuantile.opt);
+
+            try {
+
+                betaQuantile = Double.parseDouble(option);
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                throw new IllegalArgumentException("The value for beta quantile (" + option + ") could not be parsed as a number.");
+
+            }
+            if (Double.isNaN(betaQuantile) || Double.isInfinite(betaQuantile)) {
+
+                throw new IllegalArgumentException("The value for beta quantile (" + option + ") could not be parsed as a number.");
+
+            }
+            if (betaQuantile <= 0 || betaQuantile > 0.5) {
+
+                throw new IllegalArgumentException("The value for beta quantile (" + option + ") should be higher than 0 and lower or equal to 0.5.");
 
             }
         }
