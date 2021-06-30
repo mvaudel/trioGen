@@ -323,7 +323,7 @@ public class PrsScorer {
             HashMap<String, HashMap<String, Integer>> leadToScoringVariantIndexMap = new HashMap<>();
             int nVariants = 0;
 
-            for (int bgenI = 0; bgenI <= bgenIndex.variantIdArray.length; bgenI++) {
+            for (int bgenI = 0; bgenI < bgenIndex.variantIdArray.length; bgenI++) {
 
                 String bgenVariantId = bgenIndex.variantIdArray[bgenI];
 
