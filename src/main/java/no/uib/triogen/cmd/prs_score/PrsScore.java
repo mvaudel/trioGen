@@ -139,6 +139,7 @@ public class PrsScore {
                     bean.pValueThreshold,
                     bean.betaQuantile,
                     bean.scoringMode,
+                    bean.bgenIndexFolder,
                     logger
             );
 

@@ -38,6 +38,10 @@ public class PrsScorer {
      */
     public static final String CHROMOSOME_WILDCARD = "{chr}";
     /**
+     * The folder to use to store the bgen index files.
+     */
+    private final File bgenIndexFolder;
+    /**
      * The path top the file containing the genotypes.
      */
     private final String genotypesFilePath;
@@ -113,6 +117,7 @@ public class PrsScorer {
      * @param pValueThreshold The p-value threshold to use.
      * @param qBeta The quantile to use on the beta estimation.
      * @param scorerMode The scorer mode to use.
+     * @param bgenIndexFolder The folder for the bgen index files.
      * @param logger The logger.
      */
     public PrsScorer(
@@ -128,6 +133,7 @@ public class PrsScorer {
             double pValueThreshold,
             double qBeta,
             ScoringMode scorerMode,
+            File bgenIndexFolder,
             SimpleCliLogger logger
     ) {
 
@@ -142,6 +148,7 @@ public class PrsScorer {
         this.variableNames = variableNames;
         this.pValueThreshold = pValueThreshold;
         this.scoringMode = scorerMode;
+        this.bgenIndexFolder = bgenIndexFolder;
         this.logger = logger;
 
         NormalDistribution normalDistribution = new NormalDistribution(0, 1);
@@ -156,6 +163,10 @@ public class PrsScorer {
      * writing a file.
      */
     public void run() throws IOException {
+
+        logger.logMessage("Computing risk score");
+
+        long allStart = Instant.now().getEpochSecond();
 
         logger.logMessage("Parsing scoring data from " + trainingFile.getAbsolutePath());
 
@@ -223,6 +234,11 @@ public class PrsScorer {
 
         logger.logMessage("Export done (" + duration + " seconds).");
 
+        long allEnd = Instant.now().getEpochSecond();
+        long allDuration = allEnd - allStart;
+
+        logger.logMessage("Computing risk score done (" + allDuration + " seconds).");
+
     }
 
     private HashMap<String, double[]> getScores(HashMap<String, HashMap<String, HashMap<String, HashMap<String, double[]>>>> scoringData) {
@@ -275,7 +291,13 @@ public class PrsScorer {
             int defaultMotherPloidy = InheritanceUtils.getDefaultMotherPloidy(chromosome);
             int defaultFatherPloidy = InheritanceUtils.getDefaultFatherPloidy(chromosome);
 
-            BgenIndex bgenIndex = BgenIndex.getBgenIndex(genotypesFile);
+            BgenIndex bgenIndex = BgenIndex.getBgenIndex(
+                    genotypesFile,
+                    BgenIndex.getDefaultIndexFile(
+                            bgenIndexFolder,
+                            genotypesFile
+                    )
+            );
             BgenFileReader bgenFileReader = new BgenFileReader(
                     genotypesFile,
                     bgenIndex,
@@ -358,7 +380,7 @@ public class PrsScorer {
             end = Instant.now().getEpochSecond();
             duration = end - start;
 
-            logger.logMessage("Gathering genotyped variants from " + chromosome + " done (" + duration + " seconds), " + nVariants + "/" + nLociFound + " variants/loci found of " + nVariantsScore + "/" + nLociScore + ".");
+            logger.logMessage("Gathering genotyped variants from " + chromosome + " done (" + duration + " seconds), " + nVariants + " variants of " + nVariantsScore + ", " + nLociFound + " loci of " + nLociScore + ".");
 
             logger.logMessage("Scoring chromosome " + chromosome);
 
@@ -424,9 +446,9 @@ public class PrsScorer {
 
                                                 }
                                             }
-                                            
+
                                             betaContributions[variableI] = betaEstimate;
-                                            
+
                                         }
 
                                         if (nonNull) {
@@ -547,7 +569,7 @@ public class PrsScorer {
                         motherX,
                         fatherX
                 );
-                
+
                 double betaEstimate = betaContributions[variableI];
 
                 double variantContribution = xValue * betaEstimate * weight;

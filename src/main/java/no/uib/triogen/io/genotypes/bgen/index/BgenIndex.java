@@ -245,6 +245,23 @@ public class BgenIndex {
     /**
      * Returns the default index file for the given bgen file.
      * 
+     * @param indexFolder The folder where to save the index.
+     * @param bgenFile The bgen file.
+     * 
+     * @return The default file where to save the index.
+     */
+    public static File getDefaultIndexFile(
+            File indexFolder,
+            File bgenFile
+    ) {
+
+        return new File(indexFolder, bgenFile.getName()+ ".index.gz");
+
+    }
+
+    /**
+     * Returns the default index file for the given bgen file.
+     * 
      * @param bgenFile The bgen file.
      * 
      * @return The default file where to save the index.

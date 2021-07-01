@@ -142,59 +142,65 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#bgenIndexFolder">bgenIndexFolder</a></span></code>
+<div class="block">The folder where to store the bgen index files.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#destinationFile">destinationFile</a></span></code>
 <div class="block">The file where to write the output.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#genotypesFile">genotypesFile</a></span></code>
 <div class="block">The genotypes file path.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#model">model</a></span></code>
 <div class="block">Name of the effect allele column in the training file.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#pValueThreshold">pValueThreshold</a></span></code>
 <div class="block">The highest p-value to consider.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#scoreFile">scoreFile</a></span></code>
 <div class="block">The score file.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.ScoringMode.html" title="enum in no.uib.triogen.processing.prs">PrsScorer.ScoringMode</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#scoringMode">scoringMode</a></span></code>
 <div class="block">The scoring mode</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#sePattern">sePattern</a></span></code>
 <div class="block">Pattern for the standard error column.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#trioFile">trioFile</a></span></code>
 <div class="block">the trio file.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#variables">variables</a></span></code>
 <div class="block">Names of the variables.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#variantFile">variantFile</a></span></code>
 <div class="block">The file listing the variants to process.</div>
@@ -362,11 +368,21 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <a name="scoringMode">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>scoringMode</h4>
 <pre>public&nbsp;<a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.ScoringMode.html" title="enum in no.uib.triogen.processing.prs">PrsScorer.ScoringMode</a> scoringMode</pre>
 <div class="block">The scoring mode</div>
+</li>
+</ul>
+<a name="bgenIndexFolder">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>bgenIndexFolder</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a> bgenIndexFolder</pre>
+<div class="block">The folder where to store the bgen index files.</div>
 </li>
 </ul>
 </li>

@@ -64,6 +64,10 @@ public class PrsScoreOptionsBean {
      * The scoring mode
      */
     public PrsScorer.ScoringMode scoringMode = PrsScorer.ScoringMode.weighted;
+    /**
+     * The folder where to store the bgen index files.
+     */
+    public File bgenIndexFolder;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -87,13 +91,31 @@ public class PrsScoreOptionsBean {
 
         // The genotypes file
         genotypesFile = aLine.getOptionValue(PrsScoreOptions.geno.opt);
-        
+
         File genotypesFolder = (new File(genotypesFile)).getParentFile();
 
         if (!genotypesFolder.exists()) {
 
             throw new IllegalArgumentException("Folder containing the genotypes file (" + genotypesFolder + ") not found.");
 
+        } else {
+
+            bgenIndexFolder = genotypesFolder;
+
+        }
+
+        // The genotypes file
+        if (aLine.hasOption(PrsScoreOptions.bgenIndexFolder.opt)) {
+
+            String filePath = aLine.getOptionValue(PrsScoreOptions.bgenIndexFolder.opt);
+
+            bgenIndexFolder = new File(filePath);
+
+            if (!bgenIndexFolder.exists()) {
+
+                throw new IllegalArgumentException("Bgen index folder (" + bgenIndexFolder + ") not found.");
+
+            }
         }
 
         // the trio file
@@ -131,7 +153,7 @@ public class PrsScoreOptionsBean {
             throw new IllegalArgumentException("Training file (" + scoreFile + ") not found.");
 
         }
-        
+
         // The scoring mode
         if (aLine.hasOption(PrsScoreOptions.scoringMode.opt)) {
 
@@ -161,36 +183,36 @@ public class PrsScoreOptionsBean {
         if (aLine.hasOption(PrsScoreOptions.scoringMode.opt)) {
 
             String option = aLine.getOptionValue(PrsScoreOptions.scoringMode.opt);
-            
+
             int selectedOption;
             try {
-            
-             selectedOption = Integer.parseInt(option);
-            
+
+                selectedOption = Integer.parseInt(option);
+
             } catch (Exception e) {
-                
+
                 throw new IllegalArgumentException("The value provided for scoring mode ('" + option + "') could not be parsed as a number.");
-                
+
             }
-            
+
             boolean found = false;
-            
+
             for (PrsScorer.ScoringMode scoringModeOption : PrsScorer.ScoringMode.values()) {
-                
+
                 if (scoringModeOption.index == selectedOption) {
-                    
+
                     scoringMode = scoringModeOption;
                     found = true;
-                    
+
                     break;
-                    
+
                 }
             }
-            
+
             if (!found) {
-                
+
                 throw new IllegalArgumentException("The value provided for scoring mode ('" + option + "') does not correspond to a scoring mode.");
-                
+
             }
 
         }
