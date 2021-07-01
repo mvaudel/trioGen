@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
-import java.util.stream.IntStream;
 import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.SEPARATOR;
@@ -25,7 +24,6 @@ import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 import static no.uib.triogen.processing.prs.PrsTrainer.VARIABLE_WILDCARD;
 import no.uib.triogen.utils.SimpleSemaphore;
-import no.uib.triogen.utils.Utils;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
 /**
@@ -388,8 +386,54 @@ public class PrsScorer {
                                         String allele = allelesEntry.getKey();
                                         double[] scoringDetails = allelesEntry.getValue();
 
-                                        score(bgenVariantIndex, allele, weight, scoringDetails, bgenFileReader, bgenIndex, scores);
+                                        double[] betaContributions = new double[variableNames.length];
 
+                                        boolean nonNull = false;
+
+                                        for (int variableI = 0; variableI < variableNames.length; variableI++) {
+
+                                            double beta = scoringDetails[variableI];
+                                            double se = scoringDetails[variableI + variableNames.length];
+
+                                            double betaEstimate = 0.0;
+
+                                            if (beta > 0.0) {
+
+                                                betaEstimate = beta + seScaling * se;
+
+                                                if (betaEstimate < 0.0) {
+
+                                                    betaEstimate = 0.0;
+
+                                                } else {
+
+                                                    nonNull = true;
+
+                                                }
+                                            } else if (beta < 0.0) {
+
+                                                betaEstimate = beta - seScaling * se;
+
+                                                if (betaEstimate > 0.0) {
+
+                                                    betaEstimate = 0.0;
+
+                                                } else {
+
+                                                    nonNull = true;
+
+                                                }
+                                            }
+                                            
+                                            betaContributions[variableI] = betaEstimate;
+                                            
+                                        }
+
+                                        if (nonNull) {
+
+                                            score(bgenVariantIndex, allele, weight, betaContributions, bgenFileReader, bgenIndex, scores);
+
+                                        }
                                     }
                                 }
                             }
@@ -411,7 +455,7 @@ public class PrsScorer {
             int bgenVariantIndex,
             String effectAllele,
             double weight,
-            double[] scoringDetails,
+            double[] betaContributions,
             BgenFileReader bgenFileReader,
             BgenIndex bgenIndex,
             HashMap<String, double[]> scores
@@ -503,31 +547,8 @@ public class PrsScorer {
                         motherX,
                         fatherX
                 );
-
-                double beta = scoringDetails[variableI];
-                double se = scoringDetails[variableI + variableNames.length];
-
-                double betaEstimate = 0.0;
-
-                if (beta > 0.0) {
-
-                    betaEstimate = beta + seScaling * se;
-
-                    if (betaEstimate < 0.0) {
-
-                        betaEstimate = 0.0;
-
-                    }
-                } else if (beta < 0.0) {
-
-                    betaEstimate = beta - seScaling * se;
-
-                    if (betaEstimate > 0.0) {
-
-                        betaEstimate = 0.0;
-
-                    }
-                }
+                
+                double betaEstimate = betaContributions[variableI];
 
                 double variantContribution = xValue * betaEstimate * weight;
 
