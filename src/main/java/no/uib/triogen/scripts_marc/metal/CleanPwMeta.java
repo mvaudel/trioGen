@@ -25,8 +25,8 @@ public class CleanPwMeta {
 
         try {
 
-            String rawFilePath = "/mnt/work/marc/moba/run/external/placenta_weight/meta/raw/pw_{geno}_sex_gest.gz";
-            String cleanFilePath = "/mnt/work/marc/moba/run/external/placenta_weight/meta/pw_{geno}_sex_gest_clean.gz";
+            String rawFilePath = "/mnt/work/marc/moba/pwbw/prs_no_moba/meta/{geno}/{geno}_prs_no_moba_1.tbl.gz";
+            String cleanFilePath = "/mnt/work/marc/moba/pwbw/prs_no_moba/meta/{geno}/{geno}_prs_no_moba_1_clean.tbl.gz";
 
             String[] genos = new String[]{"fetal", "maternal", "paternal"};
 

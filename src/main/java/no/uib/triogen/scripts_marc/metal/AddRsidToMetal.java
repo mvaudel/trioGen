@@ -27,8 +27,8 @@ public class AddRsidToMetal {
     public static void main(String[] args) {
 
         String vcfFilePath = "/mnt/archive/utils/dbsnp/human_9606_b151_GRCh37p13/All_20180423.vcf.gz";
-        String metaFilePathPattern = "/mnt/work/marc/moba/pwbw/prs/meta/{geno}/{geno}_prs1.tbl.gz";
-        String resultFilePathPattern = "/mnt/work/marc/moba/pwbw/prs/meta/{geno}/{geno}_prs1_rsid.tbl.gz";
+        String metaFilePathPattern = "/mnt/work/marc/moba/pwbw/prs_no_moba/meta/{geno}/{geno}_prs_no_moba_1.tbl.gz";
+        String resultFilePathPattern = "/mnt/work/marc/moba/pwbw/prs_no_moba/meta/{geno}/{geno}_prs_no_moba_1_rsid.tbl.gz";
 
 //        String[] genos = new String[]{"child", "mother", "father"};
         String[] genos = new String[]{"mother"};
