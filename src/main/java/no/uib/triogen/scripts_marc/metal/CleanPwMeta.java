@@ -104,7 +104,7 @@ public class CleanPwMeta {
                                 }
                             }
 
-                            if (Double.parseDouble(n) > MIN_SAMPLE_SIZE
+                            if (Double.parseDouble(n) >= MIN_SAMPLE_SIZE
                                     && nStudies >= MIN_STUDIES
                                     && Double.parseDouble(hetP) >= MIN_HET_P) {
 
@@ -133,6 +133,8 @@ public class CleanPwMeta {
                             } else {
                                 
                                 System.out.println(snp + " " + n + "," + nStudies + "," + hetP);
+                                
+                                throw new IllegalArgumentException("DEBUG");
                                 
                             }
                         }
