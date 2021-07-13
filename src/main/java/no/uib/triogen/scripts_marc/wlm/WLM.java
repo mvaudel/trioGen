@@ -30,10 +30,10 @@ public class WLM {
      */
     public static void main(String[] args) {
 
-        File gwasChild = new File("/mnt/work/marc/moba/pwbw/prs/meta/child/child_prs1_rsid_clean.tbl.gz");
-        File gwasMother = new File("/mnt/work/marc/moba/pwbw/prs/meta/mother/mother_prs1_rsid_clean.tbl.gz");
-        File gwasFather = new File("/mnt/work/marc/moba/pwbw/prs/meta/father/father_prs1_rsid_clean.tbl.gz");
-        File resultFile = new File("/mnt/work/marc/moba/pwbw/prs/wlm/prs_wlm.gz");
+        File gwasChild = new File("/mnt/work/marc/moba/pwbw/prs_no_moba/meta/child/child_prs_no_moba_1_rsid_clean.tbl.gz");
+        File gwasMother = new File("/mnt/work/marc/moba/pwbw/prs_no_moba/meta/mother/mother_prs_no_moba_1_rsid_clean.tbl.gz");
+        File gwasFather = new File("/mnt/work/marc/moba/pwbw/prs_no_moba/meta/father/father_prs_no_moba_1_rsid_clean.tbl.gz");
+        File resultFile = new File("/mnt/work/marc/moba/pwbw/prs_no_moba/wlm/prs_wlm.gz");
 
         HashMap<String, String[]> variantInfoMap = new HashMap<>();
         HashMap<String, String[]> allelesMap = new HashMap<>();
