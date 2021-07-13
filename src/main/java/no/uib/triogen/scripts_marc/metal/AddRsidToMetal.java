@@ -188,7 +188,7 @@ public class AddRsidToMetal {
 
                     index = line.indexOf("\t");
                     id = line.substring(0, index);
-                    rest = line.substring(index);
+                    rest = line.substring(index + 1);
 
                     String rsid = variantIdMap.get(id);
 
