@@ -30,10 +30,10 @@ public class AddRsidToMetal {
         String metaFilePathPattern = "/mnt/work/marc/moba/pwbw/prs_no_moba/meta/{geno}/{geno}_prs_no_moba_1.tbl.gz";
         String resultFilePathPattern = "/mnt/work/marc/moba/pwbw/prs_no_moba/meta/{geno}/{geno}_prs_no_moba_1_rsid.tbl.gz";
 
-//        String[] genos = new String[]{"child", "mother", "father"};
-        String[] genos = new String[]{"mother"};
+        String[] genos = new String[]{"child", "mother", "father"};
+//        String[] genos = new String[]{"mother"};
 
-        System.out.println(Instant.now() + "    Loading variants.");
+        System.out.println(Instant.now() + "    Loading variants from " + metaFilePathPattern);
 
         Instant begin = Instant.now();
 
@@ -67,7 +67,7 @@ public class AddRsidToMetal {
 
         System.out.println(Instant.now() + "    Variants lodaed, " + variantIdMap.size() + " variants to map (" + durationSeconds + " s)");
 
-        System.out.println(Instant.now() + "    Mapping variants in " + vcfFilePath + ".");
+        System.out.println(Instant.now() + "    Mapping rsids using " + vcfFilePath + ".");
 
         begin = Instant.now();
 
