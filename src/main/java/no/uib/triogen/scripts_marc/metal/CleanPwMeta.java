@@ -132,7 +132,7 @@ public class CleanPwMeta {
 
                             } else {
                                 
-//                                System.out.println(snp + " " + n + "," + nStudies + "," + hetP);
+                                System.out.println(snp + " " + n + "," + nStudies + "," + hetP);
                                 
                             }
                         }
