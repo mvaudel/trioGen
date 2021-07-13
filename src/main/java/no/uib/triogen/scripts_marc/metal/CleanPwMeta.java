@@ -131,10 +131,10 @@ public class CleanPwMeta {
                                 );
 
                             } else {
-                                
-                                System.out.println(snp + " " + n + "," + nStudies + "," + hetP);
-                                
-                                throw new IllegalArgumentException("DEBUG");
+//                                
+//                                System.out.println(snp + " " + n + "," + nStudies + "," + hetP);
+//                                
+//                                throw new IllegalArgumentException("DEBUG");
                                 
                             }
                         }
