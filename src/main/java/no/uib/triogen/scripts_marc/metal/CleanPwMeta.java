@@ -12,7 +12,7 @@ import no.uib.triogen.io.flat.SimpleFileReader;
  */
 public class CleanPwMeta {
 
-    public static final double MIN_SAMPLE_SIZE = 5000;
+    public static final double MIN_SAMPLE_SIZE = 2500;
     public static final double MIN_HET_P = 5e-8;
     public static final double MIN_STUDIES = 2;
 
@@ -25,10 +25,10 @@ public class CleanPwMeta {
 
         try {
 
-            String rawFilePath = "/mnt/work/marc/moba/pwbw/prs_no_moba/meta/{geno}/{geno}_prs_no_moba_1.tbl.gz";
-            String cleanFilePath = "/mnt/work/marc/moba/pwbw/prs_no_moba/meta/{geno}/{geno}_prs_no_moba_1_clean.tbl.gz";
+            String rawFilePath = "/mnt/work/marc/moba/pwbw/prs_no_moba/meta/{geno}/{geno}_prs_no_moba_1_rsid.tbl.gz";
+            String cleanFilePath = "/mnt/work/marc/moba/pwbw/prs_no_moba/meta/{geno}/{geno}_prs_no_moba_1_rsid_clean.tbl.gz";
 
-            String[] genos = new String[]{"fetal", "maternal", "paternal"};
+            String[] genos = new String[]{"child", "mother", "father"};
 
             for (String geno : genos) {
 
