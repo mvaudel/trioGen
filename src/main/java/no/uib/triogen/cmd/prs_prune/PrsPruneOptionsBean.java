@@ -1,4 +1,4 @@
-package no.uib.triogen.cmd.prs_train;
+package no.uib.triogen.cmd.prs_prune;
 
 import java.io.File;
 import java.util.Arrays;
@@ -13,7 +13,7 @@ import org.apache.commons.cli.CommandLine;
  *
  * @author Marc Vaudel
  */
-public class PrsTrainOptionsBean {
+public class PrsPruneOptionsBean {
 
     /**
      * The training file.
@@ -90,12 +90,12 @@ public class PrsTrainOptionsBean {
      *
      * @param aLine a command line
      */
-    public PrsTrainOptionsBean(
+    public PrsPruneOptionsBean(
             CommandLine aLine
     ) {
 
         // Check that mandatory options are provided
-        for (PrsTrainOptions option : PrsTrainOptions.values()) {
+        for (PrsPruneOptions option : PrsPruneOptions.values()) {
 
             if (option.mandatory && !aLine.hasOption(option.opt)) {
 
@@ -105,7 +105,7 @@ public class PrsTrainOptionsBean {
         }
 
         // The summary stats file
-        String filePath = aLine.getOptionValue(PrsTrainOptions.trainingFile.opt);
+        String filePath = aLine.getOptionValue(PrsPruneOptions.trainingFile.opt);
 
         trainingFile = new File(filePath);
 
@@ -121,53 +121,53 @@ public class PrsTrainOptionsBean {
         ldMatrixFilePath = filePath;
 
         // snp id column
-        if (aLine.hasOption(PrsTrainOptions.snpId.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.snpId.opt)) {
 
-            snpIdColumn = aLine.getOptionValue(PrsTrainOptions.snpId.opt);
+            snpIdColumn = aLine.getOptionValue(PrsPruneOptions.snpId.opt);
 
         }
 
         // chr column
-        if (aLine.hasOption(PrsTrainOptions.chrColumn.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.chrColumn.opt)) {
 
-            chrColumn = aLine.getOptionValue(PrsTrainOptions.chrColumn.opt);
+            chrColumn = aLine.getOptionValue(PrsPruneOptions.chrColumn.opt);
 
         }
 
         // pos column
-        if (aLine.hasOption(PrsTrainOptions.posColumn.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.posColumn.opt)) {
 
-            posColumn = aLine.getOptionValue(PrsTrainOptions.posColumn.opt);
+            posColumn = aLine.getOptionValue(PrsPruneOptions.posColumn.opt);
 
         }
 
         // ref column
-        if (aLine.hasOption(PrsTrainOptions.refColumn.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.refColumn.opt)) {
 
-            refColumn = aLine.getOptionValue(PrsTrainOptions.refColumn.opt);
+            refColumn = aLine.getOptionValue(PrsPruneOptions.refColumn.opt);
 
         }
 
         // ea column
-        if (aLine.hasOption(PrsTrainOptions.eaColumn.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.eaColumn.opt)) {
 
-            eaColumn = aLine.getOptionValue(PrsTrainOptions.eaColumn.opt);
+            eaColumn = aLine.getOptionValue(PrsPruneOptions.eaColumn.opt);
 
         }
 
         // The model
-        if (aLine.hasOption(PrsTrainOptions.model.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.model.opt)) {
 
-            String option = aLine.getOptionValue(PrsTrainOptions.model.opt);
+            String option = aLine.getOptionValue(PrsPruneOptions.model.opt);
 
             model = Model.valueOf(option);
 
         }
 
         // The variables
-        if (aLine.hasOption(PrsTrainOptions.variables.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.variables.opt)) {
 
-            String option = aLine.getOptionValue(PrsTrainOptions.variables.opt);
+            String option = aLine.getOptionValue(PrsPruneOptions.variables.opt);
 
             variables = option.split(",");
 
@@ -181,30 +181,30 @@ public class PrsTrainOptionsBean {
         }
 
         // The beta pattern
-        if (aLine.hasOption(PrsTrainOptions.betaPattern.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.betaPattern.opt)) {
 
-            betaPattern = aLine.getOptionValue(PrsTrainOptions.betaPattern.opt);
+            betaPattern = aLine.getOptionValue(PrsPruneOptions.betaPattern.opt);
 
         }
 
         // The se pattern
-        if (aLine.hasOption(PrsTrainOptions.sePattern.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.sePattern.opt)) {
 
-            sePattern = aLine.getOptionValue(PrsTrainOptions.sePattern.opt);
+            sePattern = aLine.getOptionValue(PrsPruneOptions.sePattern.opt);
 
         }
 
         // The p pattern
-        if (aLine.hasOption(PrsTrainOptions.pPattern.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.pPattern.opt)) {
 
-            pPattern = aLine.getOptionValue(PrsTrainOptions.pPattern.opt);
+            pPattern = aLine.getOptionValue(PrsPruneOptions.pPattern.opt);
 
         }
 
         // The ld threshold
-        if (aLine.hasOption(PrsTrainOptions.ldLocusThreshold.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.ldLocusThreshold.opt)) {
 
-            String option = aLine.getOptionValue(PrsTrainOptions.ldLocusThreshold.opt);
+            String option = aLine.getOptionValue(PrsPruneOptions.ldLocusThreshold.opt);
 
             try {
 
@@ -228,9 +228,9 @@ public class PrsTrainOptionsBean {
         }
 
         // The ld threshold
-        if (aLine.hasOption(PrsTrainOptions.ldTopHitThreshold.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.ldTopHitThreshold.opt)) {
 
-            String option = aLine.getOptionValue(PrsTrainOptions.ldTopHitThreshold.opt);
+            String option = aLine.getOptionValue(PrsPruneOptions.ldTopHitThreshold.opt);
 
             try {
 
@@ -254,9 +254,9 @@ public class PrsTrainOptionsBean {
         }
 
         // The ld threshold
-        if (aLine.hasOption(PrsTrainOptions.nSnpPerLocusThreshold.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.nSnpPerLocusThreshold.opt)) {
 
-            String option = aLine.getOptionValue(PrsTrainOptions.nSnpPerLocusThreshold.opt);
+            String option = aLine.getOptionValue(PrsPruneOptions.nSnpPerLocusThreshold.opt);
 
             try {
 
@@ -280,9 +280,9 @@ public class PrsTrainOptionsBean {
         }
 
         // The p-value threshold
-        if (aLine.hasOption(PrsTrainOptions.pValueThreshold.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.pValueThreshold.opt)) {
 
-            String option = aLine.getOptionValue(PrsTrainOptions.pValueThreshold.opt);
+            String option = aLine.getOptionValue(PrsPruneOptions.pValueThreshold.opt);
 
             try {
 
@@ -307,7 +307,7 @@ public class PrsTrainOptionsBean {
         }
 
         // The output file
-        filePath = aLine.getOptionValue(PrsTrainOptions.out.opt);
+        filePath = aLine.getOptionValue(PrsPruneOptions.out.opt);
 
         destinationFile = new File(filePath);
 

@@ -316,9 +316,9 @@ public class WLM {
 
         currentProgress++;
 
-        if (currentProgress % 1000 == 0) {
+        if (currentProgress % 100000 == 0) {
 
-            double progress = currentProgress / totalProgress;
+            double progress = ((double) currentProgress) / totalProgress;
             
             long elapsedTimeSeconds = Instant.now().getEpochSecond() - start;
             

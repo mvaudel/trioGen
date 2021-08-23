@@ -3,7 +3,7 @@ package no.uib.triogen.cmd.prs_score;
 import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import no.uib.triogen.cmd.prs_train.PrsTrainOptions;
+import no.uib.triogen.cmd.prs_prune.PrsPruneOptions;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.processing.prs.PrsScorer;
 import no.uib.triogen.processing.prs.PrsTrainer;
@@ -225,9 +225,9 @@ public class PrsScoreOptionsBean {
         }
 
         // The se pattern
-        if (aLine.hasOption(PrsTrainOptions.sePattern.opt)) {
+        if (aLine.hasOption(PrsPruneOptions.sePattern.opt)) {
 
-            sePattern = aLine.getOptionValue(PrsTrainOptions.sePattern.opt);
+            sePattern = aLine.getOptionValue(PrsPruneOptions.sePattern.opt);
 
         }
 

@@ -1,4 +1,4 @@
-package no.uib.triogen.cmd.prs_train;
+package no.uib.triogen.cmd.prs_prune;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -16,7 +16,7 @@ import no.uib.triogen.processing.prs.PrsTrainer;
  *
  * @author Marc Vaudel
  */
-public class PrsTrain {
+public class PrsPrune {
 
     /**
      * Main method.
@@ -46,11 +46,11 @@ public class PrsTrain {
         try {
 
             Options lOptions = new Options();
-            PrsTrainOptions.createOptionsCLI(lOptions);
+            PrsPruneOptions.createOptionsCLI(lOptions);
             CommandLineParser parser = new DefaultParser();
             CommandLine commandLine = parser.parse(lOptions, args);
 
-            PrsTrainOptionsBean bean = new PrsTrainOptionsBean(commandLine);
+            PrsPruneOptionsBean bean = new PrsPruneOptionsBean(commandLine);
 
             run(
                     bean,
@@ -70,7 +70,7 @@ public class PrsTrain {
      * @param command the command line as string
      */
     private static void run(
-            PrsTrainOptionsBean bean,
+            PrsPruneOptionsBean bean,
             String command
     ) {
 
@@ -137,10 +137,10 @@ public class PrsTrain {
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print("              trioGen             " + LINE_SEPARATOR);
             lPrintWriter.print("               ****               " + LINE_SEPARATOR);
-            lPrintWriter.print("              PrsTrain            " + LINE_SEPARATOR);
+            lPrintWriter.print("              PrsPrune            " + LINE_SEPARATOR);
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print(LINE_SEPARATOR
-                    + "The PrsTrain command exports a list of weights from the pruning of trio summary statistics." + LINE_SEPARATOR
+                    + "The PrsPrune command exports a list of weights from the pruning of trio summary statistics." + LINE_SEPARATOR
                     + LINE_SEPARATOR
                     + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + LINE_SEPARATOR
                     + LINE_SEPARATOR
@@ -150,7 +150,7 @@ public class PrsTrain {
                     + LINE_SEPARATOR
                     + "----------------------" + LINE_SEPARATOR
                     + LINE_SEPARATOR);
-            lPrintWriter.print(PrsTrainOptions.getOptionsAsString());
+            lPrintWriter.print(PrsPruneOptions.getOptionsAsString());
             lPrintWriter.flush();
         }
     }

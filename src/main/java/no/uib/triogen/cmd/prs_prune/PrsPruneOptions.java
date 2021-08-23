@@ -1,4 +1,4 @@
-package no.uib.triogen.cmd.prs_train;
+package no.uib.triogen.cmd.prs_prune;
 
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
@@ -12,7 +12,7 @@ import no.uib.triogen.utils.Utils;
  *
  * @author Marc Vaudel
  */
-public enum PrsTrainOptions {
+public enum PrsPruneOptions {
 
     trainingFile("t", "trainingFile", "File listing the summary statistics to use for training.", true, true),
     ldMatrix("l", "ldMatrix", "The ld matrix file as generated using the LdMatrix command. If LD matrix files are computed per contig, replace the contig name with '" + Utils.CONTIG_WILDCARD + "'.", true, true),
@@ -63,7 +63,7 @@ public enum PrsTrainOptions {
      * @param mandatory is the option mandatory
      * @param hasArg has the option an argument
      */
-    private PrsTrainOptions(
+    private PrsPruneOptions(
             String opt, 
             String longOpt, 
             String description, 
@@ -87,7 +87,7 @@ public enum PrsTrainOptions {
             Options options
     ) {
 
-        for (PrsTrainOptions option : values()) {
+        for (PrsPruneOptions option : values()) {
 
             options.addOption(option.opt, option.longOpt, option.hasArg, option.description);
 
