@@ -11,7 +11,6 @@ import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.trio_genotypes.VariantList;
-import no.uib.triogen.processing.prs.PrsScorer;
 import no.uib.triogen.processing.prs.PrsThresholder;
 
 /**
@@ -130,7 +129,7 @@ public class PrsThreshold {
                     bean.phenoName, 
                     childToParentMap, 
                     bean.scoreFile, 
-                    bean.destinationFile, 
+                    destinationFile, 
                     variantList, 
                     bean.betaPattern, 
                     bean.sePattern, 

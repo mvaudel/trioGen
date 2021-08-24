@@ -182,7 +182,7 @@ public class PrsThresholdOptionsBean {
         }
 
         // The scoring mode
-        if (aLine.hasOption(PrsThresholdOptions.scoringMode.opt)) {
+        if (aLine.hasOption(PrsThresholdOptions.model.opt)) {
 
             String option = aLine.getOptionValue(PrsThresholdOptions.model.opt);
 
@@ -206,44 +206,6 @@ public class PrsThresholdOptionsBean {
             }
         }
 
-        // The model
-        if (aLine.hasOption(PrsThresholdOptions.scoringMode.opt)) {
-
-            String option = aLine.getOptionValue(PrsThresholdOptions.scoringMode.opt);
-
-            int selectedOption;
-            try {
-
-                selectedOption = Integer.parseInt(option);
-
-            } catch (Exception e) {
-
-                throw new IllegalArgumentException("The value provided for scoring mode ('" + option + "') could not be parsed as a number.");
-
-            }
-
-            boolean found = false;
-
-            for (ScoringMode scoringModeOption : ScoringMode.values()) {
-
-                if (scoringModeOption.index == selectedOption) {
-
-                    scoringMode = scoringModeOption;
-                    found = true;
-
-                    break;
-
-                }
-            }
-
-            if (!found) {
-
-                throw new IllegalArgumentException("The value provided for scoring mode ('" + option + "') does not correspond to a scoring mode.");
-
-            }
-
-        }
-
         // The beta pattern
         if (aLine.hasOption(PrsThresholdOptions.betaPattern.opt)) {
 
@@ -256,60 +218,6 @@ public class PrsThresholdOptionsBean {
 
             sePattern = aLine.getOptionValue(PrsThresholdOptions.sePattern.opt);
 
-        }
-
-        // The p-value threshold
-        if (aLine.hasOption(PrsThresholdOptions.pValueThreshold.opt)) {
-
-            String option = aLine.getOptionValue(PrsThresholdOptions.pValueThreshold.opt);
-
-            try {
-
-                pValueThreshold = Double.parseDouble(option);
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-                throw new IllegalArgumentException("The value for p-value threshold (" + option + ") could not be parsed as a number.");
-
-            }
-            if (Double.isNaN(pValueThreshold) || Double.isInfinite(pValueThreshold)) {
-
-                throw new IllegalArgumentException("The p-value threshold (" + option + ") could not be parsed as a number.");
-
-            }
-            if (pValueThreshold <= 0 || pValueThreshold > 1) {
-
-                throw new IllegalArgumentException("The p-value threshold (" + option + ") should be higher than 0 and lower than 1.");
-
-            }
-        }
-
-        // The beta quantile
-        if (aLine.hasOption(PrsThresholdOptions.betaQuantile.opt)) {
-
-            String option = aLine.getOptionValue(PrsThresholdOptions.betaQuantile.opt);
-
-            try {
-
-                betaQuantile = Double.parseDouble(option);
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-                throw new IllegalArgumentException("The value for beta quantile (" + option + ") could not be parsed as a number.");
-
-            }
-            if (Double.isNaN(betaQuantile) || Double.isInfinite(betaQuantile)) {
-
-                throw new IllegalArgumentException("The value for beta quantile (" + option + ") could not be parsed as a number.");
-
-            }
-            if (betaQuantile <= 0 || betaQuantile > 0.5) {
-
-                throw new IllegalArgumentException("The value for beta quantile (" + option + ") should be higher than 0 and lower or equal to 0.5.");
-
-            }
         }
 
         // The output file
