@@ -4,8 +4,7 @@ import java.io.File;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.stream.IntStream;
-import no.uib.cell_rk.utils.SimpleFileWriter;
-import no.uib.triogen.cmd.ld_matrix.LdMatrixOptions;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 

@@ -1,28 +1,16 @@
 package no.uib.triogen.processing.prs;
 
-import io.airlift.compress.zstd.ZstdDecompressor;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map.Entry;
-import no.uib.cell_rk.utils.SimpleFileWriter;
 import no.uib.triogen.io.IoUtils;
-import static no.uib.triogen.io.IoUtils.SEPARATOR;
-import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.triogen.io.genotypes.InheritanceUtils;
-import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
-import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
-import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
-import no.uib.triogen.model.genome.VariantInformation;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.trio_genotypes.VariantList;
-import static no.uib.triogen.processing.prs.PrsTrainer.VARIABLE_WILDCARD;
+import no.uib.triogen.processing.prs.PrsUtils.ScoringMode;
 import no.uib.triogen.utils.SimpleSemaphore;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
@@ -33,10 +21,6 @@ import org.apache.commons.math3.distribution.NormalDistribution;
  */
 public class PrsScorer {
 
-    /**
-     * Wildcard for the chromosome name in the genotypes file.
-     */
-    public static final String CHROMOSOME_WILDCARD = "{chr}";
     /**
      * The folder to use to store the bgen index files.
      */
@@ -172,7 +156,15 @@ public class PrsScorer {
 
         long start = Instant.now().getEpochSecond();
 
-        HashMap<String, HashMap<String, HashMap<String, HashMap<String, double[]>>>> scoringData = parseScoringData();
+        HashMap<String, HashMap<String, HashMap<String, HashMap<String, double[]>>>> scoringData = PrsUtils.parseScoringData(
+                trainingFile, 
+                betaColumnPattern, 
+                seColumnPattern, 
+                variableNames, 
+                variantList, 
+                pValueThreshold, 
+                scoringMode
+        );
 
         long end = Instant.now().getEpochSecond();
         long duration = end - start;
@@ -183,7 +175,17 @@ public class PrsScorer {
 
         start = Instant.now().getEpochSecond();
 
-        HashMap<String, double[]> scores = getScores(scoringData);
+        HashMap<String, double[]> scores = PrsComputer.getScores(
+                genotypesFilePath, 
+                scoringData, 
+                childToParentMap, 
+                model, 
+                variableNames, 
+                seScaling, 
+                bgenIndexFolder, 
+                semaphore, 
+                logger
+        );
 
         end = Instant.now().getEpochSecond();
         duration = end - start;
@@ -238,507 +240,6 @@ public class PrsScorer {
         long allDuration = allEnd - allStart;
 
         logger.logMessage("Computing risk score done (" + allDuration + " seconds).");
-
-    }
-
-    private HashMap<String, double[]> getScores(HashMap<String, HashMap<String, HashMap<String, HashMap<String, double[]>>>> scoringData) {
-
-        HashMap<String, double[]> scores = new HashMap<>(childToParentMap.children.length);
-
-        for (String childId : childToParentMap.children) {
-
-            scores.put(childId, new double[variableNames.length]);
-
-        }
-
-        scoringData.entrySet()
-                .stream()
-                .parallel()
-                .forEach(
-                        entry -> processChromosome(
-                                entry.getKey(),
-                                entry.getValue(),
-                                scores
-                        )
-                );
-
-        return scores;
-
-    }
-
-    private void processChromosome(
-            String chromosome,
-            HashMap<String, HashMap<String, HashMap<String, double[]>>> chromosomeScoringData,
-            HashMap<String, double[]> scores
-    ) {
-
-        try {
-
-            File genotypesFile = new File(genotypesFilePath.replace(CHROMOSOME_WILDCARD, chromosome));
-
-            logger.logMessage("Parsing " + genotypesFile.getAbsolutePath());
-
-            long start = Instant.now().getEpochSecond();
-
-            HashMap<Integer, char[]> inheritanceMap = InheritanceUtils.getDefaultInheritanceMap(chromosome);
-
-            if (inheritanceMap == null) {
-
-                throw new IllegalArgumentException("Mode of inheritance not implemented for " + chromosome + ".");
-
-            }
-
-            int defaultMotherPloidy = InheritanceUtils.getDefaultMotherPloidy(chromosome);
-            int defaultFatherPloidy = InheritanceUtils.getDefaultFatherPloidy(chromosome);
-
-            BgenIndex bgenIndex = BgenIndex.getBgenIndex(
-                    genotypesFile,
-                    BgenIndex.getDefaultIndexFile(
-                            bgenIndexFolder,
-                            genotypesFile
-                    )
-            );
-            BgenFileReader bgenFileReader = new BgenFileReader(
-                    genotypesFile,
-                    bgenIndex,
-                    inheritanceMap,
-                    defaultMotherPloidy,
-                    defaultFatherPloidy
-            );
-
-            long end = Instant.now().getEpochSecond();
-            long duration = end - start;
-
-            logger.logMessage("Parsing " + genotypesFile + " done (" + duration + " seconds)");
-
-            logger.logMessage("Gathering genotyped variants from " + chromosome);
-
-            HashSet<String> variantsScore = new HashSet<>();
-            int nLociScore = chromosomeScoringData.size();
-
-            start = Instant.now().getEpochSecond();
-
-            HashMap<String, ArrayList<String>> scoringToLeadVariantMap = new HashMap<>();
-
-            for (Entry<String, HashMap<String, HashMap<String, double[]>>> entry : chromosomeScoringData.entrySet()) {
-
-                String leadVariant = entry.getKey();
-
-                for (String scoringVariant : entry.getValue().keySet()) {
-
-                    variantsScore.add(scoringVariant);
-
-                    ArrayList<String> leadVariants = scoringToLeadVariantMap.get(scoringVariant);
-
-                    if (leadVariants == null) {
-
-                        leadVariants = new ArrayList<>(1);
-                        scoringToLeadVariantMap.put(scoringVariant, leadVariants);
-
-                    }
-
-                    leadVariants.add(leadVariant);
-
-                }
-            }
-
-            int nVariantsScore = variantsScore.size();
-
-            HashMap<String, HashMap<String, Integer>> leadToScoringVariantIndexMap = new HashMap<>();
-            int nVariants = 0;
-
-            for (int bgenI = 0; bgenI < bgenIndex.variantIdArray.length; bgenI++) {
-
-                String bgenVariantId = bgenIndex.variantIdArray[bgenI];
-
-                ArrayList<String> leadVariants = scoringToLeadVariantMap.get(bgenVariantId);
-
-                if (leadVariants != null) {
-
-                    for (String leadVariant : leadVariants) {
-
-                        HashMap<String, Integer> scoringVariants = leadToScoringVariantIndexMap.get(leadVariant);
-
-                        if (scoringVariants == null) {
-
-                            scoringVariants = new HashMap<>(1);
-                            leadToScoringVariantIndexMap.put(leadVariant, scoringVariants);
-
-                        }
-
-                        scoringVariants.put(bgenVariantId, bgenI);
-
-                    }
-
-                    nVariants++;
-
-                }
-            }
-
-            int nLociFound = leadToScoringVariantIndexMap.size();
-
-            end = Instant.now().getEpochSecond();
-            duration = end - start;
-
-            logger.logMessage("Gathering genotyped variants from " + chromosome + " done (" + duration + " seconds), " + nVariants + " variants of " + nVariantsScore + ", " + nLociFound + " loci of " + nLociScore + ".");
-
-            logger.logMessage("Scoring chromosome " + chromosome);
-
-            start = Instant.now().getEpochSecond();
-
-            leadToScoringVariantIndexMap.entrySet()
-                    .stream()
-                    .parallel()
-                    .forEach(
-                            entry -> {
-
-                                String leadVariant = entry.getKey();
-                                HashMap<String, Integer> indexMap = entry.getValue();
-                                double weight = 1.0 / ((double) indexMap.size());
-
-                                for (Entry<String, Integer> variantEntry : indexMap.entrySet()) {
-
-                                    String scoringVariant = variantEntry.getKey();
-                                    int bgenVariantIndex = variantEntry.getValue();
-
-                                    HashMap<String, double[]> alleles = chromosomeScoringData.get(leadVariant).get(scoringVariant);
-
-                                    for (Entry<String, double[]> allelesEntry : alleles.entrySet()) {
-
-                                        String allele = allelesEntry.getKey();
-                                        double[] scoringDetails = allelesEntry.getValue();
-
-                                        double[] betaContributions = new double[variableNames.length];
-
-                                        boolean nonNull = false;
-
-                                        for (int variableI = 0; variableI < variableNames.length; variableI++) {
-
-                                            double beta = scoringDetails[variableI];
-                                            double se = scoringDetails[variableI + variableNames.length];
-
-                                            double betaEstimate = 0.0;
-
-                                            if (beta > 0.0) {
-
-                                                betaEstimate = beta + seScaling * se;
-
-                                                if (betaEstimate < 0.0) {
-
-                                                    betaEstimate = 0.0;
-
-                                                } else {
-
-                                                    nonNull = true;
-
-                                                }
-                                            } else if (beta < 0.0) {
-
-                                                betaEstimate = beta - seScaling * se;
-
-                                                if (betaEstimate > 0.0) {
-
-                                                    betaEstimate = 0.0;
-
-                                                } else {
-
-                                                    nonNull = true;
-
-                                                }
-                                            }
-
-                                            betaContributions[variableI] = betaEstimate;
-
-                                        }
-
-                                        if (nonNull) {
-
-                                            score(bgenVariantIndex, allele, weight, betaContributions, bgenFileReader, bgenIndex, scores);
-
-                                        }
-                                    }
-                                }
-                            }
-                    );
-
-            end = Instant.now().getEpochSecond();
-            duration = end - start;
-
-            logger.logMessage("Scoring chromosome " + chromosome + " done (" + duration + " seconds)");
-
-        } catch (IOException e) {
-
-            throw new RuntimeException(e);
-
-        }
-    }
-
-    private void score(
-            int bgenVariantIndex,
-            String effectAllele,
-            double weight,
-            double[] betaContributions,
-            BgenFileReader bgenFileReader,
-            BgenIndex bgenIndex,
-            HashMap<String, double[]> scores
-    ) {
-
-        // Get the index of the allele to score
-        VariantInformation variantInformation = bgenIndex.variantInformationArray[bgenVariantIndex];
-
-        int alleleI = -1;
-
-        for (int i = 0; i < variantInformation.alleles.length; i++) {
-
-            if (variantInformation.alleles[i].equals(effectAllele)) {
-
-                alleleI = i;
-                break;
-
-            }
-        }
-
-        if (alleleI == -1) {
-
-            throw new IllegalArgumentException("Allele " + effectAllele + " not found for variant " + variantInformation.id);
-
-        }
-
-        // Parse genotypes
-        ZstdDecompressor decompressor = new ZstdDecompressor();
-
-        BgenVariantData variantData = bgenFileReader.getVariantData(bgenVariantIndex);
-        variantData.parse(
-                childToParentMap,
-                decompressor
-        );
-
-        // Get matrices for haplotypes and individuals
-        double[][] haplotypeX = new double[childToParentMap.children.length][4];
-        double[][] childX = new double[childToParentMap.children.length][1];
-        double[][] motherX = new double[childToParentMap.children.length][1];
-        double[][] fatherX = new double[childToParentMap.children.length][1];
-
-        for (int childI = 0; childI < childToParentMap.children.length; childI++) {
-
-            String childId = childToParentMap.children[childI];
-            String motherId = childToParentMap.getMother(childId);
-            String fatherId = childToParentMap.getFather(childId);
-
-            if (variantData.contains(childId)) {
-
-                double[] haplotypes = variantData.getHaplotypes(
-                        childId,
-                        motherId,
-                        fatherId,
-                        alleleI
-                );
-                haplotypeX[childI][0] = haplotypes[0];
-                haplotypeX[childI][1] = haplotypes[1];
-                haplotypeX[childI][2] = haplotypes[2];
-                haplotypeX[childI][3] = haplotypes[3];
-
-                childX[childI][0] = variantData.getSummedProbability(childId, alleleI);
-
-            }
-
-            if (variantData.contains(motherId)) {
-
-                motherX[childI][0] = variantData.getSummedProbability(motherId, alleleI);
-
-            }
-
-            if (variantData.contains(fatherId)) {
-
-                fatherX[childI][0] = variantData.getSummedProbability(fatherId, alleleI);
-
-            }
-
-            semaphore.acquire();
-
-            double[] childScores = scores.get(childId);
-
-            for (int variableI = 0; variableI < model.betaNames.length; variableI++) {
-
-                double xValue = Model.getXValueAt(
-                        model,
-                        childI,
-                        variableI,
-                        haplotypeX,
-                        childX,
-                        motherX,
-                        fatherX
-                );
-
-                double betaEstimate = betaContributions[variableI];
-
-                double variantContribution = xValue * betaEstimate * weight;
-
-                childScores[variableI] = childScores[variableI] + variantContribution;
-
-            }
-
-            semaphore.release();
-
-        }
-    }
-
-    /**
-     * For each variant, parses the weight and effect size.
-     *
-     * @return The scoring data in a map, chromosome to lead variant to scoring
-     * variant to effect allele to weight and effect size.
-     */
-    private HashMap<String, HashMap<String, HashMap<String, HashMap<String, double[]>>>> parseScoringData() {
-
-        HashMap<String, HashMap<String, HashMap<String, HashMap<String, double[]>>>> scoringData = new HashMap<>();
-
-        int[] betaColumnIndexes = new int[variableNames.length];
-        Arrays.fill(betaColumnIndexes, -1);
-
-        int[] seColumnIndexes = new int[variableNames.length];
-        Arrays.fill(seColumnIndexes, -1);
-
-        try (SimpleFileReader reader = SimpleFileReader.getFileReader(trainingFile)) {
-
-            String line = reader.readLine();
-
-            String[] lineSplit = line.split(SEPARATOR);
-
-            for (int i = 0; i < lineSplit.length; i++) {
-
-                for (int j = 0; j < variableNames.length; j++) {
-
-                    String variable = variableNames[j];
-
-                    String betaColumn = betaColumnPattern
-                            .replace(VARIABLE_WILDCARD, variable);
-
-                    if (lineSplit[i].equals(betaColumn)) {
-
-                        betaColumnIndexes[j] = i;
-
-                    }
-
-                    String seColumn = seColumnPattern
-                            .replace(VARIABLE_WILDCARD, variable);
-
-                    if (lineSplit[i].equals(seColumn)) {
-
-                        seColumnIndexes[j] = i;
-
-                    }
-                }
-            }
-
-            for (int j = 0; j < variableNames.length; j++) {
-
-                String variable = variableNames[j];
-
-                if (betaColumnIndexes[j] == -1) {
-
-                    String betaColumn = betaColumnPattern
-                            .replace(VARIABLE_WILDCARD, variable);
-                    throw new IllegalArgumentException("Effect size column '" + betaColumn + "' not found for '" + variable + "'.");
-
-                }
-
-                if (seColumnIndexes[j] == -1) {
-
-                    String seColumn = seColumnPattern
-                            .replace(VARIABLE_WILDCARD, variable);
-                    throw new IllegalArgumentException("Standard error column '" + seColumn + "' not found for '" + variable + "'.");
-
-                }
-            }
-
-            while ((line = reader.readLine()) != null) {
-
-                lineSplit = line.split(SEPARATOR);
-
-                String leadVariantId = lineSplit[0];
-                double leadP = Double.parseDouble(lineSplit[2]);
-
-                String variantId = lineSplit[3];
-                String variantRsid = lineSplit[4];
-
-                if (variantList != null && variantList.contains(variantId)
-                        || variantList != null && variantList.contains(variantRsid)
-                        || variantList == null && leadP <= pValueThreshold) {
-
-                    if (scoringMode == ScoringMode.weighted || leadVariantId.equals(variantId)) {
-
-                        String chromosome = lineSplit[5];
-                        String ea = lineSplit[8];
-
-                        double[] result = new double[2 * variableNames.length];
-
-                        for (int j = 0; j < variableNames.length; j++) {
-
-                            String betaString = lineSplit[betaColumnIndexes[j]];
-
-                            double beta = Double.parseDouble(betaString);
-
-                            result[j] = beta;
-
-                            String seString = lineSplit[seColumnIndexes[j]];
-
-                            double se = Double.parseDouble(seString);
-
-                            result[j + variableNames.length] = se;
-
-                        }
-
-                        HashMap<String, HashMap<String, HashMap<String, double[]>>> chromosomeValues = scoringData.get(chromosome);
-
-                        if (chromosomeValues == null) {
-
-                            chromosomeValues = new HashMap<>();
-                            scoringData.put(chromosome, chromosomeValues);
-
-                        }
-
-                        HashMap<String, HashMap<String, double[]>> leadVariantValues = chromosomeValues.get(leadVariantId);
-
-                        if (leadVariantValues == null) {
-
-                            leadVariantValues = new HashMap<>(1);
-                            chromosomeValues.put(leadVariantId, leadVariantValues);
-
-                        }
-
-                        HashMap<String, double[]> variantValues = leadVariantValues.get(variantId);
-
-                        if (variantValues == null) {
-
-                            variantValues = new HashMap<>(1);
-                            leadVariantValues.put(variantId, variantValues);
-
-                        }
-
-                        variantValues.put(ea, result);
-
-                    }
-                }
-            }
-        }
-
-        return scoringData;
-
-    }
-
-    public enum ScoringMode {
-
-        lead(0),
-        weighted(1);
-
-        private ScoringMode(int index) {
-
-            this.index = index;
-
-        }
-
-        public final int index;
 
     }
 }

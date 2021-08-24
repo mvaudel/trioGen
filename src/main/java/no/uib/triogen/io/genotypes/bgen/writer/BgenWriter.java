@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
 import static no.uib.triogen.io.IoUtils.ENCODING;
-import no.uib.cell_rk.utils.SimpleFileWriter;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.bgen.BgenUtils;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.model.genome.VariantInformation;

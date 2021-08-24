@@ -1,4 +1,4 @@
-package no.uib.cell_rk.utils;
+package no.uib.triogen.io.flat;
 
 import java.io.BufferedWriter;
 import java.io.File;

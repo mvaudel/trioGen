@@ -4,7 +4,7 @@ import java.io.File;
 import java.time.Instant;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import no.uib.cell_rk.utils.SimpleFileWriter;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.flat.SimpleFileReader;
 
 /**

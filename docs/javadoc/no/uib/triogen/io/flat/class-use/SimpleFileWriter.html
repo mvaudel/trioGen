@@ -90,10 +90,6 @@
 <td class="colFirst"><a href="#no.uib.triogen.processing.mendelian_check">no.uib.triogen.processing.mendelian_check</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
-<td class="colFirst"><a href="#no.uib.triogen.processing.transmission.extraction">no.uib.triogen.processing.transmission.extraction</a></td>
-<td class="colLast">&nbsp;</td>
-</tr>
 </tbody>
 </table>
 </li>
@@ -110,10 +106,11 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/linear_model/LinearModelRunnable.html#LinearModelRunnable-no.uib.triogen.io.genotypes.VariantIterator-no.uib.triogen.model.trio_genotypes.VariantList-double-boolean-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.model.trio_genotypes.Model:A-no.uib.triogen.model.phenotypes.PhenotypesHandler-no.uib.triogen.model.covariates.CovariatesHandler-no.uib.triogen.io.flat.indexed.IndexedGzWriter-no.uib.triogen.io.flat.SimpleFileWriter-no.uib.triogen.utils.SimpleSemaphore-no.uib.triogen.log.SimpleCliLogger-">LinearModelRunnable</a></span>(<a href="../../../../../../no/uib/triogen/io/genotypes/VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a>&nbsp;iterator,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/linear_model/LinearModelRunnable.html#LinearModelRunnable-no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader-no.uib.triogen.model.trio_genotypes.VariantList-double-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.model.trio_genotypes.Model:A-no.uib.triogen.model.phenotypes.PhenotypesHandler-no.uib.triogen.model.covariates.CovariatesHandler-no.uib.triogen.io.flat.indexed.IndexedGzWriter-no.uib.triogen.io.flat.SimpleFileWriter-no.uib.triogen.utils.SimpleSemaphore-no.uib.triogen.log.SimpleCliLogger-">LinearModelRunnable</a></span>(<a href="../../../../../../no/uib/triogen/io/genotypes/bgen/iterator/VariantIterator.html" title="class in no.uib.triogen.io.genotypes.bgen.iterator">VariantIterator</a>&nbsp;iterator,
+                   <a href="../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
+                   <a href="../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenFileReader</a>&nbsp;bgenFileReader,
                    <a href="../../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
-                   double&nbsp;mafThreshold,
-                   boolean&nbsp;useDosages,
+                   double&nbsp;frequencyThreshold,
                    <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                    <a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>[]&nbsp;models,
                    <a href="../../../../../../no/uib/triogen/model/phenotypes/PhenotypesHandler.html" title="class in no.uib.triogen.model.phenotypes">PhenotypesHandler</a>&nbsp;phenotypesHandler,
@@ -139,34 +136,13 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/mendelian_check/MendelianCheckRunnable.html#MendelianCheckRunnable-no.uib.triogen.io.flat.SimpleFileWriter-no.uib.triogen.io.genotypes.VariantIterator-no.uib.triogen.model.family.ChildToParentMap-double-no.uib.triogen.log.SimpleCliLogger-">MendelianCheckRunnable</a></span>(<a href="../../../../../../no/uib/triogen/io/flat/SimpleFileWriter.html" title="class in no.uib.triogen.io.flat">SimpleFileWriter</a>&nbsp;writer,
-                      <a href="../../../../../../no/uib/triogen/io/genotypes/VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a>&nbsp;iterator,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/mendelian_check/MendelianCheckRunnable.html#MendelianCheckRunnable-no.uib.triogen.io.flat.SimpleFileWriter-no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator-no.uib.triogen.io.genotypes.bgen.index.BgenIndex-no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader-no.uib.triogen.model.family.ChildToParentMap-double-no.uib.triogen.log.SimpleCliLogger-">MendelianCheckRunnable</a></span>(<a href="../../../../../../no/uib/triogen/io/flat/SimpleFileWriter.html" title="class in no.uib.triogen.io.flat">SimpleFileWriter</a>&nbsp;writer,
+                      <a href="../../../../../../no/uib/triogen/io/genotypes/bgen/iterator/VariantIterator.html" title="class in no.uib.triogen.io.genotypes.bgen.iterator">VariantIterator</a>&nbsp;iterator,
+                      <a href="../../../../../../no/uib/triogen/io/genotypes/bgen/index/BgenIndex.html" title="class in no.uib.triogen.io.genotypes.bgen.index">BgenIndex</a>&nbsp;bgenIndex,
+                      <a href="../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenFileReader.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenFileReader</a>&nbsp;bgenFileReader,
                       <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
-                      double&nbsp;mafThreshold,
+                      double&nbsp;alleleFrequencyThreshold,
                       <a href="../../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
-<div class="block">Constructor.</div>
-</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li class="blockList"><a name="no.uib.triogen.processing.transmission.extraction">
-<!--   -->
-</a>
-<h3>Uses of <a href="../../../../../../no/uib/triogen/io/flat/SimpleFileWriter.html" title="class in no.uib.triogen.io.flat">SimpleFileWriter</a> in <a href="../../../../../../no/uib/triogen/processing/transmission/extraction/package-summary.html">no.uib.triogen.processing.transmission.extraction</a></h3>
-<table class="useSummary" border="0" cellpadding="3" cellspacing="0" summary="Use table, listing constructors, and an explanation">
-<caption><span>Constructors in <a href="../../../../../../no/uib/triogen/processing/transmission/extraction/package-summary.html">no.uib.triogen.processing.transmission.extraction</a> with parameters of type <a href="../../../../../../no/uib/triogen/io/flat/SimpleFileWriter.html" title="class in no.uib.triogen.io.flat">SimpleFileWriter</a></span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colOne" scope="col">Constructor and Description</th>
-</tr>
-<tbody>
-<tr class="altColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/transmission/extraction/ExtractorRunnable.html#ExtractorRunnable-no.uib.triogen.io.genotypes.VariantIterator-no.uib.triogen.model.family.ChildToParentMap-no.uib.triogen.io.flat.SimpleFileWriter-no.uib.triogen.io.flat.SimpleFileWriter-no.uib.triogen.io.flat.SimpleFileWriter-no.uib.triogen.io.flat.SimpleFileWriter-">ExtractorRunnable</a></span>(<a href="../../../../../../no/uib/triogen/io/genotypes/VariantIterator.html" title="interface in no.uib.triogen.io.genotypes">VariantIterator</a>&nbsp;iterator,
-                 <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
-                 <a href="../../../../../../no/uib/triogen/io/flat/SimpleFileWriter.html" title="class in no.uib.triogen.io.flat">SimpleFileWriter</a>&nbsp;h1Writer,
-                 <a href="../../../../../../no/uib/triogen/io/flat/SimpleFileWriter.html" title="class in no.uib.triogen.io.flat">SimpleFileWriter</a>&nbsp;h2Writer,
-                 <a href="../../../../../../no/uib/triogen/io/flat/SimpleFileWriter.html" title="class in no.uib.triogen.io.flat">SimpleFileWriter</a>&nbsp;h3Writer,
-                 <a href="../../../../../../no/uib/triogen/io/flat/SimpleFileWriter.html" title="class in no.uib.triogen.io.flat">SimpleFileWriter</a>&nbsp;h4Writer)</code>
 <div class="block">Constructor.</div>
 </td>
 </tr>
@@ -224,6 +200,6 @@
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2020. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2021. All rights reserved.</small></p>
 </body>
 </html>

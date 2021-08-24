@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.stream.IntStream;
-import no.uib.cell_rk.utils.SimpleFileWriter;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator;

@@ -3,7 +3,7 @@ package no.uib.triogen.scripts_marc.mobarun;
 import java.io.File;
 import java.time.Instant;
 import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.cell_rk.utils.SimpleFileWriter;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 
 /**
  * This script generates a target file from a Bolt results file

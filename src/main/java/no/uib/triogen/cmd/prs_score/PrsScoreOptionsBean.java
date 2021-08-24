@@ -3,10 +3,11 @@ package no.uib.triogen.cmd.prs_score;
 import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import no.uib.triogen.cmd.prs_prune.PrsPruneOptions;
+import no.uib.triogen.cmd.prs_threshold.PrsThresholdOptions;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.processing.prs.PrsScorer;
-import no.uib.triogen.processing.prs.PrsTrainer;
+import no.uib.triogen.processing.prs.PrsPruner;
+import no.uib.triogen.processing.prs.PrsUtils.ScoringMode;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -43,11 +44,11 @@ public class PrsScoreOptionsBean {
     /**
      * Pattern for the effect size column.
      */
-    public String betaPattern = Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD;
+    public String betaPattern = Model.cmf.name() + ".B" + PrsPruner.VARIABLE_WILDCARD;
     /**
      * Pattern for the standard error column.
      */
-    public String sePattern = Model.cmf.name() + ".B.se" + PrsTrainer.VARIABLE_WILDCARD;
+    public String sePattern = Model.cmf.name() + ".B.se" + PrsPruner.VARIABLE_WILDCARD;
     /**
      * The file where to write the output.
      */
@@ -63,7 +64,7 @@ public class PrsScoreOptionsBean {
     /**
      * The scoring mode
      */
-    public PrsScorer.ScoringMode scoringMode = PrsScorer.ScoringMode.weighted;
+    public ScoringMode scoringMode = ScoringMode.weighted;
     /**
      * The folder where to store the bgen index files.
      */
@@ -197,7 +198,7 @@ public class PrsScoreOptionsBean {
 
             boolean found = false;
 
-            for (PrsScorer.ScoringMode scoringModeOption : PrsScorer.ScoringMode.values()) {
+            for (ScoringMode scoringModeOption : ScoringMode.values()) {
 
                 if (scoringModeOption.index == selectedOption) {
 
@@ -225,9 +226,9 @@ public class PrsScoreOptionsBean {
         }
 
         // The se pattern
-        if (aLine.hasOption(PrsPruneOptions.sePattern.opt)) {
+        if (aLine.hasOption(PrsThresholdOptions.sePattern.opt)) {
 
-            sePattern = aLine.getOptionValue(PrsPruneOptions.sePattern.opt);
+            sePattern = aLine.getOptionValue(PrsThresholdOptions.sePattern.opt);
 
         }
 

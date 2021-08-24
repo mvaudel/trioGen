@@ -4,7 +4,7 @@ import java.io.File;
 import java.time.Instant;
 import java.util.ArrayList;
 import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.cell_rk.utils.SimpleFileWriter;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 
 /**
  * This script Cleans the organization of BOLT-LMM files on MoBa.

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.triogen.model.trio_genotypes.Model;
-import no.uib.triogen.processing.prs.PrsTrainer;
+import no.uib.triogen.processing.prs.PrsPruner;
 import no.uib.triogen.utils.Utils;
 
 /**
@@ -15,17 +15,16 @@ import no.uib.triogen.utils.Utils;
 public enum PrsPruneOptions {
 
     trainingFile("t", "trainingFile", "File listing the summary statistics to use for training.", true, true),
-    ldMatrix("l", "ldMatrix", "The ld matrix file as generated using the LdMatrix command. If LD matrix files are computed per contig, replace the contig name with '" + Utils.CONTIG_WILDCARD + "'.", true, true),
+    ldMatrix("l", "ldMatrix", "The ld matrix file as generated using the LdMatrix command. If LD matrix files are computed per contig, replace the chromosome name with '" + Utils.CHROMOSOME_WILDCARD + "'.", true, true),
     snpId("sc", "snpId", "Name of the variant identifier column in the training file. Default: 'variantId'.", false, true),
     chrColumn("cc", "chrColumn", "Name of the contig column in the training file. Default: 'contig'.", true, true),
     posColumn("pc", "posColumn", "Name of the position column in the training file. Default: 'position'.", true, true),
     refColumn("rc", "refColumn", "Name of the reference allele column in the training file. Default: 'otherAllele'.", true, true),
     eaColumn("ec", "eaColumn", "Name of the effect allele column in the training file. Default: 'testedAllele'.", true, true),
-    model("m", "model", "Names of the model to use. Default: " + Model.cmf.name() + ". Available: " + Model.getCommandLineOptions() + ".", false, true),
     variables("v", "variables", "Names of the variables to use, need to be in the same order as specified in the model. Default: c,m,f.", false, true),
-    betaPattern("bp", "betaPattern", "Pattern for the effect size column. Wildcard: " + PrsTrainer.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD + "'.", false, true),
-    sePattern("sp", "sePattern", "Pattern for the standard error column. Wildcard: " + PrsTrainer.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD + ".se'.", false, true),
-    pPattern("pp", "pPattern", "Pattern for the p-value column. Wildcard: " + PrsTrainer.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD + "'.p.", false, true),
+    betaPattern("bp", "betaPattern", "Pattern for the effect size column. Wildcard: " + PrsPruner.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsPruner.VARIABLE_WILDCARD + "'.", false, true),
+    sePattern("sp", "sePattern", "Pattern for the standard error column. Wildcard: " + PrsPruner.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsPruner.VARIABLE_WILDCARD + ".se'.", false, true),
+    pPattern("pp", "pPattern", "Pattern for the p-value column. Wildcard: " + PrsPruner.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsPruner.VARIABLE_WILDCARD + "'.p.", false, true),
     out("o", "out", "The file where to write the results.", true, true),
     ldLocusThreshold("ldl", "ldLocusThreshold", "LD R2 value over which two hits cannot be considered independent. Default: '0.05'.", false, true),
     ldTopHitThreshold("ldh", "ldTopHitThreshold", "LD R2 value over which two hits are considered identical. Default: '0.8'.", false, true),

@@ -16,7 +16,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
-import no.uib.cell_rk.utils.SimpleFileWriter;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.ld.LdMatrixReader;
 import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.model.trio_genotypes.VariantList;
@@ -93,7 +93,7 @@ public class LdValue {
 
         System.out.println("Initiating LD files.");
 
-        boolean wildCard = bean.ldMatrixFilePath.contains(Utils.CONTIG_WILDCARD);
+        boolean wildCard = bean.ldMatrixFilePath.contains(Utils.CHROMOSOME_WILDCARD);
 
         ConcurrentHashMap<String, LdMatrixReader> ldMatrixReaderMap = new ConcurrentHashMap<>();
 
@@ -108,7 +108,7 @@ public class LdValue {
                     .forEach(
                             contig -> {
 
-                                String ldMatrixFilePath = bean.ldMatrixFilePath.replace(Utils.CONTIG_WILDCARD, contig);
+                                String ldMatrixFilePath = bean.ldMatrixFilePath.replace(Utils.CHROMOSOME_WILDCARD, contig);
 
                                 File ldMatrixFile = new File(ldMatrixFilePath);
 

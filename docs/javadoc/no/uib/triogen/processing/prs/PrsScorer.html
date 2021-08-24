@@ -49,8 +49,8 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li>Prev&nbsp;Class</li>
-<li><a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.ScoringMode.html" title="enum in no.uib.triogen.processing.prs"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../no/uib/triogen/processing/prs/PrsPruner.html" title="class in no.uib.triogen.processing.prs"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../no/uib/triogen/processing/prs/PrsThresholder.html" title="class in no.uib.triogen.processing.prs"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?no/uib/triogen/processing/prs/PrsScorer.html" target="_top">Frames</a></li>
@@ -74,14 +74,14 @@ var activeTableTab = "activeTableTab";
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -122,46 +122,6 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== NESTED CLASS SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="nested.class.summary">
-<!--   -->
-</a>
-<h3>Nested Class Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Nested Class Summary table, listing nested classes, and an explanation">
-<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Class and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.ScoringMode.html" title="enum in no.uib.triogen.processing.prs">PrsScorer.ScoringMode</a></span></code>&nbsp;</td>
-</tr>
-</table>
-</li>
-</ul>
-<!-- =========== FIELD SUMMARY =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.html#CHROMOSOME_WILDCARD">CHROMOSOME_WILDCARD</a></span></code>
-<div class="block">Wildcard for the chromosome name in the genotypes file.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.summary">
@@ -174,7 +134,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.html#PrsScorer-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-double-double-no.uib.triogen.processing.prs.PrsScorer.ScoringMode-java.io.File-no.uib.triogen.log.SimpleCliLogger-">PrsScorer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;genotypesFilePath,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.html#PrsScorer-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-double-double-no.uib.triogen.processing.prs.PrsUtils.ScoringMode-java.io.File-no.uib.triogen.log.SimpleCliLogger-">PrsScorer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;genotypesFilePath,
          <a href="../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;trainingFile,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;destinationFile,
@@ -185,7 +145,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variableNames,
          double&nbsp;pValueThreshold,
          double&nbsp;qBeta,
-         <a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.ScoringMode.html" title="enum in no.uib.triogen.processing.prs">PrsScorer.ScoringMode</a>&nbsp;scorerMode,
+         <a href="../../../../../no/uib/triogen/processing/prs/PrsUtils.ScoringMode.html" title="enum in no.uib.triogen.processing.prs">PrsUtils.ScoringMode</a>&nbsp;scorerMode,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenIndexFolder,
          <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
 <div class="block">Constructor.</div>
@@ -228,35 +188,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="CHROMOSOME_WILDCARD">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>CHROMOSOME_WILDCARD</h4>
-<pre>public static final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> CHROMOSOME_WILDCARD</pre>
-<div class="block">Wildcard for the chromosome name in the genotypes file.</div>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#no.uib.triogen.processing.prs.PrsScorer.CHROMOSOME_WILDCARD">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.detail">
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="PrsScorer-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-double-double-no.uib.triogen.processing.prs.PrsScorer.ScoringMode-java.io.File-no.uib.triogen.log.SimpleCliLogger-">
+<a name="PrsScorer-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-double-double-no.uib.triogen.processing.prs.PrsUtils.ScoringMode-java.io.File-no.uib.triogen.log.SimpleCliLogger-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -273,7 +211,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                  <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variableNames,
                  double&nbsp;pValueThreshold,
                  double&nbsp;qBeta,
-                 <a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.ScoringMode.html" title="enum in no.uib.triogen.processing.prs">PrsScorer.ScoringMode</a>&nbsp;scorerMode,
+                 <a href="../../../../../no/uib/triogen/processing/prs/PrsUtils.ScoringMode.html" title="enum in no.uib.triogen.processing.prs">PrsUtils.ScoringMode</a>&nbsp;scorerMode,
                  <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenIndexFolder,
                  <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</pre>
 <div class="block">Constructor.</div>
@@ -350,8 +288,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </div>
 <div class="subNav">
 <ul class="navList">
-<li>Prev&nbsp;Class</li>
-<li><a href="../../../../../no/uib/triogen/processing/prs/PrsScorer.ScoringMode.html" title="enum in no.uib.triogen.processing.prs"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../no/uib/triogen/processing/prs/PrsPruner.html" title="class in no.uib.triogen.processing.prs"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../no/uib/triogen/processing/prs/PrsThresholder.html" title="class in no.uib.triogen.processing.prs"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?no/uib/triogen/processing/prs/PrsScorer.html" target="_top">Frames</a></li>
@@ -375,14 +313,14 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>

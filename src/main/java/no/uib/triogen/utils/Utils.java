@@ -13,9 +13,9 @@ import org.apache.commons.math3.special.Beta;
 public class Utils {
 
     /**
-     * Wild card to flag contig names in file paths.
+     * Wildcard for the chromosome name in the genotypes file.
      */
-    public final static String CONTIG_WILDCARD = "{contig}";
+    public static final String CHROMOSOME_WILDCARD = "{chr}";
     /**
      * Placeholder for an array of NAs.
      */
@@ -221,9 +221,60 @@ public class Utils {
             double beta,
             double se
     ) {
+
+        return 2 * normalDistribution.cumulativeProbability(-Math.abs(beta / se));
+
+    }
+
+    public static double[] bin(
+            double[] values,
+            int nBins
+    ) {
+
+        double[] sortedValues = Arrays.copyOf(values, values.length);
+
+        Arrays.sort(sortedValues);
+
+        double[] bins = new double[nBins - 1];
+
+        for (int i = 0; i < nBins; i++) {
+
+            int limitI = (int) ((double) i) / nBins * values.length;
+            bins[i] = sortedValues[limitI];
+
+        }
+
+        double[] binnedValues = new double[values.length];
+
+        for (int i = 0; i < values.length; i++) {
+
+            double value = values[i];
+
+            if (value <= bins[0]) {
+
+                binnedValues[i] = 1;
+
+            } else if (value > bins[bins.length - 1]) {
+
+                binnedValues[i] = nBins;
+
+            } else {
+
+                for (int bin = 0; bin < bins.length - 1; bin++) {
+
+                    if (value > bins[bin] && value <= bins[bin]) {
+
+                        binnedValues[i] = bin + 1;
+
+                        break;
+
+                    }
+                }
+            }
+        }
         
-        return 2* normalDistribution.cumulativeProbability(-Math.abs(beta/se));
-        
+        return binnedValues;
+
     }
 
 }

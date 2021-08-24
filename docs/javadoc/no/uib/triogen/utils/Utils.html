@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":10,"i3":9,"i4":9,"i5":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":10,"i4":9,"i5":9,"i6":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -136,8 +136,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../no/uib/triogen/utils/Utils.html#CONTIG_WILDCARD">CONTIG_WILDCARD</a></span></code>
-<div class="block">Wild card to flag contig names in file paths.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../no/uib/triogen/utils/Utils.html#CHROMOSOME_WILDCARD">CHROMOSOME_WILDCARD</a></span></code>
+<div class="block">Wildcard for the chromosome name in the genotypes file.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -203,19 +203,24 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>static double[]</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../no/uib/triogen/utils/Utils.html#bin-double:A-int-">bin</a></span>(double[]&nbsp;values,
+   int&nbsp;nBins)</code>&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../no/uib/triogen/utils/Utils.html#centerAndScale-double:A-">centerAndScale</a></span>(double[]&nbsp;x)</code>
 <div class="block">Centers and scales the values in x using the mean and standard deviation.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../no/uib/triogen/utils/Utils.html#computeBetaSignificance-double-double-">computeBetaSignificance</a></span>(double&nbsp;beta,
                        double&nbsp;se)</code>
 <div class="block">Computes the significance the beta estimates.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../no/uib/triogen/utils/Utils.html#computeBetaSignificance-int-int-double-double-">computeBetaSignificance</a></span>(int&nbsp;nSamples,
                        int&nbsp;nVariables,
@@ -224,13 +229,13 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="block">Computes the significance the beta estimates.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../no/uib/triogen/utils/Utils.html#medianSorted-java.util.ArrayList-">medianSorted</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html?is-external=true" title="class or interface in java.util">ArrayList</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;&nbsp;input)</code>
 <div class="block">Method to estimate the median of a sorted list.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static byte[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../no/uib/triogen/utils/Utils.html#mergeArrays-byte:A-byte:A-int-">mergeArrays</a></span>(byte[]&nbsp;array1,
            byte[]&nbsp;array2,
@@ -238,7 +243,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="block">Simple method to merge two byte arrays.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../no/uib/triogen/utils/Utils.html#percentileSorted-java.util.ArrayList-double-">percentileSorted</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html?is-external=true" title="class or interface in java.util">ArrayList</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;&nbsp;input,
                 double&nbsp;percentile)</code>
@@ -267,17 +272,17 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Field Detail</h3>
-<a name="CONTIG_WILDCARD">
+<a name="CHROMOSOME_WILDCARD">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>CONTIG_WILDCARD</h4>
-<pre>public static final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> CONTIG_WILDCARD</pre>
-<div class="block">Wild card to flag contig names in file paths.</div>
+<h4>CHROMOSOME_WILDCARD</h4>
+<pre>public static final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> CHROMOSOME_WILDCARD</pre>
+<div class="block">Wildcard for the chromosome name in the genotypes file.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#no.uib.triogen.utils.Utils.CONTIG_WILDCARD">Constant Field Values</a></dd>
+<dd><a href="../../../../constant-values.html#no.uib.triogen.utils.Utils.CHROMOSOME_WILDCARD">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -453,7 +458,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <a name="computeBetaSignificance-double-double-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>computeBetaSignificance</h4>
 <pre>public static&nbsp;double&nbsp;computeBetaSignificance(double&nbsp;beta,
@@ -466,6 +471,16 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The significance the beta estimates.</dd>
 </dl>
+</li>
+</ul>
+<a name="bin-double:A-int-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>bin</h4>
+<pre>public static&nbsp;double[]&nbsp;bin(double[]&nbsp;values,
+                           int&nbsp;nBins)</pre>
 </li>
 </ul>
 </li>

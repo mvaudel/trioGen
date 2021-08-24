@@ -1,11 +1,9 @@
 package no.uib.triogen.cmd.prs_prune;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 import no.uib.triogen.cmd.ld_pruning.LdPruningOptions;
 import no.uib.triogen.model.trio_genotypes.Model;
-import no.uib.triogen.processing.prs.PrsTrainer;
+import no.uib.triogen.processing.prs.PrsPruner;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -44,25 +42,21 @@ public class PrsPruneOptionsBean {
      */
     public String eaColumn = "testedAllele";
     /**
-     * Name of the effect allele column in the training file.
-     */
-    public Model model = Model.cmf;
-    /**
      * Names of the variables.
      */
     public String[] variables = new String[]{"c", "m", "f"};
     /**
      * Pattern for the effect size column.
      */
-    public String betaPattern = Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD;
+    public String betaPattern = Model.cmf.name() + ".B" + PrsPruner.VARIABLE_WILDCARD;
     /**
      * Pattern for the standard error column.
      */
-    public String sePattern = Model.cmf.name() + ".B.se" + PrsTrainer.VARIABLE_WILDCARD;
+    public String sePattern = Model.cmf.name() + ".B.se" + PrsPruner.VARIABLE_WILDCARD;
     /**
      * Pattern for the p-value column.
      */
-    public String pPattern = Model.cmf.name() + ".B.p" + PrsTrainer.VARIABLE_WILDCARD;
+    public String pPattern = Model.cmf.name() + ".B.p" + PrsPruner.VARIABLE_WILDCARD;
     /**
      * The file where to write the output.
      */
@@ -155,29 +149,13 @@ public class PrsPruneOptionsBean {
 
         }
 
-        // The model
-        if (aLine.hasOption(PrsPruneOptions.model.opt)) {
-
-            String option = aLine.getOptionValue(PrsPruneOptions.model.opt);
-
-            model = Model.valueOf(option);
-
-        }
-
         // The variables
         if (aLine.hasOption(PrsPruneOptions.variables.opt)) {
 
             String option = aLine.getOptionValue(PrsPruneOptions.variables.opt);
 
             variables = option.split(",");
-
-            if (variables.length != model.betaNames.length) {
-
-                String modelVariables = Arrays.stream(variables).collect(Collectors.joining(","));
-
-                throw new IllegalArgumentException("Found " + variables.length + " variables (" + option + ") where " + model.betaNames.length + " (" + modelVariables + ") expected.");
-
-            }
+            
         }
 
         // The beta pattern

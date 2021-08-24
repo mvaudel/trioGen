@@ -4,8 +4,8 @@ import java.util.Arrays;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.triogen.model.trio_genotypes.Model;
-import no.uib.triogen.processing.prs.PrsScorer;
-import no.uib.triogen.processing.prs.PrsTrainer;
+import no.uib.triogen.processing.prs.PrsPruner;
+import static no.uib.triogen.utils.Utils.CHROMOSOME_WILDCARD;
 
 /**
  * Enum of the different options
@@ -14,14 +14,14 @@ import no.uib.triogen.processing.prs.PrsTrainer;
  */
 public enum PrsScoreOptions {
 
-    geno("g", "geno", "The genotypes file. Wildcard: " + PrsScorer.CHROMOSOME_WILDCARD + " for variable name.", true, true),
+    geno("g", "geno", "The genotypes file. Wildcard: " + CHROMOSOME_WILDCARD + " for variable name.", true, true),
     variantId("vi", "variantId", "File listing the variants to include in the analysis. Default: process all variants in the genotypes file.", false, true),
     trio("f", "fam", "The trio identifiers file. Can be gzipped or not.", true, true),
     scoreFile("s", "scoreFile", "Score details as obtained from the PrsTrain command.", true, true),
     model("m", "model", "Names of the model to use. Default: " + Model.cmf.name() + ". Available: " + Model.getCommandLineOptions() + ".", false, true),
     variables("v", "variables", "Names of the variables to use, need to be in the same order as specified in the model. Default: c,m,f.", false, true),
-    betaPattern("bp", "betaPattern", "Pattern for the effect size column. Wildcard: " + PrsTrainer.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD + "'.", false, true),
-    sePattern("sp", "sePattern", "Pattern for the standard error column. Wildcard: " + PrsTrainer.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsTrainer.VARIABLE_WILDCARD + ".se'.", false, true),
+    betaPattern("bp", "betaPattern", "Pattern for the effect size column. Wildcard: " + PrsPruner.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsPruner.VARIABLE_WILDCARD + "'.", false, true),
+    sePattern("sp", "sePattern", "Pattern for the standard error column. Wildcard: " + PrsPruner.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsPruner.VARIABLE_WILDCARD + ".se'.", false, true),
     scoringMode("sm", "scoringMode", "The scoring mode. 0: top hit per locus; 1: weighted average. Default: 1.", false, true),
     out("o", "out", "The file where to write the results.", true, true),
     pValueThreshold("pv", "pValueThreshold", "The highest p-value to consider. Default: '1e-6'.", false, true),

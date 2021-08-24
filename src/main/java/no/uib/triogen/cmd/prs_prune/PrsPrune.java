@@ -9,7 +9,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
-import no.uib.triogen.processing.prs.PrsTrainer;
+import no.uib.triogen.processing.prs.PrsPruner;
 
 /**
  * Computes a simple polygenic risk score based on the sum of a list of betas.
@@ -93,7 +93,7 @@ public class PrsPrune {
 
         try {
 
-            PrsTrainer prsTrainer = new PrsTrainer(
+            PrsPruner prsPruner = new PrsPruner(
                     bean.trainingFile,
                     bean.ldMatrixFilePath,
                     bean.destinationFile,
@@ -105,7 +105,6 @@ public class PrsPrune {
                     bean.betaPattern,
                     bean.sePattern,
                     bean.pPattern,
-                    bean.model,
                     bean.variables,
                     bean.nSnpPerLocusThreshold,
                     bean.ldLocusThreshold,
@@ -114,7 +113,7 @@ public class PrsPrune {
                     logger
             );
 
-            prsTrainer.run();
+            prsPruner.run();
 
         } catch (Throwable e) {
 

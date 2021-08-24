@@ -8,10 +8,9 @@ package no.uib.triogen.scripts_marc.bolt;
 import java.io.File;
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map.Entry;
 import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.cell_rk.utils.SimpleFileWriter;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 
 /**
  * Script to merge BOLT results from different phenotypes.

@@ -8,14 +8,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import no.uib.cell_rk.utils.SimpleFileWriter;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.SEPARATOR;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.ld.LdMatrixReader;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.ld.R2;
-import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.utils.SimpleSemaphore;
 import no.uib.triogen.utils.Utils;
 
@@ -24,7 +23,7 @@ import no.uib.triogen.utils.Utils;
  *
  * @author Marc Vaudel
  */
-public class PrsTrainer {
+public class PrsPruner {
 
     /**
      * Wildcard for the variable name in the summary stats columns.
@@ -82,10 +81,6 @@ public class PrsTrainer {
      */
     private final String pValueColumnPattern;
     /**
-     * The trio model to use.
-     */
-    private final Model model;
-    /**
      * The ordered names of the variables used in the model.
      */
     private final String[] variableNames;
@@ -125,7 +120,6 @@ public class PrsTrainer {
      * @param posColumn The column containing the position.
      * @param refColumn The column containing the reference allele.
      * @param eaColumn The name of the effect allele column.
-     * @param model The trio model to use.
      * @param variableNames The names of the variables to include.
      * @param betaColumnPattern The pattern to use to find the effect size
      * column for each variable in the model.
@@ -140,7 +134,7 @@ public class PrsTrainer {
      * locus.
      * @param logger The logger.
      */
-    public PrsTrainer(
+    public PrsPruner(
             File trainingFile,
             String ldMatrixFilePath,
             File destinationFile,
@@ -152,7 +146,6 @@ public class PrsTrainer {
             String betaColumnPattern,
             String seColumnPattern,
             String pValueColumnPattern,
-            Model model,
             String[] variableNames,
             int nSnpPerLocusThreshold,
             double ldLocusThreshold,
@@ -172,7 +165,6 @@ public class PrsTrainer {
         this.betaColumnPattern = betaColumnPattern;
         this.seColumnPattern = seColumnPattern;
         this.pValueColumnPattern = pValueColumnPattern;
-        this.model = model;
         this.variableNames = variableNames;
         this.nSnpPerLocusThreshold = nSnpPerLocusThreshold;
         this.ldLocusThreshold = ldLocusThreshold;
@@ -567,7 +559,7 @@ public class PrsTrainer {
 
         if (ldMatrixReader == null) {
 
-            String contigLdMatrixFilePath = ldMatrixFilePath.replace(Utils.CONTIG_WILDCARD, contig);
+            String contigLdMatrixFilePath = ldMatrixFilePath.replace(Utils.CHROMOSOME_WILDCARD, contig);
 
             File contigLdFile = new File(contigLdMatrixFilePath);
 
@@ -577,7 +569,7 @@ public class PrsTrainer {
 
                     String newContig = "23";
 
-                    contigLdMatrixFilePath = ldMatrixFilePath.replace(Utils.CONTIG_WILDCARD, newContig);
+                    contigLdMatrixFilePath = ldMatrixFilePath.replace(Utils.CHROMOSOME_WILDCARD, newContig);
 
                     contigLdFile = new File(contigLdMatrixFilePath);
 
@@ -585,7 +577,7 @@ public class PrsTrainer {
 
                     String newContig = "X";
 
-                    contigLdMatrixFilePath = ldMatrixFilePath.replace(Utils.CONTIG_WILDCARD, newContig);
+                    contigLdMatrixFilePath = ldMatrixFilePath.replace(Utils.CHROMOSOME_WILDCARD, newContig);
 
                     contigLdFile = new File(contigLdMatrixFilePath);
 

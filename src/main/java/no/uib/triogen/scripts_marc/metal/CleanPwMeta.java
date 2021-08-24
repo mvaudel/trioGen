@@ -2,7 +2,7 @@ package no.uib.triogen.scripts_marc.metal;
 
 import java.io.File;
 import java.time.Instant;
-import no.uib.cell_rk.utils.SimpleFileWriter;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.flat.SimpleFileReader;
 
 /**

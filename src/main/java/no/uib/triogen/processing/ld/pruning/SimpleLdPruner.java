@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.cell_rk.utils.SimpleFileWriter;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.ld.LdMatrixReader;
 import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.utils.Utils;
@@ -324,7 +324,7 @@ public class SimpleLdPruner {
 
         if (contigColName != null) {
 
-            String contigLdMatrixFilePath = ldMatrixFilePath.replace(Utils.CONTIG_WILDCARD, contig);
+            String contigLdMatrixFilePath = ldMatrixFilePath.replace(Utils.CHROMOSOME_WILDCARD, contig);
 
             File contigLdFile = new File(contigLdMatrixFilePath);
 

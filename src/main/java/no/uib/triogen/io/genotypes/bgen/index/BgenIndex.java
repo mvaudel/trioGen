@@ -7,7 +7,7 @@ import java.util.BitSet;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.ENCODING;
 import no.uib.triogen.io.flat.SimpleFileReader;
-import no.uib.cell_rk.utils.SimpleFileWriter;
+import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.bgen.BgenUtils;
 import no.uib.triogen.model.genome.VariantInformation;
 
