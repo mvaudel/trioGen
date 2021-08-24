@@ -237,10 +237,10 @@ public class Utils {
 
         double[] bins = new double[nBins - 1];
 
-        for (int i = 0; i < nBins; i++) {
+        for (int i = 1; i < nBins; i++) {
 
             int limitI = (int) ((double) i) / nBins * values.length;
-            bins[i] = sortedValues[limitI];
+            bins[i-1] = sortedValues[limitI];
 
         }
 
