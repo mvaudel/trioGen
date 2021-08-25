@@ -198,7 +198,7 @@ public class PrsThresholder {
 
             for (PrsUtils.ScoringMode scoringMode : PrsUtils.ScoringMode.values()) {
 
-                double pValueThreshold = 1.0;
+                double pValueThreshold = 0.05;
 
                 while (pValueThreshold >= LOWEST_P_VALUE) {
 
@@ -261,6 +261,9 @@ public class PrsThresholder {
                         );
 
                     }
+                    
+                    pValueThreshold /= 2;
+                    
                 }
             }
         }
