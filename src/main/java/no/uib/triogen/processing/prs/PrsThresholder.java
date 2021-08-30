@@ -31,11 +31,11 @@ public class PrsThresholder {
     /**
      * The highest p-value threshold.
      */
-    public static final double HIGHEST_P_VALUE = 1e-4;
+    public static final double HIGHEST_P_VALUE = 1e-2;
     /**
      * The lowest p-value threshold.
      */
-    public static final double LOWEST_P_VALUE = 1e-6;
+    public static final double LOWEST_P_VALUE = 1e-7;
     /**
      * The step to use for the p-value threshold decrease. 10 means divided by
      * 10.
@@ -44,7 +44,7 @@ public class PrsThresholder {
     /**
      * The beta quantiles to try.
      */
-    public static final double[] BETA_QUANTILES = new double[]{0.05, 0.25, 0.5};
+    public static final double[] BETA_QUANTILES = new double[]{0.01, 0.025, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5};
     /**
      * The folder to use to store the bgen index files.
      */
