@@ -260,19 +260,13 @@ public class PrsThresholder {
                                 logger
                         );
 
-                        double[] scoresSum = new double[indexesWithPhenotype.length];
-
-                        for (int index : indexesWithPhenotype) {
-
-                            String childId = childToParentMap.children[index];
-
-                            double[] childScores = scores.get(childId);
-
-                            double childScore = Arrays.stream(childScores).sum();
-
-                            scoresSum[index] = childScore;
-
-                        }
+                        double[] scoresSum = Arrays.stream(indexesWithPhenotype)
+                                .mapToDouble(
+                                        index -> Arrays.stream(
+                                                scores.get(childToParentMap.children[index])
+                                        ).sum()
+                                )
+                                .toArray();
 
                         double[] binnedScores = Utils.bin(scoresSum, nBins);
 
