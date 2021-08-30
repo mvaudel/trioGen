@@ -3,11 +3,13 @@ package no.uib.triogen.processing.prs;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
@@ -187,23 +189,30 @@ public class PrsThresholder {
 
         double[] phenotypes = phenotypesHandler.phenoMap.get(phenoName);
 
-        try (SimpleFileWriter debugWriter = new SimpleFileWriter(new File("/mnt/cargo/marc", "ground_truth"), true)) {
+        int[] indexesWithPhenotype = IntStream.range(0, phenotypes.length)
+                .filter(
+                        i -> !Double.isNaN(phenotypes[i]) && !Double.isInfinite(phenotypes[i])
+                )
+                .toArray();
 
-            debugWriter.writeLine("trio", String.join("\t", variableNames));
+        if (indexesWithPhenotype.length <= 100) {
 
-            for (int i = 0; i < childToParentMap.children.length; i++) {
+            logger.logMessage("Warning: less than 100 samples with a valid phenotype.");
 
-                debugWriter.writeLine(childToParentMap.children[i], Double.toString(phenotypes[i]));
-
-            }
         }
 
-        double[] binnedPhenotypes = Utils.bin(phenotypes, nBins);
+        double[] valuesWithPhenotype = Arrays.stream(indexesWithPhenotype)
+                .mapToDouble(
+                        i -> phenotypes[i]
+                )
+                .toArray();
+
+        double[] binnedPhenotypes = Utils.bin(valuesWithPhenotype, nBins);
 
         long end = Instant.now().getEpochSecond();
         long duration = end - start;
 
-        logger.logMessage("Loading phenotypes done (" + duration + " seconds).");
+        logger.logMessage("Loading phenotypes done (" + indexesWithPhenotype.length + " loaded in " + duration + " seconds).");
 
         try (SimpleFileWriter writer = new SimpleFileWriter(destinationFile, true)) {
 
@@ -251,29 +260,18 @@ public class PrsThresholder {
                                 logger
                         );
 
-                        double[] scoresSum = new double[childToParentMap.children.length];
+                        double[] scoresSum = new double[indexesWithPhenotype.length];
 
-                        for (int i = 0; i < childToParentMap.children.length; i++) {
+                        for (int index : indexesWithPhenotype) {
 
-                            String childId = childToParentMap.children[i];
+                            String childId = childToParentMap.children[index];
 
                             double[] childScores = scores.get(childId);
 
                             double childScore = Arrays.stream(childScores).sum();
 
-                            scoresSum[i] = childScore;
+                            scoresSum[index] = childScore;
 
-                        }
-
-                        try (SimpleFileWriter debugWriter = new SimpleFileWriter(new File("/mnt/cargo/marc", scoringMode + "_b_" + betaQuantile + "_p_" + pValueThreshold), true)) {
-
-                            debugWriter.writeLine("trio", String.join("\t", variableNames));
-
-                            for (Entry<String, double[]> entry : scores.entrySet()) {
-
-                                debugWriter.writeLine(entry.getKey(), Arrays.stream(entry.getValue()).mapToObj(score -> Double.toString(score)).collect(Collectors.joining("\t")));
-
-                            }
                         }
 
                         double[] binnedScores = Utils.bin(scoresSum, nBins);

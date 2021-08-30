@@ -2,7 +2,6 @@ package no.uib.triogen.scripts_marc.prs;
 
 import java.io.File;
 import no.uib.triogen.log.SimpleCliLogger;
-import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.processing.prs.PrsPruner;
 
 /**
@@ -18,7 +17,7 @@ public class TestPruning {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
+        
         try {
 
             String ldMatrixFilePath = "tmp/{contig}_200k.tld";

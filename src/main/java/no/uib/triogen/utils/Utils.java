@@ -2,6 +2,7 @@ package no.uib.triogen.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.special.Beta;
 
@@ -231,48 +232,38 @@ public class Utils {
             int nBins
     ) {
 
-        double[] sortedValues = Arrays.copyOf(values, values.length);
-
-        Arrays.sort(sortedValues);
-
-        double[] bins = new double[nBins - 1];
-
-        for (int i = 1; i < nBins; i++) {
-
-            int limitI = (int) ((double) i) / nBins * values.length;
-            bins[i-1] = sortedValues[limitI];
-
+        double[] sortedValues = Arrays.stream(values)
+                .filter(
+                        a -> !Double.isNaN(a)
+                )
+                .sorted()
+                .toArray();
+        
+        HashMap<Double, Double> valueToBin = new HashMap<>(sortedValues.length);
+        
+        for (int rank = 0 ; rank < sortedValues.length ; rank++) {
+            
+            valueToBin.put(sortedValues[rank], Math.ceil(((double) rank) / sortedValues.length * nBins));
+            
         }
 
         double[] binnedValues = new double[values.length];
 
         for (int i = 0; i < values.length; i++) {
-
+            
             double value = values[i];
 
-            if (value <= bins[0]) {
-
-                binnedValues[i] = 1;
-
-            } else if (value > bins[bins.length - 1]) {
-
-                binnedValues[i] = nBins;
-
+            if (!Double.isNaN(value)) {
+                
+                binnedValues[i] = valueToBin.get(value);
+                
             } else {
-
-                for (int bin = 0; bin < bins.length - 1; bin++) {
-
-                    if (value > bins[bin] && value <= bins[bin]) {
-
-                        binnedValues[i] = bin + 1;
-
-                        break;
-
-                    }
-                }
+                
+                binnedValues[i] = Double.NaN;
+                
             }
         }
-        
+
         return binnedValues;
 
     }
