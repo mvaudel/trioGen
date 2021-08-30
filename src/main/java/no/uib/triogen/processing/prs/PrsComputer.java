@@ -287,6 +287,8 @@ public class PrsComputer {
 
                                                 }
                                             }
+                                            
+                                            System.out.println("beta: " + beta + " se: " + se + " se_scaling" + seScaling + " contribution: " + betaEstimate);
 
                                             betaContributions[variableI] = betaEstimate;
 

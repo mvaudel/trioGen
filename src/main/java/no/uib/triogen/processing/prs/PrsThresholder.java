@@ -224,7 +224,7 @@ public class PrsThresholder {
 
                         NormalDistribution normalDistribution = new NormalDistribution(0, 1);
                         double seScaling = normalDistribution.inverseCumulativeProbability(betaQuantile);
-
+                        
                         HashMap<String, double[]> scores = PrsComputer.getScores(
                                 genotypesFilePath,
                                 scoringData,
