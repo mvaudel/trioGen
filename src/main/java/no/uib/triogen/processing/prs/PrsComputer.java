@@ -264,7 +264,7 @@ public class PrsComputer {
 
                                                 betaEstimate = beta + seScaling * se;
 
-                                                if (betaEstimate < 0.0) {
+                                                if (betaEstimate <= 0.0) {
 
                                                     betaEstimate = 0.0;
 
@@ -277,7 +277,7 @@ public class PrsComputer {
 
                                                 betaEstimate = beta - seScaling * se;
 
-                                                if (betaEstimate > 0.0) {
+                                                if (betaEstimate >= 0.0) {
 
                                                     betaEstimate = 0.0;
 
@@ -287,8 +287,6 @@ public class PrsComputer {
 
                                                 }
                                             }
-                                            
-                                            System.out.println("beta: " + beta + " se: " + se + " se_scaling" + seScaling + " contribution: " + betaEstimate);
 
                                             betaContributions[variableI] = betaEstimate;
 

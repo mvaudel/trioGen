@@ -6,6 +6,8 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
@@ -27,19 +29,20 @@ public class PrsThresholder {
     /**
      * The highest p-value threshold.
      */
-    public static final double HIGHEST_P_VALUE = 1e-2;
+    public static final double HIGHEST_P_VALUE = 1e-4;
     /**
      * The lowest p-value threshold.
      */
     public static final double LOWEST_P_VALUE = 1e-6;
     /**
-     * The step to use for the p-value threshold decrease. 10 means divided by 10.
+     * The step to use for the p-value threshold decrease. 10 means divided by
+     * 10.
      */
     public static final double P_VALUE_STEP = 10;
     /**
      * The beta quantiles to try.
      */
-    public static final double[] BETA_QUANTILES = new double[]{0.01, 0.025, 0.05, 0.1, 0.25, 0.5};
+    public static final double[] BETA_QUANTILES = new double[]{0.05, 0.25, 0.5};
     /**
      * The folder to use to store the bgen index files.
      */
@@ -184,6 +187,17 @@ public class PrsThresholder {
 
         double[] phenotypes = phenotypesHandler.phenoMap.get(phenoName);
 
+        try (SimpleFileWriter debugWriter = new SimpleFileWriter(new File("/mnt/cargo/marc", "ground_truth"), true)) {
+
+            debugWriter.writeLine("trio", String.join("\t", variableNames));
+
+            for (int i = 0; i < childToParentMap.children.length; i++) {
+
+                debugWriter.writeLine(childToParentMap.children[i], Double.toString(phenotypes[i]));
+
+            }
+        }
+
         double[] binnedPhenotypes = Utils.bin(phenotypes, nBins);
 
         long end = Instant.now().getEpochSecond();
@@ -224,7 +238,7 @@ public class PrsThresholder {
 
                         NormalDistribution normalDistribution = new NormalDistribution(0, 1);
                         double seScaling = normalDistribution.inverseCumulativeProbability(betaQuantile);
-                        
+
                         HashMap<String, double[]> scores = PrsComputer.getScores(
                                 genotypesFilePath,
                                 scoringData,
@@ -251,6 +265,17 @@ public class PrsThresholder {
 
                         }
 
+                        try (SimpleFileWriter debugWriter = new SimpleFileWriter(new File("/mnt/cargo/marc", scoringMode + "_b_" + betaQuantile + "_p_" + pValueThreshold), true)) {
+
+                            debugWriter.writeLine("trio", String.join("\t", variableNames));
+
+                            for (Entry<String, double[]> entry : scores.entrySet()) {
+
+                                debugWriter.writeLine(entry.getKey(), Arrays.stream(entry.getValue()).mapToObj(score -> Double.toString(score)).collect(Collectors.joining("\t")));
+
+                            }
+                        }
+
                         double[] binnedScores = Utils.bin(scoresSum, nBins);
 
                         PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
@@ -265,9 +290,9 @@ public class PrsThresholder {
                         );
 
                     }
-                    
+
                     pValueThreshold /= P_VALUE_STEP;
-                    
+
                 }
             }
         }
