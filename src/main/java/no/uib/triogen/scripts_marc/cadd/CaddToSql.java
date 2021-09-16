@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -15,8 +16,9 @@ import no.uib.triogen.io.flat.SimpleFileReader;
 
 /**
  * Puts the cadd database in an SQLite database.
- * 
- * java -Xmx32G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar no.uib.triogen.scripts_marc.cadd.CaddToSql
+ *
+ * java -Xmx32G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar
+ * no.uib.triogen.scripts_marc.cadd.CaddToSql
  *
  * @author Marc Vaudel
  */
@@ -83,7 +85,7 @@ public class CaddToSql {
 
                 String tableColumns = stringBuilder.toString();
 
-                HashMap<Integer, String[]> buffer = new HashMap<>(TABLE_SIZE);
+                ArrayList<String[]> buffer = new ArrayList<>(TABLE_SIZE);
 
                 String lastChromosome = "1";
                 int minBp = Integer.MAX_VALUE;
@@ -107,17 +109,7 @@ public class CaddToSql {
 
                     }
 
-                    int id = line.hashCode();
-
-                    if (!buffer.containsKey(id)) {
-
-                        buffer.put(id, lineSplit);
-
-                    } else {
-
-                        throw new IllegalArgumentException("Duplicate entry: '" + id + "'.");
-
-                    }
+                    buffer.add(lineSplit);
 
                     if (!chromosome.equals(lastChromosome) || buffer.size() >= TABLE_SIZE) {
 
@@ -144,7 +136,7 @@ public class CaddToSql {
             String chromosome,
             int minBp,
             int maxBp,
-            HashMap<Integer, String[]> buffer,
+            ArrayList<String[]> buffer,
             Connection connection,
             String tableColumns,
             String headerConcatenated,
@@ -162,13 +154,15 @@ public class CaddToSql {
         String insertStatement = "INSERT INTO " + tableName + " (id, " + headerConcatenated + ") VALUES (?, " + question + ");";
         PreparedStatement psInsert = connection.prepareStatement(insertStatement);
 
-        for (Entry<Integer, String[]> entry : buffer.entrySet()) {
+        for (int i = 0; i < buffer.size(); i++) {
 
-            psInsert.setInt(1, entry.getKey());
+            psInsert.setInt(1, i);
 
-            for (int i = 0; i < entry.getValue().length; i++) {
+            String[] lineSplit = buffer.get(i);
 
-                psInsert.setString(i + 2, entry.getValue()[i]);
+            for (int j = 0; j < lineSplit.length; i++) {
+
+                psInsert.setString(i + 2, lineSplit[i]);
 
             }
 
