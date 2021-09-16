@@ -165,17 +165,17 @@ public class CaddToSql {
             String question
     ) throws SQLException {
 
-        String tableName = String.join("_", chromosome, Integer.toString(minBp), Integer.toString(maxBp));
+        String tableName = String.join("_", "table", chromosome, Integer.toString(minBp), Integer.toString(maxBp));
 
         System.out.println(Instant.now() + " - " + tableName);
 
-        String createStatement = "CREATE TABLE `" + tableName + "` (" + tableColumns + ");";
-//        System.out.println(createStatement);
+        String createStatement = "CREATE TABLE `x" + tableName + "` (" + tableColumns + ");";
+        System.out.println(createStatement);
         Statement stmt = connection.createStatement();
         stmt.execute(createStatement);
 
         String insertStatement = "INSERT INTO " + tableName + " (id, " + headerConcatenated + ") VALUES (?, " + question + ");";
-//        System.out.println(insertStatement);
+        System.out.println(insertStatement);
         PreparedStatement psInsert = connection.prepareStatement(insertStatement);
 
         for (int i = 0; i < buffer.size(); i++) {
