@@ -42,7 +42,7 @@ public class CaddToSql {
 
             Connection connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile.getAbsolutePath());
 
-            try (SimpleFileReader reader = SimpleFileReader.getFileReader(caddFile)) {
+            try (SimpleFileReader reader = SimpleFileReader.getFileReader(caddFile, false)) {
 
                 String line = reader.readLine();
 
@@ -61,26 +61,26 @@ public class CaddToSql {
                         .toArray(
                                 String[]::new
                         );
-                
+
                 HashSet<String> temp = new HashSet<String>();
-                
-                for (int i = 0 ; i < headerReformatted.length ; i++) {
-                    
+
+                for (int i = 0; i < headerReformatted.length; i++) {
+
                     String colName = headerReformatted[i];
                     String refColName = colName;
-                    
+
                     int j = 1;
-                    
+
                     while (temp.contains(colName)) {
-                        
+
                         colName = refColName + "_" + j++;
-                        
+
                     }
-                    
+
                     headerReformatted[i] = colName;
-                    
+
                     temp.add(colName);
-                    
+
                 }
 
                 String headerConcatenated = String.join(", ", headerReformatted);
@@ -170,12 +170,12 @@ public class CaddToSql {
         System.out.println(Instant.now() + " - " + tableName);
 
         String createStatement = "CREATE TABLE `" + tableName + "` (" + tableColumns + ");";
-        System.out.println(createStatement);
+//        System.out.println(createStatement);
         Statement stmt = connection.createStatement();
         stmt.execute(createStatement);
 
         String insertStatement = "INSERT INTO " + tableName + " (id, " + headerConcatenated + ") VALUES (?, " + question + ");";
-        System.out.println(insertStatement);
+//        System.out.println(insertStatement);
         PreparedStatement psInsert = connection.prepareStatement(insertStatement);
 
         for (int i = 0; i < buffer.size(); i++) {
