@@ -41,6 +41,7 @@ public class CaddToSql {
         try {
 
             Connection connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile.getAbsolutePath());
+            connection.setAutoCommit(false);
 
             try (SimpleFileReader reader = SimpleFileReader.getFileReader(caddFile, false)) {
 
