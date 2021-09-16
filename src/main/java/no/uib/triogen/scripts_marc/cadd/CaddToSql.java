@@ -69,7 +69,7 @@ public class CaddToSql {
                                 Collectors.joining(", ")
                         );
 
-                StringBuilder stringBuilder = new StringBuilder("`id` TEXT");
+                StringBuilder stringBuilder = new StringBuilder("`id` INTEGER");
 
                 for (String colName : headerReformatted) {
 
@@ -83,7 +83,7 @@ public class CaddToSql {
 
                 String tableColumns = stringBuilder.toString();
 
-                HashMap<String, String[]> buffer = new HashMap<>(TABLE_SIZE);
+                HashMap<Integer, String[]> buffer = new HashMap<>(TABLE_SIZE);
 
                 String lastChromosome = "1";
                 int minBp = Integer.MAX_VALUE;
@@ -107,7 +107,7 @@ public class CaddToSql {
 
                     }
 
-                    String id = String.join("_", lineSplit[0], lineSplit[1], lineSplit[2], lineSplit[3]);
+                    int id = line.hashCode();
 
                     if (!buffer.containsKey(id)) {
 
@@ -144,7 +144,7 @@ public class CaddToSql {
             String chromosome,
             int minBp,
             int maxBp,
-            HashMap<String, String[]> buffer,
+            HashMap<Integer, String[]> buffer,
             Connection connection,
             String tableColumns,
             String headerConcatenated,
@@ -162,9 +162,9 @@ public class CaddToSql {
         String insertStatement = "INSERT INTO " + tableName + " (id, " + headerConcatenated + ") VALUES (?, " + question + ");";
         PreparedStatement psInsert = connection.prepareStatement(insertStatement);
 
-        for (Entry<String, String[]> entry : buffer.entrySet()) {
+        for (Entry<Integer, String[]> entry : buffer.entrySet()) {
 
-            psInsert.setString(1, entry.getKey());
+            psInsert.setInt(1, entry.getKey());
 
             for (int i = 0; i < entry.getValue().length; i++) {
 
