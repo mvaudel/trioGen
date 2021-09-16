@@ -184,7 +184,7 @@ public class CaddToSql {
 
             for (int j = 0; j < lineSplit.length; i++) {
 
-                psInsert.setString(i + 2, lineSplit[i]);
+                psInsert.setString(j + 2, lineSplit[j]);
 
             }
 
