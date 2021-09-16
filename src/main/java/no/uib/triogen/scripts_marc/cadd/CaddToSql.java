@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.flat.SimpleFileReader;
@@ -60,6 +61,27 @@ public class CaddToSql {
                         .toArray(
                                 String[]::new
                         );
+                
+                HashSet<String> temp = new HashSet<String>();
+                
+                for (int i = 0 ; i < headerReformatted.length ; i++) {
+                    
+                    String colName = headerReformatted[i];
+                    String refColName = colName;
+                    
+                    int j = 1;
+                    
+                    while (temp.contains(colName)) {
+                        
+                        colName = refColName + "_" + j++;
+                        
+                    }
+                    
+                    headerReformatted[i] = colName;
+                    
+                    temp.add(colName);
+                    
+                }
 
                 String headerConcatenated = String.join(", ", headerReformatted);
 
