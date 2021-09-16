@@ -51,6 +51,7 @@ no.uib.triogen.processing.simple_score
 no.uib.triogen.processing.variant_data
 no.uib.triogen.scripts_marc.bgen
 no.uib.triogen.scripts_marc.bolt
+no.uib.triogen.scripts_marc.cadd
 no.uib.triogen.scripts_marc.ensembl
 no.uib.triogen.scripts_marc.ld
 no.uib.triogen.scripts_marc.ld_hub

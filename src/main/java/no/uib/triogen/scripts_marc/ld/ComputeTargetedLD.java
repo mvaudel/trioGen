@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.stream.IntStream;
+import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
@@ -19,8 +20,10 @@ import no.uib.triogen.processing.ld.P0Cache;
 
 /**
  * Debugs the LD calculation.
- * 
- * Command: java -Xmx16G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar no.uib.triogen.scripts_marc.ld.ComputeTargetedLD /mnt/work/marc/moba/mobaRun/resources/triogen/targets/targets_ld
+ *
+ * Command: java -Xmx16G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar
+ * no.uib.triogen.scripts_marc.ld.ComputeTargetedLD
+ * /mnt/work/marc/moba/mobaRun/resources/triogen/targets/targets_ld
  *
  * @author Marc Vaudel
  */
@@ -41,21 +44,21 @@ public class ComputeTargetedLD {
     public static void main(String[] args) {
 
         try {
-            
+
             if (args.length != 1) {
-                
+
                 throw new IllegalArgumentException("One argument expected.");
-                
+
             }
 
             File targetsFile = new File(args[0]);
-            
+
             if (!targetsFile.exists()) {
-                
+
                 throw new IllegalArgumentException("Targets file '" + args[0] + "' not found.");
-                
+
             }
-            
+
             File trioFile = new File("/mnt/work/marc/moba/run/triogen/pheno/trio");
 
             System.out.println("Parsing " + trioFile.getAbsolutePath() + ".");

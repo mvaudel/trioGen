@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.processing.prs.PrsPruner;
-import no.uib.triogen.processing.prs.PrsScorer;
 import no.uib.triogen.processing.prs.PrsUtils.ScoringMode;
 import org.apache.commons.cli.CommandLine;
 
