@@ -60,7 +60,7 @@ public class CaddToSql {
                 stmt.execute(createStatement);
                 connection.commit();
 
-                String insertStatement = "INSERT INTO header (id, 0) VALUES (?, ?);";
+                String insertStatement = "INSERT INTO header (id, header) VALUES (?, ?);";
 //        System.out.println(insertStatement);
                 PreparedStatement psInsert = connection.prepareStatement(insertStatement);
                 psInsert.setInt(1, 0);
@@ -69,8 +69,8 @@ public class CaddToSql {
                 psInsert.executeBatch();
                 connection.commit();
 
-                String headerConcatenated = "id, chr, bp, ref, alt, data";
                 String tableColumns = "`id` INTEGER, `chr` TEXT, `bp` INTEGER, `ref` TEXT, `alt` TEXT, `data` TEXT, PRIMARY KEY(id)";
+                String headerConcatenated = "id, chr, bp, ref, alt, data";
                 String question = "?, ?, ?, ?, ?, ?";
 
                 ArrayList<LineContent> buffer = new ArrayList<>(TABLE_SIZE);
