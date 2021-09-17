@@ -157,8 +157,20 @@ public class CaddToSql {
         PreparedStatement psInsert = connection.prepareStatement(insertStatement);
 
         int batchSize = 0;
+        
+        int lastProgress = 0;
 
         for (int i = 0; i < buffer.size(); i++) {
+            
+            int progress = 100 * i / buffer.size();
+            
+            if (progress > lastProgress) {
+                
+                System.out.print(progress + "% ");
+                
+                lastProgress = progress;
+                
+            }
 
             psInsert.setInt(1, i);
 
