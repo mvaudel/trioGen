@@ -1,5 +1,6 @@
 package no.uib.triogen.scripts_marc.cadd;
 
+import io.airlift.compress.zstd.ZstdCompressor;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,11 +10,12 @@ import java.sql.Statement;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
+import no.uib.triogen.utils.CompressionUtils;
+import no.uib.triogen.utils.TempByteArray;
 
 /**
  * Puts the cadd database in an SQLite database.
@@ -26,6 +28,7 @@ import no.uib.triogen.io.flat.SimpleFileReader;
 public class CaddToSql {
 
     public final static int TABLE_SIZE = 65000;
+    public final static int BATCH_SIZE = 1000;
 
     /**
      * Main method.
@@ -47,68 +50,30 @@ public class CaddToSql {
 
                 String line = reader.readLine();
 
-                String[] header = reader
+                String header = reader
                         .readLine()
-                        .substring(1)
-                        .split("\t");
+                        .substring(1);
 
-                String[] headerReformatted = Arrays.stream(header)
-                        .map(
-                                content -> content
-                                        .replace('-', '_')
-                                        .replace(' ', '_')
-                                        .replace(',', '_')
-                        )
-                        .toArray(
-                                String[]::new
-                        );
+                String createStatement = "CREATE TABLE `header` (`id` int, `header` TEXT);";
+//        System.out.println(createStatement);
+                Statement stmt = connection.createStatement();
+                stmt.execute(createStatement);
+                connection.commit();
 
-                HashSet<String> temp = new HashSet<String>();
+                String insertStatement = "INSERT INTO header (id, 0) VALUES (?, ?);";
+//        System.out.println(insertStatement);
+                PreparedStatement psInsert = connection.prepareStatement(insertStatement);
+                psInsert.setInt(1, 0);
+                psInsert.setString(2, header);
+                psInsert.addBatch();
+                psInsert.executeBatch();
+                connection.commit();
 
-                for (int i = 0; i < headerReformatted.length; i++) {
+                String headerConcatenated = "id, chr, bp, ref, alt, data";
+                String tableColumns = "`id` INTEGER, `chr` TEXT, `bp` INTEGER, `ref` TEXT, `alt` TEXT, `data` TEXT, PRIMARY KEY(id)";
+                String question = "?, ?, ?, ?, ?, ?";
 
-                    String colName = headerReformatted[i];
-                    String refColName = colName;
-
-                    int j = 1;
-
-                    while (temp.contains(colName)) {
-
-                        colName = refColName + "_" + j++;
-
-                    }
-
-                    headerReformatted[i] = colName;
-
-                    temp.add(colName);
-
-                }
-
-                String headerConcatenated = String.join(", ", headerReformatted);
-
-                String question = Arrays.stream(header)
-                        .map(
-                                content -> "?"
-                        )
-                        .collect(
-                                Collectors.joining(", ")
-                        );
-
-                StringBuilder stringBuilder = new StringBuilder("`id` INTEGER");
-
-                for (String colName : headerReformatted) {
-
-                    stringBuilder.append(", `")
-                            .append(colName)
-                            .append("` TEXT");
-
-                }
-
-                stringBuilder.append(", PRIMARY KEY(id)");
-
-                String tableColumns = stringBuilder.toString();
-
-                ArrayList<String[]> buffer = new ArrayList<>(TABLE_SIZE);
+                ArrayList<LineContent> buffer = new ArrayList<>(TABLE_SIZE);
 
                 String lastChromosome = "1";
                 int minBp = Integer.MAX_VALUE;
@@ -132,7 +97,15 @@ public class CaddToSql {
 
                     }
 
-                    buffer.add(lineSplit);
+                    byte[] lineBytes = line.getBytes(IoUtils.ENCODING);
+                    TempByteArray array = CompressionUtils.zstdCompress(lineBytes);
+                    byte[] compressedBytes = Arrays.copyOf(array.array, array.length);
+
+                    String compressedContent = new String(compressedBytes, IoUtils.ENCODING);
+
+                    LineContent lineContent = new LineContent(chromosome, bp, lineSplit[2], lineSplit[3], compressedContent);
+
+                    buffer.add(lineContent);
 
                     if (!chromosome.equals(lastChromosome) || buffer.size() >= TABLE_SIZE) {
 
@@ -144,8 +117,11 @@ public class CaddToSql {
                     }
                 }
 
-                writeTable(lastChromosome, minBp, maxBp, buffer, connection, tableColumns, headerConcatenated, question);
+                if (!buffer.isEmpty()) {
 
+                    writeTable(lastChromosome, minBp, maxBp, buffer, connection, tableColumns, headerConcatenated, question);
+
+                }
             }
 
         } catch (Throwable t) {
@@ -159,7 +135,7 @@ public class CaddToSql {
             String chromosome,
             int minBp,
             int maxBp,
-            ArrayList<String[]> buffer,
+            ArrayList<LineContent> buffer,
             Connection connection,
             String tableColumns,
             String headerConcatenated,
@@ -180,27 +156,64 @@ public class CaddToSql {
 //        System.out.println(insertStatement);
         PreparedStatement psInsert = connection.prepareStatement(insertStatement);
 
+        int batchSize = 0;
+
         for (int i = 0; i < buffer.size(); i++) {
 
             psInsert.setInt(1, i);
 
-            String[] lineSplit = buffer.get(i);
+            LineContent lineContent = buffer.get(i);
 
-            for (int j = 0; j < lineSplit.length; i++) {
+            psInsert.setString(2, lineContent.chr);
+            psInsert.setInt(3, lineContent.bp);
+            psInsert.setString(4, lineContent.ref);
+            psInsert.setString(5, lineContent.alt);
 
-                psInsert.setString(j + 2, lineSplit[j]);
-
-            }
+            psInsert.setString(6, lineContent.compressedData);
 
             psInsert.addBatch();
+
+            batchSize++;
+
+            if (batchSize >= BATCH_SIZE) {
+
+                psInsert.executeBatch();
+                connection.commit();
+
+                psInsert = connection.prepareStatement(insertStatement);
+
+            }
 
         }
 
         psInsert.executeBatch();
         connection.commit();
-        
+
         System.out.println(Instant.now() + " - " + tableName + " Done");
 
+    }
+
+    private static class LineContent {
+
+        public final String chr;
+        public final int bp;
+        public final String ref;
+        public final String alt;
+        public final String compressedData;
+
+        public LineContent(
+                String chr,
+                int bp,
+                String ref,
+                String alt,
+                String compressedData
+        ) {
+            this.chr = chr;
+            this.bp = bp;
+            this.ref = ref;
+            this.alt = alt;
+            this.compressedData = compressedData;
+        }
     }
 
 }
