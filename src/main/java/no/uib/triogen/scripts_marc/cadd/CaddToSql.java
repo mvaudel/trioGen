@@ -147,13 +147,13 @@ public class CaddToSql {
         System.out.println(Instant.now() + " - " + tableName);
 
         String createStatement = "CREATE TABLE `" + tableName + "` (" + tableColumns + ");";
-//        System.out.println(createStatement);
+        System.out.println(createStatement);
         Statement stmt = connection.createStatement();
         stmt.execute(createStatement);
         connection.commit();
 
         String insertStatement = "INSERT INTO " + tableName + " (id, " + headerConcatenated + ") VALUES (?, " + question + ");";
-//        System.out.println(insertStatement);
+        System.out.println(insertStatement);
         PreparedStatement psInsert = connection.prepareStatement(insertStatement);
 
         int batchSize = 0;
@@ -183,7 +183,6 @@ public class CaddToSql {
                 psInsert = connection.prepareStatement(insertStatement);
 
             }
-
         }
 
         psInsert.executeBatch();
