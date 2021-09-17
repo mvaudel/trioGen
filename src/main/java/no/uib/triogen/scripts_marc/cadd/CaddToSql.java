@@ -1,6 +1,5 @@
 package no.uib.triogen.scripts_marc.cadd;
 
-import io.airlift.compress.zstd.ZstdCompressor;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,8 +9,6 @@ import java.sql.Statement;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.utils.CompressionUtils;
