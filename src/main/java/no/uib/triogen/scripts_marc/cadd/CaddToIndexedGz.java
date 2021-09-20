@@ -10,10 +10,9 @@ import no.uib.triogen.io.flat.indexed.IndexedGzCoordinates;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 
 /**
- * Puts the cadd database in an SQLite database.
+ * Puts the cadd database in an line-indexed gz file.
  *
- * java -Xmx32G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar
- * no.uib.triogen.scripts_marc.cadd.CaddToSql
+ * java -Xmx32G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar no.uib.triogen.scripts_marc.cadd.CaddToIndexedGz
  *
  * @author Marc Vaudel
  */
