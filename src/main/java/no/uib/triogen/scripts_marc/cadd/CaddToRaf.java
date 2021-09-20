@@ -119,10 +119,16 @@ public class CaddToRaf {
 
                             long footerPosition = raf.getFilePointer();
 
-                            byte[] indexesByes = byteBuffer.array();
-                            TempByteArray array = CompressionUtils.zstdCompress(indexesByes);
+                            byte[] indexesBytes = byteBuffer.array();
+                            TempByteArray array = CompressionUtils.zstdCompress(indexesBytes);
 
-                            raf.write(indexesByes.length);
+                            raf.write(indexesBytes.length);
+                            raf.write(array.array, 0, array.length);
+
+                            byte[] headerBytes = header.getBytes(IoUtils.ENCODING);
+                            array = CompressionUtils.zstdCompress(headerBytes);
+
+                            raf.write(headerBytes.length);
                             raf.write(array.array, 0, array.length);
 
                             raf.seek(0);
@@ -130,7 +136,7 @@ public class CaddToRaf {
                             raf.writeLong(footerPosition);
 
                             return;
-                            
+
                         }
 
                         System.out.println(Instant.now() + " - Processing Chromosome " + chromosome);
