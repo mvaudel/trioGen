@@ -15,8 +15,7 @@ import no.uib.triogen.utils.TempByteArray;
 /**
  * Puts the cadd database in a raf file.
  *
- * java -Xmx32G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar
- * no.uib.triogen.scripts_marc.cadd.CaddToRaf
+ * java -Xmx32G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar no.uib.triogen.scripts_marc.cadd.CaddToRaf
  *
  * @author Marc Vaudel
  */

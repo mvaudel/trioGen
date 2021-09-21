@@ -2,6 +2,7 @@ package no.uib.triogen.cmd.prs_prune;
 
 import java.io.File;
 import no.uib.triogen.cmd.ld_pruning.LdPruningOptions;
+import no.uib.triogen.cmd.prs_score.PrsScoreOptions;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.processing.prs.PrsPruner;
 import org.apache.commons.cli.CommandLine;
@@ -77,6 +78,14 @@ public class PrsPruneOptionsBean {
      * The highest p-value to consider.
      */
     public double pValueThreshold = 0.05;
+    /**
+     * The allele frequency threshold.
+     */
+    public double afThreshold = Double.NaN;
+    /**
+     * Column containing the allele frequency.
+     */
+    public String afColumn = null;
 
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -282,6 +291,42 @@ public class PrsPruneOptionsBean {
                 throw new IllegalArgumentException("The p-value threshold (" + option + ") should be higher than 0 and lower than 1.");
 
             }
+        }
+
+        // The af threshold
+        if (aLine.hasOption(PrsScoreOptions.afThreshold.opt)) {
+
+            String option = aLine.getOptionValue(PrsScoreOptions.afThreshold.opt);
+
+            try {
+
+                afThreshold = Double.parseDouble(option);
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                throw new IllegalArgumentException("The value for allele frequency threshold (" + option + ") could not be parsed as a number.");
+
+            }
+            if (Double.isNaN(afThreshold) || Double.isInfinite(afThreshold)) {
+
+                throw new IllegalArgumentException("The allele frequency threshold (" + option + ") could not be parsed as a number.");
+
+            }
+            if (afThreshold <= 0 || afThreshold >= 0.5) {
+
+                throw new IllegalArgumentException("The allele frequency threshold (" + option + ") should be higher than 0 and lower than 0.5.");
+
+            }
+            
+            if (!aLine.hasOption(PrsScoreOptions.afColumn.opt)) {
+
+                throw new IllegalArgumentException("No column provided for allele frequency.");
+                
+            }
+            
+            afColumn = aLine.getOptionValue(PrsScoreOptions.afColumn.opt);
+            
         }
 
         // The output file

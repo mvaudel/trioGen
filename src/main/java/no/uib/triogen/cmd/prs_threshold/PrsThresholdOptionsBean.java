@@ -3,6 +3,7 @@ package no.uib.triogen.cmd.prs_threshold;
 import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import no.uib.triogen.cmd.prs_score.PrsScoreOptions;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.processing.prs.PrsPruner;
 import no.uib.triogen.processing.prs.PrsUtils.ScoringMode;
@@ -67,6 +68,14 @@ public class PrsThresholdOptionsBean {
      * The highest p-value to consider.
      */
     public double pValueThreshold = 1e-6;
+    /**
+     * The allele frequency threshold.
+     */
+    public double afThreshold = Double.NaN;
+    /**
+     * Column containing the allele frequency.
+     */
+    public String afColumn = null;
     /**
      * The quantile to use for beta estimation.
      */
@@ -217,6 +226,42 @@ public class PrsThresholdOptionsBean {
 
             sePattern = aLine.getOptionValue(PrsThresholdOptions.sePattern.opt);
 
+        }
+
+        // The af threshold
+        if (aLine.hasOption(PrsScoreOptions.afThreshold.opt)) {
+
+            String option = aLine.getOptionValue(PrsScoreOptions.afThreshold.opt);
+
+            try {
+
+                afThreshold = Double.parseDouble(option);
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                throw new IllegalArgumentException("The value for allele frequency threshold (" + option + ") could not be parsed as a number.");
+
+            }
+            if (Double.isNaN(afThreshold) || Double.isInfinite(afThreshold)) {
+
+                throw new IllegalArgumentException("The allele frequency threshold (" + option + ") could not be parsed as a number.");
+
+            }
+            if (afThreshold <= 0 || afThreshold >= 0.5) {
+
+                throw new IllegalArgumentException("The allele frequency threshold (" + option + ") should be higher than 0 and lower than 0.5.");
+
+            }
+            
+            if (!aLine.hasOption(PrsScoreOptions.afColumn.opt)) {
+
+                throw new IllegalArgumentException("No column provided for allele frequency.");
+                
+            }
+            
+            afColumn = aLine.getOptionValue(PrsScoreOptions.afColumn.opt);
+            
         }
 
         // The output file

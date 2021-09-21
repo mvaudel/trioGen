@@ -44,6 +44,8 @@ public class TestPruning {
                     0.05,
                     0.8,
                     0.05,
+                    Double.NaN,
+                    null,
                     logger
             );
 

@@ -109,6 +109,30 @@
 <div class="block">Projects phenotypes for the given pheno names using the covariates
  handler.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/prs_prune/PrsPruneOptionsBean.html#afColumn">afColumn</a></span> - Variable in class no.uib.triogen.cmd.prs_prune.<a href="no/uib/triogen/cmd/prs_prune/PrsPruneOptionsBean.html" title="class in no.uib.triogen.cmd.prs_prune">PrsPruneOptionsBean</a></dt>
+<dd>
+<div class="block">Column containing the allele frequency.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#afColumn">afColumn</a></span> - Variable in class no.uib.triogen.cmd.prs_score.<a href="no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html" title="class in no.uib.triogen.cmd.prs_score">PrsScoreOptionsBean</a></dt>
+<dd>
+<div class="block">Column containing the allele frequency.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/prs_threshold/PrsThresholdOptionsBean.html#afColumn">afColumn</a></span> - Variable in class no.uib.triogen.cmd.prs_threshold.<a href="no/uib/triogen/cmd/prs_threshold/PrsThresholdOptionsBean.html" title="class in no.uib.triogen.cmd.prs_threshold">PrsThresholdOptionsBean</a></dt>
+<dd>
+<div class="block">Column containing the allele frequency.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/prs_prune/PrsPruneOptionsBean.html#afThreshold">afThreshold</a></span> - Variable in class no.uib.triogen.cmd.prs_prune.<a href="no/uib/triogen/cmd/prs_prune/PrsPruneOptionsBean.html" title="class in no.uib.triogen.cmd.prs_prune">PrsPruneOptionsBean</a></dt>
+<dd>
+<div class="block">The allele frequency threshold.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html#afThreshold">afThreshold</a></span> - Variable in class no.uib.triogen.cmd.prs_score.<a href="no/uib/triogen/cmd/prs_score/PrsScoreOptionsBean.html" title="class in no.uib.triogen.cmd.prs_score">PrsScoreOptionsBean</a></dt>
+<dd>
+<div class="block">The allele frequency threshold.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/cmd/prs_threshold/PrsThresholdOptionsBean.html#afThreshold">afThreshold</a></span> - Variable in class no.uib.triogen.cmd.prs_threshold.<a href="no/uib/triogen/cmd/prs_threshold/PrsThresholdOptionsBean.html" title="class in no.uib.triogen.cmd.prs_threshold">PrsThresholdOptionsBean</a></dt>
+<dd>
+<div class="block">The allele frequency threshold.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/ld/R2.html#alleleA">alleleA</a></span> - Variable in class no.uib.triogen.model.ld.<a href="no/uib/triogen/model/ld/R2.html" title="class in no.uib.triogen.model.ld">R2</a></dt>
 <dd>
 <div class="block">The correlated allele for variant A.</div>
@@ -2467,7 +2491,7 @@
 <dd>
 <div class="block">Returns the ids of the variant found in the idsColumn.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/prs/PrsUtils.html#parseScoringData-java.io.File-java.lang.String-java.lang.String-java.lang.String:A-no.uib.triogen.model.trio_genotypes.VariantList-double-no.uib.triogen.processing.prs.PrsUtils.ScoringMode-">parseScoringData(File, String, String, String[], VariantList, double, PrsUtils.ScoringMode)</a></span> - Static method in class no.uib.triogen.processing.prs.<a href="no/uib/triogen/processing/prs/PrsUtils.html" title="class in no.uib.triogen.processing.prs">PrsUtils</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/prs/PrsUtils.html#parseScoringData-java.io.File-java.lang.String-java.lang.String-java.lang.String:A-no.uib.triogen.model.trio_genotypes.VariantList-double-double-java.lang.String-no.uib.triogen.processing.prs.PrsUtils.ScoringMode-">parseScoringData(File, String, String, String[], VariantList, double, double, String, PrsUtils.ScoringMode)</a></span> - Static method in class no.uib.triogen.processing.prs.<a href="no/uib/triogen/processing/prs/PrsUtils.html" title="class in no.uib.triogen.processing.prs">PrsUtils</a></dt>
 <dd>
 <div class="block">For each variant, parses the weight and effect size.</div>
 </dd>
@@ -2611,7 +2635,7 @@
 <dd>
 <div class="block">This class trains a PRS on trios.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/prs/PrsPruner.html#PrsPruner-java.io.File-java.lang.String-java.io.File-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String:A-int-double-double-double-no.uib.triogen.log.SimpleCliLogger-">PrsPruner(File, String, File, String, String, String, String, String, String, String, String, String[], int, double, double, double, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.prs.<a href="no/uib/triogen/processing/prs/PrsPruner.html" title="class in no.uib.triogen.processing.prs">PrsPruner</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/prs/PrsPruner.html#PrsPruner-java.io.File-java.lang.String-java.io.File-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String:A-int-double-double-double-double-java.lang.String-no.uib.triogen.log.SimpleCliLogger-">PrsPruner(File, String, File, String, String, String, String, String, String, String, String, String[], int, double, double, double, double, String, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.prs.<a href="no/uib/triogen/processing/prs/PrsPruner.html" title="class in no.uib.triogen.processing.prs">PrsPruner</a></dt>
 <dd>
 <div class="block">Constructor.</div>
 </dd>
@@ -2637,7 +2661,7 @@
 <dd>
 <div class="block">This class scores genotypes based on pruned results from PrsTrainer.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/prs/PrsScorer.html#PrsScorer-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-double-double-no.uib.triogen.processing.prs.PrsUtils.ScoringMode-java.io.File-no.uib.triogen.log.SimpleCliLogger-">PrsScorer(String, ChildToParentMap, File, File, VariantList, String, String, Model, String[], double, double, PrsUtils.ScoringMode, File, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.prs.<a href="no/uib/triogen/processing/prs/PrsScorer.html" title="class in no.uib.triogen.processing.prs">PrsScorer</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/prs/PrsScorer.html#PrsScorer-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-double-double-double-java.lang.String-no.uib.triogen.processing.prs.PrsUtils.ScoringMode-java.io.File-no.uib.triogen.log.SimpleCliLogger-">PrsScorer(String, ChildToParentMap, File, File, VariantList, String, String, Model, String[], double, double, double, String, PrsUtils.ScoringMode, File, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.prs.<a href="no/uib/triogen/processing/prs/PrsScorer.html" title="class in no.uib.triogen.processing.prs">PrsScorer</a></dt>
 <dd>
 <div class="block">Constructor.</div>
 </dd>
@@ -2651,7 +2675,7 @@
 <dd>
 <div class="block">This class scores genotypes based on pruned results from PrsTrainer.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/prs/PrsThresholder.html#PrsThresholder-java.lang.String-java.io.File-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-int-java.io.File-no.uib.triogen.log.SimpleCliLogger-">PrsThresholder(String, File, String, ChildToParentMap, File, File, VariantList, String, String, Model, String[], int, File, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.prs.<a href="no/uib/triogen/processing/prs/PrsThresholder.html" title="class in no.uib.triogen.processing.prs">PrsThresholder</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/prs/PrsThresholder.html#PrsThresholder-java.lang.String-java.io.File-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-java.lang.String-double-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-int-java.io.File-no.uib.triogen.log.SimpleCliLogger-">PrsThresholder(String, File, String, ChildToParentMap, File, File, VariantList, String, String, double, String, Model, String[], int, File, SimpleCliLogger)</a></span> - Constructor for class no.uib.triogen.processing.prs.<a href="no/uib/triogen/processing/prs/PrsThresholder.html" title="class in no.uib.triogen.processing.prs">PrsThresholder</a></dt>
 <dd>
 <div class="block">Constructor.</div>
 </dd>

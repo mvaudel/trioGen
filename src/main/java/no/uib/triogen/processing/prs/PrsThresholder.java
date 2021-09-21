@@ -88,6 +88,14 @@ public class PrsThresholder {
      */
     private final String seColumnPattern;
     /**
+     * The allele frequency threshold.
+     */
+    private final double afThreshold;
+    /**
+     * The allele frequency column.
+     */
+    private final String afColumn;
+    /**
      * The trio model to use.
      */
     private final Model model;
@@ -124,6 +132,8 @@ public class PrsThresholder {
      * column for each variable in the model.
      * @param seColumnPattern The pattern to use to find the standard error
      * column for each variable in the model.
+     * @param afThreshold The allele frequency threshold to use.
+     * @param afColumn The allele frequency column to use.
      * @param nBins The number of bins to use.
      * @param bgenIndexFolder The folder for the bgen index files.
      * @param logger The logger.
@@ -138,6 +148,8 @@ public class PrsThresholder {
             VariantList variantList,
             String betaColumnPattern,
             String seColumnPattern,
+            double afThreshold,
+            String afColumn,
             Model model,
             String[] variableNames,
             int nBins,
@@ -154,6 +166,8 @@ public class PrsThresholder {
         this.variantList = variantList;
         this.betaColumnPattern = betaColumnPattern;
         this.seColumnPattern = seColumnPattern;
+        this.afThreshold = afThreshold;
+        this.afColumn = afColumn;
         this.model = model;
         this.variableNames = variableNames;
         this.nBins = nBins;
@@ -236,6 +250,8 @@ public class PrsThresholder {
                             variableNames,
                             variantList,
                             pValueThreshold,
+                            afThreshold,
+                            afColumn,
                             scoringMode
                     );
 

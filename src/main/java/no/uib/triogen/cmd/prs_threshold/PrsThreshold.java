@@ -133,6 +133,8 @@ public class PrsThreshold {
                     variantList, 
                     bean.betaPattern, 
                     bean.sePattern, 
+                    bean.afThreshold,
+                    bean.afColumn,
                     bean.model, 
                     bean.variables, 
                     bean.nBins, 

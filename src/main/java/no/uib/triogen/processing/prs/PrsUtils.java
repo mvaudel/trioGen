@@ -36,13 +36,17 @@ public class PrsUtils {
     /**
      * For each variant, parses the weight and effect size.
      *
-     * @param trainingFile
-     * @param betaColumnPattern
-     * @param seColumnPattern
-     * @param variableNames The names of the variables
-     * @param variantList
-     * @param pValueThreshold
-     * @param scoringMode
+     * @param trainingFile The file to parse the scoring data from.
+     * @param betaColumnPattern The pattern of the column names containing the
+     * effect size.
+     * @param seColumnPattern The pattern of the column names containing the
+     * standard error.
+     * @param variableNames The names of the variables.
+     * @param variantList The list of variants to use for scoring.
+     * @param pValueThreshold The p-value threshold to use.
+     * @param afThreshold The allele frequency threshold to use.
+     * @param afColumn The name of the column containing the allele frequency.
+     * @param scoringMode The scoring mode to use.
      *
      * @return The scoring data in a map, chromosome to lead variant to scoring
      * variant to effect allele to weight and effect size.
@@ -54,6 +58,8 @@ public class PrsUtils {
             String[] variableNames,
             VariantList variantList,
             double pValueThreshold,
+            double afThreshold,
+            String afColumn,
             ScoringMode scoringMode
     ) {
 
@@ -65,6 +71,8 @@ public class PrsUtils {
         int[] seColumnIndexes = new int[variableNames.length];
         Arrays.fill(seColumnIndexes, -1);
 
+        int afColumnIndex = -1;
+
         try (SimpleFileReader reader = SimpleFileReader.getFileReader(trainingFile)) {
 
             String line = reader.readLine();
@@ -72,6 +80,13 @@ public class PrsUtils {
             String[] lineSplit = line.split(SEPARATOR);
 
             for (int i = 0; i < lineSplit.length; i++) {
+
+                if (afColumn != null && lineSplit[i].equals(afColumn)) {
+
+                    afColumnIndex = i;
+                    continue;
+
+                }
 
                 for (int j = 0; j < variableNames.length; j++) {
 
@@ -95,6 +110,12 @@ public class PrsUtils {
 
                     }
                 }
+            }
+
+            if (afColumn != null && afColumnIndex == -1) {
+
+                throw new IllegalArgumentException("Allele frequency column '" + afColumn + "' not found.");
+
             }
 
             for (int j = 0; j < variableNames.length; j++) {
@@ -121,6 +142,17 @@ public class PrsUtils {
             while ((line = reader.readLine()) != null) {
 
                 lineSplit = line.split(SEPARATOR);
+
+                if (afColumnIndex != -1) {
+
+                    double af = Double.parseDouble(lineSplit[afColumnIndex]);
+
+                    if (af < afThreshold || af > 1 - afThreshold) {
+
+                        continue;
+
+                    }
+                }
 
                 String leadVariantId = lineSplit[0];
                 double leadP = Double.parseDouble(lineSplit[2]);

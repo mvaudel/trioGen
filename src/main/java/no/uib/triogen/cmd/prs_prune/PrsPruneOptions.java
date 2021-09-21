@@ -25,6 +25,8 @@ public enum PrsPruneOptions {
     betaPattern("bp", "betaPattern", "Pattern for the effect size column. Wildcard: " + PrsPruner.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsPruner.VARIABLE_WILDCARD + "'.", false, true),
     sePattern("sp", "sePattern", "Pattern for the standard error column. Wildcard: " + PrsPruner.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsPruner.VARIABLE_WILDCARD + ".se'.", false, true),
     pPattern("pp", "pPattern", "Pattern for the p-value column. Wildcard: " + PrsPruner.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsPruner.VARIABLE_WILDCARD + "'.p.", false, true),
+    afThreshold("af", "afThreshold", "Allele frequency threshold. 0.005 excludes all alleles of variants with frequency < 0.5% or > 99.5%. Default: no threshold.", false, true),
+    afColumn("ac", "afColumn", "Allele frequency clumn. Required if an allele frequency threshold is set.", false, true),
     out("o", "out", "The file where to write the results.", true, true),
     ldLocusThreshold("ldl", "ldLocusThreshold", "LD R2 value over which two hits cannot be considered independent. Default: '0.05'.", false, true),
     ldTopHitThreshold("ldh", "ldTopHitThreshold", "LD R2 value over which two hits are considered identical. Default: '0.8'.", false, true),

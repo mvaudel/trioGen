@@ -155,7 +155,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/prs/PrsPruner.html#PrsPruner-java.io.File-java.lang.String-java.io.File-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String:A-int-double-double-double-no.uib.triogen.log.SimpleCliLogger-">PrsPruner</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;trainingFile,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/processing/prs/PrsPruner.html#PrsPruner-java.io.File-java.lang.String-java.io.File-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String:A-int-double-double-double-double-java.lang.String-no.uib.triogen.log.SimpleCliLogger-">PrsPruner</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;trainingFile,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;ldMatrixFilePath,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;destinationFile,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;snpIdColumn,
@@ -171,6 +171,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
          double&nbsp;ldLocusThreshold,
          double&nbsp;ldTopHitThreshold,
          double&nbsp;pValueThreshold,
+         double&nbsp;afThreshold,
+         <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;afColumn,
          <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
 <div class="block">Constructor.</div>
 </td>
@@ -240,7 +242,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="PrsPruner-java.io.File-java.lang.String-java.io.File-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String:A-int-double-double-double-no.uib.triogen.log.SimpleCliLogger-">
+<a name="PrsPruner-java.io.File-java.lang.String-java.io.File-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String:A-int-double-double-double-double-java.lang.String-no.uib.triogen.log.SimpleCliLogger-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -262,6 +264,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                  double&nbsp;ldLocusThreshold,
                  double&nbsp;ldTopHitThreshold,
                  double&nbsp;pValueThreshold,
+                 double&nbsp;afThreshold,
+                 <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;afColumn,
                  <a href="../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</pre>
 <div class="block">Constructor.</div>
 <dl>
@@ -284,6 +288,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <dd><code>ldLocusThreshold</code> - The LD threshold used for pruning.</dd>
 <dd><code>ldTopHitThreshold</code> - The LD threshold used for top hits.</dd>
 <dd><code>pValueThreshold</code> - The p-value threshold.</dd>
+<dd><code>afThreshold</code> - The allele frequency threshold to use.</dd>
+<dd><code>afColumn</code> - The allele frequency column to use.</dd>
 <dd><code>nSnpPerLocusThreshold</code> - The number of variants to consider per
  locus.</dd>
 <dd><code>logger</code> - The logger.</dd>
@@ -309,7 +315,8 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="block">Runs the training.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code> - Exception thrown if an error occurs while reading or writing a file.</dd>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code> - Exception thrown if an error occurs while reading or
+ writing a file.</dd>
 </dl>
 </li>
 </ul>

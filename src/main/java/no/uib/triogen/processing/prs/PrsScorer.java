@@ -72,6 +72,14 @@ public class PrsScorer {
      */
     private final double seScaling;
     /**
+     * The allele frequency threshold.
+     */
+    private final double afThreshold;
+    /**
+     * The allele frequency column.
+     */
+    private final String afColumn;
+    /**
      * The scorer mode to use.
      */
     private final ScoringMode scoringMode;
@@ -100,6 +108,8 @@ public class PrsScorer {
      * column for each variable in the model.
      * @param pValueThreshold The p-value threshold to use.
      * @param qBeta The quantile to use on the beta estimation.
+     * @param afThreshold The allele frequency threshold to use.
+     * @param afColumn The allele frequency column to use.
      * @param scorerMode The scorer mode to use.
      * @param bgenIndexFolder The folder for the bgen index files.
      * @param logger The logger.
@@ -116,6 +126,8 @@ public class PrsScorer {
             String[] variableNames,
             double pValueThreshold,
             double qBeta,
+            double afThreshold,
+            String afColumn,
             ScoringMode scorerMode,
             File bgenIndexFolder,
             SimpleCliLogger logger
@@ -131,6 +143,8 @@ public class PrsScorer {
         this.model = model;
         this.variableNames = variableNames;
         this.pValueThreshold = pValueThreshold;
+        this.afThreshold = afThreshold;
+        this.afColumn = afColumn;
         this.scoringMode = scorerMode;
         this.bgenIndexFolder = bgenIndexFolder;
         this.logger = logger;
@@ -163,6 +177,8 @@ public class PrsScorer {
                 variableNames, 
                 variantList, 
                 pValueThreshold, 
+                afThreshold,
+                afColumn,
                 scoringMode
         );
 

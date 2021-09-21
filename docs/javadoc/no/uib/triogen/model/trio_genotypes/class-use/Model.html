@@ -315,7 +315,7 @@ the order they are declared.</div>
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/prs/PrsScorer.html#PrsScorer-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-double-double-no.uib.triogen.processing.prs.PrsUtils.ScoringMode-java.io.File-no.uib.triogen.log.SimpleCliLogger-">PrsScorer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;genotypesFilePath,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/prs/PrsScorer.html#PrsScorer-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-double-double-double-java.lang.String-no.uib.triogen.processing.prs.PrsUtils.ScoringMode-java.io.File-no.uib.triogen.log.SimpleCliLogger-">PrsScorer</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;genotypesFilePath,
          <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;trainingFile,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;destinationFile,
@@ -326,6 +326,8 @@ the order they are declared.</div>
          <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variableNames,
          double&nbsp;pValueThreshold,
          double&nbsp;qBeta,
+         double&nbsp;afThreshold,
+         <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;afColumn,
          <a href="../../../../../../no/uib/triogen/processing/prs/PrsUtils.ScoringMode.html" title="enum in no.uib.triogen.processing.prs">PrsUtils.ScoringMode</a>&nbsp;scorerMode,
          <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;bgenIndexFolder,
          <a href="../../../../../../no/uib/triogen/log/SimpleCliLogger.html" title="class in no.uib.triogen.log">SimpleCliLogger</a>&nbsp;logger)</code>
@@ -333,7 +335,7 @@ the order they are declared.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/prs/PrsThresholder.html#PrsThresholder-java.lang.String-java.io.File-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-int-java.io.File-no.uib.triogen.log.SimpleCliLogger-">PrsThresholder</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;genotypesFilePath,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/prs/PrsThresholder.html#PrsThresholder-java.lang.String-java.io.File-java.lang.String-no.uib.triogen.model.family.ChildToParentMap-java.io.File-java.io.File-no.uib.triogen.model.trio_genotypes.VariantList-java.lang.String-java.lang.String-double-java.lang.String-no.uib.triogen.model.trio_genotypes.Model-java.lang.String:A-int-java.io.File-no.uib.triogen.log.SimpleCliLogger-">PrsThresholder</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;genotypesFilePath,
               <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;phenotypesFile,
               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;phenoName,
               <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
@@ -342,6 +344,8 @@ the order they are declared.</div>
               <a href="../../../../../../no/uib/triogen/model/trio_genotypes/VariantList.html" title="class in no.uib.triogen.model.trio_genotypes">VariantList</a>&nbsp;variantList,
               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;betaColumnPattern,
               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;seColumnPattern,
+              double&nbsp;afThreshold,
+              <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;afColumn,
               <a href="../../../../../../no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a>&nbsp;model,
               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;variableNames,
               int&nbsp;nBins,

@@ -143,9 +143,9 @@ public class LinearModelOptionsBean {
         }
 
         // The allele frequency threshold
-        if (aLine.hasOption(LinearModelOptions.af.opt)) {
+        if (aLine.hasOption(LinearModelOptions.afThreshold.opt)) {
 
-            String option = aLine.getOptionValue(LinearModelOptions.af.opt);
+            String option = aLine.getOptionValue(LinearModelOptions.afThreshold.opt);
 
             try {
 

@@ -110,6 +110,8 @@ public class PrsPrune {
                     bean.ldLocusThreshold,
                     bean.ldTopHitThreshold,
                     bean.pValueThreshold,
+                    bean.afThreshold,
+                    bean.afColumn,
                     logger
             );
 

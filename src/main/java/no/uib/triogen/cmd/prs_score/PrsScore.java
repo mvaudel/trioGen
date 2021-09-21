@@ -135,6 +135,8 @@ public class PrsScore {
                     bean.variables,
                     bean.pValueThreshold,
                     bean.betaQuantile,
+                    bean.afThreshold,
+                    bean.afColumn,
                     bean.scoringMode,
                     bean.bgenIndexFolder,
                     logger

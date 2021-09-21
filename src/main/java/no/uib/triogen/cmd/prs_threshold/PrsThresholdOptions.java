@@ -25,6 +25,8 @@ public enum PrsThresholdOptions {
     nBins("nb", "nBins", "The number of bins to use when comparing scores and phenotyes. Ignored if zero. Default: 10.", false, true),
     betaPattern("bp", "betaPattern", "Pattern for the effect size column. Wildcard: " + PrsPruner.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsPruner.VARIABLE_WILDCARD + "'.", false, true),
     sePattern("sp", "sePattern", "Pattern for the standard error column. Wildcard: " + PrsPruner.VARIABLE_WILDCARD + " for variable name. Default: '" + Model.cmf.name() + ".B" + PrsPruner.VARIABLE_WILDCARD + ".se'.", false, true),
+    afThreshold("af", "afThreshold", "Allele frequency threshold. 0.005 excludes all alleles of variants with frequency < 0.5% or > 99.5%. Default: no threshold.", false, true),
+    afColumn("ac", "afColumn", "Allele frequency clumn. Required if an allele frequency threshold is set.", false, true),
     out("o", "out", "The file where to write the results.", true, true),
     bgenIndexFolder("bif", "bgenIndexFolder", "The folder for the bgen index files. Default: the folder where the bgen files are located.", false, true);
 

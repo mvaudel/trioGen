@@ -25,6 +25,8 @@ public enum PrsScoreOptions {
     scoringMode("sm", "scoringMode", "The scoring mode. 0: top hit per locus; 1: weighted average. Default: 1.", false, true),
     out("o", "out", "The file where to write the results.", true, true),
     pValueThreshold("pv", "pValueThreshold", "The highest p-value to consider. Default: '1e-6'.", false, true),
+    afThreshold("af", "afThreshold", "Allele frequency threshold. 0.005 excludes all alleles of variants with frequency < 0.5% or > 99.5%. Default: no threshold.", false, true),
+    afColumn("ac", "afColumn", "Allele frequency clumn. Required if an allele frequency threshold is set.", false, true),
     betaQuantile("bq", "betaQuantile", "The probability quantile for the beta estimation. Default: '0.025'.", false, true),
     bgenIndexFolder("bif", "bgenIndexFolder", "The folder for the bgen index files. Default: the folder where the bgen files are located.", false, true);
 

@@ -101,6 +101,14 @@ public class PrsPruner {
      */
     private final double pValueThreshold;
     /**
+     * The allele frequency threshold.
+     */
+    private final double afThreshold;
+    /**
+     * The allele frequency column.
+     */
+    private final String afColumn;
+    /**
      * The logger.
      */
     private final SimpleCliLogger logger;
@@ -130,6 +138,8 @@ public class PrsPruner {
      * @param ldLocusThreshold The LD threshold used for pruning.
      * @param ldTopHitThreshold The LD threshold used for top hits.
      * @param pValueThreshold The p-value threshold.
+     * @param afThreshold The allele frequency threshold to use.
+     * @param afColumn The allele frequency column to use.
      * @param nSnpPerLocusThreshold The number of variants to consider per
      * locus.
      * @param logger The logger.
@@ -151,6 +161,8 @@ public class PrsPruner {
             double ldLocusThreshold,
             double ldTopHitThreshold,
             double pValueThreshold,
+            double afThreshold,
+            String afColumn,
             SimpleCliLogger logger
     ) {
 
@@ -170,18 +182,20 @@ public class PrsPruner {
         this.ldLocusThreshold = ldLocusThreshold;
         this.ldTopHitThreshold = ldTopHitThreshold;
         this.pValueThreshold = pValueThreshold;
+        this.afThreshold = afThreshold;
+        this.afColumn = afColumn;
         this.logger = logger;
 
     }
 
     /**
      * Runs the training.
-     * 
-     * @throws IOException Exception thrown if an error occurs while reading or writing a file.
+     *
+     * @throws IOException Exception thrown if an error occurs while reading or
+     * writing a file.
      */
     public void run() throws IOException {
-        
-        
+
         logger.logMessage("Parsing training data from " + trainingFile.getAbsolutePath());
 
         long start = Instant.now().getEpochSecond();
@@ -213,9 +227,9 @@ public class PrsPruner {
 
     /**
      * Prune the training data and export the results.
-     * 
+     *
      * @param trainingData The training data.
-     * 
+     *
      * @return The pruned results.
      */
     private HashMap<String, Integer> pruneAndExport(TrainingData trainingData) {
@@ -243,6 +257,8 @@ public class PrsPruner {
                     .append("ref_allele")
                     .append(IoUtils.SEPARATOR)
                     .append("effect_allele")
+                    .append(IoUtils.SEPARATOR)
+                    .append("effect_allele_frequency")
                     .append(IoUtils.SEPARATOR)
                     .append("weight");
 
@@ -332,14 +348,15 @@ public class PrsPruner {
 
     /**
      * Process the given variant.
-     * 
+     *
      * @param processedVariants The variants already processed
      * @param variantsPerPrunedLocus The number of variants per pruned locus.
      * @param leadVariantId The id of the lead variant.
      * @param leadVariantVariable The variable for the lead variant selection.
      * @param leadVariantP The p-value of the lead variant.
      * @param trainingData The training data.
-     * @param singlePValue A boolean indicating whether the pruning is done using a single p-value for the model or a p-value per variable.
+     * @param singlePValue A boolean indicating whether the pruning is done
+     * using a single p-value for the model or a p-value per variable.
      * @param writer The writer to write the results to.
      */
     private void processVariant(
@@ -496,6 +513,8 @@ public class PrsPruner {
                                     .append(IoUtils.SEPARATOR)
                                     .append(hitDetails[3])
                                     .append(IoUtils.SEPARATOR)
+                                    .append(hitDetails[4])
+                                    .append(IoUtils.SEPARATOR)
                                     .append(weight);
 
                             double[] summaryStats = null;
@@ -632,6 +651,7 @@ public class PrsPruner {
         int posIndex = -1;
         int refAlleleIndex = -1;
         int testedAlleleIndex = -1;
+        int afIndex = -1;
         int[] betaColumnIndexes = new int[variableNames.length];
         int[] seColumnIndexes = new int[variableNames.length];
         int[] pColumnIndexes = new int[variableNames.length];
@@ -671,6 +691,12 @@ public class PrsPruner {
                 if (lineSplit[i].equals(eaColumn)) {
 
                     testedAlleleIndex = i;
+
+                }
+
+                if (afColumn != null && lineSplit[i].equals(afColumn)) {
+
+                    afIndex = i;
 
                 }
 
@@ -732,6 +758,11 @@ public class PrsPruner {
                 throw new IllegalArgumentException("Effect allele column '" + eaColumn + "' not found.");
 
             }
+            if (afColumn != null && afIndex == -1) {
+
+                throw new IllegalArgumentException("Allele frequency column '" + afColumn + "' not found.");
+
+            }
             for (int j = 0; j < variableNames.length; j++) {
 
                 String variable = variableNames[j];
@@ -764,48 +795,55 @@ public class PrsPruner {
                 String ref = lineSplit[refAlleleIndex];
                 String alt = lineSplit[testedAlleleIndex];
 
-                boolean pValueOK = false;
-                double[] pValues = new double[variableNames.length];
+                String afValue = afColumn == null ? null : lineSplit[afIndex];
 
-                for (int j = 0; j < variableNames.length; j++) {
+                double af = Double.parseDouble(afValue);
 
-                    String pString = lineSplit[pColumnIndexes[j]];
-                    double p = Double.parseDouble(pString);
-                    pValues[j] = p;
+                if (af >= afThreshold && af <= 1.0 - afThreshold) {
 
-                    if (p <= pValueThreshold) {
-
-                        pValueOK = true;
-
-                    }
-                }
-
-                if (pValueOK) {
+                    boolean pValueOK = false;
+                    double[] pValues = new double[variableNames.length];
 
                     for (int j = 0; j < variableNames.length; j++) {
 
-                        String betaString = lineSplit[betaColumnIndexes[j]];
-                        String seString = lineSplit[seColumnIndexes[j]];
+                        String pString = lineSplit[pColumnIndexes[j]];
+                        double p = Double.parseDouble(pString);
+                        pValues[j] = p;
 
-                        double beta = Double.parseDouble(betaString);
-                        double se = Double.parseDouble(seString);
-                        double p = pValues[j];
+                        if (p <= pValueThreshold) {
 
-                        variantToSummaryStats[j].put(snpId, new double[]{beta, se, p});
-
-                        TreeMap<String, Integer> variantsAtPvalue = pValueToVariantMap.get(p);
-
-                        if (variantsAtPvalue == null) {
-
-                            variantsAtPvalue = new TreeMap<>();
-                            pValueToVariantMap.put(p, variantsAtPvalue);
+                            pValueOK = true;
 
                         }
+                    }
 
-                        variantsAtPvalue.put(snpId, j);
+                    if (pValueOK) {
 
-                        variantToDetailsMap.put(snpId, new String[]{chr, pos, ref, alt});
+                        for (int j = 0; j < variableNames.length; j++) {
 
+                            String betaString = lineSplit[betaColumnIndexes[j]];
+                            String seString = lineSplit[seColumnIndexes[j]];
+
+                            double beta = Double.parseDouble(betaString);
+                            double se = Double.parseDouble(seString);
+                            double p = pValues[j];
+
+                            variantToSummaryStats[j].put(snpId, new double[]{beta, se, p});
+
+                            TreeMap<String, Integer> variantsAtPvalue = pValueToVariantMap.get(p);
+
+                            if (variantsAtPvalue == null) {
+
+                                variantsAtPvalue = new TreeMap<>();
+                                pValueToVariantMap.put(p, variantsAtPvalue);
+
+                            }
+
+                            variantsAtPvalue.put(snpId, j);
+
+                            variantToDetailsMap.put(snpId, new String[]{chr, pos, ref, alt, afValue});
+
+                        }
                     }
                 }
             }
