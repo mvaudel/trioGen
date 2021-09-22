@@ -92,8 +92,14 @@ public class CaddToRaf {
                     String alt = lineSplit[3];
 
                     String key = String.join("_", chromosome, bpString, ref, alt);
+                    
+                    if (currentKey.equals("")) {
+                        
+                        currentKey = key;
+                        
+                    }
 
-                    if (!key.equals(currentKey) && !currentKey.equals("")) {
+                    if (!key.equals(currentKey)) {
 
                         int bp = Integer.parseInt(bpString);
 
