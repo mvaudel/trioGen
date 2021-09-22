@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
 import static no.uib.triogen.io.IoUtils.ENCODING;
 import no.uib.triogen.io.flat.SimpleFileReader;
@@ -15,7 +16,8 @@ import no.uib.triogen.utils.TempByteArray;
 /**
  * Puts the cadd database in a raf file.
  *
- * java -Xmx32G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar no.uib.triogen.scripts_marc.cadd.CaddToRaf
+ * java -Xmx32G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar
+ * no.uib.triogen.scripts_marc.cadd.CaddToRaf
  *
  * @author Marc Vaudel
  */
@@ -60,9 +62,9 @@ public class CaddToRaf {
      */
     public static void main(String[] args) {
 
-        File caddFile = new File("/mnt/work2/utils/cadd/GRCh37/whole_genome_SNVs_inclAnno.tsv.gz");
+        File caddFile = new File("/mnt/archive/marc/cadd/GRCh37/whole_genome_SNVs_inclAnno.tsv.gz");
 
-        String outputPath = "/mnt/work2/utils/cadd/GRCh37/whole_genome_SNVs_inclAnno";
+        String outputPath = "/mnt/archive/marc/cadd/GRCh37/whole_genome_SNVs_inclAnno";
 
         try {
 
@@ -73,6 +75,8 @@ public class CaddToRaf {
 
                 String lastChromosome = "-1";
                 int lastBp = 0;
+                String currentKey = "";
+                ArrayList<String> currentLines = new ArrayList<>();
 
                 ArrayList<byte[]> keys = new ArrayList<>();
                 ArrayList<Long> indexes = new ArrayList<>();
@@ -87,85 +91,148 @@ public class CaddToRaf {
                     String ref = lineSplit[2];
                     String alt = lineSplit[3];
 
-                    int bp = Integer.parseInt(bpString);
-
-                    if (bp - lastBp > 100000) {
-
-                        System.out.println(Instant.now() + " -    " + bp);
-
-                        lastBp = bp;
-
-                    }
-
                     String key = String.join("_", chromosome, bpString, ref, alt);
 
-                    if (!lastChromosome.equals(chromosome)) {
+                    if (!key.equals(currentKey) && !currentKey.equals("")) {
 
-                        if (raf != null) {
+                        int bp = Integer.parseInt(bpString);
 
-                            ByteBuffer byteBuffer = ByteBuffer.allocate(keyMapSize);
+                        if (bp - lastBp > 100000) {
 
-                            for (int i = 0; i < indexes.size(); i++) {
+                            System.out.println(Instant.now() + " -    " + bp);
 
-                                byte[] keyBytes = keys.get(i);
-                                long index = indexes.get(i);
-
-                                byteBuffer.putInt(keyBytes.length);
-                                byteBuffer.put(keyBytes);
-                                byteBuffer.putLong(index);
-
-                            }
-
-                            long footerPosition = raf.getFilePointer();
-
-                            byte[] indexesBytes = byteBuffer.array();
-                            TempByteArray array = CompressionUtils.zstdCompress(indexesBytes);
-
-                            raf.write(indexesBytes.length);
-                            raf.write(array.array, 0, array.length);
-
-                            byte[] headerBytes = header.getBytes(IoUtils.ENCODING);
-                            array = CompressionUtils.zstdCompress(headerBytes);
-
-                            raf.write(headerBytes.length);
-                            raf.write(array.array, 0, array.length);
-
-                            raf.seek(0);
-                            raf.write(MAGIC_NUMBER);
-                            raf.writeLong(footerPosition);
-
-                            return;
+                            lastBp = bp;
 
                         }
 
-                        System.out.println(Instant.now() + " - Processing Chromosome " + chromosome);
+                        if (!lastChromosome.equals(chromosome)) {
 
-                        File outputFile = new File(outputPath + "_" + chromosome);
+                            if (raf != null) {
 
-                        raf = new RandomAccessFile(outputFile, "rw");
-                        raf.seek(HEADER_LENGTH);
+                                System.out.println(Instant.now() + " - Chromosome " + lastChromosome + " done, saving index");
 
-                        lastChromosome = chromosome;
-                        lastBp = bp;
+                                ByteBuffer byteBuffer = ByteBuffer.allocate(keyMapSize);
 
-                        keys.clear();
-                        indexes.clear();
-                        keyMapSize = 0;
+                                for (int i = 0; i < indexes.size(); i++) {
+
+                                    byte[] keyBytes = keys.get(i);
+                                    long index = indexes.get(i);
+
+                                    byteBuffer.putInt(keyBytes.length);
+                                    byteBuffer.put(keyBytes);
+                                    byteBuffer.putLong(index);
+
+                                }
+
+                                long footerPosition = raf.getFilePointer();
+
+                                byte[] indexesBytes = byteBuffer.array();
+                                TempByteArray array = CompressionUtils.zstdCompress(indexesBytes);
+
+                                raf.write(indexesBytes.length);
+                                raf.write(array.array, 0, array.length);
+
+                                byte[] headerBytes = header.getBytes(IoUtils.ENCODING);
+                                array = CompressionUtils.zstdCompress(headerBytes);
+
+                                raf.write(headerBytes.length);
+                                raf.write(array.array, 0, array.length);
+
+                                raf.seek(0);
+                                raf.write(MAGIC_NUMBER);
+                                raf.writeLong(footerPosition);
+
+                                return;
+
+                            }
+
+                            System.out.println(Instant.now() + " - Processing Chromosome " + chromosome);
+
+                            File outputFile = new File(outputPath + "_" + chromosome);
+
+                            raf = new RandomAccessFile(outputFile, "rw");
+                            raf.seek(HEADER_LENGTH);
+
+                            lastChromosome = chromosome;
+                            lastBp = bp;
+
+                            keys.clear();
+                            indexes.clear();
+                            keyMapSize = 0;
+
+                        }
+
+                        byte[] keyBytes = key.getBytes(IoUtils.ENCODING);
+                        keys.add(keyBytes);
+                        indexes.add(raf.getFilePointer());
+                        keyMapSize += Integer.BYTES + keyBytes.length + Long.BYTES;
+
+                        String lines = currentLines.stream()
+                                .collect(
+                                        Collectors.joining(System.lineSeparator())
+                                );
+                        byte[] linesBytes = lines.getBytes(IoUtils.ENCODING);
+                        TempByteArray array = CompressionUtils.zstdCompress(linesBytes);
+
+                        raf.write(linesBytes.length);
+                        raf.write(array.array, 0, array.length);
+
+                        currentKey = key;
 
                     }
 
-                    byte[] keyBytes = key.getBytes(IoUtils.ENCODING);
-                    keys.add(keyBytes);
-                    indexes.add(raf.getFilePointer());
-                    keyMapSize += Integer.BYTES + keyBytes.length + Long.BYTES;
-
-                    byte[] lineBytes = line.getBytes(IoUtils.ENCODING);
-                    TempByteArray array = CompressionUtils.zstdCompress(lineBytes);
-
-                    raf.write(lineBytes.length);
-                    raf.write(array.array, 0, array.length);
+                    currentLines.add(line);
 
                 }
+
+                byte[] keyBytes = currentKey.getBytes(IoUtils.ENCODING);
+                keys.add(keyBytes);
+                indexes.add(raf.getFilePointer());
+                keyMapSize += Integer.BYTES + keyBytes.length + Long.BYTES;
+
+                String lines = currentLines.stream()
+                        .collect(
+                                Collectors.joining(System.lineSeparator())
+                        );
+                byte[] linesBytes = lines.getBytes(IoUtils.ENCODING);
+                TempByteArray array = CompressionUtils.zstdCompress(linesBytes);
+
+                raf.write(linesBytes.length);
+                raf.write(array.array, 0, array.length);
+
+                System.out.println(Instant.now() + " - Chromosome " + lastChromosome + " done, saving index");
+
+                ByteBuffer byteBuffer = ByteBuffer.allocate(keyMapSize);
+
+                for (int i = 0; i < indexes.size(); i++) {
+
+                    byte[] tempKeyBytes = keys.get(i);
+                    long index = indexes.get(i);
+
+                    byteBuffer.putInt(tempKeyBytes.length);
+                    byteBuffer.put(tempKeyBytes);
+                    byteBuffer.putLong(index);
+
+                }
+
+                long footerPosition = raf.getFilePointer();
+
+                byte[] indexesBytes = byteBuffer.array();
+                array = CompressionUtils.zstdCompress(indexesBytes);
+
+                raf.write(indexesBytes.length);
+                raf.write(array.array, 0, array.length);
+
+                byte[] headerBytes = header.getBytes(IoUtils.ENCODING);
+                array = CompressionUtils.zstdCompress(headerBytes);
+
+                raf.write(headerBytes.length);
+                raf.write(array.array, 0, array.length);
+
+                raf.seek(0);
+                raf.write(MAGIC_NUMBER);
+                raf.writeLong(footerPosition);
+
             }
 
         } catch (Throwable t) {
