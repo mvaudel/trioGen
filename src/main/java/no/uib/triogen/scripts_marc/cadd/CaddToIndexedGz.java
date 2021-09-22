@@ -25,9 +25,9 @@ public class CaddToIndexedGz {
      */
     public static void main(String[] args) {
 
-        File caddFile = new File("/mnt/work2/utils/cadd/GRCh37/whole_genome_SNVs_inclAnno.tsv.gz");
+        File caddFile = new File("/mnt/archive/marc/cadd/GRCh37/whole_genome_SNVs_inclAnno.tsv.gz");
 
-        File outputFile = new File("/mnt/work2/utils/cadd/GRCh37/whole_genome_SNVs_inclAnno.tsv.indexed.gz");
+        File outputFile = new File("/mnt/archive/marc/cadd/GRCh37/whole_genome_SNVs_inclAnno.tsv.indexed.gz");
 
         try {
 
