@@ -16,7 +16,8 @@ import no.uib.triogen.utils.TempByteArray;
 /**
  * Puts the cadd database in a raf file.
  *
- * java -Xmx64G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar no.uib.triogen.scripts_marc.cadd.CaddToRaf
+ * java -Xmx64G -cp bin/triogen-0.5.0-beta/triogen-0.5.0-beta.jar
+ * no.uib.triogen.scripts_marc.cadd.CaddToRaf
  *
  * @author Marc Vaudel
  */
@@ -91,11 +92,11 @@ public class CaddToRaf {
                     String alt = lineSplit[3];
 
                     String key = String.join("_", chromosome, bpString, ref, alt);
-                    
+
                     if (currentKey.equals("")) {
-                        
+
                         currentKey = key;
-                        
+
                     }
 
                     if (!key.equals(currentKey)) {
@@ -117,6 +118,8 @@ public class CaddToRaf {
                                 System.out.println(Instant.now() + " - Chromosome " + lastChromosome + " done, saving index");
 
                                 ByteBuffer byteBuffer = ByteBuffer.allocate(keyMapSize);
+
+                                System.out.println(Instant.now() + " - keyMapSize: " + keyMapSize + " indexes: " + indexes.size());
 
                                 for (int i = 0; i < indexes.size(); i++) {
 
@@ -170,7 +173,16 @@ public class CaddToRaf {
                         byte[] keyBytes = key.getBytes(IoUtils.ENCODING);
                         keys.add(keyBytes);
                         indexes.add(raf.getFilePointer());
-                        keyMapSize += Integer.BYTES + keyBytes.length + Long.BYTES;
+
+                        int toAdd = Integer.BYTES + keyBytes.length + Long.BYTES;
+
+                        if (((long) keyMapSize) + toAdd > Integer.MAX_VALUE) {
+
+                            throw new IllegalArgumentException("Key buffer higher than int");
+
+                        }
+
+                        keyMapSize += toAdd;
 
                         String lines = currentLines.stream()
                                 .collect(
