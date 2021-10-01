@@ -1,6 +1,7 @@
 package no.uib.triogen.scripts_marc.cadd;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -80,7 +81,10 @@ public class CaddToRaf {
 
                 ArrayList<byte[]> keys = new ArrayList<>();
                 ArrayList<Long> indexes = new ArrayList<>();
-                int keyMapSize = 0;
+                ArrayList<Integer> keyMapSize = new ArrayList<>();
+                ArrayList<Integer> keyMapSizeIndexes = new ArrayList<>();
+
+                int currentKeyMapSize = 0;
 
                 while ((line = reader.readLine()) != null) {
 
@@ -115,40 +119,12 @@ public class CaddToRaf {
 
                             if (raf != null) {
 
+                                keyMapSize.add(currentKeyMapSize);
+                                keyMapSizeIndexes.add(indexes.size());
+
                                 System.out.println(Instant.now() + " - Chromosome " + lastChromosome + " done, saving index");
 
-                                ByteBuffer byteBuffer = ByteBuffer.allocate(keyMapSize);
-
-                                System.out.println(Instant.now() + " - keyMapSize: " + keyMapSize + " indexes: " + indexes.size());
-
-                                for (int i = 0; i < indexes.size(); i++) {
-
-                                    byte[] keyBytes = keys.get(i);
-                                    long index = indexes.get(i);
-
-                                    byteBuffer.putInt(keyBytes.length);
-                                    byteBuffer.put(keyBytes);
-                                    byteBuffer.putLong(index);
-
-                                }
-
-                                long footerPosition = raf.getFilePointer();
-
-                                byte[] indexesBytes = byteBuffer.array();
-                                TempByteArray array = CompressionUtils.zstdCompress(indexesBytes);
-
-                                raf.write(indexesBytes.length);
-                                raf.write(array.array, 0, array.length);
-
-                                byte[] headerBytes = header.getBytes(IoUtils.ENCODING);
-                                array = CompressionUtils.zstdCompress(headerBytes);
-
-                                raf.write(headerBytes.length);
-                                raf.write(array.array, 0, array.length);
-
-                                raf.seek(0);
-                                raf.write(MAGIC_NUMBER);
-                                raf.writeLong(footerPosition);
+                                writeFooterAndHeader(keys, indexes, keyMapSize, keyMapSizeIndexes, header);
 
                                 return;
 
@@ -166,7 +142,7 @@ public class CaddToRaf {
 
                             keys.clear();
                             indexes.clear();
-                            keyMapSize = 0;
+                            currentKeyMapSize = 0;
 
                         }
 
@@ -176,13 +152,16 @@ public class CaddToRaf {
 
                         int toAdd = Integer.BYTES + keyBytes.length + Long.BYTES;
 
-                        if (((long) keyMapSize) + toAdd > Integer.MAX_VALUE) {
+                        if (((long) currentKeyMapSize) + toAdd > Integer.MAX_VALUE) {
 
-                            throw new IllegalArgumentException("Key buffer higher than int");
+                            keyMapSize.add(currentKeyMapSize);
+                            keyMapSizeIndexes.add(indexes.size() - 1);
+
+                            currentKeyMapSize = 0;
 
                         }
 
-                        keyMapSize += toAdd;
+                        currentKeyMapSize += toAdd;
 
                         String lines = currentLines.stream()
                                 .collect(
@@ -206,7 +185,19 @@ public class CaddToRaf {
                 byte[] keyBytes = currentKey.getBytes(IoUtils.ENCODING);
                 keys.add(keyBytes);
                 indexes.add(raf.getFilePointer());
-                keyMapSize += Integer.BYTES + keyBytes.length + Long.BYTES;
+
+                int toAdd = Integer.BYTES + keyBytes.length + Long.BYTES;
+
+                if (((long) currentKeyMapSize) + toAdd > Integer.MAX_VALUE) {
+
+                    keyMapSize.add(currentKeyMapSize);
+                    keyMapSizeIndexes.add(indexes.size() - 1);
+
+                    currentKeyMapSize = 0;
+
+                }
+
+                currentKeyMapSize += Integer.BYTES + keyBytes.length + Long.BYTES;
 
                 String lines = currentLines.stream()
                         .collect(
@@ -218,38 +209,12 @@ public class CaddToRaf {
                 raf.write(linesBytes.length);
                 raf.write(array.array, 0, array.length);
 
+                keyMapSize.add(currentKeyMapSize);
+                keyMapSizeIndexes.add(indexes.size());
+
                 System.out.println(Instant.now() + " - Chromosome " + lastChromosome + " done, saving index");
 
-                ByteBuffer byteBuffer = ByteBuffer.allocate(keyMapSize);
-
-                for (int i = 0; i < indexes.size(); i++) {
-
-                    byte[] tempKeyBytes = keys.get(i);
-                    long index = indexes.get(i);
-
-                    byteBuffer.putInt(tempKeyBytes.length);
-                    byteBuffer.put(tempKeyBytes);
-                    byteBuffer.putLong(index);
-
-                }
-
-                long footerPosition = raf.getFilePointer();
-
-                byte[] indexesBytes = byteBuffer.array();
-                array = CompressionUtils.zstdCompress(indexesBytes);
-
-                raf.write(indexesBytes.length);
-                raf.write(array.array, 0, array.length);
-
-                byte[] headerBytes = header.getBytes(IoUtils.ENCODING);
-                array = CompressionUtils.zstdCompress(headerBytes);
-
-                raf.write(headerBytes.length);
-                raf.write(array.array, 0, array.length);
-
-                raf.seek(0);
-                raf.write(MAGIC_NUMBER);
-                raf.writeLong(footerPosition);
+                writeFooterAndHeader(keys, indexes, keyMapSize, keyMapSizeIndexes, header);
 
             }
 
@@ -258,6 +223,56 @@ public class CaddToRaf {
             t.printStackTrace();
 
         }
+    }
+
+    private static void writeFooterAndHeader(
+            ArrayList<byte[]> keys,
+            ArrayList<Long> indexes,
+            ArrayList<Integer> keyMapSize,
+            ArrayList<Integer> keyMapSizeIndexes,
+            String header
+    ) throws IOException {
+
+        long footerPosition = raf.getFilePointer();
+        raf.write(keyMapSize.size());
+
+        for (int keyMapSizeI = 0; keyMapSizeI < keyMapSize.size(); keyMapSizeI++) {
+
+            int keyMapSizeAtI = keyMapSize.get(keyMapSizeI);
+            int startIndex = keyMapSizeI == 0 ? 0 : keyMapSizeIndexes.get(keyMapSizeI - 1);
+            int lastIndex = keyMapSizeIndexes.get(keyMapSizeI);
+
+            ByteBuffer byteBuffer = ByteBuffer.allocate(keyMapSizeAtI);
+
+            for (int i = startIndex; i < lastIndex; i++) {
+
+                byte[] keyBytes = keys.get(i);
+                long index = indexes.get(i);
+
+                byteBuffer.putInt(keyBytes.length);
+                byteBuffer.put(keyBytes);
+                byteBuffer.putLong(index);
+
+            }
+
+            byte[] indexesBytes = byteBuffer.array();
+            TempByteArray array = CompressionUtils.zstdCompress(indexesBytes);
+
+            raf.write(indexesBytes.length);
+            raf.write(array.array, 0, array.length);
+
+        }
+
+        byte[] headerBytes = header.getBytes(IoUtils.ENCODING);
+        TempByteArray array = CompressionUtils.zstdCompress(headerBytes);
+
+        raf.write(headerBytes.length);
+        raf.write(array.array, 0, array.length);
+
+        raf.seek(0);
+        raf.write(MAGIC_NUMBER);
+        raf.writeLong(footerPosition);
+
     }
 
 }
