@@ -22,10 +22,10 @@ public class CompressionUtils {
             byte[] compressedByteArray,
             int uncompressedLength
     ) {
-        
+
         return zstdDecompress(
-                new ZstdDecompressor(), 
-                compressedByteArray, 
+                new ZstdDecompressor(),
+                compressedByteArray,
                 uncompressedLength
         );
     }
@@ -69,12 +69,12 @@ public class CompressionUtils {
     public static TempByteArray zstdCompress(
             byte[] uncompressedData
     ) {
-        
+
         return zstdCompress(
-                new ZstdCompressor(), 
+                new ZstdCompressor(),
                 uncompressedData
         );
-        
+
     }
 
     /**
@@ -90,7 +90,19 @@ public class CompressionUtils {
             byte[] uncompressedData
     ) {
 
+        if (uncompressedData.length == 0) {
+
+            return new TempByteArray(new byte[0], 0);
+
+        }
+
         int maxLength = (int) compressor.maxCompressedLength(uncompressedData.length);
+
+        if (maxLength <= 0) {
+
+            maxLength = uncompressedData.length;
+
+        }
 
         byte[] destinationArray = new byte[maxLength];
 

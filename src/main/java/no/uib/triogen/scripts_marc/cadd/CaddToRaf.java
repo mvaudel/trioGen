@@ -239,28 +239,46 @@ public class CaddToRaf {
         for (int keyMapSizeI = 0; keyMapSizeI < keyMapSize.size(); keyMapSizeI++) {
 
             int keyMapSizeAtI = keyMapSize.get(keyMapSizeI);
-            int startIndex = keyMapSizeI == 0 ? 0 : keyMapSizeIndexes.get(keyMapSizeI - 1);
-            int lastIndex = keyMapSizeIndexes.get(keyMapSizeI);
 
-            ByteBuffer byteBuffer = ByteBuffer.allocate(keyMapSizeAtI);
+            if (keyMapSizeAtI > 0) {
 
-            for (int i = startIndex; i < lastIndex; i++) {
+                int startIndex = keyMapSizeI == 0 ? 0 : keyMapSizeIndexes.get(keyMapSizeI - 1);
+                int lastIndex = keyMapSizeIndexes.get(keyMapSizeI);
 
-                byte[] keyBytes = keys.get(i);
-                long index = indexes.get(i);
+                ByteBuffer byteBuffer = ByteBuffer.allocate(keyMapSizeAtI);
 
-                byteBuffer.putInt(keyBytes.length);
-                byteBuffer.put(keyBytes);
-                byteBuffer.putLong(index);
+                for (int i = startIndex; i < lastIndex; i++) {
 
+                    byte[] keyBytes = keys.get(i);
+                    long index = indexes.get(i);
+
+                    byteBuffer.putInt(keyBytes.length);
+                    byteBuffer.put(keyBytes);
+                    byteBuffer.putLong(index);
+
+                }
+                
+                try {
+
+                byte[] indexesBytes = byteBuffer.array();
+                
+                if (indexesBytes.length == 0) {
+                    
+                    throw new IllegalArgumentException("No bytes to save " + startIndex + " " + lastIndex);
+                    
+                }
+                
+                TempByteArray array = CompressionUtils.zstdCompress(indexesBytes);
+
+                raf.write(indexesBytes.length);
+                raf.write(array.array, 0, array.length);
+
+                } catch (Exception e) {
+                    
+                    System.out.println("An error occurred when trying to write array of length " + keyMapSizeAtI + " " + startIndex + " " + lastIndex);
+                    
+                }
             }
-
-            byte[] indexesBytes = byteBuffer.array();
-            TempByteArray array = CompressionUtils.zstdCompress(indexesBytes);
-
-            raf.write(indexesBytes.length);
-            raf.write(array.array, 0, array.length);
-
         }
 
         byte[] headerBytes = header.getBytes(IoUtils.ENCODING);
