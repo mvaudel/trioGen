@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import no.uib.triogen.io.IoUtils;
-import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
+import no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData;
 
 /**
  * Enum of the linear regression models implemented.
@@ -237,7 +237,7 @@ public enum Model {
             String childId,
             String motherId,
             String fatherId,
-            BgenVariantData bgenVariantData
+            BgenVariantTrioData bgenVariantData
     ) {
 
         switch (model) {

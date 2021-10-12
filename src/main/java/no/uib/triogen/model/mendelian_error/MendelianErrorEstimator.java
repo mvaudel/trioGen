@@ -1,6 +1,6 @@
 package no.uib.triogen.model.mendelian_error;
 
-import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
+import no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData;
 import no.uib.triogen.model.family.ChildToParentMap;
 
 /**
@@ -24,7 +24,7 @@ public class MendelianErrorEstimator {
      * compared to the number of expected trios.
      */
     public static double estimateMendelianErrorPrevalence(
-            BgenVariantData variantData,
+            BgenVariantTrioData variantData,
             ChildToParentMap childToParentMap,
             int testedAlleleIndex
     ) {

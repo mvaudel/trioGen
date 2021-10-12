@@ -1,4 +1,4 @@
-package no.uib.triogen.io.genotypes.bgen.reader;
+package no.uib.triogen.io.genotypes.bgen.variant_data;
 
 import io.airlift.compress.zstd.ZstdDecompressor;
 import java.nio.ByteBuffer;
@@ -19,11 +19,11 @@ import no.uib.triogen.model.genome.VariantInformation;
 import no.uib.triogen.utils.CompressionUtils;
 
 /**
- * Genotypes provider based on a bgen file.
+ * Trio-based genotypes provider based on a bgen file.
  *
  * @author Marc Vaudel
  */
-public class BgenVariantData {
+public class BgenVariantTrioData {
 
     /**
      * Array of the samples included.
@@ -99,7 +99,7 @@ public class BgenVariantData {
      * @param defaultMotherPloidy The default ploidy for mothers.
      * @param defaultFatherPloidy The default ploidy for fathers.
      */
-    public BgenVariantData(
+    public BgenVariantTrioData(
             String[] sampleIds,
             VariantInformation variantInformation,
             MappedByteBuffer dataBlockContent,

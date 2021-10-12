@@ -15,7 +15,7 @@ import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
-import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
+import no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.covariates.CovariatesHandler;
 import no.uib.triogen.model.family.ChildToParentMap;
@@ -255,7 +255,7 @@ public class VariantDataExtractor {
 
                 if (variantInformation.alleles.length > 1 && (variantList.contains(variantInformation.id) || variantList.contains(variantInformation.rsid))) {
 
-                    BgenVariantData variantData = bgenFileReader.getVariantData(variantIndex);
+                    BgenVariantTrioData variantData = bgenFileReader.getVariantData(variantIndex);
                     variantData.parse(
                             childToParentMap,
                             decompressor

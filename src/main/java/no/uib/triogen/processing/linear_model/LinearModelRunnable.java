@@ -15,7 +15,7 @@ import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
-import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
+import no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.covariates.CovariatesHandler;
 import no.uib.triogen.model.family.ChildToParentMap;
@@ -174,7 +174,7 @@ public class LinearModelRunnable implements Runnable {
 
                     if (variantList == null || variantList.include(variantInformation.contig, variantInformation.position)) {
 
-                        BgenVariantData variantData = bgenFileReader.getVariantData(variantIndex);
+                        BgenVariantTrioData variantData = bgenFileReader.getVariantData(variantIndex);
                         variantData.parse(
                                 childToParentMap,
                                 decompressor
@@ -249,7 +249,7 @@ public class LinearModelRunnable implements Runnable {
     private void runLinearModel(
             int variantIndex,
             int[] testedAlleleIndexes,
-            BgenVariantData variantData,
+            BgenVariantTrioData variantData,
             String phenoName,
             double[] phenotypes
     ) {

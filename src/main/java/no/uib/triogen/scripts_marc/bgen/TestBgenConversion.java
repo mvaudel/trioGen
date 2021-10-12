@@ -4,7 +4,7 @@ import java.io.File;
 import no.uib.triogen.io.conversion.VcfToBgenConverter;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
-import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
+import no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData;
 import no.uib.triogen.model.family.ChildToParentMap;
 
 /**

@@ -1,18 +1,14 @@
 package no.uib.triogen.io.genotypes.bgen.reader;
 
+import no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
-import no.uib.triogen.io.IoUtils;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.model.genome.VariantInformation;
-import no.uib.triogen.model.trio_genotypes.VariantList;
 
 /**
  * Reader for a Bgen file.
@@ -137,7 +133,7 @@ public class BgenFileReader implements AutoCloseable {
      *
      * @return The variant data for the given variant.
      */
-    public BgenVariantData getVariantData(int i) {
+    public BgenVariantTrioData getVariantData(int i) {
 
         VariantInformation variantInformation = getVariantInformation(i);
         MappedByteBuffer buffer = getDataBlock(i);
@@ -149,7 +145,7 @@ public class BgenFileReader implements AutoCloseable {
 
         }
 
-        return new BgenVariantData(
+        return new BgenVariantTrioData(
                 bgenIndex.sampleIds,
                 variantInformation,
                 buffer,

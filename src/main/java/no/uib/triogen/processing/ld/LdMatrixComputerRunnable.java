@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
-import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
+import no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData;
 import no.uib.triogen.io.ld.LdMatrixWriter;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
@@ -203,7 +203,7 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                         if (pHomA == null || allelesA == null) {
 
-                            BgenVariantData variantData = bgenFileReader.getVariantData(indexA);
+                            BgenVariantTrioData variantData = bgenFileReader.getVariantData(indexA);
                             variantData.parse(
                                     childToParentMap,
                                     decompressor
@@ -284,7 +284,7 @@ public class LdMatrixComputerRunnable implements Runnable {
 
                                 if (pHomB == null || allelesB == null) {
 
-                                    BgenVariantData variantData = bgenFileReader.getVariantData(indexB);
+                                    BgenVariantTrioData variantData = bgenFileReader.getVariantData(indexB);
                                     variantData.parse(
                                             childToParentMap,
                                             decompressor
@@ -425,7 +425,7 @@ public class LdMatrixComputerRunnable implements Runnable {
      * passing the allele frequency.
      */
     private boolean hasAlleles(
-            BgenVariantData variantData
+            BgenVariantTrioData variantData
     ) {
 
         int nAlleles = 0;

@@ -11,7 +11,7 @@ import java.util.Map;
 import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
-import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
+import no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData;
 import no.uib.triogen.log.SimpleCliLogger;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.genome.VariantInformation;
@@ -376,7 +376,7 @@ public class PrsComputer {
         // Parse genotypes
         ZstdDecompressor decompressor = new ZstdDecompressor();
 
-        BgenVariantData variantData = bgenFileReader.getVariantData(bgenVariantIndex);
+        BgenVariantTrioData variantData = bgenFileReader.getVariantData(bgenVariantIndex);
         variantData.parse(
                 childToParentMap,
                 decompressor

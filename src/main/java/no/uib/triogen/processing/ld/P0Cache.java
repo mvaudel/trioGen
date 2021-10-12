@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
-import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
+import no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.genome.VariantInformation;
 import no.uib.triogen.utils.SimpleSemaphore;
@@ -191,7 +191,7 @@ public class P0Cache {
      * @param childToParentMap The child to parent map.
      */
     public void register(
-            BgenVariantData variantData,
+            BgenVariantTrioData variantData,
             ChildToParentMap childToParentMap
     ) {
 

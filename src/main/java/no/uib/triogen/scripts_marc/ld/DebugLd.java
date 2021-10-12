@@ -10,7 +10,7 @@ import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.iterator.VariantIterator;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
-import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
+import no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData;
 import no.uib.triogen.io.ld.LdMatrixReader;
 import no.uib.triogen.model.family.ChildToParentMap;
 import no.uib.triogen.model.genome.VariantInformation;
@@ -138,7 +138,7 @@ public class DebugLd {
 
                 if (pHomA == null) {
 
-                    BgenVariantData variantData = bgenFileReader.getVariantData(indexA);
+                    BgenVariantTrioData variantData = bgenFileReader.getVariantData(indexA);
                     variantData.parse(
                             childToParentMap,
                             decompressor
@@ -179,7 +179,7 @@ public class DebugLd {
 
                         if (pHomB == null) {
 
-                            BgenVariantData variantData = bgenFileReader.getVariantData(indexB);
+                            BgenVariantTrioData variantData = bgenFileReader.getVariantData(indexB);
                             variantData.parse(
                                     childToParentMap,
                                     decompressor
@@ -319,7 +319,7 @@ public class DebugLd {
      * passing the allele frequency.
      */
     private static boolean hasAlleles(
-            BgenVariantData variantData
+            BgenVariantTrioData variantData
     ) {
 
         int nAlleles = 0;

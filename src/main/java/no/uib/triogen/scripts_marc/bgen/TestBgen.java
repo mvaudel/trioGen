@@ -6,7 +6,7 @@ import java.time.Instant;
 import no.uib.triogen.io.genotypes.InheritanceUtils;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.io.genotypes.bgen.reader.BgenFileReader;
-import no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData;
+import no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData;
 import no.uib.triogen.model.family.ChildToParentMap;
 
 /**
@@ -55,7 +55,7 @@ public class TestBgen {
 
                 }
 
-                BgenVariantData variantData = reader.getVariantData(i);
+                BgenVariantTrioData variantData = reader.getVariantData(i);
 
                 try {
 
