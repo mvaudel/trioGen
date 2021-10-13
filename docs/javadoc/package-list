@@ -26,6 +26,7 @@ no.uib.triogen.io.genotypes.bgen
 no.uib.triogen.io.genotypes.bgen.index
 no.uib.triogen.io.genotypes.bgen.iterator
 no.uib.triogen.io.genotypes.bgen.reader
+no.uib.triogen.io.genotypes.bgen.variant_data
 no.uib.triogen.io.genotypes.bgen.writer
 no.uib.triogen.io.genotypes.vcf.iterators
 no.uib.triogen.io.genotypes.vcf.reader
@@ -57,7 +58,9 @@ no.uib.triogen.scripts_marc.ld
 no.uib.triogen.scripts_marc.ld_hub
 no.uib.triogen.scripts_marc.lm
 no.uib.triogen.scripts_marc.metal
+no.uib.triogen.scripts_marc.misc
 no.uib.triogen.scripts_marc.mobarun
+no.uib.triogen.scripts_marc.phasing
 no.uib.triogen.scripts_marc.prs
 no.uib.triogen.scripts_marc.vcf
 no.uib.triogen.scripts_marc.wlm

@@ -83,7 +83,7 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><a href="#no.uib.triogen.io.genotypes.bgen.reader">no.uib.triogen.io.genotypes.bgen.reader</a></td>
+<td class="colFirst"><a href="#no.uib.triogen.io.genotypes.bgen.variant_data">no.uib.triogen.io.genotypes.bgen.variant_data</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -131,12 +131,12 @@
 </li>
 <li class="blockList">
 <ul class="blockList">
-<li class="blockList"><a name="no.uib.triogen.io.genotypes.bgen.reader">
+<li class="blockList"><a name="no.uib.triogen.io.genotypes.bgen.variant_data">
 <!--   -->
 </a>
-<h3>Uses of <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a> in <a href="../../../../../../no/uib/triogen/io/genotypes/bgen/reader/package-summary.html">no.uib.triogen.io.genotypes.bgen.reader</a></h3>
+<h3>Uses of <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a> in <a href="../../../../../../no/uib/triogen/io/genotypes/bgen/variant_data/package-summary.html">no.uib.triogen.io.genotypes.bgen.variant_data</a></h3>
 <table class="useSummary" border="0" cellpadding="3" cellspacing="0" summary="Use table, listing methods, and an explanation">
-<caption><span>Methods in <a href="../../../../../../no/uib/triogen/io/genotypes/bgen/reader/package-summary.html">no.uib.triogen.io.genotypes.bgen.reader</a> with parameters of type <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a></span><span class="tabEnd">&nbsp;</span></caption>
+<caption><span>Methods in <a href="../../../../../../no/uib/triogen/io/genotypes/bgen/variant_data/package-summary.html">no.uib.triogen.io.genotypes.bgen.variant_data</a> with parameters of type <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a></span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -144,7 +144,7 @@
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><span class="typeNameLabel">BgenVariantData.</span><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#parse-no.uib.triogen.model.family.ChildToParentMap-io.airlift.compress.zstd.ZstdDecompressor-">parse</a></span>(<a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
+<td class="colLast"><span class="typeNameLabel">BgenVariantTrioData.</span><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#parse-no.uib.triogen.model.family.ChildToParentMap-io.airlift.compress.zstd.ZstdDecompressor-">parse</a></span>(<a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
      io.airlift.compress.zstd.ZstdDecompressor&nbsp;decompressor)</code>
 <div class="block">Parses the variant data.</div>
 </td>
@@ -210,7 +210,7 @@
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code>static double</code></td>
-<td class="colLast"><span class="typeNameLabel">MendelianErrorEstimator.</span><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/model/mendelian_error/MendelianErrorEstimator.html#estimateMendelianErrorPrevalence-no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData-no.uib.triogen.model.family.ChildToParentMap-int-">estimateMendelianErrorPrevalence</a></span>(<a href="../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a>&nbsp;variantData,
+<td class="colLast"><span class="typeNameLabel">MendelianErrorEstimator.</span><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/model/mendelian_error/MendelianErrorEstimator.html#estimateMendelianErrorPrevalence-no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData-no.uib.triogen.model.family.ChildToParentMap-int-">estimateMendelianErrorPrevalence</a></span>(<a href="../../../../../../no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a>&nbsp;variantData,
                                 <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap,
                                 int&nbsp;testedAlleleIndex)</code>
 <div class="block">Estimates the prevalence of Mendelian errors by comparing the number of
@@ -235,7 +235,7 @@
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><span class="typeNameLabel">P0Cache.</span><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/ld/P0Cache.html#register-no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData-no.uib.triogen.model.family.ChildToParentMap-">register</a></span>(<a href="../../../../../../no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a>&nbsp;variantData,
+<td class="colLast"><span class="typeNameLabel">P0Cache.</span><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/ld/P0Cache.html#register-no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData-no.uib.triogen.model.family.ChildToParentMap-">register</a></span>(<a href="../../../../../../no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a>&nbsp;variantData,
         <a href="../../../../../../no/uib/triogen/model/family/ChildToParentMap.html" title="class in no.uib.triogen.model.family">ChildToParentMap</a>&nbsp;childToParentMap)</code>
 <div class="block">Saves the information needed for LD calculation in cache.</div>
 </td>

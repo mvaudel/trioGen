@@ -255,11 +255,11 @@
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/BgenUtils.html#BgenUtils--">BgenUtils()</a></span> - Constructor for class no.uib.triogen.io.genotypes.bgen.<a href="no/uib/triogen/io/genotypes/bgen/BgenUtils.html" title="class in no.uib.triogen.io.genotypes.bgen">BgenUtils</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader"><span class="typeNameLink">BgenVariantData</span></a> - Class in <a href="no/uib/triogen/io/genotypes/bgen/reader/package-summary.html">no.uib.triogen.io.genotypes.bgen.reader</a></dt>
+<dt><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data"><span class="typeNameLink">BgenVariantTrioData</span></a> - Class in <a href="no/uib/triogen/io/genotypes/bgen/variant_data/package-summary.html">no.uib.triogen.io.genotypes.bgen.variant_data</a></dt>
 <dd>
-<div class="block">Genotypes provider based on a bgen file.</div>
+<div class="block">Trio-based genotypes provider based on a bgen file.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#BgenVariantData-java.lang.String:A-no.uib.triogen.model.genome.VariantInformation-java.nio.MappedByteBuffer-int-int-java.util.HashMap-int-int-">BgenVariantData(String[], VariantInformation, MappedByteBuffer, int, int, HashMap&lt;Integer, char[]&gt;, int, int)</a></span> - Constructor for class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#BgenVariantTrioData-java.lang.String:A-no.uib.triogen.model.genome.VariantInformation-java.nio.MappedByteBuffer-int-int-java.util.HashMap-int-int-">BgenVariantTrioData(String[], VariantInformation, MappedByteBuffer, int, int, HashMap&lt;Integer, char[]&gt;, int, int)</a></span> - Constructor for class no.uib.triogen.io.genotypes.bgen.variant_data.<a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a></dt>
 <dd>
 <div class="block">Constructor.</div>
 </dd>
@@ -499,7 +499,7 @@
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/scripts_marc/ld/ComputeTargetedLD.html#ComputeTargetedLD--">ComputeTargetedLD()</a></span> - Constructor for class no.uib.triogen.scripts_marc.ld.<a href="no/uib/triogen/scripts_marc/ld/ComputeTargetedLD.html" title="class in no.uib.triogen.scripts_marc.ld">ComputeTargetedLD</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#contains-java.lang.String-">contains(String)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#contains-java.lang.String-">contains(String)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.variant_data.<a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a></dt>
 <dd>
 <div class="block">Returns a boolean indicating whether genotyping information is available
  for the given sample.</div>
@@ -808,7 +808,7 @@
 <dd>
 <div class="block">The equation of the model.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/model/mendelian_error/MendelianErrorEstimator.html#estimateMendelianErrorPrevalence-no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData-no.uib.triogen.model.family.ChildToParentMap-int-">estimateMendelianErrorPrevalence(BgenVariantData, ChildToParentMap, int)</a></span> - Static method in class no.uib.triogen.model.mendelian_error.<a href="no/uib/triogen/model/mendelian_error/MendelianErrorEstimator.html" title="class in no.uib.triogen.model.mendelian_error">MendelianErrorEstimator</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/mendelian_error/MendelianErrorEstimator.html#estimateMendelianErrorPrevalence-no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData-no.uib.triogen.model.family.ChildToParentMap-int-">estimateMendelianErrorPrevalence(BgenVariantTrioData, ChildToParentMap, int)</a></span> - Static method in class no.uib.triogen.model.mendelian_error.<a href="no/uib/triogen/model/mendelian_error/MendelianErrorEstimator.html" title="class in no.uib.triogen.model.mendelian_error">MendelianErrorEstimator</a></dt>
 <dd>
 <div class="block">Estimates the prevalence of Mendelian errors by comparing the number of
  001*, *100, 110*, *011 resulting in +2 or -1 tested alleles for the
@@ -850,6 +850,13 @@
 <div class="block">Extracts specific lines of a file.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/scripts_marc/ld/ExtractLd.html#ExtractLd--">ExtractLd()</a></span> - Constructor for class no.uib.triogen.scripts_marc.ld.<a href="no/uib/triogen/scripts_marc/ld/ExtractLd.html" title="class in no.uib.triogen.scripts_marc.ld">ExtractLd</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="no/uib/triogen/scripts_marc/misc/ExtractNs.html" title="class in no.uib.triogen.scripts_marc.misc"><span class="typeNameLink">ExtractNs</span></a> - Class in <a href="no/uib/triogen/scripts_marc/misc/package-summary.html">no.uib.triogen.scripts_marc.misc</a></dt>
+<dd>
+<div class="block">This scripts extracts the number of samples with given genotypes for each
+ variant.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/scripts_marc/misc/ExtractNs.html#ExtractNs--">ExtractNs()</a></span> - Constructor for class no.uib.triogen.scripts_marc.misc.<a href="no/uib/triogen/scripts_marc/misc/ExtractNs.html" title="class in no.uib.triogen.scripts_marc.misc">ExtractNs</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="no/uib/triogen/cmd/extract/ExtractOptions.html" title="enum in no.uib.triogen.cmd.extract"><span class="typeNameLink">ExtractOptions</span></a> - Enum in <a href="no/uib/triogen/cmd/extract/package-summary.html">no.uib.triogen.cmd.extract</a></dt>
 <dd>
@@ -960,11 +967,11 @@
 <dd>
 <div class="block">Subtracts the contribution of the covariates to the columns in x.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getAlleleFrequency-int-">getAlleleFrequency(int)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#getAlleleFrequency-int-">getAlleleFrequency(int)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.variant_data.<a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a></dt>
 <dd>
 <div class="block">Returns the estimate of the frequency of the given allele.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getAlleleFrequency--">getAlleleFrequency()</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#getAlleleFrequency--">getAlleleFrequency()</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.variant_data.<a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a></dt>
 <dd>
 <div class="block">Returns the allele frequencies.</div>
 </dd>
@@ -1067,7 +1074,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/reader/VcfVariant.html#getGenotypingProbabilitiesAsString-java.lang.String-java.lang.String-">getGenotypingProbabilitiesAsString(String, String)</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.reader.<a href="no/uib/triogen/io/genotypes/vcf/reader/VcfVariant.html" title="class in no.uib.triogen.io.genotypes.vcf.reader">VcfVariant</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getHaplotypes-java.lang.String-java.lang.String-java.lang.String-int-">getHaplotypes(String, String, String, int)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#getHaplotypes-java.lang.String-java.lang.String-java.lang.String-int-">getHaplotypes(String, String, String, int)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.variant_data.<a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a></dt>
 <dd>
 <div class="block">Returns the haplotypes in an array: {motherNonTransmitted,
  motherTransmitted, fatherTransmitted, fatherNonTransmitted}.Null if the
@@ -1087,6 +1094,8 @@
 <dd>
 <div class="block">Returns the identifier for TrioGen-generated files.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/scripts_marc/misc/GetTargetHits.html#getIds-java.io.File-">getIds(File)</a></span> - Static method in class no.uib.triogen.scripts_marc.misc.<a href="no/uib/triogen/scripts_marc/misc/GetTargetHits.html" title="class in no.uib.triogen.scripts_marc.misc">GetTargetHits</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html#getIndex-java.lang.String-java.lang.String-">getIndex(String, String)</a></span> - Method in class no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/VariantIndex.html" title="class in no.uib.triogen.model.trio_genotypes">VariantIndex</a></dt>
 <dd>
 <div class="block">Returns the index for the given variant, null if not found.</div>
@@ -1131,7 +1140,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/vcf/reader/VcfVariant.html#getNAltGenotypingProbabilities-java.lang.String-">getNAltGenotypingProbabilities(String)</a></span> - Method in class no.uib.triogen.io.genotypes.vcf.reader.<a href="no/uib/triogen/io/genotypes/vcf/reader/VcfVariant.html" title="class in no.uib.triogen.io.genotypes.vcf.reader">VcfVariant</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getnChildrenGenotyped--">getnChildrenGenotyped()</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#getnChildrenGenotyped--">getnChildrenGenotyped()</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.variant_data.<a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a></dt>
 <dd>
 <div class="block">Returns the number of genotyped children.</div>
 </dd>
@@ -1199,7 +1208,7 @@
 <dd>
 <div class="block">Returns the options as a string.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getOrderedAlleles--">getOrderedAlleles()</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#getOrderedAlleles--">getOrderedAlleles()</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.variant_data.<a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a></dt>
 <dd>
 <div class="block">Returns the indexes of the alleles ordered by decreasing frequency.</div>
 </dd>
@@ -1227,7 +1236,7 @@
 <dd>
 <div class="block">Returns the probability of being homozygous for the given variant.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getPloidy-java.lang.String-">getPloidy(String)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#getPloidy-java.lang.String-">getPloidy(String)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.variant_data.<a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a></dt>
 <dd>
 <div class="block">Returns the ploidy for the given sample.</div>
 </dd>
@@ -1239,7 +1248,7 @@
 <dd>
 <div class="block">Returns the powers of two for probability encoding in an array.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getProbability-java.lang.String-int-int-">getProbability(String, int, int)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#getProbability-java.lang.String-int-int-">getProbability(String, int, int)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.variant_data.<a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a></dt>
 <dd>
 <div class="block">Returns the probability for the given allele in the given contig and
  sample.</div>
@@ -1278,11 +1287,15 @@
 <dd>
 <div class="block">Returns the url of the server to use for the given build.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getSummedProbability-java.lang.String-int-">getSummedProbability(String, int)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#getSummedProbability-java.lang.String-int-">getSummedProbability(String, int)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.variant_data.<a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a></dt>
 <dd>
 <div class="block">Returns the sum of probabilities for the given allele and sample over all
  contigs.</div>
 </dd>
+<dt><a href="no/uib/triogen/scripts_marc/misc/GetTargetHits.html" title="class in no.uib.triogen.scripts_marc.misc"><span class="typeNameLink">GetTargetHits</span></a> - Class in <a href="no/uib/triogen/scripts_marc/misc/package-summary.html">no.uib.triogen.scripts_marc.misc</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/scripts_marc/misc/GetTargetHits.html#GetTargetHits--">GetTargetHits()</a></span> - Constructor for class no.uib.triogen.scripts_marc.misc.<a href="no/uib/triogen/scripts_marc/misc/GetTargetHits.html" title="class in no.uib.triogen.scripts_marc.misc">GetTargetHits</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/model/ld/R2.html#getVariantBId--">getVariantBId()</a></span> - Method in class no.uib.triogen.model.ld.<a href="no/uib/triogen/model/ld/R2.html" title="class in no.uib.triogen.model.ld">R2</a></dt>
 <dd>
 <div class="block">Returns the id of variant B.</div>
@@ -1313,7 +1326,7 @@
 <dd>
 <div class="block">Returns information on the given variant.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#getVariantInformation--">getVariantInformation()</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#getVariantInformation--">getVariantInformation()</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.variant_data.<a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a></dt>
 <dd>
 <div class="block">Returns information on the variant.</div>
 </dd>
@@ -1411,7 +1424,7 @@
 <dd>
 <div class="block">Boolean indicating whether the option has an argument.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/Model.html#hasData-no.uib.triogen.model.trio_genotypes.Model-java.lang.String-java.lang.String-java.lang.String-no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData-">hasData(Model, String, String, String, BgenVariantData)</a></span> - Static method in enum no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/model/trio_genotypes/Model.html#hasData-no.uib.triogen.model.trio_genotypes.Model-java.lang.String-java.lang.String-java.lang.String-no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData-">hasData(Model, String, String, String, BgenVariantTrioData)</a></span> - Static method in enum no.uib.triogen.model.trio_genotypes.<a href="no/uib/triogen/model/trio_genotypes/Model.html" title="enum in no.uib.triogen.model.trio_genotypes">Model</a></dt>
 <dd>
 <div class="block">Indicates whether there is enough data to compute the given model.</div>
 </dd>
@@ -1526,7 +1539,7 @@
 <dd>
 <div class="block">Returns a boolean indicating whether the iteration is finished, ie there is no next variant.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#isSwappedChildrenAlleles--">isSwappedChildrenAlleles()</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#isSwappedChildrenAlleles--">isSwappedChildrenAlleles()</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.variant_data.<a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a></dt>
 <dd>
 <div class="block">Returns a boolean indicating whether the given allele should be swapped
  in children.</div>
@@ -1956,6 +1969,14 @@
 <dd>
 <div class="block">Main method.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/scripts_marc/misc/ExtractNs.html#main-java.lang.String:A-">main(String[])</a></span> - Static method in class no.uib.triogen.scripts_marc.misc.<a href="no/uib/triogen/scripts_marc/misc/ExtractNs.html" title="class in no.uib.triogen.scripts_marc.misc">ExtractNs</a></dt>
+<dd>
+<div class="block">Main method.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/scripts_marc/misc/GetTargetHits.html#main-java.lang.String:A-">main(String[])</a></span> - Static method in class no.uib.triogen.scripts_marc.misc.<a href="no/uib/triogen/scripts_marc/misc/GetTargetHits.html" title="class in no.uib.triogen.scripts_marc.misc">GetTargetHits</a></dt>
+<dd>
+<div class="block">Main method.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/scripts_marc/mobarun/BoltCleanUp.html#main-java.lang.String:A-">main(String[])</a></span> - Static method in class no.uib.triogen.scripts_marc.mobarun.<a href="no/uib/triogen/scripts_marc/mobarun/BoltCleanUp.html" title="class in no.uib.triogen.scripts_marc.mobarun">BoltCleanUp</a></dt>
 <dd>
 <div class="block">Main method.</div>
@@ -1965,6 +1986,10 @@
 <div class="block">Main method.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="no/uib/triogen/scripts_marc/mobarun/TrioGenToTargetFile.html#main-java.lang.String:A-">main(String[])</a></span> - Static method in class no.uib.triogen.scripts_marc.mobarun.<a href="no/uib/triogen/scripts_marc/mobarun/TrioGenToTargetFile.html" title="class in no.uib.triogen.scripts_marc.mobarun">TrioGenToTargetFile</a></dt>
+<dd>
+<div class="block">Main method.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/scripts_marc/phasing/ReformatGeneticMaps.html#main-java.lang.String:A-">main(String[])</a></span> - Static method in class no.uib.triogen.scripts_marc.phasing.<a href="no/uib/triogen/scripts_marc/phasing/ReformatGeneticMaps.html" title="class in no.uib.triogen.scripts_marc.phasing">ReformatGeneticMaps</a></dt>
 <dd>
 <div class="block">Main method.</div>
 </dd>
@@ -2287,6 +2312,8 @@
 <dd>&nbsp;</dd>
 <dt><a href="no/uib/triogen/io/genotypes/bgen/reader/package-summary.html">no.uib.triogen.io.genotypes.bgen.reader</a> - package no.uib.triogen.io.genotypes.bgen.reader</dt>
 <dd>&nbsp;</dd>
+<dt><a href="no/uib/triogen/io/genotypes/bgen/variant_data/package-summary.html">no.uib.triogen.io.genotypes.bgen.variant_data</a> - package no.uib.triogen.io.genotypes.bgen.variant_data</dt>
+<dd>&nbsp;</dd>
 <dt><a href="no/uib/triogen/io/genotypes/bgen/writer/package-summary.html">no.uib.triogen.io.genotypes.bgen.writer</a> - package no.uib.triogen.io.genotypes.bgen.writer</dt>
 <dd>&nbsp;</dd>
 <dt><a href="no/uib/triogen/io/genotypes/vcf/iterators/package-summary.html">no.uib.triogen.io.genotypes.vcf.iterators</a> - package no.uib.triogen.io.genotypes.vcf.iterators</dt>
@@ -2349,7 +2376,11 @@
 <dd>&nbsp;</dd>
 <dt><a href="no/uib/triogen/scripts_marc/metal/package-summary.html">no.uib.triogen.scripts_marc.metal</a> - package no.uib.triogen.scripts_marc.metal</dt>
 <dd>&nbsp;</dd>
+<dt><a href="no/uib/triogen/scripts_marc/misc/package-summary.html">no.uib.triogen.scripts_marc.misc</a> - package no.uib.triogen.scripts_marc.misc</dt>
+<dd>&nbsp;</dd>
 <dt><a href="no/uib/triogen/scripts_marc/mobarun/package-summary.html">no.uib.triogen.scripts_marc.mobarun</a> - package no.uib.triogen.scripts_marc.mobarun</dt>
+<dd>&nbsp;</dd>
+<dt><a href="no/uib/triogen/scripts_marc/phasing/package-summary.html">no.uib.triogen.scripts_marc.phasing</a> - package no.uib.triogen.scripts_marc.phasing</dt>
 <dd>&nbsp;</dd>
 <dt><a href="no/uib/triogen/scripts_marc/prs/package-summary.html">no.uib.triogen.scripts_marc.prs</a> - package no.uib.triogen.scripts_marc.prs</dt>
 <dd>&nbsp;</dd>
@@ -2479,7 +2510,7 @@
 <dd>
 <div class="block">The models this one is nested in.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#parse-no.uib.triogen.model.family.ChildToParentMap-io.airlift.compress.zstd.ZstdDecompressor-">parse(ChildToParentMap, ZstdDecompressor)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#parse-no.uib.triogen.model.family.ChildToParentMap-io.airlift.compress.zstd.ZstdDecompressor-">parse(ChildToParentMap, ZstdDecompressor)</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.variant_data.<a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a></dt>
 <dd>
 <div class="block">Parses the variant data.</div>
 </dd>
@@ -2777,7 +2808,14 @@
 <dd>
 <div class="block">Name of the reference allele column in the training file.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/ld/P0Cache.html#register-no.uib.triogen.io.genotypes.bgen.reader.BgenVariantData-no.uib.triogen.model.family.ChildToParentMap-">register(BgenVariantData, ChildToParentMap)</a></span> - Method in class no.uib.triogen.processing.ld.<a href="no/uib/triogen/processing/ld/P0Cache.html" title="class in no.uib.triogen.processing.ld">P0Cache</a></dt>
+<dt><a href="no/uib/triogen/scripts_marc/phasing/ReformatGeneticMaps.html" title="class in no.uib.triogen.scripts_marc.phasing"><span class="typeNameLink">ReformatGeneticMaps</span></a> - Class in <a href="no/uib/triogen/scripts_marc/phasing/package-summary.html">no.uib.triogen.scripts_marc.phasing</a></dt>
+<dd>
+<div class="block">Reformats the hapmap_recombination_2011-01_phaseII_B37 genetic maps for
+ shapeit.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/scripts_marc/phasing/ReformatGeneticMaps.html#ReformatGeneticMaps--">ReformatGeneticMaps()</a></span> - Constructor for class no.uib.triogen.scripts_marc.phasing.<a href="no/uib/triogen/scripts_marc/phasing/ReformatGeneticMaps.html" title="class in no.uib.triogen.scripts_marc.phasing">ReformatGeneticMaps</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/processing/ld/P0Cache.html#register-no.uib.triogen.io.genotypes.bgen.variant_data.BgenVariantTrioData-no.uib.triogen.model.family.ChildToParentMap-">register(BgenVariantTrioData, ChildToParentMap)</a></span> - Method in class no.uib.triogen.processing.ld.<a href="no/uib/triogen/processing/ld/P0Cache.html" title="class in no.uib.triogen.processing.ld">P0Cache</a></dt>
 <dd>
 <div class="block">Saves the information needed for LD calculation in cache.</div>
 </dd>
@@ -3074,7 +3112,7 @@
 <dd>
 <div class="block">Swap mother and father.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html#swapChildrenAlleles--">swapChildrenAlleles()</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.reader.<a href="no/uib/triogen/io/genotypes/bgen/reader/BgenVariantData.html" title="class in no.uib.triogen.io.genotypes.bgen.reader">BgenVariantData</a></dt>
+<dt><span class="memberNameLink"><a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html#swapChildrenAlleles--">swapChildrenAlleles()</a></span> - Method in class no.uib.triogen.io.genotypes.bgen.variant_data.<a href="no/uib/triogen/io/genotypes/bgen/variant_data/BgenVariantTrioData.html" title="class in no.uib.triogen.io.genotypes.bgen.variant_data">BgenVariantTrioData</a></dt>
 <dd>
 <div class="block">Indicate that children alleles should be swapped.</div>
 </dd>
