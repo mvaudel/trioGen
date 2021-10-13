@@ -20,8 +20,8 @@ public class ReformatGeneticMaps {
      */
     public static void main(String[] args) {
 
-        String hapmapGenericPath = "~/resources/hapmap_recombination_2011-01_phaseII_B37/genetic_map_GRCh37_chr{chr}.txt"; // QC node
-        String outputGenericPath = "~/resources/hapmap_recombination_2011-01_phaseII_B37/genetic_map_GRCh37_chr{chr}_shapeit.gz"; // QC node
+        String hapmapGenericPath = "/home/marcvaue/resources/hapmap_recombination_2011-01_phaseII_B37/genetic_map_GRCh37_chr{chr}.txt"; // QC node
+        String outputGenericPath = "/home/marcvaue/resources/hapmap_recombination_2011-01_phaseII_B37/genetic_map_GRCh37_chr{chr}_shapeit.gz"; // QC node
 
         for (String chromosme : getChromosomes()) {
 
