@@ -63,8 +63,8 @@ public class ReformatGeneticMaps {
         }
 
         chromosomes[22] = "X";
-        chromosomes[23] = "chrX_par1";
-        chromosomes[24] = "chrX_par2";
+        chromosomes[23] = "X_par1";
+        chromosomes[24] = "X_par2";
 
         return chromosomes;
 
