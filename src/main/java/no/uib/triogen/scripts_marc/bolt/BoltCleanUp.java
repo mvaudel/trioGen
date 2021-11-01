@@ -1,9 +1,7 @@
 package no.uib.triogen.scripts_marc.bolt;
 
-import no.uib.triogen.scripts_marc.mobarun.*;
 import java.io.File;
 import java.time.Instant;
-import java.util.ArrayList;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 
