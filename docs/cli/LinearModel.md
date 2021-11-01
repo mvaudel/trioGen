@@ -80,7 +80,7 @@ As detained in the [Commons Math library](http://commons.apache.org/proper/commo
 
 ### Output
 
-The output file contains the results of the linear regression, one line per phenotype per variant. The output is gz compressed, with gz blocks per line, and a file containing the index of each line is written next to it '*.index.gz' file. The files can be read by standard libraries, however, they tend to be large. If you need to extract specific lines or columns, please consider the [_Extract_](Extract.md) command line.
+The output file contains the results of the linear regression, one line per phenotype per variant. The output is gz compressed, with gz blocks per line, and a file containing the index of each line is written next to it '*.index.gz' file. The files can be read by standard libraries, however, they tend to be large. If you need to extract specific lines or columns, please consider the [_Extract_](Extract.md) command line. Note that the compression by line induces a loss of compression efficiency resulting in files ~30% larger. If it is a problem, please open an [issue](https://github.com/mvaudel/trioGen/issues) and we will consider other formats.
 
 - Each line starts with information on the phenotype, variant, and allele distribution among the trios included in the regression.
 
