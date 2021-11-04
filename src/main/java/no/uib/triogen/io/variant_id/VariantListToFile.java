@@ -177,7 +177,7 @@ public class VariantListToFile {
 
                                             }
 
-                                            int distance = Math.abs(variantCoordinates.position - position);
+                                            int distance = Math.abs(variantCoordinates.position - bgenPosition);
 
                                             ArrayList<ProxyCoordinates> proxiesAtDistance = r2Map.get(distance);
 
