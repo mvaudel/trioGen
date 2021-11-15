@@ -104,6 +104,8 @@ public class VariantListToFile {
 
                         } else {
 
+                            boolean found = false;
+
                             for (VariantCoordinates variantCoordinates : variantCoordinatesArray) {
 
                                 String chr = variantCoordinates.contig;
@@ -127,11 +129,12 @@ public class VariantListToFile {
                                     throw new IllegalArgumentException("Bgen file not found for chromosome " + chr + ".");
 
                                 }
-                                logger.logMessage("Parsing bgen file for chromosome " + chr + ".");
 
                                 HashMap<String, Integer> rsIdMap = rsIdCoordinatesMap.get(chr);
 
                                 if (rsIdMap == null) {
+
+                                    logger.logMessage("Parsing bgen file for chromosome " + chr + ".");
 
                                     BgenIndex bgenIndex = BgenIndex.getBgenIndex(bgenFile);
                                     rsIdMap = new HashMap<>(bgenIndex.variantIdArray.length);
@@ -160,9 +163,16 @@ public class VariantListToFile {
 
                                     nFound++;
 
-                                } else {
+                                    found = true;
 
-                                    ArrayList<ProxyCoordinates> ldLinkProxies = ldLinkToken != null ? new ArrayList<>(0) : LDproxy.getProxy(rsId, ldLinkPopulation, "r2", "500000", ldLinkToken);
+                                }
+                            }
+
+                            if (!found) {
+
+                                for (VariantCoordinates variantCoordinates : variantCoordinatesArray) {
+
+                                    ArrayList<ProxyCoordinates> ldLinkProxies = ldLinkToken == null ? new ArrayList<>(0) : LDproxy.getProxy(rsId, ldLinkPopulation, "r2", "500000", ldLinkToken);
 
                                     ArrayList<ProxyCoordinates> ensemblProxies = EnsemblAPI.getProxies(
                                             rsId,
@@ -170,6 +180,8 @@ public class VariantListToFile {
                                             minR2,
                                             buildNumber
                                     );
+
+                                    HashMap<String, Integer> rsIdMap = rsIdCoordinatesMap.get(variantCoordinates.contig);
 
                                     TreeMap<Double, TreeMap<Integer, HashMap<String, ProxyCoordinates>>> proxyMap = getProxyMap(variantCoordinates, ldLinkProxies, ensemblProxies, rsIdMap);
 
@@ -192,10 +204,10 @@ public class VariantListToFile {
 
                                         String description = bestProxy.alleleMapping != null
                                                 ? String.join("",
-                                                        "Proxy for ", rsId, " (", ensemblPopulation, " r2=", Double.toString(bestProxy.r2), " alleles=", bestProxy.alleleMapping, ")"
+                                                        "Proxy for ", rsId, " (LDproxy ", ldLinkPopulation, " r2=", Double.toString(bestProxy.r2), " alleles=", bestProxy.alleleMapping, ")"
                                                 )
                                                 : String.join("",
-                                                        "Proxy for ", rsId, " (", ensemblPopulation, " r2=", Double.toString(bestProxy.r2), ")"
+                                                        "Proxy for ", rsId, " (Ensembl ", ensemblPopulation, " r2=", Double.toString(bestProxy.r2), ")"
                                                 );
 
                                         targetWriter.writeLine(
@@ -210,13 +222,33 @@ public class VariantListToFile {
 
                                         nFound++;
 
-                                    } else {
-
-                                        missingWriter.writeLine(rsId);
-
-                                        logger.logMessage("No proxy found for " + rsId + " (chr " + chr + ", pos " + position + ").");
+                                        found = true;
 
                                     }
+                                }
+
+                                if (!found) {
+
+                                    missingWriter.writeLine(rsId);
+
+                                    StringBuilder coordinates = new StringBuilder();
+
+                                    for (VariantCoordinates variantCoordinates : variantCoordinatesArray) {
+
+                                        if (coordinates.length() > 0) {
+
+                                            coordinates.append("; ");
+
+                                        }
+
+                                        coordinates.append("chr ").append(variantCoordinates.contig).append(", pos ").append(variantCoordinates.position);
+
+                                    }
+
+                                    logger.logMessage("No proxy found for " + rsId + " (" + coordinates.toString() + ").");
+
+                                    missingWriter.writeLine(rsId);
+
                                 }
                             }
                         }
