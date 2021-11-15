@@ -1,7 +1,7 @@
 package no.uib.triogen.model.annotation;
 
 /**
- * Proxy coordinates as returned from Ensembl.
+ * Proxy coordinates.
  *
  * @author Marc Vaudel
  */
@@ -24,6 +24,10 @@ public class ProxyCoordinates {
      */
     public final int end;
     /**
+     * The allele mapping.
+     */
+    public final String alleleMapping;
+    /**
      * r2.
      */
     public final double r2;
@@ -35,6 +39,7 @@ public class ProxyCoordinates {
      * @param contig The contig.
      * @param start The start position of the variant.
      * @param end The end position of the variant.
+     * @param alleleMapping The allele mapping.
      * @param r2 The r2 with the queried variant.
      */
     public ProxyCoordinates(
@@ -42,6 +47,7 @@ public class ProxyCoordinates {
             String contig,
             int start,
             int end,
+            String alleleMapping,
             double r2
     ) {
         
@@ -49,6 +55,7 @@ public class ProxyCoordinates {
         this.contig = contig;
         this.start = start;
         this.end = end;
+        this.alleleMapping = alleleMapping;
         this.r2 = r2;
         
     }

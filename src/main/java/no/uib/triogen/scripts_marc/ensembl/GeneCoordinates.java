@@ -3,7 +3,7 @@ package no.uib.triogen.scripts_marc.ensembl;
 import java.io.File;
 import java.util.ArrayList;
 import no.uib.triogen.io.flat.SimpleFileWriter;
-import no.uib.triogen.model.annotation.EnsemblAPI;
+import no.uib.triogen.model.annotation.ensembl.EnsemblAPI;
 
 /**
  *
@@ -35,14 +35,14 @@ public class GeneCoordinates {
                     writer.writeLine("# Ensembl version: " + ensemblVersion);
                     writer.writeLine("biotype", "name", "start", "end");
 
-                    ArrayList<no.uib.triogen.model.annotation.GeneCoordinates> geneCoordinatesList = EnsemblAPI.getGeneCoordinates(
+                    ArrayList<no.uib.triogen.model.annotation.ensembl.GeneCoordinates> geneCoordinatesList = EnsemblAPI.getGeneCoordinates(
                             targetContig,
                             bpStart,
                             bpEnd,
                             buildNumber
                     );
 
-                    for (no.uib.triogen.model.annotation.GeneCoordinates geneCoordinates : geneCoordinatesList) {
+                    for (no.uib.triogen.model.annotation.ensembl.GeneCoordinates geneCoordinates : geneCoordinatesList) {
 
                         writer.writeLine(
                                 geneCoordinates.biotype,

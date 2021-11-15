@@ -15,7 +15,9 @@ public enum VariantFileOptions {
     variantId("vi", "variantId", "A file containing a list of variant ids to query, one line per variant.", true, true),
     source("s", "source", "A value to write in the column 'source' for future reference.", true, true),
     build("b", "build", "The build to use when querying Ensembl as a number 37: grch37, 38: grch38. Default: 37.", false, true),
-    population("p", "population", "The reference population to use as available in Ensembl. See https://rest.ensembl.org/documentation/info/variation_populations for details. Default: 1000GENOMES:phase_3:GBR.", false, true),
+    ensemblPopulation("ep", "ensembl_population", "The reference population for Ensembl. See https://rest.ensembl.org/documentation/info/variation_populations for details. Default: 1000GENOMES:phase_3:GBR.", false, true),
+    ldlinkPopulation("lp", "ldlink_population", "The reference population to use for LDlink. Default: CEU&GBR.", false, true),
+    ldlinkToken("lt", "ldlink_token", "The token to use for LDlink.", false, true),
     r2("r", "r2", "The minimal r2 to allow for a proxy. Default: 0.2.", false, true),
     out("o", "out", "The file where to write the results.", true, true);
 

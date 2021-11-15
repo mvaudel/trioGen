@@ -23,9 +23,17 @@ public class VariantFileOptionsBean {
      */
     public int buildNumber = 37;
     /**
-     * The reference population to use.
+     * The reference population to use for Ensembl.
      */
-    public String population = "1000GENOMES:phase_3:GBR";
+    public String ensemblPopulation = "1000GENOMES:phase_3:GBR";
+    /**
+     * The reference population to use for LDlink.
+     */
+    public String ldLinkPopulation = "CEU&GBR";
+    /**
+     * The token to use for LDlink.
+     */
+    public String ldLinkToken = "CEU&GBR";
     /**
      * The source.
      */
@@ -99,10 +107,24 @@ public class VariantFileOptionsBean {
             }
         }
 
-        // The reference population for proxies
-        if (aLine.hasOption(VariantFileOptions.population.opt)) {
+        // The reference population for proxies in Ensembl
+        if (aLine.hasOption(VariantFileOptions.ensemblPopulation.opt)) {
 
-            population = aLine.getOptionValue(VariantFileOptions.population.opt);
+            ensemblPopulation = aLine.getOptionValue(VariantFileOptions.ensemblPopulation.opt);
+
+        }
+
+        // The reference population for proxies in LDlink
+        if (aLine.hasOption(VariantFileOptions.ldlinkPopulation.opt)) {
+
+            ldLinkPopulation = aLine.getOptionValue(VariantFileOptions.ldlinkPopulation.opt);
+
+        }
+
+        // The token for proxies in LDlink
+        if (aLine.hasOption(VariantFileOptions.ldlinkToken.opt)) {
+
+            ldLinkToken = aLine.getOptionValue(VariantFileOptions.ldlinkToken.opt);
 
         }
 

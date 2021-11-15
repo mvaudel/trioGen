@@ -13,8 +13,8 @@ import no.uib.triogen.io.flat.indexed.IndexedGzReader;
 import no.uib.triogen.io.flat.indexed.IndexedGzWriter;
 import no.uib.triogen.io.ld.LdMatrixReader;
 import no.uib.triogen.log.SimpleCliLogger;
-import no.uib.triogen.model.annotation.EnsemblAPI;
-import no.uib.triogen.model.annotation.GeneCoordinates;
+import no.uib.triogen.model.annotation.ensembl.EnsemblAPI;
+import no.uib.triogen.model.annotation.ensembl.GeneCoordinates;
 import no.uib.triogen.model.ld.R2;
 import no.uib.triogen.model.trio_genotypes.VariantList;
 

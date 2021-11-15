@@ -6,13 +6,16 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
 import no.uib.triogen.log.SimpleCliLogger;
-import no.uib.triogen.model.annotation.EnsemblAPI;
+import no.uib.triogen.model.annotation.ensembl.EnsemblAPI;
 import no.uib.triogen.model.annotation.ProxyCoordinates;
-import no.uib.triogen.model.annotation.VariantCoordinates;
+import no.uib.triogen.model.annotation.ensembl.VariantCoordinates;
+import no.uib.triogen.model.annotation.ld_link.LDproxy;
 import no.uib.triogen.model.genome.VariantInformation;
 
 /**
@@ -30,18 +33,22 @@ public class VariantListToFile {
 
     /**
      * Writes the variant file from the given variant list.
-     * 
+     *
      * @param source The value to put in the source column for future reference.
      * @param bgenFilePath The path to the bgen files.
-     * @param variantListFile The file containing the list of variants to annotate.
+     * @param variantListFile The file containing the list of variants to
+     * annotate.
      * @param targetFile The file to write to.
      * @param missingFile The file where to write the SNPs that were not found.
      * @param buildNumber The build number to use.
      * @param ensemblPopulation The Ensembl population to query.
+     * @param ldLinkPopulation The LDlink population to query.
+     * @param ldLinkToken The token to use for LDlink.
      * @param minR2 The minimum R2 to use for proxies.
      * @param logger Logger to display feedback.
-     * 
-     * @throws IOException Exception thrown if an error occurred while reading or writing a file.
+     *
+     * @throws IOException Exception thrown if an error occurred while reading
+     * or writing a file.
      */
     public void writeVariantFile(
             String source,
@@ -50,6 +57,8 @@ public class VariantListToFile {
             File targetFile,
             File missingFile,
             int buildNumber,
+            String ldLinkPopulation,
+            String ldLinkToken,
             String ensemblPopulation,
             double minR2,
             SimpleCliLogger logger
@@ -153,58 +162,48 @@ public class VariantListToFile {
 
                                 } else {
 
-                                    ArrayList<ProxyCoordinates> proxies = EnsemblAPI.getProxies(
+                                    ArrayList<ProxyCoordinates> ldLinkProxies = ldLinkToken != null ? new ArrayList<>(0) : LDproxy.getProxy(rsId, ldLinkPopulation, "r2", "500000", ldLinkToken);
+
+                                    ArrayList<ProxyCoordinates> ensemblProxies = EnsemblAPI.getProxies(
                                             rsId,
                                             ensemblPopulation,
                                             minR2,
                                             buildNumber
                                     );
 
-                                    TreeMap<Double, TreeMap<Integer, ArrayList<ProxyCoordinates>>> proxyMap = new TreeMap<>();
-
-                                    for (ProxyCoordinates proxyCoordinates : proxies) {
-
-                                        Integer bgenPosition = rsIdMap.get(proxyCoordinates.proxySnp);
-
-                                        if (bgenPosition != null) {
-
-                                            TreeMap<Integer, ArrayList<ProxyCoordinates>> r2Map = proxyMap.get(proxyCoordinates.r2);
-
-                                            if (r2Map == null) {
-
-                                                r2Map = new TreeMap<>();
-                                                proxyMap.put(proxyCoordinates.r2, r2Map);
-
-                                            }
-
-                                            int distance = Math.abs(variantCoordinates.position - bgenPosition);
-
-                                            ArrayList<ProxyCoordinates> proxiesAtDistance = r2Map.get(distance);
-
-                                            if (proxiesAtDistance == null) {
-
-                                                proxiesAtDistance = new ArrayList<>(1);
-                                                r2Map.put(distance, proxiesAtDistance);
-
-                                            }
-
-                                            proxiesAtDistance.add(proxyCoordinates);
-
-                                        }
-                                    }
+                                    TreeMap<Double, TreeMap<Integer, HashMap<String, ProxyCoordinates>>> proxyMap = getProxyMap(variantCoordinates, ldLinkProxies, ensemblProxies, rsIdMap);
 
                                     if (!proxyMap.isEmpty()) {
 
-                                        ProxyCoordinates bestProxy = proxyMap.lastEntry().getValue().firstEntry().getValue().get(0);
+                                        HashMap<String, ProxyCoordinates> bestProxies = proxyMap.lastEntry().getValue().firstEntry().getValue();
+
+                                        ProxyCoordinates bestProxy = null;
+
+                                        for (ProxyCoordinates proxyCoordinates : bestProxies.values()) {
+
+                                            bestProxy = proxyCoordinates;
+
+                                            if (bestProxy.alleleMapping != null) {
+
+                                                break;
+
+                                            }
+                                        }
+
+                                        String description = bestProxy.alleleMapping != null
+                                                ? String.join("",
+                                                        "Proxy for ", rsId, " (", ensemblPopulation, " r2=", Double.toString(bestProxy.r2), " alleles=", bestProxy.alleleMapping, ")"
+                                                )
+                                                : String.join("",
+                                                        "Proxy for ", rsId, " (", ensemblPopulation, " r2=", Double.toString(bestProxy.r2), ")"
+                                                );
 
                                         targetWriter.writeLine(
                                                 bestProxy.proxySnp,
                                                 bestProxy.contig,
                                                 Integer.toString(bestProxy.start),
                                                 source,
-                                                String.join("",
-                                                        "Proxy for ", rsId, " (", ensemblPopulation, " r2=", Double.toString(bestProxy.r2), ")"
-                                                )
+                                                description
                                         );
 
                                         logger.logMessage("Proxy found for " + rsId + " (r2=" + bestProxy.r2 + ").");
@@ -231,5 +230,64 @@ public class VariantListToFile {
 
         logger.logMessage("Mapping variants done (" + nFound + " variants mapped from " + nVariants + " in " + duration + " seconds)");
 
+    }
+
+    /**
+     * Returns a map of the proxies found in the bgen file and passing the
+     * distance and r2 thresholds.
+     *
+     * @param variantCoordinates The coordinates of the target variant.
+     * @param ldLinkProxies The proxies from LDlnk.
+     * @param ensemblProxies The proxies from Ensembl.
+     * @param rsIdMap A map indicating whether a given rsid is present in the
+     * bgen file.
+     *
+     * @return A map of the proxies found in the bgen file and passing the
+     * distance and r2 thresholds.
+     */
+    private TreeMap<Double, TreeMap<Integer, HashMap<String, ProxyCoordinates>>> getProxyMap(
+            VariantCoordinates variantCoordinates,
+            ArrayList<ProxyCoordinates> ldLinkProxies,
+            ArrayList<ProxyCoordinates> ensemblProxies,
+            HashMap<String, Integer> rsIdMap
+    ) {
+
+        TreeMap<Double, TreeMap<Integer, HashMap<String, ProxyCoordinates>>> proxyMap = new TreeMap<>();
+
+        ArrayList<ProxyCoordinates> proxies = Stream.concat(ldLinkProxies.stream(), ensemblProxies.stream())
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        for (ProxyCoordinates proxyCoordinates : proxies) {
+
+            Integer bgenPosition = rsIdMap.get(proxyCoordinates.proxySnp);
+
+            if (bgenPosition != null) {
+
+                TreeMap<Integer, HashMap<String, ProxyCoordinates>> r2Map = proxyMap.get(proxyCoordinates.r2);
+
+                if (r2Map == null) {
+
+                    r2Map = new TreeMap<>();
+                    proxyMap.put(proxyCoordinates.r2, r2Map);
+
+                }
+
+                int distance = Math.abs(variantCoordinates.position - bgenPosition);
+
+                HashMap<String, ProxyCoordinates> proxiesAtDistance = r2Map.get(distance);
+
+                if (proxiesAtDistance == null) {
+
+                    proxiesAtDistance = new HashMap<>(1);
+                    r2Map.put(distance, proxiesAtDistance);
+
+                }
+
+                proxiesAtDistance.put(proxyCoordinates.proxySnp, proxyCoordinates);
+
+            }
+        }
+
+        return proxyMap;
     }
 }

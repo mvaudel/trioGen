@@ -35,6 +35,8 @@ no.uib.triogen.io.rest
 no.uib.triogen.io.variant_id
 no.uib.triogen.log
 no.uib.triogen.model.annotation
+no.uib.triogen.model.annotation.ensembl
+no.uib.triogen.model.annotation.ld_link
 no.uib.triogen.model.covariates
 no.uib.triogen.model.family
 no.uib.triogen.model.genome

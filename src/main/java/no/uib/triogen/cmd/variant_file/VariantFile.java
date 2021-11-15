@@ -94,7 +94,9 @@ public class VariantFile {
                 bean.destinationFile, 
                 bean.missingFile, 
                 bean.buildNumber, 
-                bean.population, 
+                bean.ldLinkPopulation,
+                bean.ldLinkToken,
+                bean.ensemblPopulation, 
                 bean.r2, 
                 logger
         );

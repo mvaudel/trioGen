@@ -1,5 +1,6 @@
-package no.uib.triogen.model.annotation;
+package no.uib.triogen.model.annotation.ensembl;
 
+import no.uib.triogen.model.annotation.ProxyCoordinates;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -190,28 +191,31 @@ public class EnsemblAPI {
 
                     JSONObject jsonObject2 = jsonObject.getJSONObject(key);
 
-                    JSONArray vcfArray = jsonObject2.getJSONArray("vcf_string");
+                    if (jsonObject2.has("vcf_string")) {
 
-                    for (int j = 0; j < vcfArray.length(); j++) {
+                        JSONArray vcfArray = jsonObject2.getJSONArray("vcf_string");
 
-                        String vcfString = vcfArray.getString(j);
+                        for (int j = 0; j < vcfArray.length(); j++) {
 
-                        String[] vcfSplit = vcfString.split("-");
+                            String vcfString = vcfArray.getString(j);
 
-                        String contig = vcfSplit[0];
-                        int position = Integer.parseInt(vcfSplit[1]);
+                            String[] vcfSplit = vcfString.split("-");
 
-                        HashSet<Integer> positions = coordinatesMap.get(contig);
+                            String contig = vcfSplit[0];
+                            int position = Integer.parseInt(vcfSplit[1]);
 
-                        if (positions == null) {
+                            HashSet<Integer> positions = coordinatesMap.get(contig);
 
-                            positions = new HashSet<>(1);
-                            coordinatesMap.put(contig, positions);
+                            if (positions == null) {
+
+                                positions = new HashSet<>(1);
+                                coordinatesMap.put(contig, positions);
+
+                            }
+
+                            positions.add(position);
 
                         }
-
-                        positions.add(position);
-
                     }
                 }
             }
@@ -286,6 +290,7 @@ public class EnsemblAPI {
                                 contig,
                                 start,
                                 end,
+                                null,
                                 r2
                         )
                 );

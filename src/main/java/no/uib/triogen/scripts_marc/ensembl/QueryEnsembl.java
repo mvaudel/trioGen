@@ -5,8 +5,8 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.GetRequest;
 import java.util.ArrayList;
-import static no.uib.triogen.model.annotation.EnsemblAPI.getServer;
-import no.uib.triogen.model.annotation.VariantCoordinates;
+import static no.uib.triogen.model.annotation.ensembl.EnsemblAPI.getServer;
+import no.uib.triogen.model.annotation.ensembl.VariantCoordinates;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

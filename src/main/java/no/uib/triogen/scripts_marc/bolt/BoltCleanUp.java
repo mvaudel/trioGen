@@ -61,7 +61,7 @@ public class BoltCleanUp {
 
                                     if (!Double.isNaN(se) && !Double.isInfinite(se)) {
 
-                                        double p = Double.parseDouble(lineSplit[15]);
+                                        double p = lineSplit.length == 14 ? Double.parseDouble(lineSplit[13]) : Double.parseDouble(lineSplit[15]);
 
                                         if (!Double.isNaN(p) && !Double.isInfinite(p)) {
 

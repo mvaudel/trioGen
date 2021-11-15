@@ -1,4 +1,4 @@
-package no.uib.triogen.model.annotation;
+package no.uib.triogen.model.annotation.ensembl;
 
 /**
  * Variant coordinates as returned from Ensembl.
