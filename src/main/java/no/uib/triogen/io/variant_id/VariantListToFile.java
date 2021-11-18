@@ -94,15 +94,17 @@ public class VariantListToFile {
 
                         ArrayList<VariantCoordinates> variantCoordinatesArray = EnsemblAPI.getVariantCoordinates(rsId, buildNumber);
 
-                        if (variantCoordinatesArray.size() > 1) {
-
-                            logger.logMessage("More than one genomic coordinate (" + variantCoordinatesArray.size() + ") found for variant " + rsId + ", all will be included.");
-
-                        } else if (variantCoordinatesArray.isEmpty()) {
+                        if (variantCoordinatesArray.isEmpty()) {
 
                             missingWriter.writeLine(rsId);
 
                         } else {
+
+                            if (variantCoordinatesArray.size() > 1) {
+
+                                logger.logMessage("More than one genomic coordinate (" + variantCoordinatesArray.size() + ") found for variant " + rsId + ", all will be included.");
+
+                            }
 
                             boolean found = false;
 
@@ -124,47 +126,44 @@ public class VariantListToFile {
 
                                 }
 
-                                if (!bgenFile.exists()) {
+                                if (bgenFile.exists()) {
 
-                                    throw new IllegalArgumentException("Bgen file not found for chromosome " + chr + ".");
+                                    HashMap<String, Integer> rsIdMap = rsIdCoordinatesMap.get(chr);
 
-                                }
+                                    if (rsIdMap == null) {
 
-                                HashMap<String, Integer> rsIdMap = rsIdCoordinatesMap.get(chr);
+                                        logger.logMessage("Parsing bgen file for chromosome " + chr + ".");
 
-                                if (rsIdMap == null) {
+                                        BgenIndex bgenIndex = BgenIndex.getBgenIndex(bgenFile);
+                                        rsIdMap = new HashMap<>(bgenIndex.variantIdArray.length);
+                                        rsIdCoordinatesMap.put(chr, rsIdMap);
 
-                                    logger.logMessage("Parsing bgen file for chromosome " + chr + ".");
+                                        for (VariantInformation variantInformation : bgenIndex.variantInformationArray) {
 
-                                    BgenIndex bgenIndex = BgenIndex.getBgenIndex(bgenFile);
-                                    rsIdMap = new HashMap<>(bgenIndex.variantIdArray.length);
-                                    rsIdCoordinatesMap.put(chr, rsIdMap);
+                                            rsIdMap.put(variantInformation.rsid, variantInformation.position);
 
-                                    for (VariantInformation variantInformation : bgenIndex.variantInformationArray) {
+                                        }
+                                    }
 
-                                        rsIdMap.put(variantInformation.rsid, variantInformation.position);
+                                    Integer position = rsIdMap.get(rsId);
+
+                                    if (position != null) {
+
+                                        targetWriter.writeLine(
+                                                rsId,
+                                                chr,
+                                                position.toString(),
+                                                source,
+                                                ""
+                                        );
+
+                                        logger.logMessage("Found " + rsId + " in gben files (chr " + chr + ", pos " + position + ").");
+
+                                        nFound++;
+
+                                        found = true;
 
                                     }
-                                }
-
-                                Integer position = rsIdMap.get(rsId);
-
-                                if (position != null) {
-
-                                    targetWriter.writeLine(
-                                            rsId,
-                                            chr,
-                                            position.toString(),
-                                            source,
-                                            ""
-                                    );
-
-                                    logger.logMessage("Found " + rsId + " in gben files (chr " + chr + ", pos " + position + ").");
-
-                                    nFound++;
-
-                                    found = true;
-
                                 }
                             }
 
@@ -183,47 +182,50 @@ public class VariantListToFile {
 
                                     HashMap<String, Integer> rsIdMap = rsIdCoordinatesMap.get(variantCoordinates.contig);
 
-                                    TreeMap<Double, TreeMap<Integer, HashMap<String, ProxyCoordinates>>> proxyMap = getProxyMap(variantCoordinates, ldLinkProxies, ensemblProxies, rsIdMap);
+                                    if (rsIdMap != null) {
 
-                                    if (!proxyMap.isEmpty()) {
+                                        TreeMap<Double, TreeMap<Integer, HashMap<String, ProxyCoordinates>>> proxyMap = getProxyMap(variantCoordinates, ldLinkProxies, ensemblProxies, rsIdMap);
 
-                                        HashMap<String, ProxyCoordinates> bestProxies = proxyMap.lastEntry().getValue().firstEntry().getValue();
+                                        if (!proxyMap.isEmpty()) {
 
-                                        ProxyCoordinates bestProxy = null;
+                                            HashMap<String, ProxyCoordinates> bestProxies = proxyMap.lastEntry().getValue().firstEntry().getValue();
 
-                                        for (ProxyCoordinates proxyCoordinates : bestProxies.values()) {
+                                            ProxyCoordinates bestProxy = null;
 
-                                            bestProxy = proxyCoordinates;
+                                            for (ProxyCoordinates proxyCoordinates : bestProxies.values()) {
 
-                                            if (bestProxy.alleleMapping != null) {
+                                                bestProxy = proxyCoordinates;
 
-                                                break;
+                                                if (bestProxy.alleleMapping != null) {
 
+                                                    break;
+
+                                                }
                                             }
+
+                                            String description = bestProxy.alleleMapping != null
+                                                    ? String.join("",
+                                                            "Proxy for ", rsId, " (LDproxy ", ldLinkPopulation, " r2=", Double.toString(bestProxy.r2), " alleles=", bestProxy.alleleMapping, ")"
+                                                    )
+                                                    : String.join("",
+                                                            "Proxy for ", rsId, " (Ensembl ", ensemblPopulation, " r2=", Double.toString(bestProxy.r2), ")"
+                                                    );
+
+                                            targetWriter.writeLine(
+                                                    bestProxy.proxySnp,
+                                                    bestProxy.contig,
+                                                    Integer.toString(bestProxy.start),
+                                                    source,
+                                                    description
+                                            );
+
+                                            logger.logMessage("Proxy found for " + rsId + " (r2=" + bestProxy.r2 + ").");
+
+                                            nFound++;
+
+                                            found = true;
+
                                         }
-
-                                        String description = bestProxy.alleleMapping != null
-                                                ? String.join("",
-                                                        "Proxy for ", rsId, " (LDproxy ", ldLinkPopulation, " r2=", Double.toString(bestProxy.r2), " alleles=", bestProxy.alleleMapping, ")"
-                                                )
-                                                : String.join("",
-                                                        "Proxy for ", rsId, " (Ensembl ", ensemblPopulation, " r2=", Double.toString(bestProxy.r2), ")"
-                                                );
-
-                                        targetWriter.writeLine(
-                                                bestProxy.proxySnp,
-                                                bestProxy.contig,
-                                                Integer.toString(bestProxy.start),
-                                                source,
-                                                description
-                                        );
-
-                                        logger.logMessage("Proxy found for " + rsId + " (r2=" + bestProxy.r2 + ").");
-
-                                        nFound++;
-
-                                        found = true;
-
                                     }
                                 }
 

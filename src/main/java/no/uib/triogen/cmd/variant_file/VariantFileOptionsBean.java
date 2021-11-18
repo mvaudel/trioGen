@@ -33,7 +33,7 @@ public class VariantFileOptionsBean {
     /**
      * The token to use for LDlink.
      */
-    public String ldLinkToken = "CEU&GBR";
+    public String ldLinkToken = null;
     /**
      * The source.
      */
