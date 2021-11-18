@@ -205,6 +205,10 @@ public class ExtractBolt {
                                 }
                             }
                         }
+                    } else {
+
+                        System.out.println(Instant.now() + "    Bolt file '" + boltFilePath + "' not found");
+
                     }
                 }
             }
