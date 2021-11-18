@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.stream.IntStream;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.flat.SimpleFileReader;
@@ -45,6 +46,7 @@ public class ExtractBolt {
         // Process BOLT file
         String boltFilePath = "/mnt/work/marc/moba/run/bolt/bolt_output/{pheno}{ageI}/childGeno_{pheno}{ageI}{mafSuffix}{chrSuffix}.gz";
         String resultsFilePath = "/mnt/work/marc/moba/puberty_2020/resources/bolt/{pheno}{ageI}.gz";
+        String missingResultsPathPatterns = "/mnt/work/marc/moba/puberty_2020/resources/bolt/{pheno}{ageI}_missing";
 
         String[] phenos = new String[]{"z_bmi", "z_length", "z_weight"};
         String[] mafSuffixes = new String[]{"_over_maf_0.001", "_under_maf_0.001"};
@@ -63,7 +65,8 @@ public class ExtractBolt {
                                                 chrSuffixes,
                                                 variantList,
                                                 boltFilePath,
-                                                resultsFilePath
+                                                resultsFilePath,
+                                                missingResultsPathPatterns
                                         )
                                 )
                 );
@@ -150,12 +153,15 @@ public class ExtractBolt {
             String[] chrSuffixes,
             VariantList variantList,
             String filePathPattern,
-            String resultsFilePathPattern
+            String resultsFilePathPattern,
+            String missingResultsPathPatterns
     ) {
 
         System.out.println(Instant.now() + "    Processing results for " + pheno + ageI + ".");
 
         Instant begin = Instant.now();
+
+        HashSet<String> found = new HashSet<>(variantList.variantId.length);
 
         String destinationFilePath = resultsFilePathPattern.replace("{pheno}", pheno);
         destinationFilePath = destinationFilePath.replace("{ageI}", Integer.toString(ageI));
@@ -185,7 +191,7 @@ public class ExtractBolt {
 
                                 writer.writeLine(line);
 
-                                header = false;
+                                header = true;
 
                             }
 
@@ -200,6 +206,8 @@ public class ExtractBolt {
                                     if (snp.equals(variantList.variantId[variantI])) {
 
                                         writer.writeLine(line);
+
+                                        found.add(snp);
 
                                     }
                                 }
@@ -219,6 +227,23 @@ public class ExtractBolt {
 
             System.out.println(Instant.now() + "    " + ageI + " finished (" + durationSeconds + " s)");
 
+        }
+
+        String missingResultsPath = missingResultsPathPatterns.replace("{pheno}", pheno);
+        missingResultsPath = missingResultsPath.replace("{ageI}", Integer.toString(ageI));
+
+        try (SimpleFileWriter writer = new SimpleFileWriter(new File(missingResultsPath), false)) {
+
+            for (int variantI = 0; variantI < variantList.variantId.length; variantI++) {
+
+                String variantId = variantList.variantId[variantI];
+
+                if (!found.contains(variantId)) {
+
+                    writer.writeLine(variantId);
+
+                }
+            }
         }
     }
 }
