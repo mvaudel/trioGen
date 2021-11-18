@@ -43,7 +43,7 @@ public class ExtractBolt {
         System.out.println(Instant.now() + "    Variants lodaed, " + variantList.variantId.length + " variants to map (" + durationSeconds + " s)");
 
         // Process BOLT file
-        String boltFilePath = "/mnt/work/marc/moba/run/bolt/bolt_output/{pheno}/childGeno_{pheno}{ageI}{mafSuffix}{chrSuffix}.gz";
+        String boltFilePath = "/mnt/work/marc/moba/run/bolt/bolt_output/{pheno}{ageI}/childGeno_{pheno}{ageI}{mafSuffix}{chrSuffix}.gz";
         String resultsFilePath = "/mnt/work/marc/moba/puberty_2020/resources/bolt/{pheno}{ageI}.gz";
 
         String[] phenos = new String[]{"z_bmi", "z_length", "z_weight"};
