@@ -33,7 +33,7 @@ public class ExtractBolt {
 
         Instant begin = Instant.now();
 
-        File targetFile = new File("/mnt/work/marc/moba/puberty_2020/targets_with_proxies_18.11.21");
+        File targetFile = new File("/mnt/work/marc/moba/puberty_2020/resources/targets/targets_with_proxies_18.11.21");
         VariantList variantList = VariantList.getVariantList(targetFile);
 
         Instant end = Instant.now();
