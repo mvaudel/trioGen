@@ -167,11 +167,15 @@ public class VariantListToFile {
                                 }
                             }
 
+                            ArrayList<ProxyCoordinates> proxies = new ArrayList<>(0);
+
                             if (!found) {
 
                                 for (VariantCoordinates variantCoordinates : variantCoordinatesArray) {
 
                                     ArrayList<ProxyCoordinates> ldLinkProxies = ldLinkToken == null ? new ArrayList<>(0) : LDproxy.getProxy(rsId, ldLinkPopulation, "r2", "500000", ldLinkToken);
+
+                                    proxies.addAll(ldLinkProxies);
 
                                     ArrayList<ProxyCoordinates> ensemblProxies = EnsemblAPI.getProxies(
                                             rsId,
@@ -180,11 +184,13 @@ public class VariantListToFile {
                                             buildNumber
                                     );
 
+                                    proxies.addAll(ensemblProxies);
+
                                     HashMap<String, Integer> rsIdMap = rsIdCoordinatesMap.get(variantCoordinates.contig);
 
                                     if (rsIdMap != null) {
 
-                                        TreeMap<Double, TreeMap<Integer, HashMap<String, ProxyCoordinates>>> proxyMap = getProxyMap(variantCoordinates, ldLinkProxies, ensemblProxies, rsIdMap);
+                                        TreeMap<Double, TreeMap<Integer, HashMap<String, ProxyCoordinates>>> proxyMap = getProxyMap(variantCoordinates, proxies, rsIdMap);
 
                                         if (!proxyMap.isEmpty()) {
 
@@ -247,7 +253,15 @@ public class VariantListToFile {
 
                                     }
 
-                                    logger.logMessage("No proxy found for " + rsId + " (" + coordinates.toString() + ").");
+                                    if (proxies.isEmpty()) {
+
+                                        logger.logMessage("No proxy found for " + rsId + " (" + coordinates.toString() + ").");
+
+                                    } else {
+
+                                        logger.logMessage(proxies.size() + " proxies found for " + rsId + " (" + coordinates.toString() + "), none found in the bgen files.");
+
+                                    }
 
                                     missingWriter.writeLine(rsId);
 
@@ -271,8 +285,7 @@ public class VariantListToFile {
      * distance and r2 thresholds.
      *
      * @param variantCoordinates The coordinates of the target variant.
-     * @param ldLinkProxies The proxies from LDlnk.
-     * @param ensemblProxies The proxies from Ensembl.
+     * @param proxies The proxies to use.
      * @param rsIdMap A map indicating whether a given rsid is present in the
      * bgen file.
      *
@@ -281,15 +294,11 @@ public class VariantListToFile {
      */
     private TreeMap<Double, TreeMap<Integer, HashMap<String, ProxyCoordinates>>> getProxyMap(
             VariantCoordinates variantCoordinates,
-            ArrayList<ProxyCoordinates> ldLinkProxies,
-            ArrayList<ProxyCoordinates> ensemblProxies,
+            ArrayList<ProxyCoordinates> proxies,
             HashMap<String, Integer> rsIdMap
     ) {
 
         TreeMap<Double, TreeMap<Integer, HashMap<String, ProxyCoordinates>>> proxyMap = new TreeMap<>();
-
-        ArrayList<ProxyCoordinates> proxies = Stream.concat(ldLinkProxies.stream(), ensemblProxies.stream())
-                .collect(Collectors.toCollection(ArrayList::new));
 
         for (ProxyCoordinates proxyCoordinates : proxies) {
 
@@ -317,8 +326,11 @@ public class VariantListToFile {
 
                 }
 
-                proxiesAtDistance.put(proxyCoordinates.proxySnp, proxyCoordinates);
+                if (!proxiesAtDistance.containsKey(proxyCoordinates.proxySnp)) {
 
+                    proxiesAtDistance.put(proxyCoordinates.proxySnp, proxyCoordinates);
+
+                }
             }
         }
 
