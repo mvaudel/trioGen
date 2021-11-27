@@ -6,13 +6,14 @@ import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.processing.prs.PrsPruner;
 import no.uib.triogen.utils.Utils;
+import no.uib.triogen.utils.cli.CliOption;
 
 /**
  * Enum of the different options
  *
  * @author Marc Vaudel
  */
-public enum PrsPruneOptions {
+public enum PrsPruneOptions implements CliOption {
 
     trainingFile("t", "trainingFile", "File listing the summary statistics to use for training.", true, true),
     ldMatrix("l", "ldMatrix", "The ld matrix file as generated using the LdMatrix command. If LD matrix files are computed per contig, replace the chromosome name with '" + Utils.CHROMOSOME_WILDCARD + "'.", true, true),
@@ -133,5 +134,19 @@ public enum PrsPruneOptions {
                 .forEach(option -> output.append("-").append(String.format(formatter, option.opt + " (--" + option.longOpt + ")")).append(" ").append(option.description).append(LINE_SEPARATOR));
 
         return output.toString();
+    }
+
+    @Override
+    public String getOption() {
+        
+        return opt;
+        
+    }
+
+    @Override
+    public String getLongOption() {
+        
+        return longOpt;
+        
     }
 }

@@ -7,6 +7,7 @@ import no.uib.triogen.cmd.prs_threshold.PrsThresholdOptions;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.processing.prs.PrsPruner;
 import no.uib.triogen.processing.prs.PrsUtils.ScoringMode;
+import no.uib.triogen.utils.cli.CliUtils;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -90,7 +91,7 @@ public class PrsScoreOptionsBean {
         // Check that mandatory options are provided
         for (PrsScoreOptions option : PrsScoreOptions.values()) {
 
-            if (option.mandatory && !aLine.hasOption(option.opt)) {
+            if (option.mandatory && !CliUtils.hasOption(aLine, option)) {
 
                 throw new IllegalArgumentException("No value found for mandatory option " + option.opt + " (" + option.longOpt + ")");
 
@@ -98,7 +99,7 @@ public class PrsScoreOptionsBean {
         }
 
         // The genotypes file
-        genotypesFile = aLine.getOptionValue(PrsScoreOptions.geno.opt);
+        genotypesFile = CliUtils.getOptionValue(aLine, PrsScoreOptions.geno);
 
         File genotypesFolder = (new File(genotypesFile)).getParentFile();
 
@@ -113,9 +114,9 @@ public class PrsScoreOptionsBean {
         }
 
         // The genotypes file
-        if (aLine.hasOption(PrsScoreOptions.bgenIndexFolder.opt)) {
+        if (CliUtils.hasOption(aLine, PrsScoreOptions.bgenIndexFolder)) {
 
-            String filePath = aLine.getOptionValue(PrsScoreOptions.bgenIndexFolder.opt);
+            String filePath = CliUtils.getOptionValue(aLine, PrsScoreOptions.bgenIndexFolder);
 
             bgenIndexFolder = new File(filePath);
 
@@ -127,7 +128,7 @@ public class PrsScoreOptionsBean {
         }
 
         // the trio file
-        String filePath = aLine.getOptionValue(PrsScoreOptions.trio.opt);
+        String filePath = CliUtils.getOptionValue(aLine, PrsScoreOptions.trio);
 
         trioFile = new File(filePath);
 
@@ -138,9 +139,9 @@ public class PrsScoreOptionsBean {
         }
 
         // The variant ids
-        if (aLine.hasOption(PrsScoreOptions.variantId.opt)) {
+        if (CliUtils.hasOption(aLine, PrsScoreOptions.variantId)) {
 
-            filePath = aLine.getOptionValue(PrsScoreOptions.variantId.opt);
+            filePath = CliUtils.getOptionValue(aLine, PrsScoreOptions.variantId);
 
             variantFile = new File(filePath);
 
@@ -152,7 +153,7 @@ public class PrsScoreOptionsBean {
         }
 
         // The summary stats file
-        filePath = aLine.getOptionValue(PrsScoreOptions.scoreFile.opt);
+        filePath = CliUtils.getOptionValue(aLine, PrsScoreOptions.scoreFile);
 
         scoreFile = new File(filePath);
 
@@ -163,18 +164,18 @@ public class PrsScoreOptionsBean {
         }
 
         // The scoring mode
-        if (aLine.hasOption(PrsScoreOptions.scoringMode.opt)) {
+        if (CliUtils.hasOption(aLine, PrsScoreOptions.scoringMode)) {
 
-            String option = aLine.getOptionValue(PrsScoreOptions.model.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsScoreOptions.model);
 
             model = Model.valueOf(option);
 
         }
 
         // The variables
-        if (aLine.hasOption(PrsScoreOptions.variables.opt)) {
+        if (CliUtils.hasOption(aLine, PrsScoreOptions.variables)) {
 
-            String option = aLine.getOptionValue(PrsScoreOptions.variables.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsScoreOptions.variables);
 
             variables = option.split(",");
 
@@ -188,9 +189,9 @@ public class PrsScoreOptionsBean {
         }
 
         // The model
-        if (aLine.hasOption(PrsScoreOptions.scoringMode.opt)) {
+        if (CliUtils.hasOption(aLine, PrsScoreOptions.scoringMode)) {
 
-            String option = aLine.getOptionValue(PrsScoreOptions.scoringMode.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsScoreOptions.scoringMode);
 
             int selectedOption;
             try {
@@ -226,23 +227,23 @@ public class PrsScoreOptionsBean {
         }
 
         // The beta pattern
-        if (aLine.hasOption(PrsScoreOptions.betaPattern.opt)) {
+        if (CliUtils.hasOption(aLine, PrsScoreOptions.betaPattern)) {
 
-            betaPattern = aLine.getOptionValue(PrsScoreOptions.betaPattern.opt);
+            betaPattern = CliUtils.getOptionValue(aLine, PrsScoreOptions.betaPattern);
 
         }
 
         // The se pattern
-        if (aLine.hasOption(PrsThresholdOptions.sePattern.opt)) {
+        if (CliUtils.hasOption(aLine, PrsThresholdOptions.sePattern)) {
 
-            sePattern = aLine.getOptionValue(PrsThresholdOptions.sePattern.opt);
+            sePattern = CliUtils.getOptionValue(aLine, PrsThresholdOptions.sePattern);
 
         }
 
         // The p-value threshold
-        if (aLine.hasOption(PrsScoreOptions.pValueThreshold.opt)) {
+        if (CliUtils.hasOption(aLine, PrsScoreOptions.pValueThreshold)) {
 
-            String option = aLine.getOptionValue(PrsScoreOptions.pValueThreshold.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsScoreOptions.pValueThreshold);
 
             try {
 
@@ -267,9 +268,9 @@ public class PrsScoreOptionsBean {
         }
 
         // The af threshold
-        if (aLine.hasOption(PrsScoreOptions.afThreshold.opt)) {
+        if (CliUtils.hasOption(aLine, PrsScoreOptions.afThreshold)) {
 
-            String option = aLine.getOptionValue(PrsScoreOptions.afThreshold.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsScoreOptions.afThreshold);
 
             try {
 
@@ -292,20 +293,20 @@ public class PrsScoreOptionsBean {
 
             }
             
-            if (!aLine.hasOption(PrsScoreOptions.afColumn.opt)) {
+            if (!CliUtils.hasOption(aLine, PrsScoreOptions.afColumn)) {
 
                 throw new IllegalArgumentException("No column provided for allele frequency.");
                 
             }
             
-            afColumn = aLine.getOptionValue(PrsScoreOptions.afColumn.opt);
+            afColumn = CliUtils.getOptionValue(aLine, PrsScoreOptions.afColumn);
             
         }
 
         // The beta quantile
-        if (aLine.hasOption(PrsScoreOptions.betaQuantile.opt)) {
+        if (CliUtils.hasOption(aLine, PrsScoreOptions.betaQuantile)) {
 
-            String option = aLine.getOptionValue(PrsScoreOptions.betaQuantile.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsScoreOptions.betaQuantile);
 
             try {
 
@@ -330,7 +331,7 @@ public class PrsScoreOptionsBean {
         }
 
         // The output file
-        filePath = aLine.getOptionValue(PrsScoreOptions.out.opt);
+        filePath = CliUtils.getOptionValue(aLine, PrsScoreOptions.out);
 
         destinationFile = new File(filePath);
 

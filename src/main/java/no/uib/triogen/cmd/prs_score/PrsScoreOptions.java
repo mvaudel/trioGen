@@ -6,13 +6,14 @@ import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.processing.prs.PrsPruner;
 import static no.uib.triogen.utils.Utils.CHROMOSOME_WILDCARD;
+import no.uib.triogen.utils.cli.CliOption;
 
 /**
  * Enum of the different options
  *
  * @author Marc Vaudel
  */
-public enum PrsScoreOptions {
+public enum PrsScoreOptions implements CliOption {
 
     geno("g", "geno", "The genotypes file. Wildcard: " + CHROMOSOME_WILDCARD + " for variable name.", true, true),
     variantId("vi", "variantId", "File listing the variants to include in the analysis. Default: process all variants in the genotypes file.", false, true),
@@ -132,5 +133,19 @@ public enum PrsScoreOptions {
                 .forEach(option -> output.append("-").append(String.format(formatter, option.opt + " (--" + option.longOpt + ")")).append(" ").append(option.description).append(LINE_SEPARATOR));
 
         return output.toString();
+    }
+
+    @Override
+    public String getOption() {
+        
+        return opt;
+        
+    }
+
+    @Override
+    public String getLongOption() {
+        
+        return longOpt;
+        
     }
 }

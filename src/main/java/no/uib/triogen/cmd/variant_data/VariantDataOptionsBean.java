@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.TreeSet;
 import no.uib.triogen.io.covariates.SpecificCovariatesFile;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
+import no.uib.triogen.utils.cli.CliUtils;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -68,7 +69,7 @@ public class VariantDataOptionsBean {
         // Check that mandatory options are provided
         for (VariantDataOptions option : VariantDataOptions.values()) {
 
-            if (option.mandatory && !aLine.hasOption(option.opt)) {
+            if (option.mandatory && !CliUtils.hasOption(aLine, option)) {
 
                 throw new IllegalArgumentException("No value found for mandatory option " + option.opt + " (" + option.longOpt + ")");
 
@@ -76,7 +77,7 @@ public class VariantDataOptionsBean {
         }
 
         // The genotypes file
-        String filePath = aLine.getOptionValue(VariantDataOptions.geno.opt);
+        String filePath = CliUtils.getOptionValue(aLine, VariantDataOptions.geno);
 
         genotypesFile = new File(filePath);
 
@@ -87,10 +88,10 @@ public class VariantDataOptionsBean {
         }
 
         // The chromosome name
-        chromosome = aLine.getOptionValue(VariantDataOptions.chromosome.opt);
+        chromosome = CliUtils.getOptionValue(aLine, VariantDataOptions.chromosome);
 
         // The variant ids
-        filePath = aLine.getOptionValue(VariantDataOptions.variantId.opt);
+        filePath = CliUtils.getOptionValue(aLine, VariantDataOptions.variantId);
 
         variantFile = new File(filePath);
 
@@ -101,7 +102,7 @@ public class VariantDataOptionsBean {
         }
 
         // the trio file
-        filePath = aLine.getOptionValue(VariantDataOptions.trio.opt);
+        filePath = CliUtils.getOptionValue(aLine, VariantDataOptions.trio);
 
         trioFile = new File(filePath);
 
@@ -112,7 +113,7 @@ public class VariantDataOptionsBean {
         }
 
         // The pheno file
-        filePath = aLine.getOptionValue(VariantDataOptions.phenoFile.opt);
+        filePath = CliUtils.getOptionValue(aLine, VariantDataOptions.phenoFile);
 
         phenotypesFile = new File(filePath);
 
@@ -123,7 +124,7 @@ public class VariantDataOptionsBean {
         }
 
         // The pheno columns
-        String option = aLine.getOptionValue(VariantDataOptions.phenoName.opt);
+        String option = CliUtils.getOptionValue(aLine, VariantDataOptions.phenoName);
 
         phenoNames = option.split(",");
 
@@ -134,9 +135,9 @@ public class VariantDataOptionsBean {
         }
 
         // The general covariates
-        if (aLine.hasOption(VariantDataOptions.covariate_general.opt)) {
+        if (CliUtils.hasOption(aLine, VariantDataOptions.covariate_general)) {
 
-            option = aLine.getOptionValue(VariantDataOptions.covariate_general.opt);
+            option = CliUtils.getOptionValue(aLine, VariantDataOptions.covariate_general);
 
             covariatesGeneral = option.split(",");
 
@@ -147,9 +148,9 @@ public class VariantDataOptionsBean {
         }
 
         // The specific covariates
-        if (aLine.hasOption(VariantDataOptions.covariate_specific.opt)) {
+        if (CliUtils.hasOption(aLine, VariantDataOptions.covariate_specific)) {
 
-            option = aLine.getOptionValue(VariantDataOptions.covariate_specific.opt);
+            option = CliUtils.getOptionValue(aLine, VariantDataOptions.covariate_specific);
 
             File covariatesFile = new File(option);
 
@@ -177,9 +178,9 @@ public class VariantDataOptionsBean {
         }
 
         // The child id column in the pheno file
-        if (aLine.hasOption(VariantDataOptions.childId.opt)) {
+        if (CliUtils.hasOption(aLine, VariantDataOptions.childId)) {
 
-            option = aLine.getOptionValue(VariantDataOptions.childId.opt);
+            option = CliUtils.getOptionValue(aLine, VariantDataOptions.childId);
 
             if (option.length() == 0) {
 
@@ -192,7 +193,7 @@ public class VariantDataOptionsBean {
         }
 
         // The output file
-        filePath = aLine.getOptionValue(VariantDataOptions.out.opt);
+        filePath = CliUtils.getOptionValue(aLine, VariantDataOptions.out);
 
         destinationFile = new File(filePath);
 
@@ -203,7 +204,7 @@ public class VariantDataOptionsBean {
         }
 
         // Variant log
-        variantLog = aLine.hasOption(VariantDataOptions.variantLog.opt);
+        variantLog = CliUtils.hasOption(aLine, VariantDataOptions.variantLog);
 
     }
 }

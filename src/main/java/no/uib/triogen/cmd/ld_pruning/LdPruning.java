@@ -11,7 +11,7 @@ import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.triogen.processing.ld.pruning.SimpleLdPruner;
 
 /**
- * Computes LD between variants and saves the results in a matrix.
+ * Simple LD pruning of a result set.
  *
  * @author Marc Vaudel
  */
@@ -81,9 +81,14 @@ public class LdPruning {
                 bean.maxP,
                 bean.pColName,
                 bean.idColName,
+                bean.rsidColName,
                 bean.phenoColName,
                 bean.contigColName,
-                bean.separator
+                bean.separator,
+                bean.buildNumber,
+                bean.ensemblPopulation,
+                bean.ldLinkPopulation,
+                bean.ldLinkToken
         );
 
         pruner.run();
@@ -100,10 +105,10 @@ public class LdPruning {
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print("              trioGen             " + LINE_SEPARATOR);
             lPrintWriter.print("               ****               " + LINE_SEPARATOR);
-            lPrintWriter.print("    Linkage Disequilibrium Value  " + LINE_SEPARATOR);
+            lPrintWriter.print("  Linkage Disequilibrium Pruning  " + LINE_SEPARATOR);
             lPrintWriter.print("==================================" + LINE_SEPARATOR);
             lPrintWriter.print(LINE_SEPARATOR
-                    + "The Linkage Disequilibrium Value command line returns the variants in ld with a given set of variants." + LINE_SEPARATOR
+                    + "The Linkage Disequilibrium Pruning command line prunes association results by LD." + LINE_SEPARATOR
                     + LINE_SEPARATOR
                     + "For documentation and bug report please refer to our code repository https://github.com/mvaudel/trioGen." + LINE_SEPARATOR
                     + LINE_SEPARATOR

@@ -3,13 +3,14 @@ package no.uib.triogen.cmd.locus;
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.utils.cli.CliOption;
 
 /**
  * Enum of the different options
  *
  * @author Marc Vaudel
  */
-public enum LocusZoomOptions {
+public enum LocusZoomOptions implements CliOption {
 
     ldMatrix("ld", "ldMatrix", "The file containing the ldMatrix. 'tld' file generated using the 'ldMatrix' command.", true, true),
     results("res", "results", "The results file of the LinearModel command,", true, true),
@@ -121,5 +122,19 @@ public enum LocusZoomOptions {
                 .forEach(option -> output.append("-").append(String.format(formatter, option.opt + " (--" + option.longOpt + ")")).append(" ").append(option.description).append(LINE_SEPARATOR));
 
         return output.toString();
+    }
+
+    @Override
+    public String getOption() {
+        
+        return opt;
+        
+    }
+
+    @Override
+    public String getLongOption() {
+        
+        return longOpt;
+        
     }
 }

@@ -4,13 +4,14 @@ import java.util.Arrays;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
 import no.uib.triogen.utils.Utils;
+import no.uib.triogen.utils.cli.CliOption;
 
 /**
  * Enum of the different options
  *
  * @author Marc Vaudel
  */
-public enum LdValueOptions {
+public enum LdValueOptions implements CliOption {
 
     ldMatrix("l", "ldMatrix", "The ld matrix file as generated using the LdMatrix command. If ld matrix files are computed per contig, replace the chromosome name with '" + Utils.CHROMOSOME_WILDCARD + "'.", true, true),
     variantId("vi", "variantId", "File listing the variants to query.", true, true),
@@ -116,5 +117,19 @@ public enum LdValueOptions {
                 .forEach(option -> output.append("-").append(String.format(formatter, option.opt + " (--" + option.longOpt + ")")).append(" ").append(option.description).append(LINE_SEPARATOR));
 
         return output.toString();
+    }
+
+    @Override
+    public String getOption() {
+        
+        return opt;
+        
+    }
+
+    @Override
+    public String getLongOption() {
+        
+        return longOpt;
+        
     }
 }

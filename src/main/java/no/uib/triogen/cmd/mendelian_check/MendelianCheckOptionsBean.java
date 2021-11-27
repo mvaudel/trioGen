@@ -2,6 +2,7 @@ package no.uib.triogen.cmd.mendelian_check;
 
 import java.io.File;
 import no.uib.triogen.cmd.ld_matrix.LdMatrixOptions;
+import no.uib.triogen.utils.cli.CliUtils;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -57,7 +58,7 @@ public class MendelianCheckOptionsBean {
         // Check that mandatory options are provided
         for (MendelianCheckOptions option : MendelianCheckOptions.values()) {
 
-            if (option.mandatory && !aLine.hasOption(option.opt)) {
+            if (option.mandatory && !CliUtils.hasOption(aLine, option)) {
 
                 throw new IllegalArgumentException("No value found for mandatory option " + option.opt + " (" + option.longOpt + ")");
 
@@ -65,7 +66,7 @@ public class MendelianCheckOptionsBean {
         }
 
         // The genotypes file
-        String filePath = aLine.getOptionValue(MendelianCheckOptions.geno.opt);
+        String filePath = CliUtils.getOptionValue(aLine, MendelianCheckOptions.geno);
 
         genotypesFile = new File(filePath);
 
@@ -76,12 +77,12 @@ public class MendelianCheckOptionsBean {
         }
 
         // The chromosome name
-        chromosome = aLine.getOptionValue(LdMatrixOptions.chromosome.opt);
+        chromosome = CliUtils.getOptionValue(aLine, LdMatrixOptions.chromosome);
 
         // The variant ids
-        if (aLine.hasOption(MendelianCheckOptions.variantId.opt)) {
+        if (CliUtils.hasOption(aLine, MendelianCheckOptions.variantId)) {
 
-            filePath = aLine.getOptionValue(MendelianCheckOptions.variantId.opt);
+            filePath = CliUtils.getOptionValue(aLine, MendelianCheckOptions.variantId);
 
             variantFile = new File(filePath);
 
@@ -93,7 +94,7 @@ public class MendelianCheckOptionsBean {
         }
 
         // The trio file
-        filePath = aLine.getOptionValue(MendelianCheckOptions.trio.opt);
+        filePath = CliUtils.getOptionValue(aLine, MendelianCheckOptions.trio);
 
         trioFile = new File(filePath);
 
@@ -104,9 +105,9 @@ public class MendelianCheckOptionsBean {
         }
 
         // The allele frequency threshold
-        if (aLine.hasOption(MendelianCheckOptions.af.opt)) {
+        if (CliUtils.hasOption(aLine, MendelianCheckOptions.af)) {
             
-            String option = aLine.getOptionValue(MendelianCheckOptions.af.opt);
+            String option = CliUtils.getOptionValue(aLine, MendelianCheckOptions.af);
 
             try {
 
@@ -131,7 +132,7 @@ public class MendelianCheckOptionsBean {
         }
 
         // The output file
-        filePath = aLine.getOptionValue(MendelianCheckOptions.out.opt);
+        filePath = CliUtils.getOptionValue(aLine, MendelianCheckOptions.out);
 
         destinationFile = new File(filePath);
 
@@ -144,9 +145,9 @@ public class MendelianCheckOptionsBean {
         }
 
         // Number of variants to chew in parallel
-        if (aLine.hasOption(MendelianCheckOptions.nVariants.opt)) {
+        if (CliUtils.hasOption(aLine, MendelianCheckOptions.nVariants)) {
 
-            String argString = aLine.getOptionValue(MendelianCheckOptions.nVariants.opt);
+            String argString = CliUtils.getOptionValue(aLine, MendelianCheckOptions.nVariants);
 
             try {
 
@@ -172,9 +173,9 @@ public class MendelianCheckOptionsBean {
         }
 
         // Timeout
-        if (aLine.hasOption(MendelianCheckOptions.timeOut.opt)) {
+        if (CliUtils.hasOption(aLine, MendelianCheckOptions.timeOut)) {
 
-            String argString = aLine.getOptionValue(MendelianCheckOptions.timeOut.opt);
+            String argString = CliUtils.getOptionValue(aLine, MendelianCheckOptions.timeOut);
 
             try {
 

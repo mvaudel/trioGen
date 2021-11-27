@@ -134,16 +134,21 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/ld/pruning/SimpleLdPruner.html#SimpleLdPruner-java.lang.String-java.io.File-java.io.File-double-double-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-">SimpleLdPruner</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;ldMatrixFilePath,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../no/uib/triogen/processing/ld/pruning/SimpleLdPruner.html#SimpleLdPruner-java.lang.String-java.io.File-java.io.File-double-double-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-int-java.lang.String-java.lang.String-java.lang.String-">SimpleLdPruner</a></span>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;ldMatrixFilePath,
               <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;resultsFile,
               <a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;destinationFile,
               double&nbsp;minR2,
               double&nbsp;maxP,
               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;pColName,
               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantIdColName,
+              <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;rsidColName,
               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;phenoColName,
               <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;contigColName,
-              <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;separator)</code>
+              <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;separator,
+              int&nbsp;buildNumber,
+              <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;ensemblPopulation,
+              <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;ldLinkPopulation,
+              <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;ldLinkToken)</code>
 <div class="block">Constructor.</div>
 </td>
 </tr>
@@ -190,7 +195,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="SimpleLdPruner-java.lang.String-java.io.File-java.io.File-double-double-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-">
+<a name="SimpleLdPruner-java.lang.String-java.io.File-java.io.File-double-double-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-int-java.lang.String-java.lang.String-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -203,22 +208,33 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
                       double&nbsp;maxP,
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;pColName,
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;variantIdColName,
+                      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;rsidColName,
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;phenoColName,
                       <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;contigColName,
-                      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;separator)</pre>
+                      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;separator,
+                      int&nbsp;buildNumber,
+                      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;ensemblPopulation,
+                      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;ldLinkPopulation,
+                      <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;ldLinkToken)</pre>
 <div class="block">Constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>ldMatrixFilePath</code> - The path to the LD matrices.</dd>
 <dd><code>resultsFile</code> - The results file to prune.</dd>
 <dd><code>destinationFile</code> - The file where to write the results.</dd>
-<dd><code>minR2</code> - The minimal R2 to consider that two hits cannot be considered independent.</dd>
+<dd><code>minR2</code> - The minimal R2 to consider that two hits cannot be
+ considered independent.</dd>
 <dd><code>maxP</code> - The maximal p-value to consider.</dd>
 <dd><code>pColName</code> - The p-value column name.</dd>
 <dd><code>variantIdColName</code> - The variant id column name.</dd>
+<dd><code>rsidColName</code> - The rsid column name.</dd>
 <dd><code>phenoColName</code> - The phenotype column name.</dd>
 <dd><code>contigColName</code> - The contig column name.</dd>
 <dd><code>separator</code> - The separator for the columns.</dd>
+<dd><code>buildNumber</code> - The build number to use when querying Ensembl.</dd>
+<dd><code>ensemblPopulation</code> - The reference population to use for Ensembl.</dd>
+<dd><code>ldLinkPopulation</code> - The reference population to use for LDlink.</dd>
+<dd><code>ldLinkToken</code> - The token to use for LDlink.</dd>
 </dl>
 </li>
 </ul>

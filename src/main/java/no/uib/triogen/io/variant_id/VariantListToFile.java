@@ -6,8 +6,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import no.uib.triogen.io.flat.SimpleFileWriter;
 import no.uib.triogen.io.flat.SimpleFileReader;
 import no.uib.triogen.io.genotypes.bgen.index.BgenIndex;
@@ -173,9 +171,23 @@ public class VariantListToFile {
 
                                 for (VariantCoordinates variantCoordinates : variantCoordinatesArray) {
 
-                                    ArrayList<ProxyCoordinates> ldLinkProxies = ldLinkToken == null ? new ArrayList<>(0) : LDproxy.getProxy(rsId, ldLinkPopulation, "r2", "500000", ldLinkToken);
+                                    ArrayList<ProxyCoordinates> ldLinkProxies = ldLinkToken == null ? new ArrayList<>(0)
+                                            : LDproxy.getProxy(
+                                                    rsId,
+                                                    ldLinkPopulation,
+                                                    "r2",
+                                                    "500000",
+                                                    ldLinkToken
+                                            );
 
-                                    proxies.addAll(ldLinkProxies);
+                                    for (ProxyCoordinates proxyCoordinates : ldLinkProxies) {
+
+                                        if (proxyCoordinates.r2 >= minR2) {
+
+                                            proxies.add(proxyCoordinates);
+
+                                        }
+                                    }
 
                                     ArrayList<ProxyCoordinates> ensemblProxies = EnsemblAPI.getProxies(
                                             rsId,

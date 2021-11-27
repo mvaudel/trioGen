@@ -2,6 +2,7 @@ package no.uib.triogen.cmd.simple_score;
 
 import java.io.File;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
+import no.uib.triogen.utils.cli.CliUtils;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -61,7 +62,7 @@ public class SimpleScoreOptionsBean {
         // Check that mandatory options are provided
         for (SimpleScoreOptions option : SimpleScoreOptions.values()) {
 
-            if (option.mandatory && !aLine.hasOption(option.opt)) {
+            if (option.mandatory && !CliUtils.hasOption(aLine, option)) {
 
                 throw new IllegalArgumentException("No value found for mandatory option " + option.opt + " (" + option.longOpt + ")");
 
@@ -69,7 +70,7 @@ public class SimpleScoreOptionsBean {
         }
 
         // The genotypes file
-        String filePath = aLine.getOptionValue(SimpleScoreOptions.geno.opt);
+        String filePath = CliUtils.getOptionValue(aLine, SimpleScoreOptions.geno);
 
         genotypesFile = new File(filePath);
 
@@ -80,10 +81,10 @@ public class SimpleScoreOptionsBean {
         }
 
         // The chromosome name
-        chromosome = aLine.getOptionValue(SimpleScoreOptions.chromosome.opt);
+        chromosome = CliUtils.getOptionValue(aLine, SimpleScoreOptions.chromosome);
 
         // The variant ids
-        filePath = aLine.getOptionValue(SimpleScoreOptions.variantId.opt);
+        filePath = CliUtils.getOptionValue(aLine, SimpleScoreOptions.variantId);
 
         variantFile = new File(filePath);
 
@@ -94,7 +95,7 @@ public class SimpleScoreOptionsBean {
         }
 
         // the trio file
-        filePath = aLine.getOptionValue(SimpleScoreOptions.trio.opt);
+        filePath = CliUtils.getOptionValue(aLine, SimpleScoreOptions.trio);
 
         trioFile = new File(filePath);
 
@@ -105,7 +106,7 @@ public class SimpleScoreOptionsBean {
         }
 
         // The pheno file
-        filePath = aLine.getOptionValue(SimpleScoreOptions.phenoFile.opt);
+        filePath = CliUtils.getOptionValue(aLine, SimpleScoreOptions.phenoFile);
 
         phenotypesFile = new File(filePath);
 
@@ -116,7 +117,7 @@ public class SimpleScoreOptionsBean {
         }
 
         // The pheno columns
-        String option = aLine.getOptionValue(SimpleScoreOptions.phenoName.opt);
+        String option = CliUtils.getOptionValue(aLine, SimpleScoreOptions.phenoName);
 
         phenoNames = option.split(",");
 
@@ -127,9 +128,9 @@ public class SimpleScoreOptionsBean {
         }
 
         // The child id column in the pheno file
-        if (aLine.hasOption(SimpleScoreOptions.childId.opt)) {
+        if (CliUtils.hasOption(aLine, SimpleScoreOptions.childId)) {
 
-            option = aLine.getOptionValue(SimpleScoreOptions.childId.opt);
+            option = CliUtils.getOptionValue(aLine, SimpleScoreOptions.childId);
 
             if (option.length() == 0) {
 
@@ -142,7 +143,7 @@ public class SimpleScoreOptionsBean {
         }
 
         // The output file
-        filePath = aLine.getOptionValue(SimpleScoreOptions.out.opt);
+        filePath = CliUtils.getOptionValue(aLine, SimpleScoreOptions.out);
 
         destinationFile = new File(filePath);
 
@@ -153,9 +154,9 @@ public class SimpleScoreOptionsBean {
         }
 
         // Timeout
-        if (aLine.hasOption(SimpleScoreOptions.timeOut.opt)) {
+        if (CliUtils.hasOption(aLine, SimpleScoreOptions.timeOut)) {
 
-            option = aLine.getOptionValue(SimpleScoreOptions.timeOut.opt);
+            option = CliUtils.getOptionValue(aLine, SimpleScoreOptions.timeOut);
 
             try {
 
@@ -181,7 +182,7 @@ public class SimpleScoreOptionsBean {
         }
 
         // Variant log
-        variantLog = aLine.hasOption(SimpleScoreOptions.variantLog.opt);
+        variantLog = CliUtils.hasOption(aLine, SimpleScoreOptions.variantLog);
 
     }
 }

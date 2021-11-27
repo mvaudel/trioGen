@@ -1,6 +1,7 @@
 package no.uib.triogen.cmd.ld_pruning;
 
 import java.io.File;
+import no.uib.triogen.utils.cli.CliUtils;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -13,7 +14,7 @@ public class LdPruningOptionsBean {
     /**
      * The ld matrix file path.
      */
-    public final String ldMatrixFilePath;
+    public String ldMatrixFilePath = null;
     /**
      * The results file to prune.
      */
@@ -35,6 +36,10 @@ public class LdPruningOptionsBean {
      */
     public String idColName = "variantId";
     /**
+     * The name of the variant rsid column.
+     */
+    public String rsidColName = "variantId";
+    /**
      * The name of the p-value column.
      */
     public String pColName = "h.intercept.p";
@@ -50,6 +55,22 @@ public class LdPruningOptionsBean {
      * The column separator.
      */
     public String separator = "\t";
+    /**
+     * The build number.
+     */
+    public int buildNumber = 37;
+    /**
+     * The reference population to use for Ensembl.
+     */
+    public String ensemblPopulation = null;
+    /**
+     * The reference population to use for LDlink.
+     */
+    public String ldLinkPopulation = null;
+    /**
+     * The token to use for LDlink.
+     */
+    public String ldLinkToken = null;
     
     /**
      * Constructor. Parses the command line options and conducts minimal sanity
@@ -64,7 +85,7 @@ public class LdPruningOptionsBean {
         // Check that mandatory options are provided
         for (LdPruningOptions option : LdPruningOptions.values()) {
 
-            if (option.mandatory && !aLine.hasOption(option.opt)) {
+            if (option.mandatory && !CliUtils.hasOption(aLine, option)) {
 
                 throw new IllegalArgumentException("No value found for mandatory option " + option.opt + " (" + option.longOpt + ")");
 
@@ -72,7 +93,7 @@ public class LdPruningOptionsBean {
         }
 
         // The results file
-        String filePath = aLine.getOptionValue(LdPruningOptions.results.opt);
+        String filePath = CliUtils.getOptionValue(aLine, LdPruningOptions.results);
 
         resultsFile = new File(filePath);
         
@@ -84,13 +105,13 @@ public class LdPruningOptionsBean {
         
 
         // The ld matrix file
-        filePath = aLine.getOptionValue(LdPruningOptions.ldMatrix.opt);
+        filePath = CliUtils.getOptionValue(aLine, LdPruningOptions.ldMatrix);
 
         ldMatrixFilePath = filePath;
         
 
         // The output file
-        filePath = aLine.getOptionValue(LdPruningOptions.out.opt);
+        filePath = CliUtils.getOptionValue(aLine, LdPruningOptions.out);
         
         if (!filePath.endsWith(".gz")) {
             
@@ -110,9 +131,9 @@ public class LdPruningOptionsBean {
         
         
         // The minimal r2 to consider in ld
-        if (aLine.hasOption(LdPruningOptions.minR2.opt)) {
+        if (CliUtils.hasOption(aLine, LdPruningOptions.minR2)) {
             
-            String stringValue = aLine.getOptionValue(LdPruningOptions.minR2.opt);
+            String stringValue = CliUtils.getOptionValue(aLine, LdPruningOptions.minR2);
             
             try {
                 
@@ -127,9 +148,9 @@ public class LdPruningOptionsBean {
         
         
         // The maximal p to report
-        if (aLine.hasOption(LdPruningOptions.maxP.opt)) {
+        if (CliUtils.hasOption(aLine, LdPruningOptions.maxP)) {
             
-            String stringValue = aLine.getOptionValue(LdPruningOptions.maxP.opt);
+            String stringValue = CliUtils.getOptionValue(aLine, LdPruningOptions.maxP);
             
             try {
                 
@@ -144,42 +165,93 @@ public class LdPruningOptionsBean {
         
         
         // The name of the variant id column
-        if (aLine.hasOption(LdPruningOptions.idColName.opt)) {
+        if (CliUtils.hasOption(aLine, LdPruningOptions.idColName)) {
             
-            idColName = aLine.getOptionValue(LdPruningOptions.idColName.opt);
+            idColName = CliUtils.getOptionValue(aLine, LdPruningOptions.idColName);
+            
+        }
+        
+        
+        // The name of the rsid column
+        if (CliUtils.hasOption(aLine, LdPruningOptions.rsidColName)) {
+            
+            rsidColName = CliUtils.getOptionValue(aLine, LdPruningOptions.rsidColName);
             
         }
         
         
         // The name of the p-value column
-        if (aLine.hasOption(LdPruningOptions.pColName.opt)) {
+        if (CliUtils.hasOption(aLine, LdPruningOptions.pColName)) {
             
-            pColName = aLine.getOptionValue(LdPruningOptions.pColName.opt);
-            
-        }
-        
-        
-        // The name of the pheno column
-        if (aLine.hasOption(LdPruningOptions.phenoColName.opt)) {
-            
-            phenoColName = aLine.getOptionValue(LdPruningOptions.phenoColName.opt);
+            pColName = CliUtils.getOptionValue(aLine, LdPruningOptions.pColName);
             
         }
         
         
         // The name of the pheno column
-        if (aLine.hasOption(LdPruningOptions.contigColName.opt)) {
+        if (CliUtils.hasOption(aLine, LdPruningOptions.phenoColName)) {
             
-            contigColName = aLine.getOptionValue(LdPruningOptions.contigColName.opt);
+            phenoColName = CliUtils.getOptionValue(aLine, LdPruningOptions.phenoColName);
             
         }
         
         
         // The name of the pheno column
-        if (aLine.hasOption(LdPruningOptions.separator.opt)) {
+        if (CliUtils.hasOption(aLine, LdPruningOptions.contigColName)) {
             
-            separator = aLine.getOptionValue(LdPruningOptions.separator.opt);
+            contigColName = CliUtils.getOptionValue(aLine, LdPruningOptions.contigColName);
             
+        }
+        
+        
+        // The name of the pheno column
+        if (CliUtils.hasOption(aLine, LdPruningOptions.separator)) {
+            
+            separator = CliUtils.getOptionValue(aLine, LdPruningOptions.separator);
+            
+        }
+
+        // The Ensembl build
+        if (CliUtils.hasOption(aLine, LdPruningOptions.build)) {
+
+            String buildString = CliUtils.getOptionValue(aLine, LdPruningOptions.build);
+
+            try {
+
+                buildNumber = Integer.parseInt(buildString);
+                
+                if (buildNumber != 37 && buildNumber != 38) {
+                    
+                throw new IllegalArgumentException("Input for build number (" + buildNumber + ") not supported, only 37 and 38 are currently supported.");
+                    
+                }
+
+            } catch (Exception e) {
+
+                throw new IllegalArgumentException("Input for build number (" + buildString + ") cannot be parsed as a number.");
+
+            }
+        }
+
+        // The reference population for proxies in Ensembl
+        if (CliUtils.hasOption(aLine, LdPruningOptions.ensemblPopulation)) {
+
+            ensemblPopulation = CliUtils.getOptionValue(aLine, LdPruningOptions.ensemblPopulation);
+
+        }
+
+        // The reference population for proxies in LDlink
+        if (CliUtils.hasOption(aLine, LdPruningOptions.ldlinkPopulation)) {
+
+            ldLinkPopulation = CliUtils.getOptionValue(aLine, LdPruningOptions.ldlinkPopulation);
+
+        }
+
+        // The token for proxies in LDlink
+        if (CliUtils.hasOption(aLine, LdPruningOptions.ldlinkToken)) {
+
+            ldLinkToken = CliUtils.getOptionValue(aLine, LdPruningOptions.ldlinkToken);
+
         }
     }
 }

@@ -1,6 +1,7 @@
 package no.uib.triogen.cmd.vcf_to_bgen;
 
 import java.io.File;
+import no.uib.triogen.utils.cli.CliUtils;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -32,7 +33,7 @@ public class VcfToBgenOptionsBean {
         // Check that mandatory options are provided
         for (VcfToBgenOptions option : VcfToBgenOptions.values()) {
 
-            if (option.mandatory && !aLine.hasOption(option.opt)) {
+            if (option.mandatory && !CliUtils.hasOption(aLine, option)) {
 
                 throw new IllegalArgumentException("No value found for mandatory option " + option.opt + " (" + option.longOpt + ")");
 
@@ -40,7 +41,7 @@ public class VcfToBgenOptionsBean {
         }
 
         // The input file
-        String filePath = aLine.getOptionValue(VcfToBgenOptions.input.opt);
+        String filePath = CliUtils.getOptionValue(aLine, VcfToBgenOptions.input);
 
         vcfFile = new File(filePath);
 
@@ -51,7 +52,7 @@ public class VcfToBgenOptionsBean {
         }
 
         // The output stem
-        filePath = aLine.getOptionValue(VcfToBgenOptions.output.opt);
+        filePath = CliUtils.getOptionValue(aLine, VcfToBgenOptions.output);
 
         bgenFile = new File(filePath);
 

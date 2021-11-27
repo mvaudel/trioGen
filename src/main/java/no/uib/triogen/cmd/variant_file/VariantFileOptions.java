@@ -3,13 +3,14 @@ package no.uib.triogen.cmd.variant_file;
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.utils.cli.CliOption;
 
 /**
  * Enum of the different options
  *
  * @author Marc Vaudel
  */
-public enum VariantFileOptions {
+public enum VariantFileOptions implements CliOption {
 
     geno("g", "geno", "The genotypes file path with chromosome name indicated as '{chr}'.", true, true),
     variantId("vi", "variantId", "A file containing a list of variant ids to query, one line per variant.", true, true),
@@ -121,5 +122,19 @@ public enum VariantFileOptions {
                 .forEach(option -> output.append("-").append(String.format(formatter, option.opt + " (--" + option.longOpt + ")")).append(" ").append(option.description).append(LINE_SEPARATOR));
 
         return output.toString();
+    }
+
+    @Override
+    public String getOption() {
+        
+        return opt;
+        
+    }
+
+    @Override
+    public String getLongOption() {
+        
+        return longOpt;
+        
     }
 }

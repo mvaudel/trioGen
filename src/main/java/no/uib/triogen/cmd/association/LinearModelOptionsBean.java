@@ -10,6 +10,7 @@ import no.uib.triogen.io.covariates.SpecificCovariatesFile;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.model.phenotypes.PhenotypesHandler;
 import no.uib.triogen.processing.linear_model.LinearModelRunnable;
+import no.uib.triogen.utils.cli.CliUtils;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -93,7 +94,7 @@ public class LinearModelOptionsBean {
         // Check that mandatory options are provided
         for (LinearModelOptions option : LinearModelOptions.values()) {
 
-            if (option.mandatory && !aLine.hasOption(option.opt)) {
+            if (option.mandatory && !CliUtils.hasOption(aLine, option)) {
 
                 throw new IllegalArgumentException("No value found for mandatory option " + option.opt + " (" + option.longOpt + ")");
 
@@ -101,7 +102,7 @@ public class LinearModelOptionsBean {
         }
 
         // The genotypes file
-        String filePath = aLine.getOptionValue(LinearModelOptions.geno.opt);
+        String filePath = CliUtils.getOptionValue(aLine, LinearModelOptions.geno);
 
         genotypesFile = new File(filePath);
 
@@ -112,12 +113,12 @@ public class LinearModelOptionsBean {
         }
 
         // The chromosome name
-        chromosome = aLine.getOptionValue(LinearModelOptions.chromosome.opt);
+        chromosome = CliUtils.getOptionValue(aLine, LinearModelOptions.chromosome);
 
         // The variant ids
-        if (aLine.hasOption(LinearModelOptions.variantId.opt)) {
+        if (CliUtils.hasOption(aLine, LinearModelOptions.variantId)) {
 
-            filePath = aLine.getOptionValue(LinearModelOptions.variantId.opt);
+            filePath = CliUtils.getOptionValue(aLine, LinearModelOptions.variantId);
 
             variantFile = new File(filePath);
 
@@ -129,9 +130,9 @@ public class LinearModelOptionsBean {
         }
 
         // The max distance
-        if (aLine.hasOption(LinearModelOptions.maxDistance.opt)) {
+        if (CliUtils.hasOption(aLine, LinearModelOptions.maxDistance)) {
 
-            String stringValue = aLine.getOptionValue(LinearModelOptions.maxDistance.opt);
+            String stringValue = CliUtils.getOptionValue(aLine, LinearModelOptions.maxDistance);
 
             maxDistance = Integer.parseInt(stringValue);
 
@@ -143,9 +144,9 @@ public class LinearModelOptionsBean {
         }
 
         // The allele frequency threshold
-        if (aLine.hasOption(LinearModelOptions.afThreshold.opt)) {
+        if (CliUtils.hasOption(aLine, LinearModelOptions.afThreshold)) {
 
-            String option = aLine.getOptionValue(LinearModelOptions.afThreshold.opt);
+            String option = CliUtils.getOptionValue(aLine, LinearModelOptions.afThreshold);
 
             try {
 
@@ -170,7 +171,7 @@ public class LinearModelOptionsBean {
         }
 
         // the trio file
-        filePath = aLine.getOptionValue(LinearModelOptions.trio.opt);
+        filePath = CliUtils.getOptionValue(aLine, LinearModelOptions.trio);
 
         trioFile = new File(filePath);
 
@@ -181,7 +182,7 @@ public class LinearModelOptionsBean {
         }
 
         // The pheno file
-        filePath = aLine.getOptionValue(LinearModelOptions.phenoFile.opt);
+        filePath = CliUtils.getOptionValue(aLine, LinearModelOptions.phenoFile);
 
         phenotypesFile = new File(filePath);
 
@@ -192,7 +193,7 @@ public class LinearModelOptionsBean {
         }
 
         // The pheno columns
-        String option = aLine.getOptionValue(LinearModelOptions.phenoName.opt);
+        String option = CliUtils.getOptionValue(aLine, LinearModelOptions.phenoName);
 
         phenoNames = option.split(",");
 
@@ -203,9 +204,9 @@ public class LinearModelOptionsBean {
         }
 
         // The general covariates
-        if (aLine.hasOption(LinearModelOptions.covariate_general.opt)) {
+        if (CliUtils.hasOption(aLine, LinearModelOptions.covariate_general)) {
 
-            option = aLine.getOptionValue(LinearModelOptions.covariate_general.opt);
+            option = CliUtils.getOptionValue(aLine, LinearModelOptions.covariate_general);
 
             covariatesGeneral = option.split(",");
 
@@ -216,9 +217,9 @@ public class LinearModelOptionsBean {
         }
 
         // The specific covariates
-        if (aLine.hasOption(LinearModelOptions.covariate_specific.opt)) {
+        if (CliUtils.hasOption(aLine, LinearModelOptions.covariate_specific)) {
 
-            option = aLine.getOptionValue(LinearModelOptions.covariate_specific.opt);
+            option = CliUtils.getOptionValue(aLine, LinearModelOptions.covariate_specific);
 
             File covariatesFile = new File(option);
 
@@ -246,9 +247,9 @@ public class LinearModelOptionsBean {
         }
 
         // The child id column in the pheno file
-        if (aLine.hasOption(LinearModelOptions.childId.opt)) {
+        if (CliUtils.hasOption(aLine, LinearModelOptions.childId)) {
 
-            option = aLine.getOptionValue(LinearModelOptions.childId.opt);
+            option = CliUtils.getOptionValue(aLine, LinearModelOptions.childId);
 
             if (option.length() == 0) {
 
@@ -261,9 +262,9 @@ public class LinearModelOptionsBean {
         }
 
         // The models
-        if (aLine.hasOption(LinearModelOptions.model.opt)) {
+        if (CliUtils.hasOption(aLine, LinearModelOptions.model)) {
 
-            option = aLine.getOptionValue(LinearModelOptions.model.opt);
+            option = CliUtils.getOptionValue(aLine, LinearModelOptions.model);
 
             modelNames = option.split(",");
 
@@ -305,14 +306,14 @@ public class LinearModelOptionsBean {
                 );
 
         // Inclusion of cases where no regression can be done
-        if (aLine.hasOption(LinearModelOptions.x0.opt)) {
+        if (CliUtils.hasOption(aLine, LinearModelOptions.x0)) {
 
             LinearModelRunnable.x0 = true;
 
         }
 
         // The output file
-        filePath = aLine.getOptionValue(LinearModelOptions.out.opt);
+        filePath = CliUtils.getOptionValue(aLine, LinearModelOptions.out);
 
         destinationFile = new File(filePath);
 
@@ -323,9 +324,9 @@ public class LinearModelOptionsBean {
         }
 
         // Number of variants to chew in parallel
-        if (aLine.hasOption(LinearModelOptions.nVariants.opt)) {
+        if (CliUtils.hasOption(aLine, LinearModelOptions.nVariants)) {
 
-            option = aLine.getOptionValue(LinearModelOptions.nVariants.opt);
+            option = CliUtils.getOptionValue(aLine, LinearModelOptions.nVariants);
 
             try {
 
@@ -351,9 +352,9 @@ public class LinearModelOptionsBean {
         }
 
         // Timeout
-        if (aLine.hasOption(LinearModelOptions.timeOut.opt)) {
+        if (CliUtils.hasOption(aLine, LinearModelOptions.timeOut)) {
 
-            option = aLine.getOptionValue(LinearModelOptions.timeOut.opt);
+            option = CliUtils.getOptionValue(aLine, LinearModelOptions.timeOut);
 
             try {
 
@@ -379,7 +380,7 @@ public class LinearModelOptionsBean {
         }
 
         // Variant log
-        variantLog = aLine.hasOption(LinearModelOptions.variantLog.opt);
+        variantLog = CliUtils.hasOption(aLine, LinearModelOptions.variantLog);
 
     }
 }

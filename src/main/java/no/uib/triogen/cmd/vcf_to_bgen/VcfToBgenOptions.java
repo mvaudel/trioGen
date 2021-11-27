@@ -3,13 +3,14 @@ package no.uib.triogen.cmd.vcf_to_bgen;
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.utils.cli.CliOption;
 
 /**
  * Enum of the different options
  *
  * @author Marc Vaudel
  */
-public enum VcfToBgenOptions {
+public enum VcfToBgenOptions implements CliOption {
 
     input("i", "input", "The vcf file.", true, true),
     output("o", "output", "The bgen file.", true, true);
@@ -114,5 +115,19 @@ public enum VcfToBgenOptions {
                 .forEach(option -> output.append("-").append(String.format(formatter, option.opt + " (--" + option.longOpt + ")")).append(" ").append(option.description).append(LINE_SEPARATOR));
 
         return output.toString();
+    }
+
+    @Override
+    public String getOption() {
+        
+        return opt;
+        
+    }
+
+    @Override
+    public String getLongOption() {
+        
+        return longOpt;
+        
     }
 }

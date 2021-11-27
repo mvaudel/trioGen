@@ -4,13 +4,14 @@ import java.util.Arrays;
 import org.apache.commons.cli.Options;
 import no.uib.triogen.model.trio_genotypes.Model;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.utils.cli.CliOption;
 
 /**
  * Enum of the different options
  *
  * @author Marc Vaudel
  */
-public enum LinearModelOptions {
+public enum LinearModelOptions implements CliOption {
 
     geno("g", "geno", "The genotypes file.", true, true),
     chromosome("c", "chromosome", "The chromosome name.", true, true),
@@ -130,5 +131,19 @@ public enum LinearModelOptions {
                 .forEach(option -> output.append("-").append(String.format(formatter, option.opt + " (--" + option.longOpt + ")")).append(" ").append(option.description).append(LINE_SEPARATOR));
 
         return output.toString();
+    }
+
+    @Override
+    public String getOption() {
+        
+        return opt;
+        
+    }
+
+    @Override
+    public String getLongOption() {
+        
+        return longOpt;
+        
     }
 }

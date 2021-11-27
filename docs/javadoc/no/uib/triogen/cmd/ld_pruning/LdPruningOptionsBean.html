@@ -129,21 +129,45 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_pruning/LdPruningOptionsBean.html#buildNumber">buildNumber</a></span></code>
+<div class="block">The build number.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_pruning/LdPruningOptionsBean.html#contigColName">contigColName</a></span></code>
 <div class="block">The name of the contig column.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_pruning/LdPruningOptionsBean.html#destinationFile">destinationFile</a></span></code>
 <div class="block">File where to write the output.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_pruning/LdPruningOptionsBean.html#ensemblPopulation">ensemblPopulation</a></span></code>
+<div class="block">The reference population to use for Ensembl.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_pruning/LdPruningOptionsBean.html#idColName">idColName</a></span></code>
 <div class="block">The name of the variant id column.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_pruning/LdPruningOptionsBean.html#ldLinkPopulation">ldLinkPopulation</a></span></code>
+<div class="block">The reference population to use for LDlink.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_pruning/LdPruningOptionsBean.html#ldLinkToken">ldLinkToken</a></span></code>
+<div class="block">The token to use for LDlink.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -183,6 +207,12 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_pruning/LdPruningOptionsBean.html#rsidColName">rsidColName</a></span></code>
+<div class="block">The name of the variant rsid column.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../no/uib/triogen/cmd/ld_pruning/LdPruningOptionsBean.html#separator">separator</a></span></code>
 <div class="block">The column separator.</div>
@@ -243,7 +273,7 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <ul class="blockList">
 <li class="blockList">
 <h4>ldMatrixFilePath</h4>
-<pre>public final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> ldMatrixFilePath</pre>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> ldMatrixFilePath</pre>
 <div class="block">The ld matrix file path.</div>
 </li>
 </ul>
@@ -297,6 +327,16 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <div class="block">The name of the variant id column.</div>
 </li>
 </ul>
+<a name="rsidColName">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>rsidColName</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> rsidColName</pre>
+<div class="block">The name of the variant rsid column.</div>
+</li>
+</ul>
 <a name="pColName">
 <!--   -->
 </a>
@@ -330,11 +370,51 @@ extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?
 <a name="separator">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>separator</h4>
 <pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> separator</pre>
 <div class="block">The column separator.</div>
+</li>
+</ul>
+<a name="buildNumber">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>buildNumber</h4>
+<pre>public&nbsp;int buildNumber</pre>
+<div class="block">The build number.</div>
+</li>
+</ul>
+<a name="ensemblPopulation">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ensemblPopulation</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> ensemblPopulation</pre>
+<div class="block">The reference population to use for Ensembl.</div>
+</li>
+</ul>
+<a name="ldLinkPopulation">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ldLinkPopulation</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> ldLinkPopulation</pre>
+<div class="block">The reference population to use for LDlink.</div>
+</li>
+</ul>
+<a name="ldLinkToken">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>ldLinkToken</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> ldLinkToken</pre>
+<div class="block">The token to use for LDlink.</div>
 </li>
 </ul>
 </li>

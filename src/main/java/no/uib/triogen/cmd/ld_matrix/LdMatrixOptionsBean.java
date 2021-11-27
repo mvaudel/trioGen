@@ -1,6 +1,7 @@
 package no.uib.triogen.cmd.ld_matrix;
 
 import java.io.File;
+import no.uib.triogen.utils.cli.CliUtils;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -60,7 +61,7 @@ public class LdMatrixOptionsBean {
         // Check that mandatory options are provided
         for (LdMatrixOptions option : LdMatrixOptions.values()) {
 
-            if (option.mandatory && !aLine.hasOption(option.opt)) {
+            if (option.mandatory && !CliUtils.hasOption(aLine, option)) {
 
                 throw new IllegalArgumentException("No value found for mandatory option " + option.opt + " (" + option.longOpt + ")");
 
@@ -68,7 +69,7 @@ public class LdMatrixOptionsBean {
         }
 
         // The genotypes file
-        String filePath = aLine.getOptionValue(LdMatrixOptions.geno.opt);
+        String filePath = CliUtils.getOptionValue(aLine, LdMatrixOptions.geno);
 
         genotypesFile = new File(filePath);
 
@@ -79,10 +80,10 @@ public class LdMatrixOptionsBean {
         }
 
         // The chromosome name
-        chromosome = aLine.getOptionValue(LdMatrixOptions.chromosome.opt);
+        chromosome = CliUtils.getOptionValue(aLine, LdMatrixOptions.chromosome);
 
         // The trio file
-        filePath = aLine.getOptionValue(LdMatrixOptions.trio.opt);
+        filePath = CliUtils.getOptionValue(aLine, LdMatrixOptions.trio);
 
         trioFile = new File(filePath);
 
@@ -93,9 +94,9 @@ public class LdMatrixOptionsBean {
         }
 
         // The max distance
-        if (aLine.hasOption(LdMatrixOptions.maxDistance.opt)) {
+        if (CliUtils.hasOption(aLine, LdMatrixOptions.maxDistance)) {
 
-            String stringValue = aLine.getOptionValue(LdMatrixOptions.maxDistance.opt);
+            String stringValue = CliUtils.getOptionValue(aLine, LdMatrixOptions.maxDistance);
 
             maxDistance = Integer.parseInt(stringValue);
 
@@ -107,9 +108,9 @@ public class LdMatrixOptionsBean {
         }
 
         // The minimal R2
-        if (aLine.hasOption(LdMatrixOptions.minR2.opt)) {
+        if (CliUtils.hasOption(aLine, LdMatrixOptions.minR2)) {
             
-            String option = aLine.getOptionValue(LdMatrixOptions.minR2.opt);
+            String option = CliUtils.getOptionValue(aLine, LdMatrixOptions.minR2);
 
             try {
 
@@ -134,9 +135,9 @@ public class LdMatrixOptionsBean {
         }
 
         // The allele frequency threshold
-        if (aLine.hasOption(LdMatrixOptions.af.opt)) {
+        if (CliUtils.hasOption(aLine, LdMatrixOptions.af)) {
 
-            String option = aLine.getOptionValue(LdMatrixOptions.af.opt);
+            String option = CliUtils.getOptionValue(aLine, LdMatrixOptions.af);
 
             try {
 
@@ -161,7 +162,7 @@ public class LdMatrixOptionsBean {
         }
 
         // The output file
-        filePath = aLine.getOptionValue(LdMatrixOptions.out.opt);
+        filePath = CliUtils.getOptionValue(aLine, LdMatrixOptions.out);
         
         if (filePath.endsWith(".tld")) {
             
@@ -180,9 +181,9 @@ public class LdMatrixOptionsBean {
         }
 
         // Number of variants to chew in parallel
-        if (aLine.hasOption(LdMatrixOptions.nVariants.opt)) {
+        if (CliUtils.hasOption(aLine, LdMatrixOptions.nVariants)) {
 
-            String argString = aLine.getOptionValue(LdMatrixOptions.nVariants.opt);
+            String argString = CliUtils.getOptionValue(aLine, LdMatrixOptions.nVariants);
 
             try {
 
@@ -208,9 +209,9 @@ public class LdMatrixOptionsBean {
         }
 
         // Timeout
-        if (aLine.hasOption(LdMatrixOptions.timeOut.opt)) {
+        if (CliUtils.hasOption(aLine, LdMatrixOptions.timeOut)) {
 
-            String argString = aLine.getOptionValue(LdMatrixOptions.timeOut.opt);
+            String argString = CliUtils.getOptionValue(aLine, LdMatrixOptions.timeOut);
 
             try {
 

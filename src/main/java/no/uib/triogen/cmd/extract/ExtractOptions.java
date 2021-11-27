@@ -3,13 +3,14 @@ package no.uib.triogen.cmd.extract;
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.utils.cli.CliOption;
 
 /**
  * Enum of the different options
  *
  * @author Marc Vaudel
  */
-public enum ExtractOptions {
+public enum ExtractOptions implements CliOption {
 
     input("i", "input", "The results file.", true, true),
     split_by_variant("sv", "split_by_variant", "Splits the output creating one file per variant. Default: no split.", false, false),
@@ -119,5 +120,19 @@ public enum ExtractOptions {
                 .forEach(option -> output.append("-").append(String.format(formatter, option.opt + " (--" + option.longOpt + ")")).append(" ").append(option.description).append(LINE_SEPARATOR));
 
         return output.toString();
+    }
+
+    @Override
+    public String getOption() {
+        
+        return opt;
+        
+    }
+
+    @Override
+    public String getLongOption() {
+        
+        return longOpt;
+        
     }
 }

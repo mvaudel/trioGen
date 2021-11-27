@@ -1,6 +1,7 @@
 package no.uib.triogen.cmd.variant_file;
 
 import java.io.File;
+import no.uib.triogen.utils.cli.CliUtils;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -64,7 +65,7 @@ public class VariantFileOptionsBean {
         // Check that mandatory options are provided
         for (VariantFileOptions option : VariantFileOptions.values()) {
 
-            if (option.mandatory && !aLine.hasOption(option.opt)) {
+            if (option.mandatory && !CliUtils.hasOption(aLine, option)) {
 
                 throw new IllegalArgumentException("No value found for mandatory option " + option.opt + " (" + option.longOpt + ")");
 
@@ -72,10 +73,10 @@ public class VariantFileOptionsBean {
         }
 
         // The genotype files
-        genotypesFilePath = aLine.getOptionValue(VariantFileOptions.geno.opt);
+        genotypesFilePath = CliUtils.getOptionValue(aLine, VariantFileOptions.geno);
 
         // The variant id file
-        String filePath = aLine.getOptionValue(VariantFileOptions.variantId.opt);
+        String filePath = CliUtils.getOptionValue(aLine, VariantFileOptions.variantId);
 
         variantFile = new File(filePath);
 
@@ -86,9 +87,9 @@ public class VariantFileOptionsBean {
         }
 
         // The Ensembl build
-        if (aLine.hasOption(VariantFileOptions.build.opt)) {
+        if (CliUtils.hasOption(aLine, VariantFileOptions.build)) {
 
-            String buildString = aLine.getOptionValue(VariantFileOptions.build.opt);
+            String buildString = CliUtils.getOptionValue(aLine, VariantFileOptions.build);
 
             try {
 
@@ -108,30 +109,30 @@ public class VariantFileOptionsBean {
         }
 
         // The reference population for proxies in Ensembl
-        if (aLine.hasOption(VariantFileOptions.ensemblPopulation.opt)) {
+        if (CliUtils.hasOption(aLine, VariantFileOptions.ensemblPopulation)) {
 
-            ensemblPopulation = aLine.getOptionValue(VariantFileOptions.ensemblPopulation.opt);
+            ensemblPopulation = CliUtils.getOptionValue(aLine, VariantFileOptions.ensemblPopulation);
 
         }
 
         // The reference population for proxies in LDlink
-        if (aLine.hasOption(VariantFileOptions.ldlinkPopulation.opt)) {
+        if (CliUtils.hasOption(aLine, VariantFileOptions.ldlinkPopulation)) {
 
-            ldLinkPopulation = aLine.getOptionValue(VariantFileOptions.ldlinkPopulation.opt);
+            ldLinkPopulation = CliUtils.getOptionValue(aLine, VariantFileOptions.ldlinkPopulation);
 
         }
 
         // The token for proxies in LDlink
-        if (aLine.hasOption(VariantFileOptions.ldlinkToken.opt)) {
+        if (CliUtils.hasOption(aLine, VariantFileOptions.ldlinkToken)) {
 
-            ldLinkToken = aLine.getOptionValue(VariantFileOptions.ldlinkToken.opt);
+            ldLinkToken = CliUtils.getOptionValue(aLine, VariantFileOptions.ldlinkToken);
 
         }
 
         // The minimal r2 for proxies
-        if (aLine.hasOption(VariantFileOptions.r2.opt)) {
+        if (CliUtils.hasOption(aLine, VariantFileOptions.r2)) {
 
-            String r2String = aLine.getOptionValue(VariantFileOptions.r2.opt);
+            String r2String = CliUtils.getOptionValue(aLine, VariantFileOptions.r2);
 
             try {
 
@@ -145,7 +146,7 @@ public class VariantFileOptionsBean {
         }
 
         // The output file
-        filePath = aLine.getOptionValue(VariantFileOptions.out.opt);
+        filePath = CliUtils.getOptionValue(aLine, VariantFileOptions.out);
 
         destinationFile = new File(filePath);
 
@@ -160,7 +161,7 @@ public class VariantFileOptionsBean {
         missingFile = new File(destinationFolder, destinationFile.getName() + "_missing");
 
         // The source
-        source = aLine.getOptionValue(VariantFileOptions.source.opt);
+        source = CliUtils.getOptionValue(aLine, VariantFileOptions.source);
 
     }
 }

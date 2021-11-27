@@ -7,6 +7,7 @@ import no.uib.triogen.cmd.prs_score.PrsScoreOptions;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.processing.prs.PrsPruner;
 import no.uib.triogen.processing.prs.PrsUtils.ScoringMode;
+import no.uib.triogen.utils.cli.CliUtils;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -102,7 +103,7 @@ public class PrsThresholdOptionsBean {
         // Check that mandatory options are provided
         for (PrsThresholdOptions option : PrsThresholdOptions.values()) {
 
-            if (option.mandatory && !aLine.hasOption(option.opt)) {
+            if (option.mandatory && !CliUtils.hasOption(aLine, option)) {
 
                 throw new IllegalArgumentException("No value found for mandatory option " + option.opt + " (" + option.longOpt + ")");
 
@@ -110,7 +111,7 @@ public class PrsThresholdOptionsBean {
         }
 
         // The genotypes file
-        genotypesFile = aLine.getOptionValue(PrsThresholdOptions.geno.opt);
+        genotypesFile = CliUtils.getOptionValue(aLine, PrsThresholdOptions.geno);
 
         File genotypesFolder = (new File(genotypesFile)).getParentFile();
 
@@ -125,7 +126,7 @@ public class PrsThresholdOptionsBean {
         }
 
         // The phenotypes file
-        String filePath = aLine.getOptionValue(PrsThresholdOptions.phenoFile.opt);
+        String filePath = CliUtils.getOptionValue(aLine, PrsThresholdOptions.phenoFile);
         
         phenoFile = new File(filePath);
 
@@ -136,13 +137,13 @@ public class PrsThresholdOptionsBean {
         }
 
         // The phenotype name
-        phenoName = aLine.getOptionValue(PrsThresholdOptions.phenoName.opt);
+        phenoName = CliUtils.getOptionValue(aLine, PrsThresholdOptions.phenoName);
         
 
         // The genotypes file
-        if (aLine.hasOption(PrsThresholdOptions.bgenIndexFolder.opt)) {
+        if (CliUtils.hasOption(aLine, PrsThresholdOptions.bgenIndexFolder)) {
 
-            filePath = aLine.getOptionValue(PrsThresholdOptions.bgenIndexFolder.opt);
+            filePath = CliUtils.getOptionValue(aLine, PrsThresholdOptions.bgenIndexFolder);
 
             bgenIndexFolder = new File(filePath);
 
@@ -154,7 +155,7 @@ public class PrsThresholdOptionsBean {
         }
 
         // the trio file
-        filePath = aLine.getOptionValue(PrsThresholdOptions.trio.opt);
+        filePath = CliUtils.getOptionValue(aLine, PrsThresholdOptions.trio);
 
         trioFile = new File(filePath);
 
@@ -165,9 +166,9 @@ public class PrsThresholdOptionsBean {
         }
 
         // The variant ids
-        if (aLine.hasOption(PrsThresholdOptions.variantId.opt)) {
+        if (CliUtils.hasOption(aLine, PrsThresholdOptions.variantId)) {
 
-            filePath = aLine.getOptionValue(PrsThresholdOptions.variantId.opt);
+            filePath = CliUtils.getOptionValue(aLine, PrsThresholdOptions.variantId);
 
             variantFile = new File(filePath);
 
@@ -179,7 +180,7 @@ public class PrsThresholdOptionsBean {
         }
 
         // The summary stats file
-        filePath = aLine.getOptionValue(PrsThresholdOptions.scoreFile.opt);
+        filePath = CliUtils.getOptionValue(aLine, PrsThresholdOptions.scoreFile);
 
         scoreFile = new File(filePath);
 
@@ -190,18 +191,18 @@ public class PrsThresholdOptionsBean {
         }
 
         // The scoring mode
-        if (aLine.hasOption(PrsThresholdOptions.model.opt)) {
+        if (CliUtils.hasOption(aLine, PrsThresholdOptions.model)) {
 
-            String option = aLine.getOptionValue(PrsThresholdOptions.model.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsThresholdOptions.model);
 
             model = Model.valueOf(option);
 
         }
 
         // The variables
-        if (aLine.hasOption(PrsThresholdOptions.variables.opt)) {
+        if (CliUtils.hasOption(aLine, PrsThresholdOptions.variables)) {
 
-            String option = aLine.getOptionValue(PrsThresholdOptions.variables.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsThresholdOptions.variables);
 
             variables = option.split(",");
 
@@ -215,23 +216,23 @@ public class PrsThresholdOptionsBean {
         }
 
         // The beta pattern
-        if (aLine.hasOption(PrsThresholdOptions.betaPattern.opt)) {
+        if (CliUtils.hasOption(aLine, PrsThresholdOptions.betaPattern)) {
 
-            betaPattern = aLine.getOptionValue(PrsThresholdOptions.betaPattern.opt);
+            betaPattern = CliUtils.getOptionValue(aLine, PrsThresholdOptions.betaPattern);
 
         }
 
         // The se pattern
-        if (aLine.hasOption(PrsThresholdOptions.sePattern.opt)) {
+        if (CliUtils.hasOption(aLine, PrsThresholdOptions.sePattern)) {
 
-            sePattern = aLine.getOptionValue(PrsThresholdOptions.sePattern.opt);
+            sePattern = CliUtils.getOptionValue(aLine, PrsThresholdOptions.sePattern);
 
         }
 
         // The af threshold
-        if (aLine.hasOption(PrsScoreOptions.afThreshold.opt)) {
+        if (CliUtils.hasOption(aLine, PrsScoreOptions.afThreshold)) {
 
-            String option = aLine.getOptionValue(PrsScoreOptions.afThreshold.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsScoreOptions.afThreshold);
 
             try {
 
@@ -254,18 +255,18 @@ public class PrsThresholdOptionsBean {
 
             }
             
-            if (!aLine.hasOption(PrsScoreOptions.afColumn.opt)) {
+            if (!CliUtils.hasOption(aLine, PrsScoreOptions.afColumn)) {
 
                 throw new IllegalArgumentException("No column provided for allele frequency.");
                 
             }
             
-            afColumn = aLine.getOptionValue(PrsScoreOptions.afColumn.opt);
+            afColumn = CliUtils.getOptionValue(aLine, PrsScoreOptions.afColumn);
             
         }
 
         // The output file
-        filePath = aLine.getOptionValue(PrsThresholdOptions.out.opt);
+        filePath = CliUtils.getOptionValue(aLine, PrsThresholdOptions.out);
 
         destinationFile = new File(filePath);
 

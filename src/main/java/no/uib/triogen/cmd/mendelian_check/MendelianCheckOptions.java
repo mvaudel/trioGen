@@ -3,13 +3,14 @@ package no.uib.triogen.cmd.mendelian_check;
 import java.util.Arrays;
 import org.apache.commons.cli.Options;
 import static no.uib.triogen.io.IoUtils.LINE_SEPARATOR;
+import no.uib.triogen.utils.cli.CliOption;
 
 /**
  * Enum of the different options
  *
  * @author Marc Vaudel
  */
-public enum MendelianCheckOptions {
+public enum MendelianCheckOptions implements CliOption {
 
     geno("g", "geno", "The genotypes file.", true, true),
     chromosome("c", "chromosome", "The chromosome name.", true, true),
@@ -120,5 +121,19 @@ public enum MendelianCheckOptions {
                 .forEach(option -> output.append("-").append(String.format(formatter, option.opt + " (--" + option.longOpt + ")")).append(" ").append(option.description).append(LINE_SEPARATOR));
 
         return output.toString();
+    }
+
+    @Override
+    public String getOption() {
+        
+        return opt;
+        
+    }
+
+    @Override
+    public String getLongOption() {
+        
+        return longOpt;
+        
     }
 }

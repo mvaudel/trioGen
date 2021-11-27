@@ -5,6 +5,7 @@ import no.uib.triogen.cmd.ld_pruning.LdPruningOptions;
 import no.uib.triogen.cmd.prs_score.PrsScoreOptions;
 import no.uib.triogen.model.trio_genotypes.Model;
 import no.uib.triogen.processing.prs.PrsPruner;
+import no.uib.triogen.utils.cli.CliUtils;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -100,7 +101,7 @@ public class PrsPruneOptionsBean {
         // Check that mandatory options are provided
         for (PrsPruneOptions option : PrsPruneOptions.values()) {
 
-            if (option.mandatory && !aLine.hasOption(option.opt)) {
+            if (option.mandatory && !CliUtils.hasOption(aLine, option)) {
 
                 throw new IllegalArgumentException("No value found for mandatory option " + option.opt + " (" + option.longOpt + ")");
 
@@ -108,7 +109,7 @@ public class PrsPruneOptionsBean {
         }
 
         // The summary stats file
-        String filePath = aLine.getOptionValue(PrsPruneOptions.trainingFile.opt);
+        String filePath = CliUtils.getOptionValue(aLine, PrsPruneOptions.trainingFile);
 
         trainingFile = new File(filePath);
 
@@ -119,79 +120,79 @@ public class PrsPruneOptionsBean {
         }
 
         // The ld matrix file
-        filePath = aLine.getOptionValue(LdPruningOptions.ldMatrix.opt);
+        filePath = CliUtils.getOptionValue(aLine, LdPruningOptions.ldMatrix);
 
         ldMatrixFilePath = filePath;
 
         // snp id column
-        if (aLine.hasOption(PrsPruneOptions.snpId.opt)) {
+        if (CliUtils.hasOption(aLine, PrsPruneOptions.snpId)) {
 
-            snpIdColumn = aLine.getOptionValue(PrsPruneOptions.snpId.opt);
+            snpIdColumn = CliUtils.getOptionValue(aLine, PrsPruneOptions.snpId);
 
         }
 
         // chr column
-        if (aLine.hasOption(PrsPruneOptions.chrColumn.opt)) {
+        if (CliUtils.hasOption(aLine, PrsPruneOptions.chrColumn)) {
 
-            chrColumn = aLine.getOptionValue(PrsPruneOptions.chrColumn.opt);
+            chrColumn = CliUtils.getOptionValue(aLine, PrsPruneOptions.chrColumn);
 
         }
 
         // pos column
-        if (aLine.hasOption(PrsPruneOptions.posColumn.opt)) {
+        if (CliUtils.hasOption(aLine, PrsPruneOptions.posColumn)) {
 
-            posColumn = aLine.getOptionValue(PrsPruneOptions.posColumn.opt);
+            posColumn = CliUtils.getOptionValue(aLine, PrsPruneOptions.posColumn);
 
         }
 
         // ref column
-        if (aLine.hasOption(PrsPruneOptions.refColumn.opt)) {
+        if (CliUtils.hasOption(aLine, PrsPruneOptions.refColumn)) {
 
-            refColumn = aLine.getOptionValue(PrsPruneOptions.refColumn.opt);
+            refColumn = CliUtils.getOptionValue(aLine, PrsPruneOptions.refColumn);
 
         }
 
         // ea column
-        if (aLine.hasOption(PrsPruneOptions.eaColumn.opt)) {
+        if (CliUtils.hasOption(aLine, PrsPruneOptions.eaColumn)) {
 
-            eaColumn = aLine.getOptionValue(PrsPruneOptions.eaColumn.opt);
+            eaColumn = CliUtils.getOptionValue(aLine, PrsPruneOptions.eaColumn);
 
         }
 
         // The variables
-        if (aLine.hasOption(PrsPruneOptions.variables.opt)) {
+        if (CliUtils.hasOption(aLine, PrsPruneOptions.variables)) {
 
-            String option = aLine.getOptionValue(PrsPruneOptions.variables.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsPruneOptions.variables);
 
             variables = option.split(",");
             
         }
 
         // The beta pattern
-        if (aLine.hasOption(PrsPruneOptions.betaPattern.opt)) {
+        if (CliUtils.hasOption(aLine, PrsPruneOptions.betaPattern)) {
 
-            betaPattern = aLine.getOptionValue(PrsPruneOptions.betaPattern.opt);
+            betaPattern = CliUtils.getOptionValue(aLine, PrsPruneOptions.betaPattern);
 
         }
 
         // The se pattern
-        if (aLine.hasOption(PrsPruneOptions.sePattern.opt)) {
+        if (CliUtils.hasOption(aLine, PrsPruneOptions.sePattern)) {
 
-            sePattern = aLine.getOptionValue(PrsPruneOptions.sePattern.opt);
+            sePattern = CliUtils.getOptionValue(aLine, PrsPruneOptions.sePattern);
 
         }
 
         // The p pattern
-        if (aLine.hasOption(PrsPruneOptions.pPattern.opt)) {
+        if (CliUtils.hasOption(aLine, PrsPruneOptions.pPattern)) {
 
-            pPattern = aLine.getOptionValue(PrsPruneOptions.pPattern.opt);
+            pPattern = CliUtils.getOptionValue(aLine, PrsPruneOptions.pPattern);
 
         }
 
         // The ld threshold
-        if (aLine.hasOption(PrsPruneOptions.ldLocusThreshold.opt)) {
+        if (CliUtils.hasOption(aLine, PrsPruneOptions.ldLocusThreshold)) {
 
-            String option = aLine.getOptionValue(PrsPruneOptions.ldLocusThreshold.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsPruneOptions.ldLocusThreshold);
 
             try {
 
@@ -215,9 +216,9 @@ public class PrsPruneOptionsBean {
         }
 
         // The ld threshold
-        if (aLine.hasOption(PrsPruneOptions.ldTopHitThreshold.opt)) {
+        if (CliUtils.hasOption(aLine, PrsPruneOptions.ldTopHitThreshold)) {
 
-            String option = aLine.getOptionValue(PrsPruneOptions.ldTopHitThreshold.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsPruneOptions.ldTopHitThreshold);
 
             try {
 
@@ -241,9 +242,9 @@ public class PrsPruneOptionsBean {
         }
 
         // The ld threshold
-        if (aLine.hasOption(PrsPruneOptions.nSnpPerLocusThreshold.opt)) {
+        if (CliUtils.hasOption(aLine, PrsPruneOptions.nSnpPerLocusThreshold)) {
 
-            String option = aLine.getOptionValue(PrsPruneOptions.nSnpPerLocusThreshold.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsPruneOptions.nSnpPerLocusThreshold);
 
             try {
 
@@ -267,9 +268,9 @@ public class PrsPruneOptionsBean {
         }
 
         // The p-value threshold
-        if (aLine.hasOption(PrsPruneOptions.pValueThreshold.opt)) {
+        if (CliUtils.hasOption(aLine, PrsPruneOptions.pValueThreshold)) {
 
-            String option = aLine.getOptionValue(PrsPruneOptions.pValueThreshold.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsPruneOptions.pValueThreshold);
 
             try {
 
@@ -294,9 +295,9 @@ public class PrsPruneOptionsBean {
         }
 
         // The af threshold
-        if (aLine.hasOption(PrsScoreOptions.afThreshold.opt)) {
+        if (CliUtils.hasOption(aLine, PrsScoreOptions.afThreshold)) {
 
-            String option = aLine.getOptionValue(PrsScoreOptions.afThreshold.opt);
+            String option = CliUtils.getOptionValue(aLine, PrsScoreOptions.afThreshold);
 
             try {
 
@@ -319,18 +320,18 @@ public class PrsPruneOptionsBean {
 
             }
             
-            if (!aLine.hasOption(PrsScoreOptions.afColumn.opt)) {
+            if (!CliUtils.hasOption(aLine, PrsScoreOptions.afColumn)) {
 
                 throw new IllegalArgumentException("No column provided for allele frequency.");
                 
             }
             
-            afColumn = aLine.getOptionValue(PrsScoreOptions.afColumn.opt);
+            afColumn = CliUtils.getOptionValue(aLine, PrsScoreOptions.afColumn);
             
         }
 
         // The output file
-        filePath = aLine.getOptionValue(PrsPruneOptions.out.opt);
+        filePath = CliUtils.getOptionValue(aLine, PrsPruneOptions.out);
 
         destinationFile = new File(filePath);
 

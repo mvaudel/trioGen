@@ -1,6 +1,7 @@
 package no.uib.triogen.cmd.ld_value;
 
 import java.io.File;
+import no.uib.triogen.utils.cli.CliUtils;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -36,7 +37,7 @@ public class LdValueOptionsBean {
         // Check that mandatory options are provided
         for (LdValueOptions option : LdValueOptions.values()) {
 
-            if (option.mandatory && !aLine.hasOption(option.opt)) {
+            if (option.mandatory && !CliUtils.hasOption(aLine, option)) {
 
                 throw new IllegalArgumentException("No value found for mandatory option " + option.opt + " (" + option.longOpt + ")");
 
@@ -44,14 +45,14 @@ public class LdValueOptionsBean {
         }
 
         // The ld matrix file
-        String filePath = aLine.getOptionValue(LdValueOptions.ldMatrix.opt);
+        String filePath = CliUtils.getOptionValue(aLine, LdValueOptions.ldMatrix);
 
         ldMatrixFilePath = filePath;
 
         // The variant ids
-        if (aLine.hasOption(LdValueOptions.variantId.opt)) {
+        if (CliUtils.hasOption(aLine, LdValueOptions.variantId)) {
 
-            filePath = aLine.getOptionValue(LdValueOptions.variantId.opt);
+            filePath = CliUtils.getOptionValue(aLine, LdValueOptions.variantId);
 
             variantFile = new File(filePath);
 
@@ -63,7 +64,7 @@ public class LdValueOptionsBean {
         }
 
         // The output file
-        filePath = aLine.getOptionValue(LdValueOptions.out.opt);
+        filePath = CliUtils.getOptionValue(aLine, LdValueOptions.out);
         
         if (!filePath.endsWith(".gz")) {
             

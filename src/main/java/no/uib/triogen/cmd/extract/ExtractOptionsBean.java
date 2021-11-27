@@ -1,6 +1,7 @@
 package no.uib.triogen.cmd.extract;
 
 import java.io.File;
+import no.uib.triogen.utils.cli.CliUtils;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -52,7 +53,7 @@ public class ExtractOptionsBean {
         // Check that mandatory options are provided
         for (ExtractOptions option : ExtractOptions.values()) {
 
-            if (option.mandatory && !aLine.hasOption(option.opt)) {
+            if (option.mandatory && !CliUtils.hasOption(aLine, option)) {
 
                 throw new IllegalArgumentException("No value found for mandatory option " + option.opt + " (" + option.longOpt + ")");
 
@@ -60,7 +61,7 @@ public class ExtractOptionsBean {
         }
 
         // The input file
-        String filePath = aLine.getOptionValue(ExtractOptions.input.opt);
+        String filePath = CliUtils.getOptionValue(aLine, ExtractOptions.input);
 
         inputFile = new File(filePath);
 
@@ -71,7 +72,7 @@ public class ExtractOptionsBean {
         }
 
         // The output stem
-        filePath = aLine.getOptionValue(ExtractOptions.output.opt);
+        filePath = CliUtils.getOptionValue(aLine, ExtractOptions.output);
 
         outputStem = filePath;
 
@@ -84,15 +85,15 @@ public class ExtractOptionsBean {
         }
 
         // Split by variant
-        splitByVariant = aLine.hasOption(ExtractOptions.split_by_variant.opt);
+        splitByVariant = CliUtils.hasOption(aLine, ExtractOptions.split_by_variant);
 
         // Split by pheno
-        splitByPheno = aLine.hasOption(ExtractOptions.split_by_pheno.opt);
+        splitByPheno = CliUtils.hasOption(aLine, ExtractOptions.split_by_pheno);
 
         // The values columns
-        if (aLine.hasOption(ExtractOptions.columns.opt)) {
+        if (CliUtils.hasOption(aLine, ExtractOptions.columns)) {
 
-            String option = aLine.getOptionValue(ExtractOptions.columns.opt);
+            String option = CliUtils.getOptionValue(aLine, ExtractOptions.columns);
             
             columns = option.split(",");
             
@@ -103,9 +104,9 @@ public class ExtractOptionsBean {
         }
 
         // The variant ids
-        if (aLine.hasOption(ExtractOptions.variantId.opt)) {
+        if (CliUtils.hasOption(aLine, ExtractOptions.variantId)) {
 
-            String option = aLine.getOptionValue(ExtractOptions.variantId.opt);
+            String option = CliUtils.getOptionValue(aLine, ExtractOptions.variantId);
             
             variantIds = option.split(",");
             
@@ -116,9 +117,9 @@ public class ExtractOptionsBean {
         }
 
         // The pheno names
-        if (aLine.hasOption(ExtractOptions.phenoName.opt)) {
+        if (CliUtils.hasOption(aLine, ExtractOptions.phenoName)) {
 
-            String option = aLine.getOptionValue(ExtractOptions.phenoName.opt);
+            String option = CliUtils.getOptionValue(aLine, ExtractOptions.phenoName);
             
             phenoNames = option.split(",");
             

@@ -67,3 +67,4 @@ no.uib.triogen.scripts_marc.prs
 no.uib.triogen.scripts_marc.vcf
 no.uib.triogen.scripts_marc.wlm
 no.uib.triogen.utils
+no.uib.triogen.utils.cli

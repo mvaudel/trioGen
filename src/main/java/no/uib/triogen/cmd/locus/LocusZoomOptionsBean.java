@@ -1,6 +1,7 @@
 package no.uib.triogen.cmd.locus;
 
 import java.io.File;
+import no.uib.triogen.utils.cli.CliUtils;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -60,7 +61,7 @@ public class LocusZoomOptionsBean {
         // Check that mandatory options are provided
         for (LocusZoomOptions option : LocusZoomOptions.values()) {
 
-            if (option.mandatory && !aLine.hasOption(option.opt)) {
+            if (option.mandatory && !CliUtils.hasOption(aLine, option)) {
 
                 throw new IllegalArgumentException("No value found for mandatory option " + option.opt + " (" + option.longOpt + ")");
 
@@ -68,16 +69,16 @@ public class LocusZoomOptionsBean {
         }
 
         // The phenotype
-        if (aLine.hasOption(LocusZoomOptions.phenoName.opt)) {
+        if (CliUtils.hasOption(aLine, LocusZoomOptions.phenoName)) {
 
-            targetPhenotype = aLine.getOptionValue(LocusZoomOptions.phenoName.opt);
+            targetPhenotype = CliUtils.getOptionValue(aLine, LocusZoomOptions.phenoName);
 
         }
 
         // The variant ids
-        if (aLine.hasOption(LocusZoomOptions.variantId.opt)) {
+        if (CliUtils.hasOption(aLine, LocusZoomOptions.variantId)) {
 
-            String filePath = aLine.getOptionValue(LocusZoomOptions.variantId.opt);
+            String filePath = CliUtils.getOptionValue(aLine, LocusZoomOptions.variantId);
 
             variantFile = new File(filePath);
 
@@ -89,9 +90,9 @@ public class LocusZoomOptionsBean {
         }
 
         // The max distance
-        if (aLine.hasOption(LocusZoomOptions.maxDistance.opt)) {
+        if (CliUtils.hasOption(aLine, LocusZoomOptions.maxDistance)) {
 
-            String stringValue = aLine.getOptionValue(LocusZoomOptions.maxDistance.opt);
+            String stringValue = CliUtils.getOptionValue(aLine, LocusZoomOptions.maxDistance);
 
             maxDistance = Integer.parseInt(stringValue);
 
@@ -103,9 +104,9 @@ public class LocusZoomOptionsBean {
         }
 
         // The build number
-        if (aLine.hasOption(LocusZoomOptions.buildNumber.opt)) {
+        if (CliUtils.hasOption(aLine, LocusZoomOptions.buildNumber)) {
 
-            String stringValue = aLine.getOptionValue(LocusZoomOptions.buildNumber.opt);
+            String stringValue = CliUtils.getOptionValue(aLine, LocusZoomOptions.buildNumber);
 
             buildNumber = Integer.parseInt(stringValue);
 
@@ -117,7 +118,7 @@ public class LocusZoomOptionsBean {
         }
 
         // The ld matrix file
-        String filePath = aLine.getOptionValue(LocusZoomOptions.ldMatrix.opt);
+        String filePath = CliUtils.getOptionValue(aLine, LocusZoomOptions.ldMatrix);
 
         ldMatrixFile = new File(filePath);
 
@@ -128,7 +129,7 @@ public class LocusZoomOptionsBean {
         }
 
         // The association results file
-        filePath = aLine.getOptionValue(LocusZoomOptions.results.opt);
+        filePath = CliUtils.getOptionValue(aLine, LocusZoomOptions.results);
 
         resultsFile = new File(filePath);
 
@@ -139,19 +140,19 @@ public class LocusZoomOptionsBean {
         }
 
         // The output file
-        outputFileStem = aLine.getOptionValue(LocusZoomOptions.out.opt);
+        outputFileStem = CliUtils.getOptionValue(aLine, LocusZoomOptions.out);
 
         // The gene coordinates file
-        if (aLine.hasOption(LocusZoomOptions.geneCoordinates.opt)) {
+        if (CliUtils.hasOption(aLine, LocusZoomOptions.geneCoordinates)) {
 
-            geneCoordinatesFileStem = aLine.getOptionValue(LocusZoomOptions.geneCoordinates.opt);
+            geneCoordinatesFileStem = CliUtils.getOptionValue(aLine, LocusZoomOptions.geneCoordinates);
             
         }
 
         // The log file
-        if (aLine.hasOption(LocusZoomOptions.log.opt)) {
+        if (CliUtils.hasOption(aLine, LocusZoomOptions.log)) {
 
-            logFilePath = aLine.getOptionValue(LocusZoomOptions.log.opt);
+            logFilePath = CliUtils.getOptionValue(aLine, LocusZoomOptions.log);
             
         }
     }
