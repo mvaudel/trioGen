@@ -53,9 +53,9 @@ public class SimpleLdPruner {
      */
     private final String rsidColName;
     /**
-     * The name of the p-value column.
+     * The names of the p-value column.
      */
-    private final String pColName;
+    private final String[] pColNames;
     /**
      * The name of the pheno column.
      */
@@ -98,7 +98,7 @@ public class SimpleLdPruner {
      * @param minR2 The minimal R2 to consider that two hits cannot be
      * considered independent.
      * @param maxP The maximal p-value to consider.
-     * @param pColName The p-value column name.
+     * @param pColNames The p-value column name.
      * @param variantIdColName The variant id column name.
      * @param rsidColName The rsid column name.
      * @param phenoColName The phenotype column name.
@@ -115,7 +115,7 @@ public class SimpleLdPruner {
             File destinationFile,
             double minR2,
             double maxP,
-            String pColName,
+            String[] pColNames,
             String variantIdColName,
             String rsidColName,
             String phenoColName,
@@ -134,7 +134,7 @@ public class SimpleLdPruner {
         this.maxP = maxP;
         this.variantIdColName = variantIdColName;
         this.rsidColName = rsidColName;
-        this.pColName = pColName;
+        this.pColNames = pColNames;
         this.phenoColName = phenoColName;
         this.contigColName = contigColName;
         this.separator = separator;
@@ -149,8 +149,38 @@ public class SimpleLdPruner {
      * Runs the pruning.
      */
     public void run() {
+        
+        // Check whether there is more than one line in the file
 
         Instant begin = Instant.now();
+        
+        String headerLine = null;
+        boolean singleLine = true;
+        
+        try (SimpleFileReader reader = SimpleFileReader.getFileReader(resultsFile)) {
+            
+            String line;
+            while ((line = reader.readLine()) != null) {
+                
+                if (headerLine == null) {
+                    
+                    headerLine = line;
+                    
+                } else {
+                    
+                    singleLine = false;
+                    break;
+                    
+                }
+            }
+        }
+        
+        if (singleLine) {
+            
+            return;
+            
+        }
+        
 
         System.out.println("Getting p-values from " + resultsFile.getAbsolutePath() + ".");
 
@@ -167,7 +197,7 @@ public class SimpleLdPruner {
             int phenoColIndex = -1;
             int contigColIndex = -1;
 
-            String headerLine = reader.readLine();
+            headerLine = reader.readLine();
 
             lineNumber++;
 
@@ -185,10 +215,12 @@ public class SimpleLdPruner {
                     rsidColIndex = i;
 
                 }
+                for (String pColName : pColNames) {
                 if (lineSplit[i].equals(pColName)) {
 
                     pColIndex = i;
 
+                }
                 }
                 if (phenoColName != null && lineSplit[i].equals(phenoColName)) {
 
@@ -209,12 +241,13 @@ public class SimpleLdPruner {
             }
             if ((ensemblPopulation != null || ldLinkPopulation != null) && rsidColIndex == -1) {
 
-                throw new IllegalArgumentException("Rsid column '" + variantIdColName + "' not found in " + resultsFile + ".\n" + headerLine);
+                throw new IllegalArgumentException("Rsid column '" + rsidColName + "' not found in " + resultsFile + ".\n" + headerLine);
 
             }
             if (pColIndex == -1) {
 
-                throw new IllegalArgumentException("P-value column '" + pColName + "' not found in " + resultsFile + ".\n" + headerLine);
+                String pColNameSummary = String.join(",", pColNames);
+                throw new IllegalArgumentException("P-value column '" + pColNameSummary + "' not found in " + resultsFile + ".\n" + headerLine);
 
             }
             if (phenoColName != null && phenoColIndex == -1) {
@@ -295,7 +328,7 @@ public class SimpleLdPruner {
 
             long timeInSec = end.getEpochSecond() - begin.getEpochSecond();
 
-            System.out.println("Getting p-values finished (" + timeInSec + " s)");
+            System.out.println("Getting p-values finished (" + lineNumber + " variants loaded in " + timeInSec + " s)");
 
             begin = Instant.now();
 
@@ -353,13 +386,10 @@ public class SimpleLdPruner {
 
         return contigMap.entrySet()
                 .parallelStream()
-                .filter(
-                        entry -> getLdMatrixReader(entry.getKey()) != null
-                )
                 .collect(
                         Collectors.toMap(
                                 Entry::getKey,
-                                entry -> prune(entry.getValue(), variantToRsidMap, getLdMatrixReader(entry.getKey())),
+                                entry -> prune(entry.getValue(), variantToRsidMap, entry.getKey()),
                                 (a, b) -> a,
                                 TreeMap::new
                         )
@@ -412,15 +442,17 @@ public class SimpleLdPruner {
      *
      * @param phenoMap The map of p-values for a given phenotype.
      * @param variantToRsidMap The variant id to rsid map.
-     * @param ldMatrixReader The LD matrix reader.
+     * @param contig The contig.
      *
      * @return The pruned values for this phenotype.
      */
     private TreeMap<String, ArrayList<String>> prune(
             HashMap<String, TreeMap<Double, TreeMap<String, String>>> phenoMap,
             HashMap<String, String> variantToRsidMap,
-            LdMatrixReader ldMatrixReader
+            String contig
     ) {
+        
+        LdMatrixReader ldMatrixReader = ldMatrixFilePath == null ? null : getLdMatrixReader(contig);
 
         return phenoMap.entrySet()
                 .parallelStream()
@@ -493,7 +525,7 @@ public class SimpleLdPruner {
 
                     if (ensemblPopulation != null) {
 
-                        if (rsid != null) {
+                        if (rsid != null && rsid.startsWith("rs")) {
 
                             ArrayList<ProxyCoordinates> ensemblProxies = EnsemblAPI.getProxies(
                                     rsid,
@@ -512,13 +544,13 @@ public class SimpleLdPruner {
 
                     if (ldLinkPopulation != null) {
 
-                        if (rsid != null) {
+                        if (rsid != null && rsid.startsWith("rs")) {
 
                             ArrayList<ProxyCoordinates> ldlinkProxies = LDproxy.getProxy(
                                     rsid,
                                     ldLinkPopulation,
-                                    "r2",
-                                    "500000",
+                                    LDproxy.R2,
+                                    LDproxy.WINDOW,
                                     ldLinkToken
                             );
 

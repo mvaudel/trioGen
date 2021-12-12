@@ -5,6 +5,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.GetRequest;
 import java.util.ArrayList;
 import no.uib.triogen.model.annotation.ProxyCoordinates;
+import no.uib.triogen.utils.Waiter;
 
 /**
  * This class queries the LDlink API to retrieve proxies.
@@ -16,7 +17,27 @@ public class LDproxy {
     /**
      * The server url.
      */
-    public final static String restUrl = "https://ldlink.nci.nih.gov/LDlinkRest/ldproxy";
+    public final static String REST_URL = "https://ldlink.nci.nih.gov/LDlinkRest/ldproxy";
+    /**
+     * The default r2/d setting.
+     */
+    public final static String R2 = "r2";
+    /**
+     * The default window size.
+     */
+    public final static String WINDOW = "500000";
+    /**
+     * The number of attempts.
+     */
+    public final static int N_ATTEMPTS = 1000;
+    /**
+     * The delay between attempts.
+     */
+    public final static long DELAY = 100;
+    /**
+     * Waiter.
+     */
+    public final static Waiter WAITER = new Waiter();
 
     /**
      * Main method.
@@ -24,11 +45,11 @@ public class LDproxy {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+
         ArrayList<ProxyCoordinates> debug = getProxy("rs7520742", "CEU&GBR", "r2", "500000", "b823fa70d49d");
-        
+
         int test = debug.size();
-        
+
     }
 
     /**
@@ -42,7 +63,7 @@ public class LDproxy {
      *
      * @return The proxies to use.
      */
-    public static ArrayList<ProxyCoordinates> getProxy(
+    public synchronized static ArrayList<ProxyCoordinates> getProxy(
             String rsId,
             String pop,
             String r2d,
@@ -50,96 +71,124 @@ public class LDproxy {
             String token
     ) {
 
-        try {
+        Throwable throwable = null;
 
-            String requestUrl = String.join("",
-                    restUrl, "?var=", rsId, "&pop=", pop, "&r2_d=", r2d, "&window=", window, "&token=", token
-            );
-            GetRequest request = Unirest.get(requestUrl);
+        for (int attempt = 0; attempt < N_ATTEMPTS; attempt++) {
 
-            HttpResponse<String> answer = request.asString();
+            try {
 
-            String answerBody = answer.getBody();
+                String requestUrl = String.join("",
+                        REST_URL, "?var=", rsId, "&pop=", pop, "&r2_d=", r2d, "&window=", window, "&token=", token
+                );
+                GetRequest request = Unirest.get(requestUrl);
 
-            ArrayList<ProxyCoordinates> results = new ArrayList<>();
+                HttpResponse<String> answer = request.asString();
 
-            if (answerBody.charAt(0) != '{') {
+                String answerBody = answer.getBody();
 
-                String[] answerBodySplit = answerBody.split("\n");
+                try {
 
-                String line = answerBodySplit[0];
-                String[] lineSplit = line.split("\t");
+                    ArrayList<ProxyCoordinates> results = new ArrayList<>();
 
-                if (!lineSplit[0].equals("RS_Number")) {
+                    if (answerBody.charAt(0) != '{') {
 
-                    System.out.println(answerBody);
+                        String[] answerBodySplit = answerBody.split("\n");
 
-                    throw new IllegalArgumentException("'" + lineSplit[0] + "' found where 'RS_Number' was expected in LDproxy query for " + rsId + ".");
+                        String line = answerBodySplit[0];
+                        String[] lineSplit = line.split("\t");
 
-                }
-                if (!lineSplit[1].equals("Coord")) {
+                        if (!lineSplit[0].equals("RS_Number")) {
 
-                    System.out.println(answerBody);
+                            System.out.println(answerBody);
 
-                    throw new IllegalArgumentException("'" + lineSplit[0] + "' found where 'Coord' was expected in LDproxy query for " + rsId + ".");
+                            throw new IllegalArgumentException("'" + lineSplit[0] + "' found where 'RS_Number' was expected in LDproxy query for " + rsId + ".");
 
-                }
-                if (!lineSplit[6].equals("R2")) {
+                        }
+                        if (!lineSplit[1].equals("Coord")) {
 
-                    System.out.println(answerBody);
+                            System.out.println(answerBody);
 
-                    throw new IllegalArgumentException("'" + lineSplit[0] + "' found where 'R2' was expected in LDproxy query for " + rsId + ".");
+                            throw new IllegalArgumentException("'" + lineSplit[0] + "' found where 'Coord' was expected in LDproxy query for " + rsId + ".");
 
-                }
-                if (!lineSplit[7].equals("Correlated_Alleles")) {
+                        }
+                        if (!lineSplit[6].equals("R2")) {
 
-                    System.out.println(answerBody);
+                            System.out.println(answerBody);
 
-                    throw new IllegalArgumentException("'" + lineSplit[0] + "' found where 'Correlated_Alleles' was expected in LDproxy query for " + rsId + ".");
+                            throw new IllegalArgumentException("'" + lineSplit[0] + "' found where 'R2' was expected in LDproxy query for " + rsId + ".");
 
-                }
+                        }
+                        if (!lineSplit[7].equals("Correlated_Alleles")) {
 
-                for (int lineI = 1; lineI < answerBodySplit.length; lineI++) {
+                            System.out.println(answerBody);
 
-                    line = answerBodySplit[lineI];
+                            throw new IllegalArgumentException("'" + lineSplit[0] + "' found where 'Correlated_Alleles' was expected in LDproxy query for " + rsId + ".");
 
-                    lineSplit = line.split("\t");
+                        }
 
-                    String rsid = lineSplit[0];
-                    String coord = lineSplit[1];
-                    String[] coordSplit = coord.split(":");
-                    String chr = coordSplit[0];
+                        for (int lineI = 1; lineI < answerBodySplit.length; lineI++) {
 
-                    if (chr.startsWith("chr")) {
+                            line = answerBodySplit[lineI];
 
-                        chr = chr.substring(3);
+                            lineSplit = line.split("\t");
 
+                            String rsid = lineSplit[0];
+                            String coord = lineSplit[1];
+                            String[] coordSplit = coord.split(":");
+                            String chr = coordSplit[0];
+
+                            if (chr.startsWith("chr")) {
+
+                                chr = chr.substring(3);
+
+                            }
+
+                            int bp = Integer.parseInt(coordSplit[1]);
+                            double r2 = Double.parseDouble(lineSplit[6]);
+                            String correlatedAlleles = lineSplit[7];
+
+                            ProxyCoordinates proxyCoordinates = new ProxyCoordinates(
+                                    rsid,
+                                    chr,
+                                    bp,
+                                    bp,
+                                    correlatedAlleles,
+                                    r2
+                            );
+
+                            results.add(proxyCoordinates);
+
+                        }
                     }
 
-                    int bp = Integer.parseInt(coordSplit[1]);
-                    double r2 = Double.parseDouble(lineSplit[6]);
-                    String correlatedAlleles = lineSplit[7];
+                    return results;
 
-                    ProxyCoordinates proxyCoordinates = new ProxyCoordinates(
-                            rsid,
-                            chr,
-                            bp,
-                            bp,
-                            correlatedAlleles,
-                            r2
-                    );
+                } catch (Throwable t) {
 
-                    results.add(proxyCoordinates);
+                    System.out.println(answerBody);
+
+                    throwable = t;
 
                 }
+
+            } catch (Throwable t) {
+
+                try {
+                    
+                    WAITER.delay(DELAY);
+
+                } catch (InterruptedException e) {
+
+                    throw new RuntimeException(e);
+
+                }
+
+                throwable = t;
+
             }
-
-            return results;
-
-        } catch (Throwable t) {
-
-            throw new RuntimeException(t);
-
         }
+
+        throw new RuntimeException(throwable);
+
     }
 }

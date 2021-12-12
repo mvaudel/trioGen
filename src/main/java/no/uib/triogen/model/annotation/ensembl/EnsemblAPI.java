@@ -6,11 +6,11 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import no.uib.triogen.utils.Waiter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -29,6 +29,18 @@ public class EnsemblAPI {
      * The server url for the GRCh37 build.
      */
     public final static String SERVER_GRCh37 = "http://grch37.rest.ensembl.org";
+    /**
+     * The number of attempts.
+     */
+    public final static int N_ATTEMPTS = 1000;
+    /**
+     * The delay between attempts.
+     */
+    public final static long DELAY = 100;
+    /**
+     * Waiter.
+     */
+    public final static Waiter WAITER = new Waiter();
 
     /**
      * Returns the url of the server to use for the given build.
@@ -254,56 +266,89 @@ public class EnsemblAPI {
      *
      * @return The variants in LD with the given SNP.
      */
-    public static ArrayList<ProxyCoordinates> getProxies(
+    public synchronized static ArrayList<ProxyCoordinates> getProxies(
             String rsId,
             String population,
             double r2Threshold,
             int buildNumber
     ) {
 
-        String ext = String.join("",
-                "/ld/homo_sapiens/", rsId, "/", population, "?r2=", Double.toString(r2Threshold), ";attribs=T"
-        );
-        GetRequest request = Unirest.get(getServer(buildNumber) + ext);
-        request.header("Content-Type", "application/json");
+        Throwable throwable = null;
 
-        try {
+        for (int attempt = 0; attempt < N_ATTEMPTS; attempt++) {
 
-            HttpResponse<JsonNode> jsonResponse = request.asJson();
+            String ext = String.join("",
+                    "/ld/homo_sapiens/", rsId, "/", population, "?r2=", Double.toString(r2Threshold), ";attribs=T"
+            );
+            GetRequest request = Unirest.get(getServer(buildNumber) + ext);
+            request.header("Content-Type", "application/json");
 
-            JSONArray array = jsonResponse.getBody().getArray();
+            try {
 
-            ArrayList<ProxyCoordinates> result = new ArrayList<>(array.length());
+                HttpResponse<JsonNode> jsonResponse = request.asJson();
 
-            for (int i = 0; i < array.length(); i++) {
+                JSONArray array = jsonResponse.getBody().getArray();
 
-                JSONObject jsonObject = array.getJSONObject(i);
+                try {
 
-                double r2 = jsonObject.getDouble("r2");
-                String contig = jsonObject.getString("chr");
-                String proxy = jsonObject.getString("variation");
-                int start = jsonObject.getInt("start");
-                int end = jsonObject.getInt("end");
+                    ArrayList<ProxyCoordinates> result = new ArrayList<>(array.length());
 
-                result.add(
-                        new ProxyCoordinates(
-                                proxy,
-                                contig,
-                                start,
-                                end,
-                                null,
-                                r2
-                        )
-                );
+                    for (int i = 0; i < array.length(); i++) {
+
+                        JSONObject jsonObject = array.getJSONObject(i);
+
+                        if (jsonObject.has("error")) {
+
+                            System.out.println("An error was encountered when querying Ensembl for proxies for " + rsId + ": " + jsonObject.getString("error"));
+
+                        } else {
+
+                            double r2 = jsonObject.getDouble("r2");
+                            String contig = jsonObject.getString("chr");
+                            String proxy = jsonObject.getString("variation");
+                            int start = jsonObject.getInt("start");
+                            int end = jsonObject.getInt("end");
+
+                            result.add(
+                                    new ProxyCoordinates(
+                                            proxy,
+                                            contig,
+                                            start,
+                                            end,
+                                            null,
+                                            r2
+                                    )
+                            );
+                        }
+                    }
+
+                    return result;
+
+                } catch (Throwable t) {
+
+                    System.out.println(array);
+
+                    throwable = t;
+
+                }
+
+            } catch (Throwable t) {
+
+                try {
+
+                    WAITER.delay(DELAY);
+
+                } catch (InterruptedException e) {
+
+                    throw new RuntimeException(e);
+
+                }
+
+                throwable = t;
+
             }
-
-            return result;
-
-        } catch (UnirestException e) {
-
-            throw new RuntimeException(e);
-
         }
-    }
 
+        throw new RuntimeException(throwable);
+    }
 }

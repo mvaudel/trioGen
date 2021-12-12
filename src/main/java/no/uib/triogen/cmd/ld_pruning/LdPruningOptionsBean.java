@@ -42,7 +42,7 @@ public class LdPruningOptionsBean {
     /**
      * The name of the p-value column.
      */
-    public String pColName = "h.intercept.p";
+    public String[] pColNames = new String[]{"h.intercept.p"};
     /**
      * The name of the pheno column.
      */
@@ -183,7 +183,8 @@ public class LdPruningOptionsBean {
         // The name of the p-value column
         if (CliUtils.hasOption(aLine, LdPruningOptions.pColName)) {
             
-            pColName = CliUtils.getOptionValue(aLine, LdPruningOptions.pColName);
+            String input = CliUtils.getOptionValue(aLine, LdPruningOptions.pColName);
+            pColNames = input.split(",");
             
         }
         

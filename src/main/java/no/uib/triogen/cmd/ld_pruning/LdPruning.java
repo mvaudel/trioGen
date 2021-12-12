@@ -79,7 +79,7 @@ public class LdPruning {
                 bean.destinationFile,
                 bean.minR2,
                 bean.maxP,
-                bean.pColName,
+                bean.pColNames,
                 bean.idColName,
                 bean.rsidColName,
                 bean.phenoColName,

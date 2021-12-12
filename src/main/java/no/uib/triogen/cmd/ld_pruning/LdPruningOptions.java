@@ -23,7 +23,7 @@ public enum LdPruningOptions implements CliOption {
     maxP("p", "max_p", "The maximal p-value to consider. Default: 1e-6.", false, true),
     idColName("id", "id_col_name", "The name of the variant id column. Default: 'variantId'.", false, true),
     rsidColName("rs", "rsid_col_name", "The name of the rsid column. Mandatory when using Ensembl or LDlink", false, true),
-    pColName("pn", "p_col_name", "The name of the p-value column. Default: 'h.intercept.p'.", false, true),
+    pColName("pn", "p_col_name", "The name of the p-value column. Default: 'h.intercept.p'. If multiple columns should be tried, use comma-separation.", false, true),
     contigColName("cn", "contig_col_name", "The name of the contig column. Default: 'contig'.", false, true),
     phenoColName("phn", "pheno_col_name", "The name of the phenotype column. Ignored if not provided.", false, true),
     separator("s", "separator", "Separator for the columns. Default: '\t'.", false, true),
